@@ -366,5 +366,82 @@
     el.classList.add('active');
   }
 </script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadNewReviews() {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+
+      const grid = document.querySelector('.reviews-list');
+      if (!grid) return;
+
+      const bgColors = ['bg-sushi','bg-burger','bg-ramen','bg-pastry','bg-cafe','bg-seafood'];
+
+      snap.docs.forEach((d, i) => {
+        const r = d.data();
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const tagsHtml = (r.tags || []).map(t => `<span class="review-tag">${t}</span>`).join('');
+        const color = bgColors[i % bgColors.length];
+
+        const card = document.createElement('div');
+        card.className = 'review-card new-review';
+        card.style.cssText = 'animation: fadeIn 0.4s ease both; border: 2px solid rgba(212,82,26,0.2);';
+        card.innerHTML = `
+          <div class="review-img ${color}">
+            <span style="font-size:52px;">${r.emoji || '🍽️'}</span>
+            <span class="new-badge" style="position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;font-size:10px;padding:3px 8px;border-radius:4px;font-weight:600;letter-spacing:0.05em;">NEW</span>
+          </div>
+          <div class="review-body">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+              <div>
+                ${r.hours ? `<span class="hours-badge">🕐 ${r.hours}</span>` : ''}
+              </div>
+              <span class="stars" style="color:#C8901A;font-size:16px;">${stars}</span>
+            </div>
+            <div class="review-top"><h2 class="review-title">${r.name}</h2></div>
+            <div class="review-meta">
+              <span>📍 ${r.city}</span>
+              <span>🍽️ ${r.type}</span>
+              ${r.price ? `<span>💰 ${r.price}</span>` : ''}
+              ${r.date ? `<span>📅 ${r.date}</span>` : ''}
+            </div>
+            <p class="review-excerpt">${r.review}</p>
+            <div class="review-tags">${tagsHtml}</div>
+          </div>`;
+
+        // Insert at the TOP of the reviews list
+        grid.insertBefore(card, grid.firstChild);
+      });
+
+      // Update count
+      const countEl = document.querySelector('.reviews-count');
+      if (countEl) {
+        const existing = parseInt(countEl.textContent) || 20;
+        countEl.textContent = existing + snap.docs.length;
+      }
+    } catch(e) {
+      console.error('Could not load new reviews:', e);
+    }
+  }
+
+  loadNewReviews();
+</script>
 </body>
 </html>

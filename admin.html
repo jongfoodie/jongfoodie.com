@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Jong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --cream: #FAF7F2; --ink: #1A1208; --accent: #D4521A; --border: rgba(26,18,8,0.1); --muted: #8A7A66; --green: #2D5A3D; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+  .admin-nav { background: var(--ink); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .admin-nav h1 { font-family: 'Playfair Display', serif; color: #fff; font-size: 20px; }
+  .admin-nav span { color: var(--accent); font-size: 12px; font-weight: 500; }
+  .login-box { max-width: 400px; margin: 6rem auto; background: #fff; border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .login-box h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 0.5rem; }
+  .login-box p { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
+  .admin-panel { max-width: 700px; margin: 3rem auto; padding: 0 1rem; }
+  .admin-panel h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 0.5rem; }
+  .admin-panel p { color: var(--muted); font-size: 14px; margin-bottom: 2rem; }
+  .form-card { background: #fff; border-radius: 16px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+  .form-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 1rem; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .form-input { border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--cream); outline: none; transition: border-color 0.2s; width: 100%; }
+  .form-input:focus { border-color: var(--accent); }
+  select.form-input { cursor: pointer; }
+  textarea.form-input { resize: vertical; min-height: 100px; }
+  .star-select { display: flex; gap: 8px; font-size: 28px; cursor: pointer; }
+  .star-select span { color: #D4C4A8; transition: color 0.15s; }
+  .star-select span.lit { color: #C8901A; }
+  .btn-publish { background: var(--accent); color: #fff; border: none; padding: 14px 32px; border-radius: 12px; font-size: 15px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; width: 100%; transition: background 0.2s; }
+  .btn-publish:hover { background: #b8401a; }
+  .btn-publish:disabled { background: #ccc; cursor: not-allowed; }
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 999; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .published-list { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
+  .published-list h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .pub-item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+  .pub-item:last-child { border-bottom: none; }
+  .pub-name { font-weight: 500; font-size: 14px; }
+  .pub-meta { font-size: 12px; color: var(--muted); }
+  .btn-delete { background: none; border: 1px solid #e0ccc8; color: #D4521A; padding: 4px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .back-link { color: var(--accent); text-decoration: none; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="admin-nav">
+  <h1>Jong Foodie <span>ADMIN</span></h1>
+  <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
+</div>
+
+<!-- LOGIN -->
+<div id="loginBox" class="login-box">
+  <h2>Admin Access</h2>
+  <p>This page is only for Jong Foodie. Enter the admin password to continue.</p>
+  <div class="form-group">
+    <label class="form-label">Password</label>
+    <input class="form-input" type="password" id="adminPassword" placeholder="Enter admin password..." onkeydown="if(event.key==='Enter')checkPassword()">
+  </div>
+  <button class="btn-publish" onclick="checkPassword()">Enter Admin Panel</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="admin-panel" style="display:none;">
+  <h2>Add New Review</h2>
+  <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
+
+  <div class="form-card">
+    <h3>📍 Restaurant Details</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Restaurant Name *</label>
+        <input class="form-input" type="text" id="rName" placeholder="e.g. Izakaya Amsterdam">
+      </div>
+      <div class="form-group">
+        <label class="form-label">City / Location *</label>
+        <input class="form-input" type="text" id="rCity" placeholder="e.g. Amsterdam">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Food Type *</label>
+        <select class="form-input" id="rType">
+          <option value="">Select type...</option>
+          <option>Sushi / Japanese</option>
+          <option>Burgers</option>
+          <option>Cafe</option>
+          <option>Pastries</option>
+          <option>Sandwiches</option>
+          <option>Asian</option>
+          <option>Seafood</option>
+          <option>Steak</option>
+          <option>Street Food</option>
+          <option>Fine Dining</option>
+          <option>Fries</option>
+          <option>Vietnamese</option>
+          <option>Caribbean</option>
+          <option>Restaurant</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (e.g. €15 or Luxury)</label>
+        <input class="form-input" type="text" id="rPrice" placeholder="e.g. €15 or Luxury">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Visit Date</label>
+        <input class="form-input" type="text" id="rDate" placeholder="e.g. Jan 2025">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Opening Hours</label>
+        <input class="form-input" type="text" id="rHours" placeholder="e.g. Daily 10:00–17:00">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>⭐ Rating & Review</h3>
+    <div class="form-group">
+      <label class="form-label">Star Rating *</label>
+      <div class="star-select" id="adminStars">
+        <span onclick="setAdminRating(1)">★</span>
+        <span onclick="setAdminRating(2)">★</span>
+        <span onclick="setAdminRating(3)">★</span>
+        <span onclick="setAdminRating(4)">★</span>
+        <span onclick="setAdminRating(5)">★</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Review Text *</label>
+      <textarea class="form-input" id="rReview" placeholder="Write your honest review here..." rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags (comma separated)</label>
+      <input class="form-input" type="text" id="rTags" placeholder="e.g. Must Try, Best Sushi, Luxury">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji Icon</label>
+      <input class="form-input" type="text" id="rEmoji" placeholder="e.g. 🍣 🍔 ☕ 🥐 🍜" value="🍽️">
+    </div>
+  </div>
+
+  <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
+
+  <div style="margin-top:2rem;" id="publishedSection">
+    <div class="published-list">
+      <h3>📋 Published Reviews (from admin)</h3>
+      <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Admin password - change this to whatever you want!
+  const ADMIN_PASSWORD = "jongfoodie2025";
+
+  window.checkPassword = function() {
+    const pw = document.getElementById('adminPassword').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadPublished();
+    } else {
+      showToast('Wrong password! Try again.');
+      document.getElementById('adminPassword').value = '';
+    }
+  };
+
+  let adminRating = 0;
+  window.setAdminRating = function(n) {
+    adminRating = n;
+    document.querySelectorAll('#adminStars span').forEach((s, i) => s.classList.toggle('lit', i < n));
+  };
+
+  window.publishReview = async function() {
+    const name = document.getElementById('rName').value.trim();
+    const city = document.getElementById('rCity').value.trim();
+    const type = document.getElementById('rType').value;
+    const price = document.getElementById('rPrice').value.trim();
+    const date = document.getElementById('rDate').value.trim();
+    const hours = document.getElementById('rHours').value.trim();
+    const review = document.getElementById('rReview').value.trim();
+    const tags = document.getElementById('rTags').value.trim();
+    const emoji = document.getElementById('rEmoji').value.trim() || '🍽️';
+
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!city) { showToast('Please enter a city!'); return; }
+    if (!type) { showToast('Please select a food type!'); return; }
+    if (!adminRating) { showToast('Please select a star rating!'); return; }
+    if (!review) { showToast('Please write a review!'); return; }
+
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    btn.textContent = 'Publishing...';
+
+    try {
+      await addDoc(collection(db, 'reviews'), {
+        name, city, type, price, date, hours, review,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        emoji, rating: adminRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+
+      showToast('Review published! 🎉');
+      // Clear form
+      document.getElementById('rName').value = '';
+      document.getElementById('rCity').value = '';
+      document.getElementById('rType').value = '';
+      document.getElementById('rPrice').value = '';
+      document.getElementById('rDate').value = '';
+      document.getElementById('rHours').value = '';
+      document.getElementById('rReview').value = '';
+      document.getElementById('rTags').value = '';
+      document.getElementById('rEmoji').value = '🍽️';
+      adminRating = 0;
+      document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
+      loadPublished();
+    } catch(e) {
+      showToast('Error publishing: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🚀 Publish Review';
+  };
+
+  async function loadPublished() {
+    const list = document.getElementById('publishedList');
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        list.innerHTML = '<p style="font-size:13px;color:var(--muted);">No reviews published yet.</p>';
+        return;
+      }
+      list.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        return `<div class="pub-item">
+          <div>
+            <p class="pub-name">${r.emoji} ${r.name}</p>
+            <p class="pub-meta">${r.city} · ${r.type} · ${stars} · ${r.date || 'No date'}</p>
+          </div>
+          <button class="btn-delete" onclick="deleteReview('${d.id}')">🗑 Delete</button>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      list.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load reviews.</p>';
+    }
+  }
+
+  window.deleteReview = async function(id) {
+    if (!confirm('Delete this review?')) return;
+    await deleteDoc(doc(db, 'reviews', id));
+    showToast('Review deleted!');
+    loadPublished();
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
