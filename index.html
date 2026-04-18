@@ -942,7 +942,19 @@
 
     <!-- COMMUNITY QUICK RATE -->
     <p class="section-label">Rate a Place</p>
-    <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem;">
+
+    <!-- NOT LOGGED IN -->
+    <div id="rateLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 2rem; text-align:center;">
+      <div style="font-size:40px;margin-bottom:0.75rem;">⭐</div>
+      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Visited somewhere recently?</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to share a review with the community!</p>
+      <button class="btn-fill" onclick="openModal('login')">Log in to review</button>
+      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
+      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
+    </div>
+
+    <!-- LOGGED IN FORM -->
+    <div id="rateForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; display:none;">
       <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Visited somewhere recently? Share a quick rating with the community.</p>
       <div class="rate-form">
         <input id="rateRestaurant" class="rate-input" type="text" placeholder="Restaurant name…" style="height:40px;resize:none;">
@@ -960,7 +972,19 @@
 
     <!-- COMMUNITY PICKS -->
     <p class="section-label">Community Picks</p>
-    <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;">
+
+    <!-- NOT LOGGED IN -->
+    <div id="picksLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; text-align:center;">
+      <div style="font-size:40px;margin-bottom:0.75rem;">🍴</div>
+      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Know a great place?</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to recommend a restaurant to the community!</p>
+      <button class="btn-fill" onclick="openModal('login')">Log in to recommend</button>
+      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
+      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
+    </div>
+
+    <!-- LOGGED IN FORM -->
+    <div id="picksForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; display:none;">
       <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1.25rem;">Know a great place that hasn't been reviewed yet? Share it with the community!</p>
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
@@ -1272,6 +1296,11 @@
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
+      // Show forms, hide login prompts
+      document.getElementById('rateForm').style.display = 'block';
+      document.getElementById('rateLoginPrompt').style.display = 'none';
+      document.getElementById('picksForm').style.display = 'block';
+      document.getElementById('picksLoginPrompt').style.display = 'none';
     } else {
       document.querySelector('.user-name').textContent = 'Jong Foodie';
       document.querySelector('.user-avatar-lg').textContent = 'JF';
@@ -1279,6 +1308,11 @@
       document.getElementById('navLogin').style.display = 'block';
       document.getElementById('navSignup').style.display = 'block';
       document.getElementById('navLogout').style.display = 'none';
+      // Hide forms, show login prompts
+      document.getElementById('rateForm').style.display = 'none';
+      document.getElementById('rateLoginPrompt').style.display = 'block';
+      document.getElementById('picksForm').style.display = 'none';
+      document.getElementById('picksLoginPrompt').style.display = 'block';
     }
   });
 
