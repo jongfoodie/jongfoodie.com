@@ -956,6 +956,37 @@
         <button class="btn-accent" onclick="submitReview()">Submit Review</button>
       </div>
     </div>
+
+    <!-- COMMUNITY PICKS -->
+    <p class="section-label">Community Picks</p>
+    <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;">
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1.25rem;">Know a great place that hasn&#39;t been reviewed yet? Share it with the community!</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <input id="pickName" class="rate-input" type="text" placeholder="Restaurant name..." style="height:40px;resize:none;margin:0;">
+          <input id="pickLocation" class="rate-input" type="text" placeholder="Location / City..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <select id="pickType" class="rate-input" style="height:40px;resize:none;margin:0;cursor:pointer;">
+            <option value="">Food type...</option>
+            <option>Burgers</option>
+            <option>Cafe</option>
+            <option>Asian</option>
+            <option>Pastries</option>
+            <option>Sushi</option>
+            <option>Street Food</option>
+            <option>Desserts</option>
+            <option>Restaurant</option>
+            <option>Sandwiches</option>
+          </select>
+          <input id="pickPrice" class="rate-input" type="text" placeholder="Price range e.g. 10-15..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <textarea id="pickWhy" class="rate-input" rows="2" placeholder="Why do you recommend it?..." style="margin:0;"></textarea>
+        <button class="btn-accent" onclick="submitPick()" style="align-self:flex-start;">Recommend this Place</button>
+      </div>
+    </div>
+
+    <div id="picksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;"></div>
   </main>
 
   <!-- SIDEBAR -->
@@ -1183,6 +1214,49 @@
     document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
 
     showToast('Review added! Thanks for sharing 🎉');
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function submitPick() {
+    const name = document.getElementById('pickName').value.trim();
+    const location = document.getElementById('pickLocation').value.trim();
+    const type = document.getElementById('pickType').value.trim();
+    const price = document.getElementById('pickPrice').value.trim();
+    const why = document.getElementById('pickWhy').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!why) { showToast('Please tell us why you recommend it!'); return; }
+
+    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
+    const emoji = typeEmojis[type] || '🍽️';
+    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi','bg-sandwich'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    const card = document.createElement('div');
+    card.className = 'mini-card';
+    card.style.animation = 'fadeIn 0.4s ease both';
+    card.innerHTML = `
+      <div class="mini-img ${color}">${emoji}</div>
+      <div class="mini-body">
+        <p class="mini-meta" style="color:var(--green);font-weight:500;">Community Pick</p>
+        <h3 class="mini-title">${name}</h3>
+        <p style="font-size:12px;color:var(--muted);">${location ? '📍 '+location : ''} ${type ? '· '+type : ''} ${price ? '· '+price : ''}</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${why}</p>
+        <div class="mini-footer">
+          <span style="font-size:12px;color:var(--muted);">Recommended by you</span>
+          <button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button>
+        </div>
+      </div>`;
+
+    const grid = document.getElementById('picksGrid');
+    grid.insertBefore(card, grid.firstChild);
+
+    document.getElementById('pickName').value = '';
+    document.getElementById('pickLocation').value = '';
+    document.getElementById('pickType').value = '';
+    document.getElementById('pickPrice').value = '';
+    document.getElementById('pickWhy').value = '';
+
+    showToast('Thanks for the recommendation! 🎉');
     grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
