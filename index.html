@@ -1,1 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jong Foodie — Honest Reviews, Real Eats</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1208;
+    --ink-soft: #3D2F1A;
+    --muted: #8A7A66;
+    --border: rgba(26,18,8,0.1);
+    --accent: #D4521A;
+    --accent-light: #F5E8E0;
+    --accent-pale: #FBF3EF;
+    --gold: #C8901A;
+    --green: #2D5A3D;
+    --green-light: #E8F2EC;
+    --tag-bg: #F0EBE3;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  .btn-fill {
+    background: var(--accent);
+    border: none;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .btn-fill:hover { background: #b8401a; }
+
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    color: #fff;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,82,26,0.3) 0%, transparent 70%);
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: #F5C896;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.6);
+    font-size: 16px;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    position: relative;
+  }
+  .hero-search {
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 40px;
+    overflow: hidden;
+    padding: 6px 6px 6px 20px;
+    position: relative;
+  }
+  .hero-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: transparent;
+  }
+  .hero-search button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
+
+  /* TAGS BAR */
+  .tags-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tags-bar::-webkit-scrollbar { display: none; }
+  .tag-pill {
+    background: var(--tag-bg);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .tag-pill:hover, .tag-pill.active {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  /* LAYOUT */
+  .site-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 3rem;
+  }
+
+  /* FEATURED */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    display: inline-block;
+  }
+
+  .featured-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 2.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .featured-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(26,18,8,0.1);
+  }
+  .featured-img {
+    height: 320px;
+    background: linear-gradient(135deg, #C8520A 0%, #8B3A1A 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .featured-img::after {
+    content: 'FEATURED';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .featured-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+  }
+  .stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+  .rating-num { font-weight: 500; font-size: 14px; }
+  .rating-count { color: var(--muted); font-size: 13px; }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+  }
+  .card-meta {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); display: inline-block; }
+  .card-excerpt {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+  .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .card-tag {
+    background: var(--accent-pale);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .author-name { font-size: 13px; font-weight: 500; }
+  .card-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-pale); }
+  .icon-btn.saved { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* GRID CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .mini-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26,18,8,0.08);
+  }
+  .mini-img {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+  }
+  .mini-body { padding: 1rem; }
+  .mini-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+  .mini-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .mini-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-save {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+    padding: 0;
+  }
+  .mini-save:hover { color: var(--accent); }
+  .mini-save.saved { color: var(--accent); }
+
+  /* LOAD MORE */
+  .load-more {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 10px 28px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .sidebar-widget {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+  .widget-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    margin-bottom: 1rem;
+  }
+
+  /* USER PANEL */
+  .user-panel {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .user-panel .widget-title { color: #fff; }
+  .user-avatar-lg {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+  .user-name { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; }
+  .user-bio { font-size: 12px; color: rgba(255,255,255,0.55); margin: 4px 0 1rem; }
+  .user-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .user-stat {
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 4px;
+  }
+  .user-stat-num { font-size: 18px; font-weight: 700; color: #fff; }
+  .user-stat-lbl { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 0.05em; }
+
+  .user-actions { display: flex; gap: 0.5rem; }
+  .btn-white {
+    background: #fff;
+    color: var(--ink);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+    transition: background 0.2s;
+  }
+  .btn-white:hover { background: #f0ece6; }
+  .btn-ghost-white {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: #fff;
+    transition: border-color 0.2s;
+  }
+  .btn-ghost-white:hover { border-color: rgba(255,255,255,0.6); }
+
+  /* TRENDING */
+  .trending-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .trending-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .trending-item:last-child { border-bottom: none; }
+  .trending-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-light);
+    min-width: 28px;
+  }
+  .trending-emoji { font-size: 28px; line-height: 1; }
+  .trending-info { flex: 1; }
+  .trending-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .trending-sub { font-size: 11px; color: var(--muted); }
+
+  /* RATING WIDGET */
+  .rate-form { display: flex; flex-direction: column; gap: 0.75rem; }
+  .rate-stars-input { display: flex; gap: 4px; font-size: 24px; cursor: pointer; }
+  .rate-star { color: #D4C4A8; transition: color 0.15s; }
+  .rate-star.lit { color: var(--gold); }
+  .rate-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--cream);
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .rate-input:focus { border-color: var(--accent); }
+  .btn-accent {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    align-self: flex-start;
+    transition: background 0.2s;
+  }
+  .btn-accent:hover { background: #b8401a; }
+
+  /* NEWSLETTER */
+  .newsletter-widget {
+    background: var(--green-light);
+    border: 1px solid rgba(45,90,61,0.15);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .newsletter-widget .widget-title { color: var(--green); }
+  .newsletter-widget p { font-size: 13px; color: var(--green); opacity: 0.8; margin-bottom: 1rem; }
+  .nl-input-row { display: flex; gap: 0.5rem; }
+  .nl-input {
+    flex: 1;
+    border: 1px solid rgba(45,90,61,0.3);
+    background: #fff;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    color: var(--ink);
+  }
+  .btn-green {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  /* SAVED POSTS */
+  .saved-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .saved-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .saved-item:hover { background: var(--cream); }
+  .saved-emoji { font-size: 22px; }
+  .saved-title { font-size: 13px; font-weight: 500; line-height: 1.3; flex: 1; }
+  .saved-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  .saved-remove:hover { color: var(--accent); }
+
+  /* TOAST NOTIFICATION */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* MODAL */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,0.5);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-bg.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    transform: scale(0.95);
+    transition: transform 0.25s;
+  }
+  .modal-bg.open .modal { transform: scale(1); }
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 0.25rem;
+  }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .modal-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .modal-tab {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 500;
+  }
+  .modal-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .modal-field { margin-bottom: 1rem; }
+  .modal-label { font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-bottom: 4px; display: block; }
+  .modal-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--muted);
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+  .modal { position: relative; }
+
+  /* FOOD EMOJI COLOR BACKGROUNDS */
+  .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
+  .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
+  .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
+  .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-sushi { background: linear-gradient(135deg, #C83030, #8B1A1A); }
+  .bg-tacos { background: linear-gradient(135deg, #60871A, #3D5A0A); }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .featured-card, .mini-card { animation: fadeIn 0.4s ease both; }
+  .mini-card:nth-child(2) { animation-delay: 0.05s; }
+  .mini-card:nth-child(3) { animation-delay: 0.1s; }
+  .mini-card:nth-child(4) { animation-delay: 0.15s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .site-wrapper { grid-template-columns: 1fr; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; }
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-img { height: 200px; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .sidebar { grid-template-columns: 1fr; }
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .site-wrapper { padding: 2rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button id="navLogin" class="btn-ghost" onclick="openModal('login')">Log in</button>
+    <button id="navSignup" class="btn-fill" onclick="openModal('signup')">Join free</button>
+    <button id="navLogout" class="btn-ghost" onclick="doLogout()" style="display:none;">Log out</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Real eats. Honest reviews.</p>
+  <h1>Discover your next<br><em>favourite bite</em></h1>
+  <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks — all in one place.</p>
+  <div class="hero-search">
+    <input type="text" placeholder="Search cafes, burgers, pastries…" />
+    <button>Search</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">248</div>
+      <div class="stat-label">Reviews</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">90+</div>
+      <div class="stat-label">Restaurants</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1.2k</div>
+      <div class="stat-label">Members</div>
+    </div>
+  </div>
+</section>
+
+<!-- TAGS BAR -->
+<div class="tags-bar">
+  <button class="tag-pill active" onclick="setTag(this)">All</button>
+  <button class="tag-pill" onclick="setTag(this)">☕ Cafes</button>
+  <button class="tag-pill" onclick="setTag(this)">🍔 Burgers</button>
+  <button class="tag-pill" onclick="setTag(this)">🥐 Pastries</button>
+  <button class="tag-pill" onclick="setTag(this)">🍜 Noodles</button>
+  <button class="tag-pill" onclick="setTag(this)">🍣 Sushi</button>
+  <button class="tag-pill" onclick="setTag(this)">🌮 Street Food</button>
+  <button class="tag-pill" onclick="setTag(this)">🍰 Desserts</button>
+  <button class="tag-pill" onclick="setTag(this)">💰 Budget</button>
+  <button class="tag-pill" onclick="setTag(this)">✨ Fine Dining</button>
+</div>
+
+<!-- MAIN -->
+<div class="site-wrapper">
+  <main>
+    <!-- FEATURED -->
+    <p class="section-label">Featured Review</p>
+    <div class="featured-card">
+      <div class="featured-img bg-ramen" style="font-size:72px;">🍜</div>
+      <div class="featured-body">
+        <div>
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-num">4.9</span>
+            <span class="rating-count">(124 reviews)</span>
+          </div>
+          <h2 class="card-title">Cafe Nobuya — Where Every Bite Tells a Story</h2>
+          <div class="card-meta">
+            <span>Kuala Lumpur</span>
+            <span class="dot"></span>
+            <span>Japanese Fusion</span>
+            <span class="dot"></span>
+            <span>$$</span>
+          </div>
+          <p class="card-excerpt">From the chewiest Mochi Donuts to a Gyudon Beef Sandwich that hits every note — sweet, savoury, spicy, crunchy — Cafe Nobuya is one of those rare spots that earns every bit of its hype.</p>
+          <div class="card-tags">
+            <span class="card-tag">Must Try</span>
+            <span class="card-tag">Japanese</span>
+            <span class="card-tag">Donuts</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="author">
+            <div class="avatar">JF</div>
+            <span class="author-name">Jong Foodie</span>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
+            <button class="icon-btn" title="Save" onclick="toggleSave(this, 'Cafe Nobuya')">🔖</button>
+            <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <p class="section-label">Latest Reviews</p>
+    <div class="cards-grid">
+      <div class="mini-card">
+        <div class="mini-img bg-burger">🍔</div>
+        <div class="mini-body">
+          <p class="mini-meta">Le Smash · Burgers · $$</p>
+          <h3 class="mini-title">Le Special: Is It Worth the Hype?</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Extra bacon, smash patty, secret sauce — this burger delivers on almost every front.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★☆ 4.2</span>
+            <button class="mini-save" onclick="toggleMiniSave(this, 'Le Special Burger')">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-pastry">🥐</div>
+        <div class="mini-body">
+          <p class="mini-meta">Maison · Pastries · $$$</p>
+          <h3 class="mini-title">Pistachio Cube Croissant: Beautiful but Pricey</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Eye-catching cube shape, gorgeous pistachio cream — but the price might leave you wanting more flavour for your money.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★☆ 3.8</span>
+            <button class="mini-save" onclick="toggleMiniSave(this, 'Pistachio Cube Croissant')">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-cafe">☕</div>
+        <div class="mini-body">
+          <p class="mini-meta">Brioche & Co · Cafe · $$</p>
+          <h3 class="mini-title">Brioche Grilled Cheese: Disappointed at This Price</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">The sandwich lacked flavour and I couldn't even finish it. High hopes, flat results — they need to step it up.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★☆☆☆ 2.1</span>
+            <button class="mini-save" onclick="toggleMiniSave(this, 'Brioche Grilled Cheese')">🔖</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-sushi">🍣</div>
+        <div class="mini-body">
+          <p class="mini-meta">Tori · Japanese · $$$</p>
+          <h3 class="mini-title">Chicken Smash Burger from Maijard — Close to Perfect</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Fresh veg, juicy patty, sturdy bun — just needs a cheese slice and better sauce to reach the top tier.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★☆ 4.0</span>
+            <button class="mini-save" onclick="toggleMiniSave(this, 'Chicken Smash Burger')">🔖</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more">
+      <button class="btn-outline" onclick="showToast('Loading more reviews…')">Load more reviews</button>
+    </div>
+
+    <!-- COMMUNITY QUICK RATE -->
+    <p class="section-label">Rate a Place</p>
+    <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem;">
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Visited somewhere recently? Share a quick rating with the community.</p>
+      <div class="rate-form">
+        <input id="rateRestaurant" class="rate-input" type="text" placeholder="Restaurant name…" style="height:40px;resize:none;">
+        <div class="rate-stars-input" id="starRating">
+          <span class="rate-star" onclick="setRating(1)">★</span>
+          <span class="rate-star" onclick="setRating(2)">★</span>
+          <span class="rate-star" onclick="setRating(3)">★</span>
+          <span class="rate-star" onclick="setRating(4)">★</span>
+          <span class="rate-star" onclick="setRating(5)">★</span>
+        </div>
+        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think?…"></textarea>
+        <button class="btn-accent" onclick="submitReview()">Submit Review</button>
+      </div>
+    </div>
+
+    <!-- COMMUNITY PICKS -->
+    <p class="section-label">Community Picks</p>
+    <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;">
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1.25rem;">Know a great place that hasn't been reviewed yet? Share it with the community!</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <input id="pickName" class="rate-input" type="text" placeholder="Restaurant name..." style="height:40px;resize:none;margin:0;">
+          <input id="pickLocation" class="rate-input" type="text" placeholder="Location / City..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <select id="pickType" class="rate-input" style="height:40px;margin:0;cursor:pointer;">
+            <option value="">Food type...</option>
+            <option>Burgers</option><option>Cafe</option><option>Asian</option>
+            <option>Pastries</option><option>Sushi</option><option>Street Food</option>
+            <option>Desserts</option><option>Restaurant</option><option>Sandwiches</option>
+          </select>
+          <input id="pickPrice" class="rate-input" type="text" placeholder="Price range e.g. 10-15..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <textarea id="pickWhy" class="rate-input" rows="2" placeholder="Why do you recommend it?..." style="margin:0;"></textarea>
+        <button class="btn-accent" onclick="submitPick()" style="align-self:flex-start;">Recommend this Place</button>
+      </div>
+    </div>
+    <div id="picksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;"></div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <!-- USER PANEL -->
+    <div class="user-panel">
+      <div class="user-avatar-lg">JF</div>
+      <div class="user-name">Jong Foodie</div>
+      <div class="user-bio">Food explorer · KL based</div>
+      <div class="user-stats-row">
+        <div class="user-stat">
+          <div class="user-stat-num">48</div>
+          <div class="user-stat-lbl">Reviews</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-num">12</div>
+          <div class="user-stat-lbl">Saved</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-num">1.2k</div>
+          <div class="user-stat-lbl">Followers</div>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="btn-white" onclick="showToast('Opening your profile…')">My Profile</button>
+        <button class="btn-ghost-white" onclick="showToast('Settings coming soon!')">⚙</button>
+      </div>
+    </div>
+
+    <!-- SAVED LIST -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Saved Places</p>
+      <div class="saved-list" id="savedList">
+        <div class="saved-item"><span class="saved-emoji">🍜</span><span class="saved-title">Cafe Nobuya</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+        <div class="saved-item"><span class="saved-emoji">🥐</span><span class="saved-title">Pistachio Cube — Maison</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+        <div class="saved-item"><span class="saved-emoji">🍔</span><span class="saved-title">Le Smash Burgers</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+      </div>
+    </div>
+
+    <!-- TRENDING -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Trending This Week</p>
+      <div class="trending-list">
+        <div class="trending-item">
+          <span class="trending-num">01</span>
+          <span class="trending-emoji">🍜</span>
+          <div class="trending-info">
+            <p class="trending-title">Cafe Nobuya</p>
+            <p class="trending-sub">248 views · ★ 4.9</p>
+          </div>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">02</span>
+          <span class="trending-emoji">🍔</span>
+          <div class="trending-info">
+            <p class="trending-title">Le Smash</p>
+            <p class="trending-sub">180 views · ★ 4.2</p>
+          </div>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">03</span>
+          <span class="trending-emoji">🥐</span>
+          <div class="trending-info">
+            <p class="trending-title">Pistachio Cube</p>
+            <p class="trending-sub">132 views · ★ 3.8</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter-widget">
+      <p class="widget-title">Weekly Bites</p>
+      <p>Get the best new reviews delivered to your inbox every Friday.</p>
+      <div class="nl-input-row">
+        <input class="nl-input" type="email" placeholder="your@email.com">
+        <button class="btn-green" onclick="showToast('Subscribed! See you Friday 🎉')">Subscribe</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Welcome back</h2>
+    <p class="modal-sub">Join the foodie community or log in to your account.</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab(this,'login')">Log in</button>
+      <button class="modal-tab" onclick="switchTab(this,'signup')">Sign up</button>
+    </div>
+    <div id="loginForm">
+      <div class="modal-field">
+        <label class="modal-label">Email</label>
+        <input class="modal-input" type="email" placeholder="you@email.com">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Password</label>
+        <input class="modal-input" type="password" placeholder="••••••••">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-fill" style="width:100%;padding:11px;" onclick="doLogin()">Log in</button>
+      </div>
+    </div>
+    <div id="signupForm" style="display:none;">
+      <div class="modal-field">
+        <label class="modal-label">Name</label>
+        <input class="modal-input" type="text" placeholder="Your name">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Email</label>
+        <input class="modal-input" type="email" placeholder="you@email.com">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Password</label>
+        <input class="modal-input" type="password" placeholder="Create a password">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-fill" style="width:100%;padding:11px;" onclick="doSignup()">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function toggleLike(btn) {
+    btn.classList.toggle('saved');
+    btn.textContent = btn.classList.contains('saved') ? '♥' : '♡';
+    showToast(btn.classList.contains('saved') ? 'Added to likes!' : 'Removed from likes');
+  }
+
+  function toggleSave(btn, name) {
+    btn.classList.toggle('saved');
+    if (btn.classList.contains('saved')) {
+      addToSavedList(name, '🍜');
+      showToast(`"${name}" saved!`);
+    } else {
+      showToast(`"${name}" removed from saves`);
+    }
+  }
+
+  function toggleMiniSave(btn, name) {
+    btn.classList.toggle('saved');
+    if (btn.classList.contains('saved')) {
+      const emoji = btn.closest('.mini-card').querySelector('.mini-img').textContent.trim();
+      addToSavedList(name, emoji);
+      showToast(`"${name}" saved!`);
+    } else {
+      showToast('Removed from saves');
+    }
+  }
+
+  function addToSavedList(name, emoji) {
+    const list = document.getElementById('savedList');
+    const item = document.createElement('div');
+    item.className = 'saved-item';
+    item.innerHTML = `<span class="saved-emoji">${emoji}</span><span class="saved-title">${name}</span><button class="saved-remove" onclick="removeSaved(this)">✕</button>`;
+    list.appendChild(item);
+  }
+
+  function removeSaved(btn) {
+    btn.closest('.saved-item').remove();
+    showToast('Removed from saved places');
+  }
+
+  function setTag(el) {
+    document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    showToast(`Filtering by: ${el.textContent}`);
+  }
+
+
+  let currentRating = 0;
+  function setRating(n) {
+    currentRating = n;
+    document.querySelectorAll('.rate-star').forEach((s, i) => s.classList.toggle('lit', i < n));
+  }
+
+  function submitReview() {
+    const name = document.getElementById('rateRestaurant').value.trim();
+    const review = document.getElementById('rateReview').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!currentRating) { showToast('Please select a star rating!'); return; }
+    if (!review) { showToast('Please write a short review!'); return; }
+    const stars = '★'.repeat(currentRating) + '☆'.repeat(5-currentRating);
+    const emojis = ['🍽️','🍔','☕','🍜','🥐','🍣','🌮'];
+    const emoji = emojis[Math.floor(Math.random()*emojis.length)];
+    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const card = document.createElement('div');
+    card.className = 'mini-card';
+    card.style.animation = 'fadeIn 0.4s ease both';
+    card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta">Community Review · Just now</p><h3 class="mini-title">${name}</h3><p style="font-size:13px;color:var(--ink-soft);">${review}</p><div class="mini-footer"><span class="mini-rating">${stars} ${currentRating}.0</span><button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button></div></div>`;
+    const grid = document.querySelector('.cards-grid');
+    grid.insertBefore(card, grid.firstChild);
+    document.getElementById('rateRestaurant').value = '';
+    document.getElementById('rateReview').value = '';
+    currentRating = 0;
+    document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
+    showToast('Review added! 🎉');
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function submitPick() {
+    const name = document.getElementById('pickName').value.trim();
+    const location = document.getElementById('pickLocation').value.trim();
+    const type = document.getElementById('pickType').value.trim();
+    const price = document.getElementById('pickPrice').value.trim();
+    const why = document.getElementById('pickWhy').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!why) { showToast('Please tell us why you recommend it!'); return; }
+    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
+    const emoji = typeEmojis[type] || '🍽️';
+    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const card = document.createElement('div');
+    card.className = 'mini-card';
+    card.style.animation = 'fadeIn 0.4s ease both';
+    card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p><h3 class="mini-title">${name}</h3><p style="font-size:12px;color:var(--muted);">${location ? '📍 '+location : ''} ${type ? '· '+type : ''} ${price ? '· '+price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by you</span><button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button></div></div>`;
+    const grid = document.getElementById('picksGrid');
+    grid.insertBefore(card, grid.firstChild);
+    document.getElementById('pickName').value = '';
+    document.getElementById('pickLocation').value = '';
+    document.getElementById('pickType').value = '';
+    document.getElementById('pickPrice').value = '';
+    document.getElementById('pickWhy').value = '';
+    showToast('Thanks for the recommendation! 🎉');
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  
+  function openModal(tab) {
+    document.getElementById('modalBg').classList.add('open');
+    if (tab === 'signup') {
+      document.querySelectorAll('.modal-tab')[1].click();
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalBg')) closeModal();
+  }
+
+  function switchTab(btn, tab) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    document.querySelector('.modal h2').textContent = tab === 'login' ? 'Welcome back' : 'Create an account';
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      document.querySelector('.user-name').textContent = name;
+      document.querySelector('.user-avatar-lg').textContent = name.substring(0,2).toUpperCase();
+      document.querySelector('.user-bio').textContent = user.email;
+      document.getElementById('navLogin').style.display = 'none';
+      document.getElementById('navSignup').style.display = 'none';
+      document.getElementById('navLogout').style.display = 'block';
+    } else {
+      document.querySelector('.user-name').textContent = 'Jong Foodie';
+      document.querySelector('.user-avatar-lg').textContent = 'JF';
+      document.querySelector('.user-bio').textContent = 'Food explorer · Amsterdam';
+      document.getElementById('navLogin').style.display = 'block';
+      document.getElementById('navSignup').style.display = 'block';
+      document.getElementById('navLogout').style.display = 'none';
+    }
+  });
+
+  window.doLogin = async function() {
+    const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
+    const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
+    if (!email || !password) { showToast('Please fill in all fields!'); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      closeModal();
+      showToast('Welcome back! 👋');
+    } catch(e) {
+      if (e.code === 'auth/invalid-credential') showToast('Wrong email or password!');
+      else showToast('Login failed. Please try again!');
+    }
+  };
+
+  window.doSignup = async function() {
+    const name = document.querySelector('#signupForm .modal-input[type="text"]').value.trim();
+    const email = document.querySelector('#signupForm .modal-input[type="email"]').value.trim();
+    const password = document.querySelector('#signupForm .modal-input[type="password"]').value;
+    if (!name || !email || !password) { showToast('Please fill in all fields!'); return; }
+    if (password.length < 6) { showToast('Password must be at least 6 characters!'); return; }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      closeModal();
+      showToast('Welcome, ' + name + '! 🎉');
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') showToast('This email is already registered!');
+      else showToast('Signup failed. Please try again!');
+    }
+  };
+
+  window.doLogout = async function() {
+    await signOut(auth);
+    showToast('Logged out! See you soon 👋');
+  };
+</script>
+</body>
+</html>
