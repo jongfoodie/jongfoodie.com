@@ -944,7 +944,7 @@
     <div style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem;">
       <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Visited somewhere recently? Share a quick rating with the community.</p>
       <div class="rate-form">
-        <input class="rate-input" type="text" placeholder="Restaurant name…" style="height:40px;resize:none;">
+        <input id="rateRestaurant" class="rate-input" type="text" placeholder="Restaurant name…" style="height:40px;resize:none;">
         <div class="rate-stars-input" id="starRating">
           <span class="rate-star" onclick="setRating(1)">★</span>
           <span class="rate-star" onclick="setRating(2)">★</span>
@@ -952,8 +952,8 @@
           <span class="rate-star" onclick="setRating(4)">★</span>
           <span class="rate-star" onclick="setRating(5)">★</span>
         </div>
-        <textarea class="rate-input" rows="3" placeholder="What did you think?…"></textarea>
-        <button class="btn-accent" onclick="showToast('Review submitted! Thanks for sharing 🎉')">Submit Review</button>
+        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think?…"></textarea>
+        <button class="btn-accent" onclick="submitReview()">Submit Review</button>
       </div>
     </div>
   </main>
@@ -1144,6 +1144,46 @@
     document.querySelectorAll('.rate-star').forEach((s, i) => {
       s.classList.toggle('lit', i < n);
     });
+  }
+
+  function submitReview() {
+    const name = document.getElementById('rateRestaurant').value.trim();
+    const review = document.getElementById('rateReview').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!currentRating) { showToast('Please select a star rating!'); return; }
+    if (!review) { showToast('Please write a short review!'); return; }
+
+    const stars = '★'.repeat(currentRating) + '☆'.repeat(5 - currentRating);
+    const emojis = ['🍽️','🍔','☕','🍜','🥐','🍣','🌮'];
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    const card = document.createElement('div');
+    card.className = 'mini-card';
+    card.style.animation = 'fadeIn 0.4s ease both';
+    card.innerHTML = `
+      <div class="mini-img ${color}">${emoji}</div>
+      <div class="mini-body">
+        <p class="mini-meta">Community Review · Just now</p>
+        <h3 class="mini-title">${name}</h3>
+        <p style="font-size:13px;color:var(--ink-soft);">${review}</p>
+        <div class="mini-footer">
+          <span class="mini-rating">${stars} ${currentRating}.0</span>
+          <button class="mini-save" onclick="toggleMiniSave(this, '${name}')">🔖</button>
+        </div>
+      </div>`;
+
+    const grid = document.querySelector('.cards-grid');
+    grid.insertBefore(card, grid.firstChild);
+
+    document.getElementById('rateRestaurant').value = '';
+    document.getElementById('rateReview').value = '';
+    currentRating = 0;
+    document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
+
+    showToast('Review added! Thanks for sharing 🎉');
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function openModal(tab) {
