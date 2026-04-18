@@ -116,6 +116,12 @@
       </div>
     </div>
 
+    <!-- COMMUNITY PICKS FROM FIRESTORE -->
+    <p class="section-label">Community Picks</p>
+    <div id="communityPicksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;">
+      <p style="font-size:13px;color:var(--muted);grid-column:span 2;">Loading community picks...</p>
+    </div>
+
     <p class="section-label">Community Posts</p>
     <div class="posts-list">
 
@@ -327,6 +333,59 @@
     btn.innerHTML = `<span>${isLiked ? '♡' : '♥'}</span> ${isLiked ? count - 1 : count + 1} likes`;
     btn.style.color = isLiked ? '' : 'var(--accent)';
   }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadPicks() {
+    const grid = document.getElementById('communityPicksGrid');
+    try {
+      const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      grid.innerHTML = '';
+      if (snapshot.empty) {
+        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:span 2;">No picks yet — be the first to add one on the homepage!</p>';
+        return;
+      }
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
+        const emoji = typeEmojis[p.type] || '🍽️';
+        const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        card.innerHTML = `
+          <div class="mini-img ${color}" style="height:120px;font-size:40px;">${emoji}</div>
+          <div class="mini-body">
+            <p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p>
+            <h3 class="mini-title">${p.name}</h3>
+            <p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p>
+            <p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p>
+          </div>`;
+        grid.appendChild(card);
+      });
+    } catch(e) {
+      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:span 2;">Could not load picks.</p>';
+      console.error(e);
+    }
+  }
+
+  loadPicks();
 </script>
 </body>
 </html>
