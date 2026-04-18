@@ -655,6 +655,10 @@
   }
   .saved-remove:hover { color: var(--accent); }
 
+  /* SETTINGS */
+  #settingsBg { position: fixed; inset: 0; background: rgba(26,18,8,0.5); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  #settingsBg.open { opacity: 1; pointer-events: all; }
+
   /* TOAST NOTIFICATION */
   .toast {
     position: fixed;
@@ -1031,7 +1035,7 @@
       </div>
       <div class="user-actions">
         <button class="btn-white" onclick="showToast('Opening your profile…')">My Profile</button>
-        <button class="btn-ghost-white" onclick="showToast('Settings coming soon!')">⚙</button>
+        <button class="btn-ghost-white" onclick="openSettings()">⚙ Settings</button>
       </div>
     </div>
 
@@ -1090,6 +1094,21 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-bg" id="settingsBg" onclick="closeSettings(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('settingsBg').classList.remove('open')">✕</button>
+    <h2>Profile Settings</h2>
+    <p class="modal-sub">Change your display name to stay private.</p>
+    <div class="modal-field">
+      <label class="modal-label">Display Name</label>
+      <input class="modal-input" id="displayNameInput" type="text" placeholder="Enter your display name...">
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:1rem;">This name is shown instead of your email. Others won't see your real name or email.</p>
+    <button class="btn-fill" style="width:100%;padding:11px;" onclick="saveDisplayName()">Save Display Name</button>
+  </div>
+</div>
 
 <!-- MODAL -->
 <div class="modal-bg" id="modalBg" onclick="closeModalOnBg(event)">
@@ -1305,6 +1324,18 @@
     showToast('Loaded more reviews! 🎉');
   }
 
+  function openSettings() {
+    const input = document.getElementById('displayNameInput');
+    input.value = document.querySelector('.user-name').textContent;
+    document.getElementById('settingsBg').classList.add('open');
+  }
+
+  function closeSettings(e) {
+    if (e.target === document.getElementById('settingsBg')) {
+      document.getElementById('settingsBg').classList.remove('open');
+    }
+  }
+
   function switchTab(btn, tab) {
     document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
@@ -1394,20 +1425,31 @@
     currentUser = user;
     if (user) {
       const name = user.displayName || user.email.split('@')[0];
+      const initials = name.substring(0,2).toUpperCase();
+      // Sidebar
       document.querySelector('.user-name').textContent = name;
-      document.querySelector('.user-avatar-lg').textContent = name.substring(0,2).toUpperCase();
+      document.querySelector('.user-avatar-lg').textContent = initials;
       document.querySelector('.user-bio').textContent = user.email;
+      // Featured card author
+      if (document.getElementById('featuredAvatar')) document.getElementById('featuredAvatar').textContent = initials;
+      if (document.getElementById('featuredName')) document.getElementById('featuredName').textContent = name;
+      // Nav
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
+      // Forms
       document.getElementById('rateForm').style.display = 'block';
       document.getElementById('rateLoginPrompt').style.display = 'none';
       document.getElementById('picksForm').style.display = 'block';
       document.getElementById('picksLoginPrompt').style.display = 'none';
     } else {
-      document.querySelector('.user-name').textContent = 'Jong Foodie';
-      document.querySelector('.user-avatar-lg').textContent = 'JF';
+      const name = 'Jong Foodie';
+      const initials = 'JF';
+      document.querySelector('.user-name').textContent = name;
+      document.querySelector('.user-avatar-lg').textContent = initials;
       document.querySelector('.user-bio').textContent = 'Food explorer · Amsterdam';
+      if (document.getElementById('featuredAvatar')) document.getElementById('featuredAvatar').textContent = initials;
+      if (document.getElementById('featuredName')) document.getElementById('featuredName').textContent = name;
       document.getElementById('navLogin').style.display = 'block';
       document.getElementById('navSignup').style.display = 'block';
       document.getElementById('navLogout').style.display = 'none';
@@ -1452,6 +1494,22 @@
   window.doLogout = async function() {
     await signOut(auth);
     showToast('Logged out! See you soon 👋');
+  };
+
+  window.saveDisplayName = async function() {
+    const newName = document.getElementById('displayNameInput').value.trim();
+    if (!newName) { showToast('Please enter a display name!'); return; }
+    if (newName.length < 2) { showToast('Name must be at least 2 characters!'); return; }
+    try {
+      const { updateProfile } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      await updateProfile(auth.currentUser, { displayName: newName });
+      document.querySelector('.user-name').textContent = newName;
+      document.querySelector('.user-avatar-lg').textContent = newName.substring(0,2).toUpperCase();
+      document.getElementById('settingsBg').classList.remove('open');
+      showToast('Display name updated to "' + newName + '"! 🎉');
+    } catch(e) {
+      showToast('Could not update name. Please try again!');
+    }
   };
 </script>
 </body>

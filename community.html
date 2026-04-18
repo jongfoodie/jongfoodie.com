@@ -360,9 +360,15 @@
     currentUser = user;
     if (user) {
       const name = user.displayName || user.email.split('@')[0];
-      // Update post box avatar
-      const avatars = document.querySelectorAll('.post-composer-avatar, .post-avatar-me');
-      avatars.forEach(a => a.textContent = name.substring(0,2).toUpperCase());
+      const initials = name.substring(0,2).toUpperCase();
+      // Update all avatars and names
+      document.querySelectorAll('.post-avatar-me').forEach(a => {
+        a.textContent = initials;
+      });
+      // Update any "Jong Foodie" text in the page
+      document.querySelectorAll('.current-user-name').forEach(el => {
+        el.textContent = name;
+      });
     }
   });
 
