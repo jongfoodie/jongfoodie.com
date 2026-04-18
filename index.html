@@ -937,7 +937,7 @@
     </div>
 
     <div class="load-more">
-      <button class="btn-outline" onclick="showToast('Loading more reviews…')">Load more reviews</button>
+      <button class="btn-outline" onclick="loadMoreReviews()">Load more reviews</button>
     </div>
 
     <!-- COMMUNITY QUICK RATE -->
@@ -1260,6 +1260,48 @@
 
   function closeModalOnBg(e) {
     if (e.target === document.getElementById('modalBg')) closeModal();
+  }
+
+
+  const extraReviews = [
+    { emoji: '🍣', color: 'bg-sushi', title: 'Izakaya Amsterdam', meta: 'Sushi · Luxury · Jan 2025', text: 'The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty. The perfect mix of luxury, flavor, and atmosphere.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍽️', color: 'bg-ramen', title: 'Mondi Amsterdam Nieuw-West', meta: 'Caribbean · $$$ · Jan 2025', text: 'A unique dining experience combining Caribbean flavors with French sophistication. The atmosphere, music, and food all blend perfectly. A must-visit in Nieuw-West.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍔', color: 'bg-burger', title: 'Maijard — Chicken Smash Burger', meta: 'Burgers · $$ · Oct 2024', text: 'Fresh veg, juicy patty, solid bun. The smash technique gives it that perfect crispy edge. Just needs a better sauce to reach the absolute top tier.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍟', color: 'bg-burger', title: 'Fabel Friet — Parmesan Truffle Fries', meta: 'Fries · $ · Dec 2024', text: 'Perfectly crispy Dutch fries with freshly grated parmesan and homemade truffle mayo. Simple, fresh, and absolutely worth the queue.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🐙', color: 'bg-ramen', title: 'Sjefietshé — Hotdoctopus', meta: 'Seafood · $$ · Nov 2024', text: 'The hotdoctopus dish is unlike anything else in Amsterdam. Creative, bold, and delicious. A hidden gem in De Pijp that deserves way more attention.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥗', color: 'bg-cafe', title: 'Leauf Amsterdam — Leauf du Chef', meta: 'Sandwiches · $$ · Dec 2024', text: 'Paris meets Jordaan. Michelin-star precision in a sandwich shop. The freshest ingredients, crispiest bread, and the most creative flavor combinations in Amsterdam.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🥐', color: 'bg-pastry', title: 'et CLAIRE — Pistachio Cube Croissant', meta: 'Pastries · $$ · Oct 2024', text: 'Beautiful cube shape and gorgeous pistachio cream. Eye-catching and Instagram-worthy but the price left me wanting more flavor for my money.', stars: '★★★☆☆', rating: '3.0' },
+    { emoji: '🍜', color: 'bg-ramen', title: 'Cafe Nobuya — Mochi Donuts', meta: 'Japanese Fusion · $$ · Nov 2024', text: 'The chewiest, most creative mochi donuts in Amsterdam. The gyudon beef sandwich hits every note — sweet, savoury, spicy, crunchy. An absolute must-visit.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🧀', color: 'bg-cafe', title: 'Brioche Amsterdam — Grilled Cheese', meta: 'Cafe · $$ · Sep 2024', text: 'High hopes, flat results. The grilled cheese lacked flavor and I could not even finish it. For this price they really need to step it up significantly.', stars: '★☆☆☆☆', rating: '1.0' },
+    { emoji: '🍔', color: 'bg-burger', title: 'Le Smash — Le Special with Extra Bacon', meta: 'Burgers · $$ · Oct 2024', text: 'Extra bacon, smash patty, secret sauce — this burger delivers on almost every front. One of the best smashburgers in De Pijp. Reasonably priced and always consistent.', stars: '★★★★½', rating: '4.8' },
+    { emoji: '🥩', color: 'bg-sushi', title: 'Zorlu Center — Steak Tater', meta: 'Steak · Istanbul · Aug 2024', text: 'Discovered this gem while in Istanbul. The steak tater with garlic sauce is phenomenal. Incredible quality at a fraction of Amsterdam prices.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥩', color: 'bg-ramen', title: '360 Istanbul — Steak & Live Music', meta: 'Steak · Istanbul · Aug 2024', text: 'Rooftop dining with a stunning view of Istanbul. The steak was excellent and the live music on Saturdays makes it a complete evening. Unforgettable experience.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🍽️', color: 'bg-pastry', title: 'Sjefietshé — Hotdoctopus', meta: 'Seafood · $$ · Sep 2024', text: 'Bold, creative, and unlike anything else in the city. The hotdoctopus is their signature dish for a reason. Small portions but huge flavors.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🫔', color: 'bg-pastry', title: 'Bonnie — Kimchi Croque', meta: 'Cafe · $$ · Nov 2024', text: 'The kimchi croque is addictive. The combination of melted cheese and spicy kimchi is genius. Open late — perfect for a night out snack in Amsterdam.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥪', color: 'bg-cafe', title: 'Banh Mi Deli Amsterdam', meta: 'Vietnamese · $ · Oct 2024', text: 'Family-run gem on the Prinsengracht. The beef banh mi is fresh, flaky and absolutely delicious. Chef Vinh combines French culinary training with Vietnamese roots perfectly.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🍔', color: 'bg-burger', title: 'Maijard Smashburgers — The Original', meta: 'Burgers · $$ · Jun 2024', text: 'Crowned Best Burger in the Netherlands by Burger Dudes for a reason. Locally sourced, double smashed, and served with their unique garlic mashed potatoes. A true Amsterdam icon.', stars: '★★★★½', rating: '4.5' },
+    { emoji: '🫔', color: 'bg-burger', title: 'Bonnie — Best Steak Sandwich', meta: 'Cafe · $$ · Dec 2024', text: 'The steak sandwich at Bonnie is genuinely one of the best in Amsterdam. Tender meat, perfect seasoning, and great value. A must on Amstelveenseweg.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '☕', color: 'bg-cafe', title: 'Chun Cafe — Bacon Egg & Cheese Toast', meta: 'Cafe · $$ · Jan 2025', text: 'Japanese-Korean minimalist cafe that nails the toast game. The matcha latte is the best in Amsterdam. Always a queue but always worth it. Daily staple material.', stars: '★★★★★', rating: '5.0' },
+  ];
+  let reviewsLoaded = 0;
+
+  function loadMoreReviews() {
+    const grid = document.querySelector('.cards-grid');
+    const toLoad = extraReviews.slice(reviewsLoaded, reviewsLoaded + 2);
+    if (toLoad.length === 0) { showToast('No more reviews to load!'); return; }
+    toLoad.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'mini-card';
+      card.style.animation = 'fadeIn 0.4s ease both';
+      card.innerHTML = `<div class="mini-img ${r.color}">${r.emoji}</div><div class="mini-body"><p class="mini-meta">${r.meta}</p><h3 class="mini-title">${r.title}</h3><p style="font-size:13px;color:var(--ink-soft);">${r.text}</p><div class="mini-footer"><span class="mini-rating">${r.stars} ${r.rating}</span><button class="mini-save" onclick="toggleMiniSave(this,'${r.title}')">🔖</button></div></div>`;
+      grid.appendChild(card);
+    });
+    reviewsLoaded += toLoad.length;
+    if (reviewsLoaded >= extraReviews.length) {
+      document.querySelector('.btn-outline').textContent = 'All reviews loaded!';
+      document.querySelector('.btn-outline').disabled = true;
+    }
+    showToast('Loaded more reviews! 🎉');
   }
 
   function switchTab(btn, tab) {

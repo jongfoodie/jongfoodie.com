@@ -112,7 +112,7 @@
           <button class="post-opt-btn">📍 Add location</button>
           <button class="post-opt-btn">⭐ Rate a spot</button>
         </div>
-        <button class="btn-accent" onclick="showToast('Post shared with the community! 🎉')">Post</button>
+        <button class="btn-accent" onclick="submitPost()">Post</button>
       </div>
     </div>
 
@@ -290,6 +290,42 @@
       const n = parseInt(parts[1]);
       btn.textContent = btn.classList.contains('liked') ? `♥ ${n+1} likes` : `♡ ${n} likes`;
     }
+  }
+
+  function submitPost() {
+    const content = document.getElementById('postContent').value.trim();
+    if (!content) { showToast('Please write something first!'); return; }
+    const post = document.createElement('div');
+    post.className = 'post-card';
+    post.style.animation = 'fadeIn 0.4s ease both';
+    post.innerHTML = `
+      <div class="post-header">
+        <div class="post-avatar" style="background:var(--accent);">JF</div>
+        <div class="post-user-info">
+          <p class="post-username">Jong Foodie</p>
+          <p class="post-location">Amsterdam</p>
+        </div>
+        <span class="post-time">Just now</span>
+      </div>
+      <p class="post-text">${content}</p>
+      <div class="post-footer">
+        <button class="post-action" onclick="togglePostLike(this)"><span>♡</span> 0 likes</button>
+        <button class="post-action"><span>💬</span> 0 comments</button>
+        <button class="post-action" onclick="showToast('Link copied!')"><span>↗</span> Share</button>
+      </div>`;
+    const postsSection = document.querySelector('.posts-list');
+    postsSection.insertBefore(post, postsSection.firstChild);
+    document.getElementById('postContent').value = '';
+    showToast('Posted! 🎉');
+  }
+
+  function togglePostLike(btn) {
+    const span = btn.querySelector('span');
+    const isLiked = span.textContent === '♥';
+    const count = parseInt(btn.textContent.match(/\d+/)[0]);
+    span.textContent = isLiked ? '♡' : '♥';
+    btn.innerHTML = `<span>${isLiked ? '♡' : '♥'}</span> ${isLiked ? count - 1 : count + 1} likes`;
+    btn.style.color = isLiked ? '' : 'var(--accent)';
   }
 </script>
 </body>
