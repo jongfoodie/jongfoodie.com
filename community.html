@@ -420,11 +420,97 @@
       if (sorted.length === 0) {
         list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Be the first to contribute!</p>';
       }
+      // Also refresh popular topics
+      loadPopularTopics();
     } catch(e) {
       console.error(e);
       list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Could not load members.</p>';
     }
   }
+
+  async function loadPopularTopics() {
+    const grid = document.getElementById('popularTopicsGrid');
+    if (!grid) return;
+    try {
+      const picksSnap = await getDocs(collection(db, 'picks'));
+      const typeCounts = {};
+      const locationCounts = {};
+
+      picksSnap.docs.forEach(d => {
+        const p = d.data();
+        if (p.type) typeCounts[p.type] = (typeCounts[p.type] || 0) + 1;
+        if (p.location) {
+          const city = p.location.split(',')[0].trim();
+          if (city) locationCounts[city] = (locationCounts[city] || 0) + 1;
+        }
+      });
+
+      const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
+
+      // Sort types by count
+      const sortedTypes = Object.entries(typeCounts).sort((a,b) => b[1]-a[1]);
+      const sortedCities = Object.entries(locationCounts).sort((a,b) => b[1]-a[1]).slice(0,3);
+
+      let buttons = sortedTypes.map(([type, count]) => {
+        const emoji = typeEmojis[type] || '🍽️';
+        return `<button class="topic-btn" onclick="filterByTopic('${type}')">${emoji} ${type} <span style="font-size:10px;opacity:0.6;">(${count})</span></button>`;
+      });
+
+      // Add top cities
+      sortedCities.forEach(([city, count]) => {
+        buttons.push(`<button class="topic-btn" onclick="filterByTopic('${city}')">📍 ${city} <span style="font-size:10px;opacity:0.6;">(${count})</span></button>`);
+      });
+
+      // Always add these if no data
+      if (buttons.length === 0) {
+        buttons = [
+          '<button class="topic-btn">🍔 Burgers</button>',
+          '<button class="topic-btn">☕ Cafes</button>',
+          '<button class="topic-btn">🥪 Sandwiches</button>',
+          '<button class="topic-btn">🍜 Asian</button>',
+          '<button class="topic-btn">🗺️ Amsterdam</button>',
+          '<button class="topic-btn">🇳🇱 Netherlands</button>',
+        ];
+      }
+
+      grid.innerHTML = buttons.join('');
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  window.filterByTopic = function(topic) {
+    // Filter community picks by topic
+    const picks = allPicksData.filter(p => 
+      (p.type && p.type.toLowerCase().includes(topic.toLowerCase())) ||
+      (p.location && p.location.toLowerCase().includes(topic.toLowerCase()))
+    );
+    if (picks.length === 0) {
+      showToast('No picks for ' + topic + ' yet!');
+      return;
+    }
+    // Show filtered results in a popup
+    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
+    document.getElementById('profileAvatar').textContent = '🔍';
+    document.getElementById('profileAvatar').style.background = '#D4521A';
+    document.getElementById('profileName').textContent = topic;
+    document.getElementById('profileStats').textContent = picks.length + ' recommendation' + (picks.length !== 1 ? 's' : '');
+    document.getElementById('profilePicksList').innerHTML = picks.map(p => {
+      const emoji = typeEmojis[p.type] || '🍽️';
+      return `<div class="member-pick-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span style="font-size:24px;">${emoji}</span>
+          <div>
+            <p style="font-weight:600;font-size:14px;">${p.name}</p>
+            <p style="font-size:11px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p>
+            <p style="font-size:11px;color:var(--accent);">by ${p.userName}</p>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+      </div>`;
+    }).join('');
+    document.getElementById('memberProfileBg').classList.add('open');
+  };
 
   window.openMemberProfile = function(name) {
     const picks = allPicksData.filter(p => p.userName === name);
