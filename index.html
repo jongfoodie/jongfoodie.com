@@ -1034,7 +1034,7 @@
         </div>
       </div>
       <div class="user-actions">
-        <button class="btn-white" onclick="showToast('Opening your profile…')">My Profile</button>
+        <button class="btn-white" onclick="openMyProfile()">My Profile</button>
         <button class="btn-ghost-white" onclick="openSettings()">⚙ Settings</button>
       </div>
     </div>
@@ -1094,6 +1094,26 @@
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- MY PROFILE MODAL -->
+<div class="modal-bg" id="myProfileBg" onclick="if(event.target===this)this.classList.remove('open')" style="z-index:250;">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="document.getElementById('myProfileBg').classList.remove('open')">✕</button>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+      <div id="myProfileAvatar" style="width:60px;height:60px;border-radius:50%;background:var(--accent);color:#fff;font-size:22px;font-weight:600;display:flex;align-items:center;justify-content:center;"></div>
+      <div>
+        <h2 id="myProfileName" style="font-family:'Playfair Display',serif;font-size:20px;"></h2>
+        <p id="myProfileSub" style="font-size:13px;color:var(--muted);">Food explorer · Amsterdam</p>
+      </div>
+    </div>
+    <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:500;">My Recommendations</p>
+    <div id="myProfilePicksList" style="max-height:300px;overflow-y:auto;"></div>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
+      <button class="btn-fill" style="flex:1;" onclick="document.getElementById('myProfileBg').classList.remove('open');openSettings()">⚙ Change Display Name</button>
+      <button class="btn-ghost" style="flex:1;" onclick="window.location.href='community.html'">Go to Community →</button>
+    </div>
+  </div>
+</div>
 
 <!-- SETTINGS MODAL -->
 <div class="modal-bg" id="settingsBg" onclick="closeSettings(event)">
@@ -1324,6 +1344,20 @@
     showToast('Loaded more reviews! 🎉');
   }
 
+  function openMyProfile() {
+    const name = document.querySelector('.user-name').textContent;
+    const initials = name.substring(0,2).toUpperCase();
+    document.getElementById('myProfileAvatar').textContent = initials;
+    document.getElementById('myProfileName').textContent = name;
+    document.getElementById('myProfileBg').classList.add('open');
+
+    // Load picks from Firestore
+    const picksList = document.getElementById('myProfilePicksList');
+    picksList.innerHTML = '<p style="font-size:13px;color:var(--muted);">Loading your picks...</p>';
+    // Load from Firestore via window function set by firebase module
+    if (window.loadMyPicks) window.loadMyPicks(name, picksList);
+  }
+
   function openSettings() {
     const input = document.getElementById('displayNameInput');
     input.value = document.querySelector('.user-name').textContent;
@@ -1429,7 +1463,7 @@
       // Sidebar
       document.querySelector('.user-name').textContent = name;
       document.querySelector('.user-avatar-lg').textContent = initials;
-      document.querySelector('.user-bio').textContent = user.email;
+      document.querySelector('.user-bio').textContent = 'Food explorer · Amsterdam';
       // Featured card author
       if (document.getElementById('featuredAvatar')) document.getElementById('featuredAvatar').textContent = initials;
       if (document.getElementById('featuredName')) document.getElementById('featuredName').textContent = name;
@@ -1494,6 +1528,35 @@
   window.doLogout = async function() {
     await signOut(auth);
     showToast('Logged out! See you soon 👋');
+  };
+
+  window.loadMyPicks = async function(name, container) {
+    try {
+      const { getDocs, collection, query, where } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const q = query(collection(db, 'picks'), where('userName', '==', name));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        container.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:1.5rem;">You haven't added any picks yet!<br><a href="index.html" style="color:var(--accent);">Add your first recommendation →</a></p>';
+        return;
+      }
+      const typeEmojis = {"Burgers":"🍔","Cafe":"☕","Asian":"🍜","Pastries":"🥐","Sushi":"🍣","Street Food":"🌮","Desserts":"🍰","Restaurant":"🍽️","Sandwiches":"🥪","Fine Dining":"🥂"};
+      container.innerHTML = snap.docs.map(d => {
+        const p = d.data();
+        const emoji = typeEmojis[p.type] || "🍽️";
+        return `<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.5rem;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">${emoji}</span>
+            <div>
+              <p style="font-weight:600;font-size:13px;">${p.name}</p>
+              <p style="font-size:11px;color:var(--muted);">${p.location ? "📍 "+p.location : ""} ${p.type ? "· "+p.type : ""}</p>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--ink-soft);">${p.why}</p>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
+    }
   };
 
   window.saveDisplayName = async function() {
