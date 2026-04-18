@@ -92,6 +92,10 @@
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html" class="active">Community</a></li>
   </ul>
+  <div class="nav-actions">
+    <button id="navLogin" class="btn-ghost" onclick="window.location.href='index.html'" style="display:none;">Log in</button>
+    <button id="navLogout" class="btn-ghost" onclick="doLogout()" style="display:none;">Log out</button>
+  </div>
 </nav>
 
 <div class="page-hero">
@@ -306,7 +310,7 @@
     post.style.animation = 'fadeIn 0.4s ease both';
     post.innerHTML = `
       <div class="post-header">
-        <div class="post-avatar post-avatar-me" style="background:var(--accent);">JF</div>
+        <div class="post-avatar post-avatar-me" id="composerAvatar" style="background:var(--accent);">JF</div>
         <div class="post-user-info">
           <p class="post-username">Jong Foodie</p>
           <p class="post-location">Amsterdam</p>
@@ -361,18 +365,30 @@
     if (user) {
       const name = user.displayName || user.email.split('@')[0];
       const initials = name.substring(0,2).toUpperCase();
-      // Update all avatars and names
-      document.querySelectorAll('.post-avatar-me').forEach(a => {
-        a.textContent = initials;
-      });
-      // Update any "Jong Foodie" text in the page
-      document.querySelectorAll('.current-user-name').forEach(el => {
-        el.textContent = name;
-      });
+      // Update composer avatar
+      document.querySelectorAll('.post-avatar-me').forEach(a => a.textContent = initials);
+      // Update name in Top Members
+      document.querySelectorAll('.current-user-name').forEach(el => el.textContent = name);
+      // Show logout in nav
+      if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'none';
+      if (document.getElementById('navSignup')) document.getElementById('navSignup').style.display = 'none';
+      if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'block';
+    } else {
+      document.querySelectorAll('.post-avatar-me').forEach(a => a.textContent = 'JF');
+      document.querySelectorAll('.current-user-name').forEach(el => el.textContent = 'Jong Foodie');
+      if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'block';
+      if (document.getElementById('navSignup')) document.getElementById('navSignup').style.display = 'block';
+      if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'none';
     }
   });
 
   // Follow functionality
+  window.doLogout = async function() {
+    const { signOut } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
+
   window.toggleFollow = async function(btn, targetName) {
     if (!currentUser) { 
       showToast('Please log in to follow members!'); 
