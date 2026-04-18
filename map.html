@@ -13,6 +13,7 @@
     --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
     --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
     --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
   nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
@@ -38,11 +39,13 @@
   .spot-info { flex: 1; }
   .spot-name { font-weight: 500; font-size: 13px; line-height: 1.3; }
   .spot-meta { font-size: 11px; color: var(--muted); }
+  .spot-hours { font-size: 10px; color: var(--green); font-weight: 500; }
   .spot-rating { font-size: 11px; color: var(--gold); font-weight: 500; white-space: nowrap; }
   #map { height: 100%; width: 100%; z-index: 0; }
-  .leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-  .popup-title { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 3px; font-weight: 700; }
-  .popup-meta { font-size: 11px; color: #8A7A66; margin-bottom: 3px; }
+  .leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 220px; }
+  .popup-title { font-family: 'Playfair Display', serif; font-size: 14px; margin-bottom: 3px; font-weight: 700; }
+  .popup-meta { font-size: 11px; color: #8A7A66; margin-bottom: 2px; }
+  .popup-hours { font-size: 11px; color: #2D5A3D; font-weight: 500; margin-bottom: 2px; }
   .popup-rating { color: #C8901A; font-size: 12px; font-weight: 500; }
   @media (max-width: 700px) {
     .map-layout { grid-template-columns: 1fr; grid-template-rows: 280px 1fr; }
@@ -64,7 +67,7 @@
 </nav>
 <div class="page-hero">
   <h1>Food Map</h1>
-  <p>All Jong Foodie reviewed spots — Amsterdam &amp; beyond</p>
+  <p>All Jong Foodie reviewed spots — Amsterdam & beyond</p>
 </div>
 <div class="map-layout">
   <div class="spots-panel">
@@ -78,26 +81,23 @@
 </div>
 <script>
   const spots = [
-    { name: 'Izakaya Amsterdam', meta: 'Amsterdam · Sushi / Japanese · Luxury', rating: '★★★★★ 5.0', emoji: '🍣', lat: 52.3680, lng: 4.8951 },
-    { name: 'Mondi Amsterdam Nieuw-West', meta: 'Amsterdam, New West · Restaurant · €74', rating: '★★★★★ 5.0', emoji: '🍽️', lat: 52.3738, lng: 4.8374 },
-    { name: 'Maijard — Chicken Smash (2024)', meta: 'Amsterdam · Burgers · €15', rating: '★★★★★ 5.0', emoji: '🍔', lat: 52.3602, lng: 4.8893 },
-    { name: 'Bisous Amsterdam', meta: 'Amsterdam · Restaurant · €28', rating: '★★★★☆ 4.0', emoji: '🍗', lat: 52.3667, lng: 4.9123 },
-    { name: 'Fort Negen Sandwich Bar', meta: 'Amsterdam · Sandwiches · €15', rating: '★★★☆☆ 3.0', emoji: '🥪', lat: 52.3721, lng: 4.8956 },
-    { name: 'Leauf Amsterdam', meta: 'Amsterdam · Sandwiches · €15', rating: '★★★★★ 5.0', emoji: '🥗', lat: 52.3745, lng: 4.9012 },
-    { name: 'Maijard — Chicken Smashed (2024)', meta: 'Amsterdam · Burgers · €16', rating: '★★★★☆ 4.0', emoji: '🍗', lat: 52.3598, lng: 4.8901 },
-    { name: 'et CLAIRE', meta: 'Amsterdam · Pastries · €9.65', rating: '★★★☆☆ 3.0', emoji: '🥐', lat: 52.3759, lng: 4.8834 },
-    { name: 'Cafe Nobuya', meta: 'Amsterdam · Japanese Fusion · €11.30', rating: '★★★★★ 5.0', emoji: '🍜', lat: 52.3702, lng: 4.8952 },
-    { name: 'Brioche Amsterdam', meta: 'Amsterdam · Cafe · €6.50', rating: '★☆☆☆☆ 1.0', emoji: '🧀', lat: 52.3712, lng: 4.8978 },
-    { name: 'Le Smash', meta: 'Amsterdam · Burgers · €12.95', rating: '★★★★½ 4.8', emoji: '🍔', lat: 52.3689, lng: 4.9034 },
-    { name: 'Fabel Friet', meta: 'Netherlands · Fries · €5.50', rating: '★★★★★ 5.0', emoji: '🍟', lat: 52.3756, lng: 4.9001 },
-    { name: 'Sjefietshé', meta: 'Netherlands · Seafood · €19', rating: '★★★★☆ 4.0', emoji: '🐙', lat: 52.3644, lng: 4.8812 },
-    { name: 'Bonnie — Kimchi Croque', meta: 'Amsterdam · Cafe · €12.95', rating: '★★★★☆ 4.0', emoji: '🫔', lat: 52.3731, lng: 4.8867 },
-    { name: 'Banh Mi Deli Amsterdam', meta: 'Amsterdam · Sandwiches · €9.75', rating: '★★★★☆ 4.0', emoji: '🥪', lat: 52.3695, lng: 4.8923 },
-    { name: 'Maijard Smashburgers — Original', meta: 'Netherlands · Burgers · €14', rating: '★★★★½ 4.5', emoji: '🍔', lat: 52.3605, lng: 4.8880 },
-    { name: 'Bonnie — Steak Sandwich', meta: 'Amsterdam · Sandwiches · €11.95', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 52.3728, lng: 4.8871 },
-    { name: 'Chun Cafe Amsterdam', meta: 'Amsterdam · Cafe · €10', rating: '★★★★★ 5.0', emoji: '🥓', lat: 52.3718, lng: 4.9045 },
-    { name: 'Zorlu Center', meta: 'Turkey · Steak', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0695, lng: 29.0108 },
-    { name: '360 Istanbul', meta: 'Istanbul, Turkey · Steak · €30', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0336, lng: 28.9774 },
+    { name: 'IZAKAYA Asian Kitchen & Bar', address: 'Albert Cuypstraat 2-6, Amsterdam', meta: 'Sushi / Japanese · Luxury', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★ 5.0', emoji: '🍣', lat: 52.3553, lng: 4.9011 },
+    { name: 'Mondi Amsterdam Nieuw-West', address: 'Amsterdam, New West', meta: 'Restaurant · €74', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight', rating: '★★★★★ 5.0', emoji: '🍽️', lat: 52.3738, lng: 4.8374 },
+    { name: 'Maijard Smashburgers', address: 'Berenstraat 20HS, Amsterdam', meta: 'Burgers · €14–16', hours: 'Daily 10:00–19:00', rating: '★★★★½ 4.5', emoji: '🍔', lat: 52.3660, lng: 4.8849 },
+    { name: 'BISOUS Amsterdam', address: 'Albert Cuypstraat 31, Amsterdam', meta: 'French Restaurant · €28', hours: 'Mon–Thu 17:30–01:00 · Fri 16:00–02:00 · Sat 16:00–02:00 · Sun Closed', rating: '★★★★☆ 4.0', emoji: '🍗', lat: 52.3554, lng: 4.9010 },
+    { name: 'Fort Negen Sandwich Bar', address: 'Jan Evertsenstraat 37h, Amsterdam', meta: 'Sandwiches · €15', hours: 'Wed–Fri 08:00–15:00 · Sat–Sun 08:00–16:00 · Mon–Tue Closed', rating: '★★★☆☆ 3.0', emoji: '🥪', lat: 52.3721, lng: 4.8641 },
+    { name: 'Leauf Amsterdam', address: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', meta: 'Sandwiches · €15', hours: 'Mon–Fri 10:30–16:00 · Sat–Sun 10:30–17:00', rating: '★★★★★ 5.0', emoji: '🥗', lat: 52.3783, lng: 4.8821 },
+    { name: 'et CLAIRE', address: 'Beethovenstraat 38, Amsterdam', meta: 'Pastries · €9.65', hours: 'Mon–Fri 08:00–18:00 · Sat–Sun 09:00–18:00', rating: '★★★☆☆ 3.0', emoji: '🥐', lat: 52.3448, lng: 4.8762 },
+    { name: 'Cafe Nobuya', address: 'Herenstraat 28D, Amsterdam', meta: 'Japanese Fusion · €11.30', hours: 'Check Google Maps for latest hours', rating: '★★★★★ 5.0', emoji: '🍜', lat: 52.3773, lng: 4.8861 },
+    { name: 'Brioche Amsterdam', address: 'Bilderdijkstraat 164H, Amsterdam', meta: 'Cafe · €6.50', hours: 'Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed', rating: '★☆☆☆☆ 1.0', emoji: '🧀', lat: 52.3689, lng: 4.8680 },
+    { name: 'Le Smash Amsterdam', address: 'Govert Flinckstraat 122-h, Amsterdam', meta: 'Burgers · €12.95', hours: 'Daily 12:00–22:00', rating: '★★★★½ 4.8', emoji: '🍔', lat: 52.3518, lng: 4.9007 },
+    { name: 'Fabel Friet', address: 'Runstraat 1, Amsterdam', meta: 'Fries · €5.50', hours: 'Daily 11:00–21:00', rating: '★★★★★ 5.0', emoji: '🍟', lat: 52.3678, lng: 4.8816 },
+    { name: 'Sjefietshé', address: 'Van Ostadestraat 1, Amsterdam', meta: 'Seafood · €19', hours: 'Tue–Thu 17:30–01:00 · Fri–Sat 17:00–01:00 · Sun 17:00–01:00 · Mon Closed', rating: '★★★★☆ 4.0', emoji: '🐙', lat: 52.3516, lng: 4.8983 },
+    { name: 'Bonnie — Kimchi Croque & Steak Sandwich', address: 'Amstelveenseweg 226h, Amsterdam', meta: 'Cafe · €11.95–12.95', hours: 'Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri 10:00–03:00 · Sat 10:00–03:00 · Sun 10:00–00:00', rating: '★★★★☆ 4.0', emoji: '🫔', lat: 52.3453, lng: 4.8662 },
+    { name: 'Banh Mi Deli Amsterdam', address: 'Prinsengracht 172HS, Amsterdam', meta: 'Vietnamese Sandwiches · €9.75', hours: 'Check Google Maps for latest hours', rating: '★★★★☆ 4.0', emoji: '🥪', lat: 52.3738, lng: 4.8838 },
+    { name: 'Chun Cafe Amsterdam', address: 'Berenstraat 8, Amsterdam', meta: 'Cafe · €10', hours: 'Daily 10:00–17:00', rating: '★★★★★ 5.0', emoji: '🥓', lat: 52.3661, lng: 4.8852 },
+    { name: 'Zorlu Center', address: 'Istanbul, Turkey', meta: 'Steak', hours: 'Istanbul, Turkey', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0695, lng: 29.0108 },
+    { name: '360 Istanbul', address: 'Istanbul, Turkey', meta: 'Steak · €30', hours: 'Istanbul, Turkey', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0336, lng: 28.9774 },
   ];
 
   const map = L.map('map').setView([52.3676, 4.9041], 13);
@@ -105,18 +105,15 @@
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  const markers = [];
-
   spots.forEach((s, i) => {
     const icon = L.divIcon({
       className: '',
       html: `<div style="background:#D4521A;color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #fff;">${s.emoji}</div>`,
       iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20]
     });
-    const marker = L.marker([s.lat, s.lng], { icon })
+    L.marker([s.lat, s.lng], { icon })
       .addTo(map)
-      .bindPopup(`<div class="popup-title">${s.name}</div><div class="popup-meta">${s.meta}</div><div class="popup-rating">${s.rating}</div>`);
-    markers.push(marker);
+      .bindPopup(`<div class="popup-title">${s.name}</div><div class="popup-meta">📍 ${s.address}</div><div class="popup-hours">🕐 ${s.hours}</div><div class="popup-rating">${s.rating}</div>`);
   });
 
   function buildList(filtered) {
@@ -127,11 +124,11 @@
     filtered.forEach((s, i) => {
       const div = document.createElement('div');
       div.className = 'spot-item' + (i === 0 ? ' active' : '');
-      div.innerHTML = `<span class="spot-emoji">${s.emoji}</span><div class="spot-info"><p class="spot-name">${s.name}</p><p class="spot-meta">${s.meta}</p></div><span class="spot-rating">${s.rating.split(' ')[0]}</span>`;
+      div.innerHTML = `<span class="spot-emoji">${s.emoji}</span><div class="spot-info"><p class="spot-name">${s.name}</p><p class="spot-meta">${s.meta}</p><p class="spot-hours">🕐 ${s.hours}</p></div><span class="spot-rating">${s.rating.split(' ')[0]}</span>`;
       div.onclick = () => {
         document.querySelectorAll('.spot-item').forEach(x => x.classList.remove('active'));
         div.classList.add('active');
-        map.flyTo([s.lat, s.lng], 15, { duration: 1 });
+        map.flyTo([s.lat, s.lng], 16, { duration: 1 });
       };
       list.appendChild(div);
     });
