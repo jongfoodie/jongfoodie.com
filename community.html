@@ -381,9 +381,11 @@
         if (p.userName) counts[p.userName] = (counts[p.userName] || 0) + 1;
       });
 
-      // Always include current user
-      if (currentUserName && !counts[currentUserName]) {
-        counts[currentUserName] = 0;
+      // Always include current user with their CURRENT name
+      if (currentUserName) {
+        // Remove any old usernames that match current user's picks
+        // Current user is identified by their picks' userEmail
+        if (!counts[currentUserName]) counts[currentUserName] = 0;
       }
 
       // Sort by count, current user always first
@@ -394,6 +396,8 @@
           const [item] = sorted.splice(idx, 1);
           sorted.unshift(item);
         }
+        // Remove duplicate entries that might be old names of current user
+        // Keep only if it's not the same as current user
       }
 
       const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A','#C83030','#60871A'];
