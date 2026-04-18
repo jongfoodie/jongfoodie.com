@@ -360,33 +360,27 @@
   });
 
   // Follow functionality
+  let allPicksData = [];
+
   async function loadTopMembers(currentUserName) {
     const list = document.getElementById('topMembersList');
     if (!list) return;
     try {
-      // Get all picks to count by user
       const picksSnap = await getDocs(collection(db, 'picks'));
-      const postSnap = await getDocs(collection(db, 'posts')).catch(() => ({ docs: [] }));
-      
+      allPicksData = picksSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
       const counts = {};
-      picksSnap.docs.forEach(d => {
-        const name = d.data().userName;
-        if (name) counts[name] = (counts[name] || 0) + 2;
-      });
-      postSnap.docs.forEach(d => {
-        const name = d.data().userName;
-        if (name) counts[name] = (counts[name] || 0) + 1;
+      allPicksData.forEach(p => {
+        if (p.userName) counts[p.userName] = (counts[p.userName] || 0) + 1;
       });
 
-      // Add current user if not in list
+      // Always include current user
       if (currentUserName && !counts[currentUserName]) {
         counts[currentUserName] = 0;
       }
 
-      // Sort by count
-      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
-
-      // Always include current user at top if logged in
+      // Sort by count, current user always first
+      let sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
       if (currentUserName) {
         const idx = sorted.findIndex(([n]) => n === currentUserName);
         if (idx > 0) {
@@ -395,20 +389,26 @@
         }
       }
 
-      const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A'];
+      const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A','#C83030','#60871A'];
       list.innerHTML = sorted.map(([name, count], i) => {
         const initials = name.substring(0,2).toUpperCase();
         const isMe = name === currentUserName;
-        const pickCount = picksSnap.docs.filter(d => d.data().userName === name).length;
-        const postCount = postSnap.docs.filter(d => d.data().userName === name).length;
-        const detail = [pickCount ? pickCount + ' pick' + (pickCount > 1 ? 's' : '') : '', postCount ? postCount + ' post' + (postCount > 1 ? 's' : '') : ''].filter(Boolean).join(' · ') || '0 contributions';
-        return `<div class="member-item">
-          <div class="member-avatar" style="background:${colors[i % colors.length]};">${initials}</div>
-          <div class="member-info">
-            <p class="member-name">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</p>
-            <p class="member-reviews">${detail}</p>
+        const picks = allPicksData.filter(p => p.userName === name);
+        const pickNames = picks.map(p => p.name).join(', ') || 'No picks yet';
+        return `<div class="member-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div style="display:flex;align-items:center;gap:10px;width:100%;">
+            <div class="member-avatar" style="background:${colors[i % colors.length]};">${initials}</div>
+            <div class="member-info" style="flex:1;">
+              <p class="member-name">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</p>
+              <p class="member-reviews">${count} pick${count !== 1 ? 's' : ''}</p>
+            </div>
+            ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
           </div>
-          ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
+          ${picks.length > 0 ? `<div style="padding-left:42px;width:100%;">
+            ${picks.map(p => `<div style="font-size:11px;color:var(--ink-soft);padding:3px 0;border-bottom:1px solid var(--border);">
+              <span style="font-weight:500;">📍 ${p.name}</span> ${p.location ? '· '+p.location : ''} ${p.type ? '· '+p.type : ''}
+            </div>`).join('')}
+          </div>` : ''}
         </div>`;
       }).join('');
 
@@ -416,6 +416,7 @@
         list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Be the first to contribute!</p>';
       }
     } catch(e) {
+      console.error(e);
       list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Could not load members.</p>';
     }
   }
