@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guides — Jong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .guides-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+
+  .guide-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .guide-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(26,18,8,0.1); }
+  .guide-img { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 64px; position: relative; }
+  .guide-badge { position: absolute; top: 12px; left: 12px; background: var(--accent); color: #fff; font-size: 10px; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 4px; font-weight: 500; text-transform: uppercase; }
+  .guide-body { padding: 1.25rem; }
+  .guide-title { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.3; margin-bottom: 0.5rem; }
+  .guide-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.75rem; }
+  .guide-excerpt { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 1rem; }
+  .guide-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .guide-spots { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .read-more { font-size: 12px; color: var(--muted); }
+
+  .featured-guide { background: var(--ink); color: #fff; border-radius: 16px; padding: 2.5rem; margin-bottom: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+  .featured-guide h2 { font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.2; margin-bottom: 1rem; }
+  .featured-guide h2 em { font-style: italic; color: #F5C896; }
+  .featured-guide p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 1.5rem; }
+  .btn-accent { background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+  .featured-emoji { font-size: 120px; text-align: center; }
+
+  .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
+  .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-asian { background: linear-gradient(135deg, #C83030, #8B1A1A); }
+  .bg-green { background: linear-gradient(135deg, #2D5A3D, #1A3A28); }
+  .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
+  .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
+
+  @media (max-width: 700px) {
+    .guides-grid { grid-template-columns: 1fr; }
+    .featured-guide { grid-template-columns: 1fr; }
+    .featured-emoji { display: none; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html" class="active">Guides</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <h1>Food Guides</h1>
+  <p>Curated lists and insider tips from Jong Foodie</p>
+</div>
+
+<div class="wrapper">
+
+  <div class="featured-guide">
+    <div>
+      <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;font-weight:500;">Editor's Pick</p>
+      <h2>The Best Smash Burgers in <em>the Netherlands</em></h2>
+      <p>From Maijard to hidden gems — a complete guide to the best smash burger spots Jong Foodie has personally visited and rated.</p>
+      <button class="btn-accent">Read the Guide</button>
+    </div>
+    <div class="featured-emoji">🍔</div>
+  </div>
+
+  <p class="section-label">All Guides</p>
+  <div class="guides-grid">
+
+    <div class="guide-card">
+      <div class="guide-img bg-burger">🍔
+        <span class="guide-badge">Burgers</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Best Smash Burgers in the Netherlands</h3>
+        <p class="guide-meta">Updated 2025 · 6 spots</p>
+        <p class="guide-excerpt">A hand-picked list of the juiciest, crispiest smash burgers Jong Foodie has tried — ranked and reviewed.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">6 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-img bg-asian">🥪
+        <span class="guide-badge">Sandwiches</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Best Asian Sandwiches in Amsterdam</h3>
+        <p class="guide-meta">Updated 2025 · 4 spots</p>
+        <p class="guide-excerpt">Banh mi, katsu sando, and more — the best Asian-inspired sandwich spots to hit in Amsterdam right now.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">4 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-img bg-cafe">☕
+        <span class="guide-badge">Cafes</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Cosy Cafes Worth Visiting in Amsterdam</h3>
+        <p class="guide-meta">Updated 2025 · 5 spots</p>
+        <p class="guide-excerpt">From specialty coffee to fusion brunch — the cafes that stood out for atmosphere, food quality, and value.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">5 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-img bg-green">🌿
+        <span class="guide-badge">Budget</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Eat Well for Under €15 in Amsterdam</h3>
+        <p class="guide-meta">Updated 2025 · 8 spots</p>
+        <p class="guide-excerpt">Great food doesn't have to break the bank. These spots deliver serious flavour at prices that won't hurt your wallet.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">8 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-img bg-ramen">🍜
+        <span class="guide-badge">Asian</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Best Asian Restaurants in Amsterdam</h3>
+        <p class="guide-meta">Updated 2025 · 7 spots</p>
+        <p class="guide-excerpt">Ramen, Korean BBQ, Vietnamese, Japanese fusion — the best Asian food Jong Foodie has found in Amsterdam.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">7 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-img bg-pastry">🥐
+        <span class="guide-badge">Pastries</span>
+      </div>
+      <div class="guide-body">
+        <h3 class="guide-title">Best Pastries & Bakeries in the Netherlands</h3>
+        <p class="guide-meta">Updated 2025 · 5 spots</p>
+        <p class="guide-excerpt">Croissants, mochi donuts, brioche and more — the bakeries and pastry spots that are worth the trip.</p>
+        <div class="guide-footer">
+          <span class="guide-spots">5 spots</span>
+          <span class="read-more">Read guide →</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

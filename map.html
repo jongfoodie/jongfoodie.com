@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map — Jong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .map-layout { display: grid; grid-template-columns: 360px 1fr; height: calc(100vh - 160px); }
+
+  .spots-panel { background: var(--warm-white); border-right: 1px solid var(--border); overflow-y: auto; }
+  .spots-search { padding: 1rem; border-bottom: 1px solid var(--border); }
+  .search-input { width: 100%; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); background: var(--cream); outline: none; }
+  .search-input:focus { border-color: var(--accent); }
+
+  .spots-list { padding: 0.5rem; }
+  .spot-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+  .spot-item:last-child { border-bottom: none; }
+  .spot-item:hover, .spot-item.active { background: var(--accent-pale); }
+  .spot-emoji { font-size: 32px; line-height: 1; min-width: 40px; text-align: center; }
+  .spot-info { flex: 1; }
+  .spot-name { font-weight: 500; font-size: 14px; line-height: 1.3; }
+  .spot-meta { font-size: 12px; color: var(--muted); }
+  .spot-rating { font-size: 12px; color: var(--gold); font-weight: 500; white-space: nowrap; }
+
+  .map-area { background: #E8E0D5; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .map-placeholder { text-align: center; }
+  .map-placeholder h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 0.5rem; color: var(--ink-soft); }
+  .map-placeholder p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .map-pins { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
+  .map-pin { background: var(--warm-white); border: 1px solid var(--border); border-radius: 10px; padding: 8px 16px; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; }
+  .map-pin:hover { border-color: var(--accent); background: var(--accent-pale); }
+  .btn-accent { background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+
+  /* Fake map grid background */
+  .map-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(26,18,8,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,18,8,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .map-area::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 8px;
+    background: rgba(26,18,8,0.08);
+    border-radius: 4px;
+    top: 45%; left: 30%;
+    transform: rotate(-15deg);
+  }
+
+  .map-content { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .map-layout { grid-template-columns: 1fr; height: auto; }
+    .map-area { height: 300px; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="map.html" class="active">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <h1>Food Map</h1>
+  <p>Find Jong Foodie reviewed spots near you</p>
+</div>
+
+<div class="map-layout">
+  <div class="spots-panel">
+    <div class="spots-search">
+      <input class="search-input" type="text" placeholder="Search spots…">
+    </div>
+    <div class="spots-list">
+
+      <div class="spot-item active">
+        <span class="spot-emoji">🍔</span>
+        <div class="spot-info">
+          <p class="spot-name">Maijard Smashburgers</p>
+          <p class="spot-meta">Netherlands · Burgers · €14</p>
+        </div>
+        <span class="spot-rating">★ 4.5</span>
+      </div>
+
+      <div class="spot-item">
+        <span class="spot-emoji">🥪</span>
+        <div class="spot-info">
+          <p class="spot-name">Banh Mi Deli</p>
+          <p class="spot-meta">Netherlands · Sandwiches · €9.75</p>
+        </div>
+        <span class="spot-rating">★ 4.0</span>
+      </div>
+
+      <div class="spot-item">
+        <span class="spot-emoji">🍽️</span>
+        <div class="spot-info">
+          <p class="spot-name">Mondi Restaurant</p>
+          <p class="spot-meta">Amsterdam, New West · Restaurant</p>
+        </div>
+        <span class="spot-rating">★ 4.8</span>
+      </div>
+
+      <div class="spot-item">
+        <span class="spot-emoji">🫔</span>
+        <div class="spot-info">
+          <p class="spot-name">Kimchi Croque Spot</p>
+          <p class="spot-meta">Netherlands · Cafe · €12.95</p>
+        </div>
+        <span class="spot-rating">★ 4.0</span>
+      </div>
+
+      <div class="spot-item">
+        <span class="spot-emoji">🍗</span>
+        <div class="spot-info">
+          <p class="spot-name">Poulet Suprême</p>
+          <p class="spot-meta">Amsterdam · Restaurant</p>
+        </div>
+        <span class="spot-rating">★ 4.2</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="map-area">
+    <div class="map-content map-placeholder">
+      <div style="font-size:48px;margin-bottom:1rem;">🗺️</div>
+      <h3>Interactive Map</h3>
+      <p>All Jong Foodie reviewed spots pinned on a live map.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:1.5rem;">Connect Google Maps to enable the full interactive experience.</p>
+      <div class="map-pins">
+        <div class="map-pin">🍔 Maijard Smashburgers — Netherlands</div>
+        <div class="map-pin">🥪 Banh Mi Deli — Netherlands</div>
+        <div class="map-pin">🍽️ Mondi Restaurant — Amsterdam</div>
+        <div class="map-pin">🫔 Kimchi Croque — Netherlands</div>
+        <div class="map-pin">🍗 Poulet Suprême — Amsterdam</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

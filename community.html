@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — Jong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; display: grid; grid-template-columns: 1fr 300px; gap: 2.5rem; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* POST FORM */
+  .post-form { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; }
+  .post-form-top { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .post-input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--cream); outline: none; resize: none; }
+  .post-input:focus { border-color: var(--accent); }
+  .post-form-footer { display: flex; align-items: center; justify-content: space-between; }
+  .post-options { display: flex; gap: 0.5rem; }
+  .post-opt-btn { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+  .post-opt-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-accent { background: var(--accent); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+
+  /* POSTS */
+  .posts-list { display: flex; flex-direction: column; gap: 1.25rem; }
+  .post-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+  .post-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .post-author { font-weight: 500; font-size: 14px; }
+  .post-time { font-size: 12px; color: var(--muted); margin-left: auto; }
+  .post-body { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 1rem; }
+  .post-tag { display: inline-block; background: var(--accent-pale); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; margin-bottom: 0.75rem; }
+  .post-actions { display: flex; gap: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .post-action { background: none; border: none; font-size: 13px; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; transition: color 0.2s; }
+  .post-action:hover { color: var(--accent); }
+  .post-action.liked { color: var(--accent); }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+  .sidebar-widget { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+  .widget-title { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 1rem; }
+
+  .member-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .member-item { display: flex; align-items: center; gap: 0.75rem; }
+  .member-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0; }
+  .member-name { font-size: 13px; font-weight: 500; }
+  .member-reviews { font-size: 11px; color: var(--muted); }
+  .follow-btn { background: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--ink-soft); margin-left: auto; transition: all 0.2s; }
+  .follow-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .topics-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .topic-pill { background: var(--tag-bg); border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--ink-soft); transition: all 0.2s; font-weight: 500; }
+  .topic-pill:hover { background: var(--ink); color: #fff; }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; z-index: 999; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 700px) {
+    .wrapper { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html" class="active">Community</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <h1>Community</h1>
+  <p>Share tips, ask questions, and connect with fellow foodies</p>
+</div>
+
+<div class="wrapper">
+  <main>
+    <!-- POST FORM -->
+    <div class="post-form">
+      <div class="post-form-top">
+        <div class="avatar">JF</div>
+        <textarea class="post-input" rows="3" placeholder="Share a food find, ask a question, or recommend a spot…"></textarea>
+      </div>
+      <div class="post-form-footer">
+        <div class="post-options">
+          <button class="post-opt-btn">📍 Add location</button>
+          <button class="post-opt-btn">⭐ Rate a spot</button>
+        </div>
+        <button class="btn-accent" onclick="showToast('Post shared with the community! 🎉')">Post</button>
+      </div>
+    </div>
+
+    <p class="section-label">Community Posts</p>
+    <div class="posts-list">
+
+      <div class="post-card">
+        <div class="post-header">
+          <div class="member-avatar" style="background:#C8521A;">MR</div>
+          <div>
+            <p class="post-author">Marco R.</p>
+            <p style="font-size:11px;color:var(--muted);">Amsterdam</p>
+          </div>
+          <span class="post-time">2h ago</span>
+        </div>
+        <span class="post-tag">🍔 Burgers</span>
+        <p class="post-body">Just tried Maijard Smashburgers for the first time and honestly blown away. The beef patty has this perfect crispy edge and the sauce is unreal. Jong Foodie's review was spot on — definitely a must visit if you're in the Netherlands!</p>
+        <div class="post-actions">
+          <button class="post-action" onclick="toggleLike(this)">♡ 14 likes</button>
+          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 3 comments</button>
+          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <div class="member-avatar" style="background:#2D5A3D;">SL</div>
+          <div>
+            <p class="post-author">Sarah L.</p>
+            <p style="font-size:11px;color:var(--muted);">Rotterdam</p>
+          </div>
+          <span class="post-time">5h ago</span>
+        </div>
+        <span class="post-tag">🥪 Sandwiches</span>
+        <p class="post-body">Has anyone tried the Banh Mi Deli shrimp sandwich? I went today and it was incredible — left the peppers in like the review suggested and it made all the difference. So fresh and flavourful. 10/10 would recommend!</p>
+        <div class="post-actions">
+          <button class="post-action" onclick="toggleLike(this)">♡ 8 likes</button>
+          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 5 comments</button>
+          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <div class="member-avatar" style="background:#C8901A;">KT</div>
+          <div>
+            <p class="post-author">Kevin T.</p>
+            <p style="font-size:11px;color:var(--muted);">Amsterdam</p>
+          </div>
+          <span class="post-time">1d ago</span>
+        </div>
+        <span class="post-tag">🍽️ Restaurant</span>
+        <p class="post-body">Mondi Restaurant in Amsterdam New West is seriously underrated. Went for dinner last night and the vibe was so cozy. Service was attentive without being over the top. Everything on the menu was delicious — going back next week for sure!</p>
+        <div class="post-actions">
+          <button class="post-action" onclick="toggleLike(this)">♡ 21 likes</button>
+          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 9 comments</button>
+          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
+        </div>
+      </div>
+
+      <div class="post-card">
+        <div class="post-header">
+          <div class="member-avatar" style="background:#3D2F1A;">AN</div>
+          <div>
+            <p class="post-author">Aisha N.</p>
+            <p style="font-size:11px;color:var(--muted);">Den Haag</p>
+          </div>
+          <span class="post-time">2d ago</span>
+        </div>
+        <span class="post-tag">❓ Question</span>
+        <p class="post-body">Anyone know good spots for Korean food in Amsterdam? Looking for something authentic and not too pricey. Budget around €15-20 per person. Would love some Jong Foodie community recommendations!</p>
+        <div class="post-actions">
+          <button class="post-action" onclick="toggleLike(this)">♡ 6 likes</button>
+          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 12 comments</button>
+          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <!-- TOP MEMBERS -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Top Members</p>
+      <div class="member-list">
+        <div class="member-item">
+          <div class="member-avatar" style="background:var(--accent);">JF</div>
+          <div>
+            <p class="member-name">Jong Foodie</p>
+            <p class="member-reviews">48 reviews</p>
+          </div>
+          <button class="follow-btn">Follow</button>
+        </div>
+        <div class="member-item">
+          <div class="member-avatar" style="background:#C8521A;">MR</div>
+          <div>
+            <p class="member-name">Marco R.</p>
+            <p class="member-reviews">12 reviews</p>
+          </div>
+          <button class="follow-btn">Follow</button>
+        </div>
+        <div class="member-item">
+          <div class="member-avatar" style="background:#2D5A3D;">SL</div>
+          <div>
+            <p class="member-name">Sarah L.</p>
+            <p class="member-reviews">8 reviews</p>
+          </div>
+          <button class="follow-btn">Follow</button>
+        </div>
+        <div class="member-item">
+          <div class="member-avatar" style="background:#C8901A;">KT</div>
+          <div>
+            <p class="member-name">Kevin T.</p>
+            <p class="member-reviews">6 reviews</p>
+          </div>
+          <button class="follow-btn">Follow</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POPULAR TOPICS -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Popular Topics</p>
+      <div class="topics-list">
+        <button class="topic-pill">🍔 Burgers</button>
+        <button class="topic-pill">☕ Cafes</button>
+        <button class="topic-pill">🥪 Sandwiches</button>
+        <button class="topic-pill">🍜 Asian</button>
+        <button class="topic-pill">💰 Budget eats</button>
+        <button class="topic-pill">🗺️ Amsterdam</button>
+        <button class="topic-pill">🇳🇱 Netherlands</button>
+        <button class="topic-pill">⭐ Top rated</button>
+      </div>
+    </div>
+
+    <!-- COMMUNITY STATS -->
+    <div class="sidebar-widget" style="background:var(--ink);border-color:transparent;">
+      <p class="widget-title" style="color:#fff;">Community Stats</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;">1.2k</p>
+          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Members</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;">248</p>
+          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Reviews</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;">90+</p>
+          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Restaurants</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;">🇳🇱</p>
+          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Netherlands</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function toggleLike(btn) {
+    btn.classList.toggle('liked');
+    const parts = btn.textContent.match(/(\d+)/);
+    if (parts) {
+      const n = parseInt(parts[1]);
+      btn.textContent = btn.classList.contains('liked') ? `♥ ${n+1} likes` : `♡ ${n} likes`;
+    }
+  }
+</script>
+</body>
+</html>
