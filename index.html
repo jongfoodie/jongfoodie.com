@@ -1316,6 +1316,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1328,8 +1329,68 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+
+  // Load all picks from Firestore on page load
+  async function loadPicks() {
+    const picksGrid = document.getElementById('picksGrid');
+    picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem;">Loading community picks...</p>';
+    try {
+      const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      picksGrid.innerHTML = '';
+      if (snapshot.empty) {
+        picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No picks yet — be the first to add one!</p>';
+        return;
+      }
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
+        const emoji = typeEmojis[p.type] || '🍽️';
+        const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p><h3 class="mini-title">${p.name}</h3><p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by ${p.userName}</span></div></div>`;
+        picksGrid.appendChild(card);
+      });
+    } catch(e) {
+      picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
+    }
+  }
+
+  // Save pick to Firestore
+  window.submitPick = async function() {
+    const name = document.getElementById('pickName').value.trim();
+    const location = document.getElementById('pickLocation').value.trim();
+    const type = document.getElementById('pickType').value.trim();
+    const price = document.getElementById('pickPrice').value.trim();
+    const why = document.getElementById('pickWhy').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!why) { showToast('Please tell us why you recommend it!'); return; }
+    try {
+      await addDoc(collection(db, 'picks'), {
+        name, location, type, price, why,
+        userName: currentUser.displayName || currentUser.email.split('@')[0],
+        userEmail: currentUser.email,
+        createdAt: serverTimestamp()
+      });
+      document.getElementById('pickName').value = '';
+      document.getElementById('pickLocation').value = '';
+      document.getElementById('pickType').value = '';
+      document.getElementById('pickPrice').value = '';
+      document.getElementById('pickWhy').value = '';
+      showToast('Thanks for the recommendation! 🎉');
+      loadPicks();
+    } catch(e) {
+      showToast('Could not save. Please try again!');
+    }
+  };
 
   onAuthStateChanged(auth, (user) => {
+    currentUser = user;
     if (user) {
       const name = user.displayName || user.email.split('@')[0];
       document.querySelector('.user-name').textContent = name;
@@ -1338,7 +1399,6 @@
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
-      // Show forms, hide login prompts
       document.getElementById('rateForm').style.display = 'block';
       document.getElementById('rateLoginPrompt').style.display = 'none';
       document.getElementById('picksForm').style.display = 'block';
@@ -1350,12 +1410,12 @@
       document.getElementById('navLogin').style.display = 'block';
       document.getElementById('navSignup').style.display = 'block';
       document.getElementById('navLogout').style.display = 'none';
-      // Hide forms, show login prompts
       document.getElementById('rateForm').style.display = 'none';
       document.getElementById('rateLoginPrompt').style.display = 'block';
       document.getElementById('picksForm').style.display = 'none';
       document.getElementById('picksLoginPrompt').style.display = 'block';
     }
+    loadPicks();
   });
 
   window.doLogin = async function() {
