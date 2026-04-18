@@ -402,13 +402,18 @@
         const isMe = name === currentUserName;
         const picks = allPicksData.filter(p => p.userName === name);
         const pickNames = picks.map(p => p.name).join(', ') || 'No picks yet';
-        return `<div class="member-item" style="flex-direction:row;align-items:center;gap:10px;">
-          <div class="member-avatar" style="background:${colors[i % colors.length]};cursor:pointer;" onclick="openMemberProfile('${name}')">${initials}</div>
-          <div class="member-info" style="flex:1;">
-            <button class="member-name-btn" onclick="openMemberProfile('${name}')">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</button>
-            <p class="member-reviews">${count} pick${count !== 1 ? 's' : ''} · <span style="color:var(--accent);cursor:pointer;" onclick="openMemberProfile('${name}')">View all →</span></p>
+        return `<div class="member-item" style="flex-direction:column;align-items:flex-start;gap:8px;padding:12px 0;">
+          <div style="display:flex;align-items:center;gap:10px;width:100%;">
+            <div class="member-avatar" style="background:${colors[i % colors.length]};">${initials}</div>
+            <div class="member-info" style="flex:1;">
+              <p class="member-name">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</p>
+              <p class="member-reviews">${count} pick${count !== 1 ? 's' : ''}</p>
+            </div>
+            ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
           </div>
-          ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
+          <button onclick="openMemberProfile('${name}')" style="width:100%;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:7px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--ink-soft);font-weight:500;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-soft)'">
+            🍴 See all places by ${name}
+          </button>
         </div>`;
       }).join('');
 
