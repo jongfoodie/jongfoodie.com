@@ -5,55 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Map — Jong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
     --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
-    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
-    --green: #2D5A3D; --green-light: #E8F2EC;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
   }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
-  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
   .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
   .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-  .page-hero { background: var(--ink); color: #fff; padding: 2rem 2rem; text-align: center; }
-  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 3rem); margin-bottom: 0.25rem; }
+  .page-hero { background: var(--ink); color: #fff; padding: 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.25rem; }
   .page-hero p { color: rgba(255,255,255,0.6); font-size: 14px; }
-  .map-layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 140px); }
+  .map-layout { display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 140px); }
   .spots-panel { background: var(--warm-white); border-right: 1px solid var(--border); overflow-y: auto; }
   .spots-search { padding: 1rem; border-bottom: 1px solid var(--border); }
   .search-input { width: 100%; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); background: var(--cream); outline: none; }
-  .search-input:focus { border-color: var(--accent); }
   .spots-count { font-size: 11px; color: var(--muted); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
   .spots-list { padding: 0.5rem; }
-  .spot-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+  .spot-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
   .spot-item:last-child { border-bottom: none; }
   .spot-item:hover, .spot-item.active { background: var(--accent-pale); }
-  .spot-emoji { font-size: 24px; line-height: 1; min-width: 32px; text-align: center; }
+  .spot-emoji { font-size: 22px; line-height: 1; min-width: 28px; margin-top: 2px; }
   .spot-info { flex: 1; }
-  .spot-name { font-weight: 500; font-size: 13px; line-height: 1.3; }
-  .spot-meta { font-size: 11px; color: var(--muted); }
+  .spot-name { font-weight: 500; font-size: 13px; line-height: 1.3; margin-bottom: 2px; }
+  .spot-address { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
   .spot-hours { font-size: 10px; color: var(--green); font-weight: 500; }
   .spot-rating { font-size: 11px; color: var(--gold); font-weight: 500; white-space: nowrap; }
-  #map { height: 100%; width: 100%; z-index: 0; }
-  .leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'DM Sans', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 220px; }
-  .popup-title { font-family: 'Playfair Display', serif; font-size: 14px; margin-bottom: 3px; font-weight: 700; }
-  .popup-meta { font-size: 11px; color: #8A7A66; margin-bottom: 2px; }
-  .popup-hours { font-size: 11px; color: #2D5A3D; font-weight: 500; margin-bottom: 2px; }
-  .popup-rating { color: #C8901A; font-size: 12px; font-weight: 500; }
+  .map-area { position: relative; }
+  .map-area iframe { width: 100%; height: 100%; border: none; }
+  .map-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #e8e0d5; text-align: center; padding: 2rem; }
+  .map-placeholder h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 0.5rem; color: var(--ink-soft); }
+  .map-placeholder p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .open-maps-btn { background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 20px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; text-decoration: none; display: inline-block; }
   @media (max-width: 700px) {
-    .map-layout { grid-template-columns: 1fr; grid-template-rows: 280px 1fr; }
-    #map { height: 280px; }
+    .map-layout { grid-template-columns: 1fr; grid-template-rows: 1fr 300px; }
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
 <nav>
@@ -67,79 +64,143 @@
 </nav>
 <div class="page-hero">
   <h1>Food Map</h1>
-  <p>All Jong Foodie reviewed spots — Amsterdam & beyond</p>
+  <p>All Jong Foodie reviewed spots — click a restaurant to open in Google Maps</p>
 </div>
 <div class="map-layout">
   <div class="spots-panel">
     <div class="spots-search">
       <input class="search-input" type="text" placeholder="Search spots…" oninput="filterSpots(this.value)">
     </div>
-    <div class="spots-count" id="spotsCount">20 spots</div>
+    <div class="spots-count" id="spotsCount">17 spots</div>
     <div class="spots-list" id="spotsList"></div>
   </div>
-  <div id="map"></div>
+  <div id="map" style="width:100%;height:100%;"></div>
 </div>
 <script>
   const spots = [
-    { name: 'IZAKAYA Asian Kitchen & Bar', address: 'Albert Cuypstraat 2-6, Amsterdam', meta: 'Sushi / Japanese · Luxury', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★ 5.0', emoji: '🍣', lat: 52.3553, lng: 4.9011 },
-    { name: 'Mondi Amsterdam Nieuw-West', address: 'Amsterdam, New West', meta: 'Restaurant · €74', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight', rating: '★★★★★ 5.0', emoji: '🍽️', lat: 52.3738, lng: 4.8374 },
-    { name: 'Maijard Smashburgers', address: 'Berenstraat 20HS, Amsterdam', meta: 'Burgers · €14–16', hours: 'Daily 10:00–19:00', rating: '★★★★½ 4.5', emoji: '🍔', lat: 52.3660, lng: 4.8849 },
-    { name: 'BISOUS Amsterdam', address: 'Albert Cuypstraat 31, Amsterdam', meta: 'French Restaurant · €28', hours: 'Mon–Thu 17:30–01:00 · Fri 16:00–02:00 · Sat 16:00–02:00 · Sun Closed', rating: '★★★★☆ 4.0', emoji: '🍗', lat: 52.3554, lng: 4.9010 },
-    { name: 'Fort Negen Sandwich Bar', address: 'Jan Evertsenstraat 37h, Amsterdam', meta: 'Sandwiches · €15', hours: 'Wed–Fri 08:00–15:00 · Sat–Sun 08:00–16:00 · Mon–Tue Closed', rating: '★★★☆☆ 3.0', emoji: '🥪', lat: 52.3721, lng: 4.8641 },
-    { name: 'Leauf Amsterdam', address: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', meta: 'Sandwiches · €15', hours: 'Mon–Fri 10:30–16:00 · Sat–Sun 10:30–17:00', rating: '★★★★★ 5.0', emoji: '🥗', lat: 52.3783, lng: 4.8821 },
-    { name: 'et CLAIRE', address: 'Beethovenstraat 38, Amsterdam', meta: 'Pastries · €9.65', hours: 'Mon–Fri 08:00–18:00 · Sat–Sun 09:00–18:00', rating: '★★★☆☆ 3.0', emoji: '🥐', lat: 52.3448, lng: 4.8762 },
-    { name: 'Cafe Nobuya', address: 'Herenstraat 28D, Amsterdam', meta: 'Japanese Fusion · €11.30', hours: 'Check Google Maps for latest hours', rating: '★★★★★ 5.0', emoji: '🍜', lat: 52.3773, lng: 4.8861 },
-    { name: 'Brioche Amsterdam', address: 'Bilderdijkstraat 164H, Amsterdam', meta: 'Cafe · €6.50', hours: 'Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed', rating: '★☆☆☆☆ 1.0', emoji: '🧀', lat: 52.3689, lng: 4.8680 },
-    { name: 'Le Smash Amsterdam', address: 'Govert Flinckstraat 122-h, Amsterdam', meta: 'Burgers · €12.95', hours: 'Daily 12:00–22:00', rating: '★★★★½ 4.8', emoji: '🍔', lat: 52.3518, lng: 4.9007 },
-    { name: 'Fabel Friet', address: 'Runstraat 1, Amsterdam', meta: 'Fries · €5.50', hours: 'Daily 11:00–21:00', rating: '★★★★★ 5.0', emoji: '🍟', lat: 52.3678, lng: 4.8816 },
-    { name: 'Sjefietshé', address: 'Van Ostadestraat 1, Amsterdam', meta: 'Seafood · €19', hours: 'Tue–Thu 17:30–01:00 · Fri–Sat 17:00–01:00 · Sun 17:00–01:00 · Mon Closed', rating: '★★★★☆ 4.0', emoji: '🐙', lat: 52.3516, lng: 4.8983 },
-    { name: 'Bonnie — Kimchi Croque & Steak Sandwich', address: 'Amstelveenseweg 226h, Amsterdam', meta: 'Cafe · €11.95–12.95', hours: 'Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri 10:00–03:00 · Sat 10:00–03:00 · Sun 10:00–00:00', rating: '★★★★☆ 4.0', emoji: '🫔', lat: 52.3453, lng: 4.8662 },
-    { name: 'Banh Mi Deli Amsterdam', address: 'Prinsengracht 172HS, Amsterdam', meta: 'Vietnamese Sandwiches · €9.75', hours: 'Check Google Maps for latest hours', rating: '★★★★☆ 4.0', emoji: '🥪', lat: 52.3738, lng: 4.8838 },
-    { name: 'Chun Cafe Amsterdam', address: 'Berenstraat 8, Amsterdam', meta: 'Cafe · €10', hours: 'Daily 10:00–17:00', rating: '★★★★★ 5.0', emoji: '🥓', lat: 52.3661, lng: 4.8852 },
-    { name: 'Zorlu Center', address: 'Istanbul, Turkey', meta: 'Steak', hours: 'Istanbul, Turkey', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0695, lng: 29.0108 },
-    { name: '360 Istanbul', address: 'Istanbul, Turkey', meta: 'Steak · €30', hours: 'Istanbul, Turkey', rating: '★★★★☆ 4.0', emoji: '🥩', lat: 41.0336, lng: 28.9774 },
+    { name: 'IZAKAYA Asian Kitchen & Bar', lat: 52.3553, lng: 4.9010, address: 'Albert Cuypstraat 2-6, Amsterdam', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★ 5.0', emoji: '🍣', gmaps: 'https://www.google.com/maps/search/?api=1&query=IZAKAYA+Asian+Kitchen+Bar+Albert+Cuypstraat+Amsterdam' },
+    { name: 'Mondi Amsterdam Nieuw-West', lat: 52.3839, lng: 4.8375, address: 'Transformatorweg 38, Amsterdam', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00', rating: '★★★★★ 5.0', emoji: '🍽️', gmaps: 'https://www.google.com/maps/search/?api=1&query=Mondi+Restaurant+Nieuw+West+Amsterdam' },
+    { name: 'Maijard Smashburgers', lat: 52.3704, lng: 4.8837, address: 'Berenstraat 20HS, Amsterdam', hours: 'Daily 10:00–19:00', rating: '★★★★½ 4.5', emoji: '🍔', gmaps: 'https://www.google.com/maps/search/?api=1&query=Maijard+Smashburgers+Berenstraat+Amsterdam' },
+    { name: 'BISOUS Amsterdam', lat: 52.3548, lng: 4.9014, address: 'Albert Cuypstraat 31, Amsterdam', hours: 'Mon–Thu 17:30–01:00 · Fri–Sat 16:00–02:00 · Sun Closed', rating: '★★★★☆ 4.0', emoji: '🍗', gmaps: 'https://www.google.com/maps/search/?api=1&query=Bisous+Albert+Cuypstraat+Amsterdam' },
+    { name: 'Fort Negen Sandwich Bar', lat: 52.3728, lng: 4.8637, address: 'Jan Evertsenstraat 37h, Amsterdam', hours: 'Wed–Fri 08:00–15:00 · Sat–Sun 08:00–16:00 · Mon–Tue Closed', rating: '★★★☆☆ 3.0', emoji: '🥪', gmaps: 'https://www.google.com/maps/search/?api=1&query=Fort+Negen+Sandwich+Bar+Amsterdam' },
+    { name: 'Leauf Amsterdam', lat: 52.3793, lng: 4.8823, address: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', hours: 'Mon–Fri 10:30–16:00 · Sat–Sun 10:30–17:00', rating: '★★★★★ 5.0', emoji: '🥗', gmaps: 'https://www.google.com/maps/search/?api=1&query=Leauf+Amsterdam+Goudsbloemdwarsstraat' },
+    { name: 'et CLAIRE', lat: 52.3456, lng: 4.8784, address: 'Beethovenstraat 38, Amsterdam', hours: 'Mon–Fri 08:00–18:00 · Sat–Sun 09:00–18:00', rating: '★★★☆☆ 3.0', emoji: '🥐', gmaps: 'https://www.google.com/maps/search/?api=1&query=et+CLAIRE+Beethovenstraat+Amsterdam' },
+    { name: 'Cafe Nobuya', lat: 52.3775, lng: 4.8868, address: 'Herenstraat 28D, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★★ 5.0', emoji: '🍜', gmaps: 'https://www.google.com/maps/search/?api=1&query=Cafe+Nobuya+Herenstraat+Amsterdam' },
+    { name: 'Brioche Amsterdam', lat: 52.3686, lng: 4.8710, address: 'Bilderdijkstraat 164H, Amsterdam', hours: 'Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed', rating: '★☆☆☆☆ 1.0', emoji: '🧀', gmaps: 'https://www.google.com/maps/search/?api=1&query=Brioche+Amsterdam+Bilderdijkstraat' },
+    { name: 'Le Smash Amsterdam', lat: 52.3501, lng: 4.9068, address: 'Govert Flinckstraat 122h, Amsterdam', hours: 'Daily 12:00–22:00', rating: '★★★★½ 4.8', emoji: '🍔', gmaps: 'https://www.google.com/maps/search/?api=1&query=Le+Smash+Amsterdam+Govert+Flinckstraat' },
+    { name: 'Fabel Friet', lat: 52.3672, lng: 4.8815, address: 'Runstraat 1, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★ 5.0', emoji: '🍟', gmaps: 'https://www.google.com/maps/search/?api=1&query=Fabel+Friet+Runstraat+Amsterdam' },
+    { name: 'Sjefietshé', lat: 52.3527, lng: 4.8960, address: 'Van Ostadestraat 1, Amsterdam', hours: 'Tue–Thu 17:30–01:00 · Fri–Sun 17:00–01:00 · Mon Closed', rating: '★★★★☆ 4.0', emoji: '🐙', gmaps: 'https://www.google.com/maps/search/?api=1&query=Sjefietsh%C3%A9+Van+Ostadestraat+Amsterdam' },
+    { name: 'Bonnie Amsterdam', lat: 52.3491, lng: 4.8648, address: 'Amstelveenseweg 226h, Amsterdam', hours: 'Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri–Sat 10:00–03:00 · Sun 10:00–00:00', rating: '★★★★☆ 4.0', emoji: '🫔', gmaps: 'https://www.google.com/maps/search/?api=1&query=Bonnie+Amstelveenseweg+Amsterdam' },
+    { name: 'Banh Mi Deli Amsterdam', lat: 52.3738, lng: 4.8836, address: 'Prinsengracht 172HS, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★☆ 4.0', emoji: '🥪', gmaps: 'https://www.google.com/maps/search/?api=1&query=Banh+Mi+Deli+Prinsengracht+Amsterdam' },
+    { name: 'Chun Cafe Amsterdam', lat: 52.3704, lng: 4.8840, address: 'Berenstraat 8, Amsterdam', hours: 'Daily 10:00–17:00', rating: '★★★★★ 5.0', emoji: '🥓', gmaps: 'https://www.google.com/maps/search/?api=1&query=Chun+Cafe+Berenstraat+Amsterdam' },
+    { name: 'Zorlu Center', lat: 41.0695, lng: 29.0108, address: 'Beşiktaş, Istanbul, Turkey', hours: 'Istanbul, Turkey', rating: '★★★★☆ 4.0', emoji: '🥩', gmaps: 'https://www.google.com/maps/search/?api=1&query=Zorlu+Center+Istanbul' },
+    { name: '360 Istanbul', lat: 41.0336, lng: 28.9774, address: 'İstiklal Cd., Istanbul, Turkey', hours: 'Istanbul, Turkey · Live Music Saturdays', rating: '★★★★☆ 4.0', emoji: '🥩', gmaps: 'https://www.google.com/maps/search/?api=1&query=360+Istanbul+restaurant' },
   ];
 
-  const map = L.map('map').setView([52.3676, 4.9041], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  spots.forEach((s, i) => {
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="background:#D4521A;color:#fff;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #fff;">${s.emoji}</div>`,
-      iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20]
-    });
-    L.marker([s.lat, s.lng], { icon })
-      .addTo(map)
-      .bindPopup(`<div class="popup-title">${s.name}</div><div class="popup-meta">📍 ${s.address}</div><div class="popup-hours">🕐 ${s.hours}</div><div class="popup-rating">${s.rating}</div>`);
-  });
+  let activeIndex = -1;
 
   function buildList(filtered) {
     const list = document.getElementById('spotsList');
-    const count = document.getElementById('spotsCount');
+    document.getElementById('spotsCount').textContent = filtered.length + ' spots';
     list.innerHTML = '';
-    count.textContent = filtered.length + ' spots';
     filtered.forEach((s, i) => {
       const div = document.createElement('div');
-      div.className = 'spot-item' + (i === 0 ? ' active' : '');
-      div.innerHTML = `<span class="spot-emoji">${s.emoji}</span><div class="spot-info"><p class="spot-name">${s.name}</p><p class="spot-meta">${s.meta}</p><p class="spot-hours">🕐 ${s.hours}</p></div><span class="spot-rating">${s.rating.split(' ')[0]}</span>`;
+      div.className = 'spot-item';
+      div.innerHTML = `
+        <span class="spot-emoji">${s.emoji}</span>
+        <div class="spot-info">
+          <p class="spot-name">${s.name}</p>
+          <p class="spot-address">📍 ${s.address}</p>
+          <p class="spot-hours">🕐 ${s.hours}</p>
+        </div>
+        <span class="spot-rating">${s.rating.split(' ')[0]}</span>`;
       div.onclick = () => {
         document.querySelectorAll('.spot-item').forEach(x => x.classList.remove('active'));
         div.classList.add('active');
-        map.flyTo([s.lat, s.lng], 16, { duration: 1 });
+        openGoogleMaps(s);
       };
       list.appendChild(div);
     });
   }
 
-  buildList(spots);
+  function openGoogleMaps(s) {
+    const area = document.getElementById('mapArea');
+    area.innerHTML = `
+      <div style="background:var(--warm-white);padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;">
+        <span style="font-size:32px;">${s.emoji}</span>
+        <div style="flex:1;">
+          <p style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;">${s.name}</p>
+          <p style="font-size:12px;color:var(--muted);">📍 ${s.address}</p>
+          <p style="font-size:11px;color:var(--green);font-weight:500;">🕐 ${s.hours}</p>
+        </div>
+        <a href="${s.gmaps}" target="_blank" style="background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;text-decoration:none;white-space:nowrap;">Open in Maps ↗</a>
+      </div>
+      <iframe
+        src="https://maps.google.com/maps?q=${encodeURIComponent(s.address)}&output=embed&z=17"
+        style="width:100%;height:calc(100% - 90px);border:none;"
+        allowfullscreen loading="lazy">
+      </iframe>`;
+  }
 
   function filterSpots(val) {
-    const filtered = spots.filter(s => s.name.toLowerCase().includes(val.toLowerCase()) || s.meta.toLowerCase().includes(val.toLowerCase()));
-    buildList(filtered);
+    const v = val.toLowerCase();
+    buildList(spots.filter(s => s.name.toLowerCase().includes(v) || s.address.toLowerCase().includes(v)));
   }
+
+  // Initialize Leaflet map
+  const map = L.map('map').setView([52.3676, 4.8897], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Add all markers
+  const markers = [];
+  spots.forEach(s => {
+    if (!s.lat || !s.lng) return;
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="background:#D4521A;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${s.emoji}</div>`,
+      iconSize: [36,36], iconAnchor: [18,18], popupAnchor: [0,-22]
+    });
+    const marker = L.marker([s.lat, s.lng], {icon}).addTo(map);
+    marker.bindPopup(`<b style="font-size:14px;">${s.name}</b><br><span style="font-size:11px;color:#8A7A66;">📍 ${s.address}</span><br><span style="font-size:11px;color:#2D5A3D;">🕐 ${s.hours}</span><br><span style="font-size:12px;color:#C8901A;">${s.rating}</span>`);
+    markers.push({spot: s, marker});
+  });
+
+  function buildList(filtered) {
+    const list = document.getElementById('spotsList');
+    document.getElementById('spotsCount').textContent = filtered.length + ' spots';
+    list.innerHTML = '';
+    filtered.forEach((s, i) => {
+      const div = document.createElement('div');
+      div.className = 'spot-item';
+      div.innerHTML = `
+        <span class="spot-emoji">${s.emoji}</span>
+        <div class="spot-info">
+          <p class="spot-name">${s.name}</p>
+          <p class="spot-address">📍 ${s.address}</p>
+          <p class="spot-hours">🕐 ${s.hours}</p>
+        </div>
+        <span class="spot-rating">${s.rating.split(' ')[0]}</span>`;
+      div.onclick = () => {
+        document.querySelectorAll('.spot-item').forEach(x => x.classList.remove('active'));
+        div.classList.add('active');
+        if (s.lat && s.lng) {
+          map.flyTo([s.lat, s.lng], 17, {duration: 1.2});
+          const m = markers.find(m => m.spot.name === s.name);
+          if (m) m.marker.openPopup();
+        }
+      };
+      list.appendChild(div);
+    });
+  }
+
+  function filterSpots(val) {
+    const v = val.toLowerCase();
+    buildList(spots.filter(s => s.name.toLowerCase().includes(v) || s.address.toLowerCase().includes(v)));
+  }
+
+  buildList(spots);
 </script>
 </body>
 </html>
