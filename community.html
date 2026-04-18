@@ -306,7 +306,7 @@
     post.style.animation = 'fadeIn 0.4s ease both';
     post.innerHTML = `
       <div class="post-header">
-        <div class="post-avatar" style="background:var(--accent);">JF</div>
+        <div class="post-avatar post-avatar-me" style="background:var(--accent);">JF</div>
         <div class="post-user-info">
           <p class="post-username">Jong Foodie</p>
           <p class="post-location">Amsterdam</p>
@@ -337,7 +337,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -349,7 +350,50 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
+
+  let currentUser = null;
+
+  // Update avatar and name when logged in
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      // Update post box avatar
+      const avatars = document.querySelectorAll('.post-composer-avatar, .post-avatar-me');
+      avatars.forEach(a => a.textContent = name.substring(0,2).toUpperCase());
+    }
+  });
+
+  // Follow functionality
+  window.toggleFollow = async function(btn, targetName) {
+    if (!currentUser) { 
+      showToast('Please log in to follow members!'); 
+      return; 
+    }
+    const followId = currentUser.uid + '_' + targetName;
+    const followRef = doc(db, 'follows', followId);
+    const followDoc = await getDoc(followRef);
+    if (followDoc.exists()) {
+      await deleteDoc(followRef);
+      btn.textContent = 'Follow';
+      btn.style.background = '';
+      btn.style.color = '';
+      showToast('Unfollowed ' + targetName);
+    } else {
+      await setDoc(followRef, {
+        followerId: currentUser.uid,
+        followerName: currentUser.displayName || currentUser.email.split('@')[0],
+        following: targetName,
+        createdAt: serverTimestamp()
+      });
+      btn.textContent = 'Following ✓';
+      btn.style.background = 'var(--accent)';
+      btn.style.color = '#fff';
+      showToast('Now following ' + targetName + '! 👋');
+    }
+  };
 
   async function loadPicks() {
     const grid = document.getElementById('communityPicksGrid');
