@@ -52,8 +52,6 @@
   .bg-steak { background: linear-gradient(135deg, #6B2D2D, #3D1A1A); }
   .bg-fries { background: linear-gradient(135deg, #C8901A, #8B5A0A); }
   .bg-seafood { background: linear-gradient(135deg, #0F6E56, #085041); }
-  .hours-badge { display:inline-block;background:var(--green-light);color:var(--green);font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;margin-bottom:6px; }
-  .hours-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--green-light); color: var(--green); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; margin-top: 4px; }
   @media (max-width: 600px) {
     .review-card { grid-template-columns: 1fr; }
     .review-img { min-height: 120px; }
@@ -87,16 +85,18 @@
   <button class="filter-pill" onclick="setFilter(this)">⭐ Top Rated</button>
 </div>
 <div class="wrapper">
-  <p class="section-label">20 Reviews · Amsterdam &amp; Beyond</p>
+  <p class="section-label">15 Reviews · Amsterdam &amp; Beyond</p>
   <div class="reviews-list">
 
     <div class="review-card">
       <div class="review-img bg-sushi">🍣</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Izakaya Amsterdam</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00</span>
-        <div class="review-meta"><span>📍 Amsterdam</span><span>🍣 Sushi</span><span>💰 Luxury</span><span>📅 Jan 2025</span></div>
-        <p class="review-excerpt">The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty. The perfect mix of luxury, flavor, and atmosphere — you won't find anything better!</p>
+        <div class="review-top">
+          <h2 class="review-title">Izakaya Amsterdam</h2>
+          <span class="stars">★★★★★</span>
+        </div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🍣 Sushi / Japanese</span><span>💰 Luxury</span><span>📅 Jan 2025</span></div>
+        <p class="review-excerpt">The best sushi in the Netherlands. The food is ridiculously fresh, the rolls are next-level creative, and the staff treat you like royalty without making it weird. The perfect mix of luxury, flavor, and atmosphere — you won't find anything better!</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Sushi</span><span class="review-tag">Luxury</span></div>
       </div>
     </div>
@@ -104,10 +104,12 @@
     <div class="review-card">
       <div class="review-img bg-ramen">🍽️</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Mondi Amsterdam Nieuw-West</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight</span>
+        <div class="review-top">
+          <h2 class="review-title">Mondi Amsterdam Nieuw-West</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam, New West</span><span>🍽️ Restaurant</span><span>💰 €74</span><span>📅 Dec 2024</span></div>
-        <p class="review-excerpt">Super cozy and inviting with top-notch service. Everything was absolutely delicious. A fantastic experience — I'll definitely be back. If you love great service and a warm atmosphere, Mondi is the place for you!</p>
+        <p class="review-excerpt">Super cozy and inviting, top-notch service, and everything was absolutely delicious. A fantastic experience — I'll definitely be back. If you love great service and a warm atmosphere, Mondi is the place for you!</p>
         <div class="review-tags"><span class="review-tag">Top Pick</span><span class="review-tag">Great Service</span><span class="price-tag">€74</span></div>
       </div>
     </div>
@@ -115,10 +117,12 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Maijard — Chicken Smash Burger (2024)</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Daily 10:00–19:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Maijard Smashburger — Chicken Smash</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €15</span><span>📅 Oct 2024</span></div>
-        <p class="review-excerpt">The Chicken Smash Burger is a masterpiece! Juicy, flavorful, and crispy on the outside. The bun is toasted to perfection and the sauce takes it to the next level. And thank you for the cheesecake!</p>
+        <p class="review-excerpt">The Chicken Smash Burger is a masterpiece! Juicy, flavorful, crispy on the outside. The bun is toasted to perfection and the sauce takes it to the next level. And thank you for the cheesecake!</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="price-tag">€15</span></div>
       </div>
     </div>
@@ -126,10 +130,12 @@
     <div class="review-card">
       <div class="review-img bg-ramen">🍗</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Bisous Amsterdam — Poulet Suprême</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Check Google Maps for latest hours</span>
+        <div class="review-top">
+          <h2 class="review-title">Bisous Amsterdam — Poulet Suprême</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🍽️ Restaurant</span><span>💰 €28</span><span>📅 Oct 2024</span></div>
-        <p class="review-excerpt">Totally packed but worth it. The Poulet Suprême was really good — juicy and flavorful chicken, great portion for the price. Buzzing vibe and quick friendly service. Definitely give this place a go!</p>
+        <p class="review-excerpt">Totally packed when we visited but managed to snag a table. The Poulet Suprême was really good — juicy and flavorful chicken, good portion for the price. Buzzing vibe and quick friendly service. Worth a visit!</p>
         <div class="review-tags"><span class="review-tag">Amsterdam</span><span class="review-tag">Good Value</span><span class="price-tag">€28</span></div>
       </div>
     </div>
@@ -137,19 +143,23 @@
     <div class="review-card">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Fort Negen Sandwich Bar</h2><span class="stars">★★★☆☆</span></div>
-        <span class="hours-badge">🕐 Wed–Fri 08:00–15:00 · Sat–Sun 08:00–16:00 · Mon–Tue Closed</span>
+        <div class="review-top">
+          <h2 class="review-title">Fort Negen Sandwich Bar</h2>
+          <span class="stars">★★★☆☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €15</span><span>📅 Oct 2024</span></div>
-        <p class="review-excerpt">Known for the best croissants in Amsterdam. The pastrami sandwich had good flavour but felt too wet — lacked the crunch I was hoping for. A great sandwich needs warmth, crunch, and freshness. Didn't quite hit the mark.</p>
+        <p class="review-excerpt">Known for the best croissants in Amsterdam. I ordered the pastrami sandwich — good flavour but too wet and lacked the crunch I was hoping for. A great sandwich needs warmth, crunch, and freshness. Didn't quite hit the mark.</p>
         <div class="review-tags"><span class="review-tag">Sandwiches</span><span class="price-tag">€15</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-img bg-sandwich">🥗</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Leauf Amsterdam — Leauf du Chef</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Mon–Fri 10:30–16:00 · Sat–Sun 10:30–17:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Leauf Amsterdam — Leauf du Chef</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €15</span><span>📅 Sep 2024</span></div>
         <p class="review-excerpt">The "Leauf du Chef" did not disappoint! Absolutely delicious with fresh ingredients and perfectly balanced flavors. Service was exceptional — attentive and friendly. Already looking forward to my next visit. Highly recommended!</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Top Service</span><span class="price-tag">€15</span></div>
@@ -159,10 +169,12 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍗</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Maijard — Chicken Smashed Burger (2024)</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Daily 10:00–19:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Maijard Chicken Smashed Burger</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €16</span><span>📅 Jun 2024</span></div>
-        <p class="review-excerpt">Flavorful with a mild spicy kick. The smashed patty has a unique texture. Fresh vegetables add contrast. Needs a slice of cheese and the beef burger sauce to reach the top tier — but still a great choice!</p>
+        <p class="review-excerpt">A flavorful addition to the menu. The smashed patty is perfectly done with a mild spicy kick. Fresh vegetables add contrast. Just needs a slice of cheese and the beef burger sauce to become truly outstanding.</p>
         <div class="review-tags"><span class="review-tag">Burgers</span><span class="review-tag">Spicy</span><span class="price-tag">€16</span></div>
       </div>
     </div>
@@ -170,32 +182,38 @@
     <div class="review-card">
       <div class="review-img bg-pastry">🥐</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">et CLAIRE — Pistachio Cube Croissant</h2><span class="stars">★★★☆☆</span></div>
-        <span class="hours-badge">🕐 Mon–Fri 08:00–18:00 · Sat–Sun 09:00–18:00</span>
+        <div class="review-top">
+          <h2 class="review-title">et CLAIRE — Pistachio Cube Croissant</h2>
+          <span class="stars">★★★☆☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🥐 Pastries</span><span>💰 €9.65</span><span>📅 May 2024</span></div>
-        <p class="review-excerpt">Eye-catching cube shape filled with pistachio cream — buttery and flaky. The price is a bit steep and the pistachio flavour could be more intense. Still worth trying for creative pastry lovers!</p>
+        <p class="review-excerpt">The Pistachio Cube is eye-catching and creative — buttery, flaky layers with pistachio cream. However the price is steep and the pistachio flavour could be more intense to justify the premium. Still worth trying for pastry lovers!</p>
         <div class="review-tags"><span class="review-tag">Pastries</span><span class="review-tag">Creative</span><span class="price-tag">€9.65</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-img bg-cafe">🍜</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Cafe Nobuya — Mochi Donuts &amp; Gyudon Beef</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Check Google Maps for latest hours</span>
+        <div class="review-top">
+          <h2 class="review-title">Cafe Nobuya — Mochi Donuts &amp; Gyudon Beef</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Japanese Fusion</span><span>💰 €11.30</span><span>📅 Nov 2023</span></div>
-        <p class="review-excerpt">Mochi Donuts are a perfect blend of chewiness and sweetness. The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one bite. A haven for food enthusiasts!</p>
+        <p class="review-excerpt">The Mochi Donuts are a perfect blend of chewiness and sweetness. The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one. A haven for food enthusiasts with unassuming charm and excellent service.</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Japanese</span><span class="review-tag">Donuts</span><span class="price-tag">€11.30</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-img bg-cafe">🧀</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Brioche Amsterdam — Grilled Cheese</h2><span class="stars">★☆☆☆☆</span></div>
-        <span class="hours-badge">🕐 Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed</span>
+        <div class="review-top">
+          <h2 class="review-title">Brioche Amsterdam — Grilled Cheese</h2>
+          <span class="stars">★☆☆☆☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €6.50</span><span>📅 Oct 2023</span></div>
-        <p class="review-excerpt">I ordered the brioche grilled cheese and was quite disappointed — lacked flavor and I couldn't even finish it. Given the price I expected much better. Hopefully they improve in the future.</p>
+        <p class="review-excerpt">I ordered the brioche grilled cheese and was quite disappointed — the sandwich lacked flavor and I couldn't even finish it. Given the price I expected much better. Hopefully they improve the quality of their dishes in the future.</p>
         <div class="review-tags"><span class="review-tag">Disappointing</span><span class="price-tag">€6.50</span></div>
       </div>
     </div>
@@ -203,10 +221,12 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Le Smash — Le Special with Extra Bacon</h2><span class="stars">★★★★½</span></div>
-        <span class="hours-badge">🕐 Daily 12:00–22:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Le Smash — Le Special with Extra Bacon</h2>
+          <span class="stars">★★★★½</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🍔 Burgers</span><span>💰 €12.95</span><span>📅 Sep 2023</span></div>
-        <p class="review-excerpt">Distinct crunch but the bacon was undercooked and lacked crispiness. The sauce was a highlight — delightful tanginess that balanced everything. The sauce made it worthwhile. More attention to the bacon would elevate this significantly.</p>
+        <p class="review-excerpt">Distinct crunch but the bacon was undercooked and lacked crispiness — disappointing. However the sauce was a highlight, adding a delightful tanginess that balanced everything. The sauce made it worthwhile. More attention to the bacon's cook would elevate this significantly.</p>
         <div class="review-tags"><span class="review-tag">Burgers</span><span class="price-tag">€12.95</span></div>
       </div>
     </div>
@@ -214,10 +234,12 @@
     <div class="review-card">
       <div class="review-img bg-steak">🥩</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Zorlu Center — Steak Tater with Garlic Sauce</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Istanbul, Turkey · Check Google Maps</span>
+        <div class="review-top">
+          <h2 class="review-title">Zorlu Center — Steak Tater with Garlic Sauce</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Turkey</span><span>🥩 Steak</span><span>📅 Sep 2023</span></div>
-        <p class="review-excerpt">Bitterness of seared steak, subtle sour notes from a well-balanced marinade, and garlic sauce depth. Tater tots add a crispy texture. A creative and flavorful dish — worth trying if you're open to a culinary adventure.</p>
+        <p class="review-excerpt">A dish that combines bitterness of seared steak, subtle sour notes from a well-balanced marinade, and a touch of saltiness. The tater tots add crispy texture and the garlic sauce enhances the overall experience. A creative and flavorful dish — worth trying if you're open to a culinary adventure.</p>
         <div class="review-tags"><span class="review-tag">Steak</span><span class="review-tag">Turkey</span><span class="review-tag">Creative</span></div>
       </div>
     </div>
@@ -225,10 +247,12 @@
     <div class="review-card">
       <div class="review-img bg-fries">🍟</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Fabel Friet — Parmesan Truffle Fries</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Daily 11:00–21:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Fabel Friet — Parmesan Truffle Fries</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Netherlands</span><span>🍟 Fries</span><span>💰 €5.50</span><span>📅 Sep 2023</span></div>
-        <p class="review-excerpt">The ultimate destination for fresh hand-cut fries! Pre-fried then double fried for an unmatched crispy texture. The Parmesan and truffle mayo version is exceptional. Ditch the ketchup — the mayo is a game changer!</p>
+        <p class="review-excerpt">The ultimate destination for fresh hand-cut fries! Pre-fried then double fried for an unmatched crispy texture. The Parmesan and truffle mayo version is exceptional. Ditch the ketchup — the mayo is a game changer. Incredible value at €5.50!</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Value</span><span class="price-tag">€5.50</span></div>
       </div>
     </div>
@@ -236,10 +260,12 @@
     <div class="review-card">
       <div class="review-img bg-steak">🥩</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">360 Istanbul — Steak &amp; Live Music</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Istanbul, Turkey · Check Google Maps</span>
+        <div class="review-top">
+          <h2 class="review-title">360 Istanbul — Steak &amp; Live Music</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Istanbul, Turkey</span><span>🥩 Steak</span><span>💰 €30</span><span>📅 Sep 2023</span></div>
-        <p class="review-excerpt">Perfect sear, delightful crispiness, well-balanced seasoning cooked to mouthwatering medium rare. On Saturdays they offer live music and a vibrant club atmosphere. A culinary and entertainment experience you won't want to miss!</p>
+        <p class="review-excerpt">A destination for steak lovers in Turkey. Perfect sear, delightful crispiness, and well-balanced seasoning cooked to a mouthwatering medium rare. On Saturdays they offer live music and a vibrant club atmosphere. A culinary and entertainment experience you won't want to miss!</p>
         <div class="review-tags"><span class="review-tag">Steak</span><span class="review-tag">Istanbul</span><span class="review-tag">Live Music</span><span class="price-tag">€30</span></div>
       </div>
     </div>
@@ -247,10 +273,12 @@
     <div class="review-card">
       <div class="review-img bg-seafood">🐙</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Sjefietshé — Hotdoctopus</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Tue–Thu 17:30–01:00 · Fri–Sat 17:00–01:00 · Sun 17:00–01:00 · Mon Closed</span>
+        <div class="review-top">
+          <h2 class="review-title">Sjefietshé — Hotdoctopus</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Netherlands</span><span>🐙 Seafood</span><span>💰 €19</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">Octopus in a soft brioche bun with pickles, coriander mayo, and chives. An explosion of extraordinary flavors upon each bite. The price at €19 is a bit high for a single serving but the experience is truly unique.</p>
+        <p class="review-excerpt">The "hotdoctopus" — octopus in a soft brioche bun with pickles, coriander mayo, and chives. An explosion of flavors upon each bite that is truly extraordinary. The price at €19 is a bit high for a single serving but the experience is unique.</p>
         <div class="review-tags"><span class="review-tag">Unique</span><span class="review-tag">Seafood</span><span class="price-tag">€19</span></div>
       </div>
     </div>
@@ -258,10 +286,12 @@
     <div class="review-card">
       <div class="review-img bg-cafe">🫔</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Bonnie — Kimchi Croque</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri–Sat 10:00–03:00 · Sun 10:00–00:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Bonnie — Kimchi Croque</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €12.95</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">The Kimchi Croque embraces bold kimchi flavors. We got both varieties with the optional fried egg — worth the extra cost! The gooey richness of the egg complemented the distinct character of the Kimchi Croque exceptionally well.</p>
+        <p class="review-excerpt">The Kimchi Croque stands out with bold kimchi flavors. We got both varieties with the optional fried egg — worth the extra cost! The gooey richness of the egg complemented the distinct character of the Kimchi Croque exceptionally well. Encourages culinary exploration beyond the conventional.</p>
         <div class="review-tags"><span class="review-tag">Fusion</span><span class="review-tag">Korean</span><span class="price-tag">€12.95</span></div>
       </div>
     </div>
@@ -269,10 +299,12 @@
     <div class="review-card">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Banh Mi Deli Amsterdam</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Check Google Maps for latest hours</span>
+        <div class="review-top">
+          <h2 class="review-title">Banh Mi Deli Amsterdam</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €9.75</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">Flavorful and spicy Asian sandwiches. The shrimp sandwich was generously filled with carrots, peppers, coriander, lettuce, and cucumbers. Keep the spicy peppers in — they make it! You'd be doing yourself a disservice without them.</p>
+        <p class="review-excerpt">Specialises in flavorful and spicy Asian sandwiches. The shrimp sandwich was generously filled with carrots, peppers, coriander, lettuce, and cucumbers. Keep the spicy peppers in — they make it! You can ask for no spice but you'd be doing yourself a disservice.</p>
         <div class="review-tags"><span class="review-tag">Vietnamese</span><span class="review-tag">Spicy</span><span class="price-tag">€9.75</span></div>
       </div>
     </div>
@@ -280,32 +312,40 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Maijard Smashburgers — The Original</h2><span class="stars">★★★★½</span></div>
-        <span class="hours-badge">🕐 Daily 10:00–19:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Maijard Smashburgers — The Original</h2>
+          <span class="stars">★★★★½</span>
+        </div>
         <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €14</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">An absolute gem in the Netherlands. Fresh locally-sourced ingredients, perfect bun-to-patty ratio with two succulent patties, and an exquisite burger sauce. Maijard isn't just a place to eat — it's an experience. Every bite tells a story.</p>
+        <p class="review-excerpt">An absolute gem in the Netherlands. Fresh locally-sourced ingredients, a perfect bun-to-patty ratio with two succulent patties, and an exquisite burger sauce. Maijard Smashburgers isn't just a place to eat — it's an experience. Every bite tells a story of culinary craftsmanship.</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Local Ingredients</span><span class="price-tag">€14</span></div>
       </div>
     </div>
 
+  </div>
+
     <div class="review-card">
-      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-img bg-sandwich">🥩</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Bonnie — Best Steak Sandwich in Amsterdam</h2><span class="stars">★★★★☆</span></div>
-        <span class="hours-badge">🕐 Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri–Sat 10:00–03:00 · Sun 10:00–00:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Bonnie — Best Steak Sandwich in Amsterdam</h2>
+          <span class="stars">★★★★☆</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €11.95</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">This place has the best steak sandwich I've found in Amsterdam! All the right components — a crunchy bite, sweetness from the onion, a little sour, and a little spicy. Breakfast or lunch? I wouldn't know but it's worth it either way!</p>
+        <p class="review-excerpt">This place has the best steak sandwich I've found in Amsterdam! It had all the components of a great sandwich — a crunchy bite, sweetness from the onion, a little sour, and a little spicy. All the right notes in every bite.</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Steak Sandwich</span><span class="price-tag">€11.95</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-img bg-cafe">🥓</div>
       <div class="review-body">
-        <div class="review-top"><h2 class="review-title">Chun Cafe Amsterdam — Bacon Egg &amp; Cheese</h2><span class="stars">★★★★★</span></div>
-        <span class="hours-badge">🕐 Daily 10:00–17:00</span>
+        <div class="review-top">
+          <h2 class="review-title">Chun Cafe Amsterdam — Bacon Egg & Cheese</h2>
+          <span class="stars">★★★★★</span>
+        </div>
         <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €10</span><span>📅 Aug 2023</span></div>
-        <p class="review-excerpt">One of the best sandwiches in town! A nice brioche that opens from the top. Got the bacon, egg and cheese and added avocado — the best combination. Great sauce in the sandwich for extra taste. Don't forget the avocado (extra cost) — it's worth it!</p>
+        <p class="review-excerpt">One of the best sandwiches in town! A nice brioche that opens from the top — I got the bacon, egg and cheese and added avocado for the best combination. There's a great sauce in the sandwich for extra taste. If you order this, don't forget the avocado (extra cost) — it's worth it!</p>
         <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Breakfast</span><span class="review-tag">Add Avocado!</span><span class="price-tag">€10</span></div>
       </div>
     </div>
