@@ -8,104 +8,59 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --cream: #FAF7F2;
-    --warm-white: #FFFDF9;
-    --ink: #1A1208;
-    --ink-soft: #3D2F1A;
-    --muted: #8A7A66;
-    --border: rgba(26,18,8,0.1);
-    --accent: #D4521A;
-    --accent-pale: #FBF3EF;
-    --gold: #C8901A;
-    --tag-bg: #F0EBE3;
-    --green: #2D5A3D;
-    --green-light: #E8F2EC;
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
-
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--warm-white); border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem; height: 60px;
-  }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
   .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
   .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-
-  .page-hero {
-    background: var(--ink); color: #fff;
-    padding: 3rem 2rem; text-align: center;
-  }
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
   .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
   .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
-
-  .filters {
-    background: var(--warm-white); border-bottom: 1px solid var(--border);
-    padding: 0.75rem 2rem; display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none;
-  }
+  .filters { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0.75rem 2rem; display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
-  .filter-pill {
-    background: var(--tag-bg); border: none; padding: 6px 14px; border-radius: 20px;
-    font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer;
-    color: var(--ink-soft); white-space: nowrap; transition: all 0.2s; font-weight: 500;
-  }
+  .filter-pill { background: var(--tag-bg); border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--ink-soft); white-space: nowrap; transition: all 0.2s; font-weight: 500; }
   .filter-pill:hover, .filter-pill.active { background: var(--ink); color: #fff; }
-
   .wrapper { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; }
-
-  .section-label {
-    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 1.25rem; font-weight: 500;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
   .reviews-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
-
-  .review-card {
-    background: var(--warm-white); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden;
-    display: grid; grid-template-columns: 200px 1fr;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
+  .review-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 160px 1fr; transition: transform 0.2s, box-shadow 0.2s; }
   .review-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,18,8,0.08); }
-
-  .review-img {
-    display: flex; align-items: center; justify-content: center;
-    font-size: 56px; min-height: 180px;
-  }
-  .review-body { padding: 1.5rem; }
-  .review-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.5rem; }
-  .review-title { font-family: 'Playfair Display', serif; font-size: 20px; line-height: 1.25; }
-  .review-rating { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-  .stars { color: var(--gold); font-size: 13px; }
-  .rating-num { font-weight: 500; font-size: 13px; }
-  .review-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.75rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .review-excerpt { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 1rem; }
+  .review-img { display: flex; align-items: center; justify-content: center; font-size: 52px; min-height: 160px; }
+  .review-body { padding: 1.25rem 1.5rem; }
+  .review-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.4rem; }
+  .review-title { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.25; }
+  .stars { color: var(--gold); font-size: 13px; white-space: nowrap; }
+  .review-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.6rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .review-excerpt { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 0.75rem; }
   .review-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .review-tag { background: var(--accent-pale); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
   .price-tag { background: var(--tag-bg); color: var(--ink-soft); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
-
   .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
   .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
   .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
   .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
   .bg-sandwich { background: linear-gradient(135deg, #2D5A3D, #1A3A28); }
-  .bg-asian { background: linear-gradient(135deg, #C83030, #8B1A1A); }
-
+  .bg-sushi { background: linear-gradient(135deg, #185FA5, #0C447C); }
+  .bg-steak { background: linear-gradient(135deg, #6B2D2D, #3D1A1A); }
+  .bg-fries { background: linear-gradient(135deg, #C8901A, #8B5A0A); }
+  .bg-seafood { background: linear-gradient(135deg, #0F6E56, #085041); }
   @media (max-width: 600px) {
     .review-card { grid-template-columns: 1fr; }
-    .review-img { min-height: 140px; }
+    .review-img { min-height: 120px; }
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
 </style>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
@@ -115,144 +70,221 @@
     <li><a href="community.html">Community</a></li>
   </ul>
 </nav>
-
 <div class="page-hero">
   <h1>All Reviews</h1>
-  <p>Honest, first-hand reviews from Jong Foodie</p>
+  <p>Honest, first-hand reviews by Merdan Koc — Jong Foodie</p>
 </div>
-
 <div class="filters">
   <button class="filter-pill active" onclick="setFilter(this)">All</button>
   <button class="filter-pill" onclick="setFilter(this)">🍔 Burgers</button>
   <button class="filter-pill" onclick="setFilter(this)">☕ Cafes</button>
   <button class="filter-pill" onclick="setFilter(this)">🥐 Pastries</button>
-  <button class="filter-pill" onclick="setFilter(this)">🍜 Asian</button>
+  <button class="filter-pill" onclick="setFilter(this)">🍣 Sushi</button>
   <button class="filter-pill" onclick="setFilter(this)">🥪 Sandwiches</button>
+  <button class="filter-pill" onclick="setFilter(this)">🥩 Steak</button>
   <button class="filter-pill" onclick="setFilter(this)">⭐ Top Rated</button>
 </div>
-
 <div class="wrapper">
-  <p class="section-label">Latest Reviews</p>
+  <p class="section-label">20 Reviews · Amsterdam &amp; Beyond</p>
   <div class="reviews-list">
 
     <div class="review-card">
-      <div class="review-img bg-burger">🍔</div>
+      <div class="review-img bg-sushi">🍣</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Maijard Smashburgers — Burger Heaven in the Netherlands</h2>
-          <div class="review-rating"><span class="stars">★★★★½</span><span class="rating-num">4.5</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Netherlands</span>
-          <span>🍔 Burgers</span>
-          <span>💰 €14</span>
-        </div>
-        <p class="review-excerpt">Maijard Smashburgers has successfully raised the bar when it comes to crafting burgers that hit all the right notes. The dedication to sourcing ingredients locally not only supports the community but also elevates the overall flavor profile. Every bite tells a story of culinary craftsmanship.</p>
-        <div class="review-tags">
-          <span class="review-tag">Must Try</span>
-          <span class="review-tag">Local Ingredients</span>
-          <span class="price-tag">€14</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">Izakaya Amsterdam</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🍣 Sushi</span><span>💰 Luxury</span><span>📅 Jan 2025</span></div>
+        <p class="review-excerpt">The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty. The perfect mix of luxury, flavor, and atmosphere — you won't find anything better!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Sushi</span><span class="review-tag">Luxury</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-burger">🍗</div>
+      <div class="review-img bg-ramen">🍽️</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Maijard Chicken Smash Burger — Close to Perfect</h2>
-          <div class="review-rating"><span class="stars">★★★★☆</span><span class="rating-num">4.0</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Netherlands</span>
-          <span>🍔 Burgers</span>
-        </div>
-        <p class="review-excerpt">The new Chicken Smash Burger is a masterpiece — juicy, flavorful, and crispy on the outside. The bun is toasted to perfection and fresh toppings add a delightful crunch. It just needs a slice of cheese and the beef burger's sauce to reach the absolute top tier.</p>
-        <div class="review-tags">
-          <span class="review-tag">Chicken</span>
-          <span class="review-tag">Crispy</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">Mondi Amsterdam Nieuw-West</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Amsterdam, New West</span><span>🍽️ Restaurant</span><span>💰 €74</span><span>📅 Dec 2024</span></div>
+        <p class="review-excerpt">Super cozy and inviting with top-notch service. Everything was absolutely delicious. A fantastic experience — I'll definitely be back. If you love great service and a warm atmosphere, Mondi is the place for you!</p>
+        <div class="review-tags"><span class="review-tag">Top Pick</span><span class="review-tag">Great Service</span><span class="price-tag">€74</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-burger">🍔</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Maijard — Chicken Smash Burger (2024)</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €15</span><span>📅 Oct 2024</span></div>
+        <p class="review-excerpt">The Chicken Smash Burger is a masterpiece! Juicy, flavorful, and crispy on the outside. The bun is toasted to perfection and the sauce takes it to the next level. And thank you for the cheesecake!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="price-tag">€15</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-ramen">🍗</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Bisous Amsterdam — Poulet Suprême</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🍽️ Restaurant</span><span>💰 €28</span><span>📅 Oct 2024</span></div>
+        <p class="review-excerpt">Totally packed but worth it. The Poulet Suprême was really good — juicy and flavorful chicken, great portion for the price. Buzzing vibe and quick friendly service. Definitely give this place a go!</p>
+        <div class="review-tags"><span class="review-tag">Amsterdam</span><span class="review-tag">Good Value</span><span class="price-tag">€28</span></div>
       </div>
     </div>
 
     <div class="review-card">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Banh Mi Deli — Flavourful Spicy Asian Sandwiches</h2>
-          <div class="review-rating"><span class="stars">★★★★☆</span><span class="rating-num">4.0</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Netherlands</span>
-          <span>🥪 Sandwiches</span>
-          <span>💰 €9.75</span>
-        </div>
-        <p class="review-excerpt">Banh Mi Deli specialises in flavourful and spicy Asian sandwiches. The shrimp sandwich was generously filled with carrots, peppers, coriander, lettuce, and cucumbers. Keep the spicy peppers in — they make it. You can ask for no spice but you'd be doing yourself a disservice.</p>
-        <div class="review-tags">
-          <span class="review-tag">Vietnamese</span>
-          <span class="review-tag">Spicy</span>
-          <span class="price-tag">€9.75</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">Fort Negen Sandwich Bar</h2><span class="stars">★★★☆☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €15</span><span>📅 Oct 2024</span></div>
+        <p class="review-excerpt">Known for the best croissants in Amsterdam. The pastrami sandwich had good flavour but felt too wet — lacked the crunch I was hoping for. A great sandwich needs warmth, crunch, and freshness. Didn't quite hit the mark.</p>
+        <div class="review-tags"><span class="review-tag">Sandwiches</span><span class="price-tag">€15</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-cafe">🫔</div>
+      <div class="review-img bg-sandwich">🥗</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Kimchi Croque — A Bold Fusion Worth Trying</h2>
-          <div class="review-rating"><span class="stars">★★★★☆</span><span class="rating-num">4.0</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Netherlands</span>
-          <span>☕ Cafe</span>
-          <span>💰 €11.95 / €12.95 with egg</span>
-        </div>
-        <p class="review-excerpt">The gooey richness of the fried egg complemented the distinct character of the Kimchi Croque exceptionally well. It not only satisfies your taste buds but also encourages culinary exploration beyond the conventional. Worth the extra euro for the egg — don't skip it.</p>
-        <div class="review-tags">
-          <span class="review-tag">Fusion</span>
-          <span class="review-tag">Korean</span>
-          <span class="price-tag">€12.95 with egg</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">Leauf Amsterdam — Leauf du Chef</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €15</span><span>📅 Sep 2024</span></div>
+        <p class="review-excerpt">The "Leauf du Chef" did not disappoint! Absolutely delicious with fresh ingredients and perfectly balanced flavors. Service was exceptional — attentive and friendly. Already looking forward to my next visit. Highly recommended!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Top Service</span><span class="price-tag">€15</span></div>
       </div>
     </div>
 
     <div class="review-card">
-      <div class="review-img bg-asian">🍜</div>
+      <div class="review-img bg-burger">🍗</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Mondi Restaurant — Cosy, Delicious, and Worth the Visit</h2>
-          <div class="review-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Amsterdam, New West</span>
-          <span>🍽️ Restaurant</span>
-        </div>
-        <p class="review-excerpt">The place was super cozy and inviting, and the service was top-notch. They had a ton of great options on the menu, and everything was absolutely delicious. Fantastic experience — I'll definitely be back. If you're a foodie who loves great service and a warm atmosphere, Mondi is the place for you.</p>
-        <div class="review-tags">
-          <span class="review-tag">Top Pick</span>
-          <span class="review-tag">Amsterdam</span>
-          <span class="review-tag">Great Service</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">Maijard — Chicken Smashed Burger (2024)</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €16</span><span>📅 Jun 2024</span></div>
+        <p class="review-excerpt">Flavorful with a mild spicy kick. The smashed patty has a unique texture. Fresh vegetables add contrast. Needs a slice of cheese and the beef burger sauce to reach the top tier — but still a great choice!</p>
+        <div class="review-tags"><span class="review-tag">Burgers</span><span class="review-tag">Spicy</span><span class="price-tag">€16</span></div>
       </div>
     </div>
 
     <div class="review-card">
       <div class="review-img bg-pastry">🥐</div>
       <div class="review-body">
-        <div class="review-top">
-          <h2 class="review-title">Poulet Suprême — Packed for a Reason</h2>
-          <div class="review-rating"><span class="stars">★★★★☆</span><span class="rating-num">4.2</span></div>
-        </div>
-        <div class="review-meta">
-          <span>📍 Amsterdam</span>
-          <span>🍽️ Restaurant</span>
-        </div>
-        <p class="review-excerpt">We hit up this new place in Amsterdam and it was totally packed! Luckily we managed to snag a table. The Poulet Suprême was the star of the show — well worth the wait and the crowd. A new Amsterdam favourite that's earned its hype.</p>
-        <div class="review-tags">
-          <span class="review-tag">Amsterdam</span>
-          <span class="review-tag">Popular</span>
-        </div>
+        <div class="review-top"><h2 class="review-title">et CLAIRE — Pistachio Cube Croissant</h2><span class="stars">★★★☆☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🥐 Pastries</span><span>💰 €9.65</span><span>📅 May 2024</span></div>
+        <p class="review-excerpt">Eye-catching cube shape filled with pistachio cream — buttery and flaky. The price is a bit steep and the pistachio flavour could be more intense. Still worth trying for creative pastry lovers!</p>
+        <div class="review-tags"><span class="review-tag">Pastries</span><span class="review-tag">Creative</span><span class="price-tag">€9.65</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-cafe">🍜</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Cafe Nobuya — Mochi Donuts &amp; Gyudon Beef</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Japanese Fusion</span><span>💰 €11.30</span><span>📅 Nov 2023</span></div>
+        <p class="review-excerpt">Mochi Donuts are a perfect blend of chewiness and sweetness. The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one bite. A haven for food enthusiasts!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Japanese</span><span class="review-tag">Donuts</span><span class="price-tag">€11.30</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-cafe">🧀</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Brioche Amsterdam — Grilled Cheese</h2><span class="stars">★☆☆☆☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €6.50</span><span>📅 Oct 2023</span></div>
+        <p class="review-excerpt">I ordered the brioche grilled cheese and was quite disappointed — lacked flavor and I couldn't even finish it. Given the price I expected much better. Hopefully they improve in the future.</p>
+        <div class="review-tags"><span class="review-tag">Disappointing</span><span class="price-tag">€6.50</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-burger">🍔</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Le Smash — Le Special with Extra Bacon</h2><span class="stars">★★★★½</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🍔 Burgers</span><span>💰 €12.95</span><span>📅 Sep 2023</span></div>
+        <p class="review-excerpt">Distinct crunch but the bacon was undercooked and lacked crispiness. The sauce was a highlight — delightful tanginess that balanced everything. The sauce made it worthwhile. More attention to the bacon would elevate this significantly.</p>
+        <div class="review-tags"><span class="review-tag">Burgers</span><span class="price-tag">€12.95</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-steak">🥩</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Zorlu Center — Steak Tater with Garlic Sauce</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Turkey</span><span>🥩 Steak</span><span>📅 Sep 2023</span></div>
+        <p class="review-excerpt">Bitterness of seared steak, subtle sour notes from a well-balanced marinade, and garlic sauce depth. Tater tots add a crispy texture. A creative and flavorful dish — worth trying if you're open to a culinary adventure.</p>
+        <div class="review-tags"><span class="review-tag">Steak</span><span class="review-tag">Turkey</span><span class="review-tag">Creative</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-fries">🍟</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Fabel Friet — Parmesan Truffle Fries</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Netherlands</span><span>🍟 Fries</span><span>💰 €5.50</span><span>📅 Sep 2023</span></div>
+        <p class="review-excerpt">The ultimate destination for fresh hand-cut fries! Pre-fried then double fried for an unmatched crispy texture. The Parmesan and truffle mayo version is exceptional. Ditch the ketchup — the mayo is a game changer!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Value</span><span class="price-tag">€5.50</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-steak">🥩</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">360 Istanbul — Steak &amp; Live Music</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Istanbul, Turkey</span><span>🥩 Steak</span><span>💰 €30</span><span>📅 Sep 2023</span></div>
+        <p class="review-excerpt">Perfect sear, delightful crispiness, well-balanced seasoning cooked to mouthwatering medium rare. On Saturdays they offer live music and a vibrant club atmosphere. A culinary and entertainment experience you won't want to miss!</p>
+        <div class="review-tags"><span class="review-tag">Steak</span><span class="review-tag">Istanbul</span><span class="review-tag">Live Music</span><span class="price-tag">€30</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-seafood">🐙</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Sjefietshé — Hotdoctopus</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Netherlands</span><span>🐙 Seafood</span><span>💰 €19</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">Octopus in a soft brioche bun with pickles, coriander mayo, and chives. An explosion of extraordinary flavors upon each bite. The price at €19 is a bit high for a single serving but the experience is truly unique.</p>
+        <div class="review-tags"><span class="review-tag">Unique</span><span class="review-tag">Seafood</span><span class="price-tag">€19</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-cafe">🫔</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Bonnie — Kimchi Croque</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €12.95</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">The Kimchi Croque embraces bold kimchi flavors. We got both varieties with the optional fried egg — worth the extra cost! The gooey richness of the egg complemented the distinct character of the Kimchi Croque exceptionally well.</p>
+        <div class="review-tags"><span class="review-tag">Fusion</span><span class="review-tag">Korean</span><span class="price-tag">€12.95</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-sandwich">🥪</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Banh Mi Deli Amsterdam</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €9.75</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">Flavorful and spicy Asian sandwiches. The shrimp sandwich was generously filled with carrots, peppers, coriander, lettuce, and cucumbers. Keep the spicy peppers in — they make it! You'd be doing yourself a disservice without them.</p>
+        <div class="review-tags"><span class="review-tag">Vietnamese</span><span class="review-tag">Spicy</span><span class="price-tag">€9.75</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-burger">🍔</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Maijard Smashburgers — The Original</h2><span class="stars">★★★★½</span></div>
+        <div class="review-meta"><span>📍 Netherlands</span><span>🍔 Burgers</span><span>💰 €14</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">An absolute gem in the Netherlands. Fresh locally-sourced ingredients, perfect bun-to-patty ratio with two succulent patties, and an exquisite burger sauce. Maijard isn't just a place to eat — it's an experience. Every bite tells a story.</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Local Ingredients</span><span class="price-tag">€14</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-steak">🥩</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Bonnie — Best Steak Sandwich in Amsterdam</h2><span class="stars">★★★★☆</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>🥪 Sandwiches</span><span>💰 €11.95</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">This place has the best steak sandwich I've found in Amsterdam! All the right components — a crunchy bite, sweetness from the onion, a little sour, and a little spicy. Breakfast or lunch? I wouldn't know but it's worth it either way!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Best Steak Sandwich</span><span class="price-tag">€11.95</span></div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-img bg-cafe">🥓</div>
+      <div class="review-body">
+        <div class="review-top"><h2 class="review-title">Chun Cafe Amsterdam — Bacon Egg &amp; Cheese</h2><span class="stars">★★★★★</span></div>
+        <div class="review-meta"><span>📍 Amsterdam</span><span>☕ Cafe</span><span>💰 €10</span><span>📅 Aug 2023</span></div>
+        <p class="review-excerpt">One of the best sandwiches in town! A nice brioche that opens from the top. Got the bacon, egg and cheese and added avocado — the best combination. Great sauce in the sandwich for extra taste. Don't forget the avocado (extra cost) — it's worth it!</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Breakfast</span><span class="review-tag">Add Avocado!</span><span class="price-tag">€10</span></div>
       </div>
     </div>
 
