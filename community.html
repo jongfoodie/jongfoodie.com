@@ -80,6 +80,8 @@
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
+  .follow-btn { background: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer; font-family: "DM Sans", sans-serif; color: var(--ink-soft); transition: all 0.2s; }
+  .follow-btn:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -208,41 +210,9 @@
     <!-- TOP MEMBERS -->
     <div class="sidebar-widget">
       <p class="widget-title">Top Members</p>
-      <div class="member-list">
-        <div class="member-item">
-          <div class="member-avatar" style="background:var(--accent);">JF</div>
-          <div>
-            <p class="member-name">Jong Foodie</p>
-            <p class="member-reviews">48 reviews</p>
-          </div>
-          <button class="follow-btn">Follow</button>
-        </div>
-        <div class="member-item">
-          <div class="member-avatar" style="background:#C8521A;">MR</div>
-          <div>
-            <p class="member-name">Marco R.</p>
-            <p class="member-reviews">12 reviews</p>
-          </div>
-          <button class="follow-btn">Follow</button>
-        </div>
-        <div class="member-item">
-          <div class="member-avatar" style="background:#2D5A3D;">SL</div>
-          <div>
-            <p class="member-name">Sarah L.</p>
-            <p class="member-reviews">8 reviews</p>
-          </div>
-          <button class="follow-btn">Follow</button>
-        </div>
-        <div class="member-item">
-          <div class="member-avatar" style="background:#C8901A;">KT</div>
-          <div>
-            <p class="member-name">Kevin T.</p>
-            <p class="member-reviews">6 reviews</p>
-          </div>
-          <button class="follow-btn">Follow</button>
-        </div>
+      <div class="member-list" id="topMembersList">
+        <p style="font-size:12px;color:var(--muted);">Loading members...</p>
       </div>
-    </div>
 
     <!-- POPULAR TOPICS -->
     <div class="sidebar-widget">
@@ -310,7 +280,7 @@
     post.style.animation = 'fadeIn 0.4s ease both';
     post.innerHTML = `
       <div class="post-header">
-        <div class="post-avatar post-avatar-me" id="composerAvatar" style="background:var(--accent);">JF</div>
+        <div class="post-avatar post-avatar-me" id="composerAvatar" style="background:var(--accent);opacity:0;transition:opacity 0.3s;">JF</div>
         <div class="post-user-info">
           <p class="post-username">Jong Foodie</p>
           <p class="post-location">Amsterdam</p>
@@ -366,23 +336,87 @@
       const name = user.displayName || user.email.split('@')[0];
       const initials = name.substring(0,2).toUpperCase();
       // Update composer avatar
-      document.querySelectorAll('.post-avatar-me').forEach(a => a.textContent = initials);
+      document.querySelectorAll('.post-avatar-me').forEach(a => {
+        a.textContent = initials;
+        a.style.opacity = '1';
+      });
       // Update name in Top Members
       document.querySelectorAll('.current-user-name').forEach(el => el.textContent = name);
       // Show logout in nav
       if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'none';
-      if (document.getElementById('navSignup')) document.getElementById('navSignup').style.display = 'none';
       if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'block';
+      // Load real top members
+      loadTopMembers(name);
     } else {
-      document.querySelectorAll('.post-avatar-me').forEach(a => a.textContent = 'JF');
+      document.querySelectorAll('.post-avatar-me').forEach(a => {
+        a.textContent = 'JF';
+        a.style.opacity = '1';
+      });
       document.querySelectorAll('.current-user-name').forEach(el => el.textContent = 'Jong Foodie');
       if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'block';
-      if (document.getElementById('navSignup')) document.getElementById('navSignup').style.display = 'block';
       if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'none';
+      loadTopMembers(null);
     }
   });
 
   // Follow functionality
+  async function loadTopMembers(currentUserName) {
+    const list = document.getElementById('topMembersList');
+    if (!list) return;
+    try {
+      // Get all picks to count by user
+      const picksSnap = await getDocs(collection(db, 'picks'));
+      const postSnap = await getDocs(collection(db, 'posts')).catch(() => ({ docs: [] }));
+      
+      const counts = {};
+      picksSnap.docs.forEach(d => {
+        const name = d.data().userName;
+        if (name) counts[name] = (counts[name] || 0) + 2;
+      });
+      postSnap.docs.forEach(d => {
+        const name = d.data().userName;
+        if (name) counts[name] = (counts[name] || 0) + 1;
+      });
+
+      // Add current user if not in list
+      if (currentUserName && !counts[currentUserName]) {
+        counts[currentUserName] = 0;
+      }
+
+      // Sort by count
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+      // Always include current user at top if logged in
+      if (currentUserName) {
+        const idx = sorted.findIndex(([n]) => n === currentUserName);
+        if (idx > 0) {
+          const [item] = sorted.splice(idx, 1);
+          sorted.unshift(item);
+        }
+      }
+
+      const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A'];
+      list.innerHTML = sorted.map(([name, count], i) => {
+        const initials = name.substring(0,2).toUpperCase();
+        const isMe = name === currentUserName;
+        return `<div class="member-item">
+          <div class="member-avatar" style="background:${colors[i % colors.length]};">${initials}</div>
+          <div class="member-info">
+            <p class="member-name">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</p>
+            <p class="member-reviews">${count} contributions</p>
+          </div>
+          ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
+        </div>`;
+      }).join('');
+
+      if (sorted.length === 0) {
+        list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Be the first to contribute!</p>';
+      }
+    } catch(e) {
+      list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Could not load members.</p>';
+    }
+  }
+
   window.doLogout = async function() {
     const { signOut } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
     await signOut(auth);
