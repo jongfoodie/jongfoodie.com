@@ -216,13 +216,25 @@
     btn.textContent = 'Publishing...';
 
     try {
+      const lat = parseFloat(document.getElementById('rLat').value);
+      const lng = parseFloat(document.getElementById('rLng').value);
+
       await addDoc(collection(db, 'reviews'), {
         name, city, type, price, date, hours, review,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-        emoji, rating: adminRating,
+        emoji, rating: adminRating, lat, lng,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
+
+      // Also save to map spots
+      if (lat && lng) {
+        await addDoc(collection(db, 'mapspots'), {
+          name, address: city, hours, emoji, rating: adminRating,
+          lat, lng, type,
+          createdAt: serverTimestamp()
+        });
+      }
 
       showToast('Review published! 🎉');
       // Clear form
@@ -235,6 +247,8 @@
       document.getElementById('rReview').value = '';
       document.getElementById('rTags').value = '';
       document.getElementById('rEmoji').value = '🍽️';
+      document.getElementById('rLat').value = '';
+      document.getElementById('rLng').value = '';
       adminRating = 0;
       document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
       loadPublished();
