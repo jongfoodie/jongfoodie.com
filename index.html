@@ -783,6 +783,7 @@
     .site-wrapper { padding: 2rem 1rem; }
   }
 </style>
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
 </head>
 <body>
 
@@ -809,7 +810,7 @@
   <h1>Discover your next<br><em>favourite bite</em></h1>
   <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks — all in one place.</p>
   <div class="hero-search">
-    <input type="text" id="heroSearchInput" placeholder="Search cafes, burgers, pastries…" oninput="showSearchSuggestions()" onkeydown="if(event.key==='Enter')doHeroSearch()" />
+    <input type="text" id="heroSearchInput" placeholder="Search cafes, burgers, pastries…" onkeydown="if(event.key==='Enter')doHeroSearch()" />
     <button onclick="doHeroSearch()">Search</button>
   </div>
   <div class="hero-stats">
@@ -888,7 +889,8 @@
     <!-- GRID -->
     <p class="section-label">Latest Reviews</p>
     <div class="cards-grid">
-      <div class="mini-card" style="cursor:pointer;" onclick="window.location.href='reviews.html#le-smash'">
+      <div class="mini-card">
+        <div class="mini-img bg-burger">🍔</div>
         <div class="mini-body">
           <p class="mini-meta">Le Smash · Burgers · $$</p>
           <h3 class="mini-title">Le Special: Is It Worth the Hype?</h3>
@@ -903,7 +905,7 @@
         </div>
       </div>
 
-      <div class="mini-card" style="cursor:pointer;" onclick="window.location.href='reviews.html#et-claire'">
+      <div class="mini-card">
         <div class="mini-img bg-pastry">🥐</div>
         <div class="mini-body">
           <p class="mini-meta">Maison · Pastries · $$$</p>
@@ -919,7 +921,7 @@
         </div>
       </div>
 
-      <div class="mini-card" style="cursor:pointer;" onclick="window.location.href='reviews.html#brioche'">
+      <div class="mini-card">
         <div class="mini-img bg-cafe">☕</div>
         <div class="mini-body">
           <p class="mini-meta">Brioche & Co · Cafe · $$</p>
@@ -935,7 +937,7 @@
         </div>
       </div>
 
-      <div class="mini-card" style="cursor:pointer;" onclick="window.location.href='reviews.html#maijard'">
+      <div class="mini-card">
         <div class="mini-img bg-sushi">🍣</div>
         <div class="mini-body">
           <p class="mini-meta">Tori · Japanese · $$$</p>
@@ -1226,84 +1228,11 @@
     window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
   }
 
-  // All searchable content across the site
-  const allContent = [
-    // Reviews
-    { title: 'Cafe Nobuya — Mochi Donuts', type: 'Review', page: 'reviews.html', keywords: 'japanese fusion donuts ramen cafe nobuya' },
-    { title: 'Le Smash — Le Special with Extra Bacon', type: 'Review', page: 'reviews.html', keywords: 'burger smash le smash bacon burgers' },
-    { title: 'et CLAIRE — Pistachio Cube Croissant', type: 'Review', page: 'reviews.html', keywords: 'pastry croissant pistachio et claire pastries' },
-    { title: 'Brioche Amsterdam — Grilled Cheese', type: 'Review', page: 'reviews.html', keywords: 'cafe brioche grilled cheese sandwich' },
-    { title: 'Maijard — Chicken Smash Burger', type: 'Review', page: 'reviews.html', keywords: 'burger maijard chicken smash' },
-    { title: 'Maijard Smashburgers — The Original', type: 'Review', page: 'reviews.html', keywords: 'burger maijard smash original' },
-    { title: 'Banh Mi Deli Amsterdam', type: 'Review', page: 'reviews.html', keywords: 'vietnamese banh mi sandwich deli' },
-    { title: 'Bonnie — Kimchi Croque', type: 'Review', page: 'reviews.html', keywords: 'cafe bonnie kimchi croque sandwich' },
-    { title: 'Bonnie — Best Steak Sandwich', type: 'Review', page: 'reviews.html', keywords: 'cafe bonnie steak sandwich' },
-    { title: 'Chun Cafe — Bacon Egg & Cheese Toast', type: 'Review', page: 'reviews.html', keywords: 'cafe chun bacon egg cheese toast japanese korean' },
-    { title: 'Izakaya Amsterdam', type: 'Review', page: 'reviews.html', keywords: 'sushi izakaya japanese luxury amsterdam' },
-    { title: 'Mondi Amsterdam Nieuw-West', type: 'Review', page: 'reviews.html', keywords: 'caribbean french mondi nieuw-west amsterdam' },
-    { title: 'Fabel Friet — Parmesan Truffle Fries', type: 'Review', page: 'reviews.html', keywords: 'fries fabel friet parmesan truffle dutch' },
-    { title: 'Leauf Amsterdam — Leauf du Chef', type: 'Review', page: 'reviews.html', keywords: 'sandwich leauf amsterdam michelin french jordaan' },
-    { title: 'Sjefietshé — Hotdoctopus', type: 'Review', page: 'reviews.html', keywords: 'seafood octopus sjefietshé de pijp amsterdam' },
-    { title: 'Zorlu Center — Steak Tater', type: 'Review', page: 'reviews.html', keywords: 'steak istanbul zorlu center' },
-    { title: '360 Istanbul — Steak & Live Music', type: 'Review', page: 'reviews.html', keywords: 'steak istanbul 360 rooftop live music' },
-    // Community
-    { title: 'Community Picks', type: 'Community', page: 'community.html', keywords: 'community picks recommend restaurant hidden gem' },
-    { title: 'Share a Review', type: 'Community', page: 'community.html', keywords: 'community share review post your own' },
-    // Hotel
-    { title: 'Jong Hotel Reviews', type: 'Hotel', page: 'hotel.html', keywords: 'hotel stay accommodation jong hotel' },
-  ];
-
   function doHeroSearch() {
-    const q = document.getElementById('heroSearchInput').value.trim().toLowerCase();
+    const q = document.getElementById('heroSearchInput').value.trim();
     if (!q) return;
-    // Find best match
-    const match = allContent.find(item =>
-      item.title.toLowerCase().includes(q) ||
-      item.keywords.includes(q) ||
-      item.type.toLowerCase().includes(q)
-    );
-    if (match) {
-      window.location.href = match.page + '?search=' + encodeURIComponent(q);
-    } else {
-      // Default to reviews
-      window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
-    }
+    window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
   }
-
-  function showSearchSuggestions() {
-    const q = document.getElementById('heroSearchInput').value.trim().toLowerCase();
-    let box = document.getElementById('searchSuggestionsBox');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'searchSuggestionsBox';
-      box.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);z-index:999;max-height:300px;overflow-y:auto;margin-top:6px;';
-      document.querySelector('.hero-search').style.position = 'relative';
-      document.querySelector('.hero-search').appendChild(box);
-    }
-    if (!q) { box.innerHTML = ''; return; }
-    const matches = allContent.filter(item =>
-      item.title.toLowerCase().includes(q) ||
-      item.keywords.includes(q) ||
-      item.type.toLowerCase().includes(q)
-    ).slice(0, 6);
-    if (matches.length === 0) { box.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#888;">No results found</div>'; return; }
-    const typeColors = { Review: '#D4521A', Community: '#2D5A3D', Hotel: '#1a5cd4' };
-    const typeEmojis = { Review: '🍽️', Community: '👥', Hotel: '🏨' };
-    box.innerHTML = matches.map(m => `
-      <div onclick="window.location.href='${m.page}?search=${encodeURIComponent(m.title)}'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='#fff'">
-        <span style="font-size:16px;">${typeEmojis[m.type]}</span>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:500;color:#1a1208;">${m.title}</div>
-          <div style="font-size:11px;color:${typeColors[m.type]};font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${m.type}</div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  document.addEventListener('click', (e) => {
-    const box = document.getElementById('searchSuggestionsBox');
-    if (box && !box.contains(e.target) && e.target.id !== 'heroSearchInput') box.innerHTML = '';
-  });
 
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -1475,9 +1404,7 @@
       const card = document.createElement('div');
       card.className = 'mini-card';
       card.style.animation = 'fadeIn 0.4s ease both';
-      card.style.cursor = 'pointer';
-    card.onclick = () => window.location.href = 'reviews.html?search=' + encodeURIComponent(r.title);
-    card.innerHTML = `<div class="mini-img ${r.color}">${r.emoji}</div><div class="mini-body"><p class="mini-meta">${r.meta}</p><h3 class="mini-title">${r.title}</h3><p style="font-size:13px;color:var(--ink-soft);">${r.text}</p><div class="mini-footer"><span class="mini-rating">${r.stars} ${r.rating}</span><button class="mini-save" onclick="event.stopPropagation();toggleMiniSave(this,'${r.title}')">🔖</button></div></div>`;
+      card.innerHTML = `<div class="mini-img ${r.color}">${r.emoji}</div><div class="mini-body"><p class="mini-meta">${r.meta}</p><h3 class="mini-title">${r.title}</h3><p style="font-size:13px;color:var(--ink-soft);">${r.text}</p><div class="mini-footer"><span class="mini-rating">${r.stars} ${r.rating}</span><button class="mini-save" onclick="toggleMiniSave(this,'${r.title}')">🔖</button></div></div>`;
       grid.appendChild(card);
     });
     reviewsLoaded += toLoad.length;
