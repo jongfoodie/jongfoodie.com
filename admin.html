@@ -157,6 +157,54 @@
 
   <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
 
+  <!-- HOTEL REVIEW SECTION -->
+  <div style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A3A5C;">🏨 Add Hotel Review</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Hotel Name *</label>
+        <input class="form-input" type="text" id="hName" placeholder="e.g. Aman Tokyo" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">City / Country *</label>
+        <input class="form-input" type="text" id="hCity" placeholder="e.g. Tokyo, Japan" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="hPrice" placeholder="e.g. €200/night or Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="hDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Star Rating *</label>
+      <div id="hotelStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setHotelRating(1)">★</span>
+        <span onclick="setHotelRating(2)">★</span>
+        <span onclick="setHotelRating(3)">★</span>
+        <span onclick="setHotelRating(4)">★</span>
+        <span onclick="setHotelRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="hReview" rows="4" placeholder="Write your hotel review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="hTags" placeholder="e.g. Must Visit, Rooftop, Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="hEmoji" placeholder="🏨" value="🏨" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
+  </div>
+
   <div style="margin-top:2rem;" id="publishedSection">
     <div class="published-list">
       <h3>📋 Published Reviews (from admin)</h3>
