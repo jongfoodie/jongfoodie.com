@@ -259,6 +259,13 @@ const allGuides = {
   }
 };
 
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1A1208;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:99999;'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity='1';
+  setTimeout(() => t.style.opacity='0', 2500);
+}
+
 function openGuide(type) {
   const g = allGuides[type];
   if (!g) { alert('Guide not found: ' + type); return; }
