@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jong Hotel — Hotel Reviews & Community Picks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1A1208; --ink-soft: #3D2F1A; --muted: #8A7A66;
+      --warm-white: #FFFDF9; --cream: #FAF6EF; --border: rgba(26,18,8,0.1);
+      --accent: #D4521A; --accent-pale: #FBF3EF; --gold: #C8901A;
+      --hotel: #1A3A5C;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); }
+
+    /* NAV */
+    nav { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 3rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-logo sup { font-size: 10px; color: var(--hotel); font-family: 'DM Sans', sans-serif; letter-spacing: 0.1em; background: #E8F0F8; padding: 2px 6px; border-radius: 6px; margin-left: 4px; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { text-decoration: none; font-size: 13px; letter-spacing: 0.05em; color: var(--ink-soft); font-weight: 500; }
+    nav ul a:hover { color: var(--accent); }
+    #navLogout { background: none; border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+    /* HERO */
+    .hero { background: var(--hotel); color: #fff; padding: 5rem 3rem; text-align: center; }
+    .hero-badge { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #A8C4E0; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: 52px; margin-bottom: 1rem; }
+    .hero h1 em { color: #F5C896; font-style: italic; }
+    .hero p { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 500px; margin: 0 auto; }
+
+    /* WRAPPER */
+    .wrapper { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+
+    /* JONG FOODIE REVIEW */
+    .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+    .hotel-review-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 300px 1fr; margin-bottom: 2.5rem; }
+    .hotel-img { background: linear-gradient(135deg, #1A3A5C, #2D6A9F); display: flex; align-items: center; justify-content: center; font-size: 80px; min-height: 220px; }
+    .hotel-body { padding: 2rem; }
+    .hotel-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .hotel-title { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.2; }
+    .stars { color: var(--gold); font-size: 15px; }
+    .hotel-meta { font-size: 12px; color: var(--muted); margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hotel-excerpt { font-size: 14px; line-height: 1.7; color: var(--ink-soft); margin-bottom: 1rem; }
+    .hotel-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hotel-tag { background: #E8F0F8; color: var(--hotel); font-size: 11px; padding: 4px 12px; border-radius: 12px; font-weight: 500; }
+    .price-tag { background: var(--accent-pale); color: var(--accent); font-size: 11px; padding: 4px 12px; border-radius: 12px; font-weight: 500; }
+    .new-badge { background: var(--accent); color: #fff; font-size: 10px; padding: 3px 8px; border-radius: 8px; font-weight: 600; margin-left: 8px; }
+
+    /* COMMUNITY PICKS */
+    .community-section { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; margin-top: 3rem; }
+    .picks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .pick-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .pick-img { height: 140px; background: linear-gradient(135deg, #1A3A5C, #2D6A9F); display: flex; align-items: center; justify-content: center; font-size: 52px; }
+    .pick-body { padding: 1rem; }
+    .pick-meta { font-size: 11px; color: #2D5A3D; font-weight: 500; margin-bottom: 4px; }
+    .pick-title { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 4px; }
+    .pick-location { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .pick-why { font-size: 13px; color: var(--ink-soft); }
+
+    /* ADD PICK FORM */
+    .add-pick-form { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+    .form-title { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1rem; }
+    .form-input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--cream); color: var(--ink); margin-bottom: 0.75rem; }
+    .form-input:focus { outline: none; border-color: var(--hotel); }
+    .btn-hotel { background: var(--hotel); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; width: 100%; }
+    .btn-hotel:hover { background: #254d7a; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .sidebar-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+    .sidebar-title { font-size: 13px; font-weight: 600; margin-bottom: 1rem; }
+    .top-dest { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .top-dest:last-child { border-bottom: none; }
+    .dest-emoji { font-size: 22px; }
+
+    /* LOGIN PROMPT */
+    .login-prompt { text-align: center; padding: 2rem; color: var(--muted); font-size: 13px; }
+    .btn-accent { background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+
+    @media (max-width: 768px) {
+      .hotel-review-card { grid-template-columns: 1fr; }
+      .hotel-img { min-height: 160px; }
+      .community-section { grid-template-columns: 1fr; }
+      .picks-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 1rem; }
+      nav { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Jong <span>Foodie</span> <sup>HOTEL</sup></a>
+  <ul>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);">Jong Hotel</a></li>
+  </ul>
+  <div>
+    <span id="navUser" style="font-size:13px;color:var(--muted);margin-right:1rem;"></span>
+    <button id="navLogout" style="display:none;" onclick="doLogout()">Log out</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <p class="hero-badge">Jong Foodie · Hotel Edition</p>
+  <h1>Jong <em>Hotel</em></h1>
+  <p>Honest hotel reviews from Jong Foodie — and a place to share your favourite stays around the world.</p>
+</div>
+
+<div class="wrapper">
+
+  <!-- JONG FOODIE HOTEL REVIEWS -->
+  <p class="section-label">Jong Foodie Hotel Reviews</p>
+
+  <!-- Published from Firestore -->
+  <div id="adminHotelReviews"></div>
+
+  <!-- Static hotel reviews -->
+  <div class="hotel-review-card">
+    <div class="hotel-img">🏛️</div>
+    <div class="hotel-body">
+      <div class="hotel-top">
+        <h2 class="hotel-title">Hotel The Craftsmen</h2>
+        <span class="stars">★★★★★</span>
+      </div>
+      <div class="hotel-meta">
+        <span>📍 Singel 83, 1012 VE Amsterdam</span>
+        <span>💰 Boutique</span>
+      </div>
+      <p class="hotel-excerpt">A stunning boutique hotel right on the Singel canal in the heart of Amsterdam. The craftsmanship in every detail is remarkable — from the hand-picked furniture to the bespoke interiors. A truly unique stay that captures the soul of Amsterdam.</p>
+      <div class="hotel-tags">
+        <span class="hotel-tag">Must Visit</span>
+        <span class="hotel-tag">Canal View</span>
+        <span class="hotel-tag">Boutique</span>
+        <span class="price-tag">Amsterdam</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hotel-review-card">
+    <div class="hotel-img">🌴</div>
+    <div class="hotel-body">
+      <div class="hotel-top">
+        <h2 class="hotel-title">Petit Ermitage</h2>
+        <span class="stars">★★★★★</span>
+      </div>
+      <div class="hotel-meta">
+        <span>📍 8822 Cynthia St, West Hollywood, CA</span>
+        <span>💰 Luxury</span>
+      </div>
+      <p class="hotel-excerpt">A hidden gem in West Hollywood — part boutique hotel, part art gallery. The rooftop pool and bar attract a creative crowd and the vibe is unlike anything else in LA. Intimate, artistic and effortlessly cool. One of those places you never want to leave.</p>
+      <div class="hotel-tags">
+        <span class="hotel-tag">Must Visit</span>
+        <span class="hotel-tag">Rooftop Pool</span>
+        <span class="hotel-tag">Art Gallery</span>
+        <span class="price-tag">West Hollywood</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hotel-review-card">
+    <div class="hotel-img">🛕</div>
+    <div class="hotel-body">
+      <div class="hotel-top">
+        <h2 class="hotel-title">The Peninsula Bangkok</h2>
+        <span class="stars">★★★★★</span>
+      </div>
+      <div class="hotel-meta">
+        <span>📍 333 Charoen Nakhon Rd, Bangkok, Thailand</span>
+        <span>💰 Luxury</span>
+      </div>
+      <p class="hotel-excerpt">Arguably the finest hotel in Bangkok. Perched on the banks of the Chao Phraya River, the views are simply spectacular. The service is flawless — every staff member anticipates your needs before you even ask. The infinity pool overlooking the river at sunset is a memory that stays with you forever.</p>
+      <div class="hotel-tags">
+        <span class="hotel-tag">Must Visit</span>
+        <span class="hotel-tag">River Views</span>
+        <span class="hotel-tag">World Class Service</span>
+        <span class="price-tag">Bangkok</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY SECTION -->
+  <div class="community-section">
+    <div>
+      <p class="section-label">Community Hotel Picks</p>
+
+      <!-- Add pick form -->
+      <div class="add-pick-form" style="margin-bottom:1.5rem;">
+        <h3 class="form-title">🏨 Share Your Favourite Hotel</h3>
+        <div id="hotelFormLoggedIn" style="display:none;">
+          <input class="form-input" id="hotelName" type="text" placeholder="Hotel name...">
+          <input class="form-input" id="hotelLocation" type="text" placeholder="City, Country...">
+          <select class="form-input" id="hotelType">
+            <option value="">Hotel type...</option>
+            <option>Luxury</option>
+            <option>Boutique</option>
+            <option>Budget</option>
+            <option>Resort</option>
+            <option>Business</option>
+            <option>Design Hotel</option>
+            <option>Hostel</option>
+          </select>
+          <input class="form-input" id="hotelPrice" type="text" placeholder="Price range e.g. €150/night">
+          <textarea class="form-input" id="hotelWhy" rows="3" placeholder="Why do you recommend it?"></textarea>
+          <button class="btn-hotel" onclick="submitHotelPick()">🏨 Recommend this Hotel</button>
+        </div>
+        <div id="hotelFormLoggedOut" class="login-prompt">
+          <p style="margin-bottom:1rem;">Log in to share your favourite hotel with the community!</p>
+          <button class="btn-accent" onclick="document.getElementById('loginModal') && document.getElementById('loginModal').classList.add('open')">Log in to recommend</button>
+        </div>
+      </div>
+
+      <!-- Picks grid -->
+      <div id="hotelPicksGrid" class="picks-grid">
+        <!-- Static picks -->
+        <div class="pick-card">
+          <div class="pick-img">🏔️</div>
+          <div class="pick-body">
+            <p class="pick-meta">Community Pick · by Marco R.</p>
+            <h3 class="pick-title">Aman Zermatt</h3>
+            <p class="pick-location">📍 Zermatt, Switzerland</p>
+            <p class="pick-why">Incredible views of the Matterhorn. The ski-in ski-out access is unmatched. Worth every penny!</p>
+          </div>
+        </div>
+        <div class="pick-card">
+          <div class="pick-img">🌊</div>
+          <div class="pick-body">
+            <p class="pick-meta">Community Pick · by Sarah L.</p>
+            <h3 class="pick-title">Four Seasons Bali at Sayan</h3>
+            <p class="pick-location">📍 Bali, Indonesia</p>
+            <p class="pick-why">Jungle paradise. The infinity pool over the rice fields is absolutely magical. Best breakfast ever!</p>
+          </div>
+        </div>
+        <div class="pick-card">
+          <div class="pick-img">🌆</div>
+          <div class="pick-body">
+            <p class="pick-meta">Community Pick · by Kevin T.</p>
+            <h3 class="pick-title">The Standard Amsterdam</h3>
+            <p class="pick-location">📍 Amsterdam, Netherlands</p>
+            <p class="pick-why">Perfect location, great rooftop bar, stylish rooms. The best hotel in Amsterdam for nightlife lovers.</p>
+          </div>
+        </div>
+        <div class="pick-card">
+          <div class="pick-img">🏜️</div>
+          <div class="pick-body">
+            <p class="pick-meta">Community Pick · by Aisha N.</p>
+            <h3 class="pick-title">Singita Kruger National Park</h3>
+            <p class="pick-location">📍 South Africa</p>
+            <p class="pick-why">Woke up to lions outside my tent. The most breathtaking experience of my life. Unforgettable!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <p class="sidebar-title">🌍 Top Destinations</p>
+        <div class="top-dest"><span class="dest-emoji">🇹🇷</span><span>Istanbul, Turkey</span></div>
+        <div class="top-dest"><span class="dest-emoji">🇮🇩</span><span>Bali, Indonesia</span></div>
+        <div class="top-dest"><span class="dest-emoji">🇯🇵</span><span>Tokyo, Japan</span></div>
+        <div class="top-dest"><span class="dest-emoji">🇦🇪</span><span>Dubai, UAE</span></div>
+        <div class="top-dest"><span class="dest-emoji">🇮🇹</span><span>Amalfi Coast, Italy</span></div>
+        <div class="top-dest"><span class="dest-emoji">🇿🇦</span><span>South Africa</span></div>
+      </div>
+
+      <div class="sidebar-card" style="background:var(--hotel);color:#fff;">
+        <p style="font-size:13px;font-weight:600;margin-bottom:0.5rem;">📧 Hotel Newsletter</p>
+        <p style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:1rem;">Get Jong Foodie hotel reviews in your inbox.</p>
+        <input type="email" placeholder="your@email.com" style="width:100%;padding:8px 12px;border-radius:8px;border:none;font-size:13px;margin-bottom:0.75rem;">
+        <button style="width:100%;background:#F5C896;color:var(--hotel);border:none;padding:8px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Subscribe</button>
+      </div>
+
+      <div class="sidebar-card">
+        <p class="sidebar-title">⭐ Hotel Stats</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="text-align:center;padding:1rem;background:var(--cream);border-radius:10px;">
+            <p style="font-size:24px;font-weight:700;color:var(--hotel);">5+</p>
+            <p style="font-size:11px;color:var(--muted);">Reviews</p>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--cream);border-radius:10px;">
+            <p style="font-size:24px;font-weight:700;color:var(--hotel);" id="hotelPickCount">4+</p>
+            <p style="font-size:11px;color:var(--muted);">Community Picks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  let currentUser = null;
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.opacity = '1';
+    setTimeout(() => t.style.opacity = '0', 2500);
+  }
+
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      document.getElementById('navUser').textContent = name;
+      document.getElementById('navLogout').style.display = 'block';
+      document.getElementById('hotelFormLoggedIn').style.display = 'block';
+      document.getElementById('hotelFormLoggedOut').style.display = 'none';
+    } else {
+      document.getElementById('navLogout').style.display = 'none';
+      document.getElementById('hotelFormLoggedIn').style.display = 'none';
+      document.getElementById('hotelFormLoggedOut').style.display = 'block';
+    }
+  });
+
+  window.doLogout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
+
+  // Load hotel picks from Firestore
+  async function loadHotelPicks() {
+    try {
+      const snap = await getDocs(query(collection(db, 'hotelpicks'), orderBy('createdAt', 'desc')));
+      if (snap.empty) return;
+      const grid = document.getElementById('hotelPicksGrid');
+      snap.docs.forEach(d => {
+        const p = d.data();
+        const card = document.createElement('div');
+        card.className = 'pick-card';
+        card.innerHTML = `
+          <div class="pick-img">🏨</div>
+          <div class="pick-body">
+            <p class="pick-meta">Community Pick · by ${p.userName}</p>
+            <h3 class="pick-title">${p.name}</h3>
+            <p class="pick-location">📍 ${p.location}</p>
+            <p class="pick-why">${p.why}</p>
+          </div>`;
+        grid.insertBefore(card, grid.firstChild);
+      });
+      document.getElementById('hotelPickCount').textContent = (snap.size + 4) + '+';
+    } catch(e) { console.error(e); }
+  }
+
+  // Load admin hotel reviews from Firestore
+  async function loadAdminHotelReviews() {
+    try {
+      const snap = await getDocs(query(collection(db, 'hotelreviews'), orderBy('createdAt', 'desc')));
+      if (snap.empty) return;
+      const container = document.getElementById('adminHotelReviews');
+      snap.docs.forEach(d => {
+        const r = d.data();
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const card = document.createElement('div');
+        card.className = 'hotel-review-card';
+        card.innerHTML = `
+          <div class="hotel-img">${r.emoji || '🏨'}</div>
+          <div class="hotel-body">
+            <div class="hotel-top">
+              <h2 class="hotel-title">${r.name} <span class="new-badge">NEW</span></h2>
+              <span class="stars">${stars}</span>
+            </div>
+            <div class="hotel-meta">
+              <span>📍 ${r.city}</span>
+              ${r.price ? '<span>💰 ' + r.price + '</span>' : ''}
+              ${r.date ? '<span>📅 ' + r.date + '</span>' : ''}
+            </div>
+            <p class="hotel-excerpt">${r.review}</p>
+            <div class="hotel-tags">
+              ${(r.tags || []).map(t => '<span class="hotel-tag">' + t + '</span>').join('')}
+            </div>
+          </div>`;
+        container.appendChild(card);
+      });
+    } catch(e) { console.error(e); }
+  }
+
+  window.submitHotelPick = async function() {
+    const name = document.getElementById('hotelName').value.trim();
+    const location = document.getElementById('hotelLocation').value.trim();
+    const type = document.getElementById('hotelType').value;
+    const price = document.getElementById('hotelPrice').value.trim();
+    const why = document.getElementById('hotelWhy').value.trim();
+    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
+    if (!currentUser) { showToast('Please log in first!'); return; }
+    const userName = currentUser.displayName || currentUser.email.split('@')[0];
+    try {
+      await addDoc(collection(db, 'hotelpicks'), { name, location, type, price, why, userName, createdAt: serverTimestamp() });
+      document.getElementById('hotelName').value = '';
+      document.getElementById('hotelLocation').value = '';
+      document.getElementById('hotelType').value = '';
+      document.getElementById('hotelPrice').value = '';
+      document.getElementById('hotelWhy').value = '';
+      showToast('Hotel added! 🏨');
+      loadHotelPicks();
+    } catch(e) { showToast('Could not save. Try again!'); }
+  };
+
+  loadHotelPicks();
+  loadAdminHotelReviews();
+</script>
+
+</body>
+</html>

@@ -308,6 +308,44 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
+
+  let hotelRating = 0;
+  window.setHotelRating = function(n) {
+    hotelRating = n;
+    document.querySelectorAll('#hotelStarRating span').forEach((s,i) => {
+      s.style.color = i < n ? '#C8901A' : '#ddd';
+    });
+  };
+
+  window.publishHotelReview = async function() {
+    const name = document.getElementById('hName').value.trim();
+    const city = document.getElementById('hCity').value.trim();
+    const price = document.getElementById('hPrice').value.trim();
+    const date = document.getElementById('hDate').value.trim();
+    const review = document.getElementById('hReview').value.trim();
+    const tags = document.getElementById('hTags').value;
+    const emoji = document.getElementById('hEmoji').value || '🏨';
+    if (!name || !city || !review || !hotelRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'hotelreviews'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: hotelRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Hotel review published! 🏨');
+      document.getElementById('hName').value = '';
+      document.getElementById('hCity').value = '';
+      document.getElementById('hPrice').value = '';
+      document.getElementById('hDate').value = '';
+      document.getElementById('hReview').value = '';
+      document.getElementById('hTags').value = '';
+      document.getElementById('hEmoji').value = '🏨';
+      hotelRating = 0;
+      document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
 </script>
 </body>
 </html>
