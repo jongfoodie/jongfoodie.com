@@ -650,19 +650,66 @@
     }
   };
 
+  // Pre-seeded comments for static posts
+  const staticComments = {
+    'static-1': [
+      { userName: 'Sarah L.', text: 'Totally agree! The crispy edges are what make it special 🍔' },
+      { userName: 'Kevin T.', text: 'Been there twice already, never disappoints!' },
+      { userName: 'Aisha N.', text: 'Jong Foodie was right, it's a must try!' },
+    ],
+    'static-2': [
+      { userName: 'Marco R.', text: 'The shrimp banh mi is my go-to, so good!' },
+      { userName: 'Kevin T.', text: 'Went yesterday, still thinking about it 😍' },
+      { userName: 'Aisha N.', text: 'Best Vietnamese spot in Amsterdam hands down' },
+      { userName: 'Marco R.', text: 'Agreed! The bread is so crispy and fresh' },
+      { userName: 'Kevin T.', text: 'Adding this to my weekly lunch rotation for sure' },
+    ],
+    'static-3': [
+      { userName: 'Sarah L.', text: 'The Caribbean vibes are so unique in Amsterdam!' },
+      { userName: 'Aisha N.', text: 'Went for brunch, the staff were amazing 🌟' },
+      { userName: 'Marco R.', text: 'The cocktails are also great, try the tropical ones' },
+      { userName: 'Sarah L.', text: 'Going next Friday, can't wait!' },
+      { userName: 'Kevin T.', text: 'Book in advance, it gets very busy on weekends' },
+      { userName: 'Aisha N.', text: 'Worth every penny, 10/10 experience' },
+      { userName: 'Marco R.', text: 'The DJ nights are incredible too!' },
+      { userName: 'Sarah L.', text: 'Best atmosphere in all of Amsterdam West' },
+      { userName: 'Kevin T.', text: 'Already booked again for next month!' },
+    ],
+    'static-4': [
+      { userName: 'Marco R.', text: 'Try Buk! on Zeedijk, very authentic Korean!' },
+      { userName: 'Sarah L.', text: 'I know a great spot in De Pijp, will DM you!' },
+      { userName: 'Kevin T.', text: 'Korean House near Nieuwmarkt is solid and affordable' },
+      { userName: 'Marco R.', text: 'Also check if Jong Foodie covers Korean soon 🤞' },
+      { userName: 'Sarah L.', text: 'Definitely within your €15-20 budget at Korean House!' },
+      { userName: 'Aisha N.', text: 'Thanks everyone, going to try Korean House this week!' },
+      { userName: 'Kevin T.', text: 'Let us know what you think when you go!' },
+      { userName: 'Marco R.', text: 'The bibimbap there is amazing' },
+      { userName: 'Sarah L.', text: 'And the banchan side dishes are so generous!' },
+      { userName: 'Kevin T.', text: 'Jong Foodie should definitely review Korean food next!' },
+      { userName: 'Aisha N.', text: 'Agreed! Korean cuisine in Amsterdam deserves a review 🙏' },
+      { userName: 'Marco R.', text: 'Tag Jong Foodie so they see this post!' },
+    ],
+  };
+
   async function loadComments(postId) {
     const list = document.getElementById('comments-list-' + postId);
     if (!list) return;
     try {
+      // Load from Firestore
       const q = query(collection(db, 'comments'), orderBy('createdAt', 'asc'));
       const snap = await getDocs(q);
-      const filtered = snap.docs.filter(d => d.data().postId === postId);
-      list.innerHTML = filtered.map(d => {
-        const c = d.data();
-        return `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
+      const firestoreComments = snap.docs
+        .filter(d => d.data().postId === postId)
+        .map(d => ({ userName: d.data().userName, text: d.data().text }));
+
+      // Combine static + real comments
+      const preloaded = staticComments[postId] || [];
+      const allComments = [...preloaded, ...firestoreComments];
+
+      list.innerHTML = allComments.map(c => `
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
           <span style="font-weight:500;color:var(--accent);">${c.userName}:</span> ${c.text}
-        </div>`;
-      }).join('') || '<p style="font-size:12px;color:var(--muted);">No comments yet. Be the first!</p>';
+        </div>`).join('') || '<p style="font-size:12px;color:var(--muted);">No comments yet. Be the first!</p>';
     } catch(e) {
       console.error(e);
     }
