@@ -1537,7 +1537,7 @@
       const q = query(collection(db, 'picks'), where('userName', '==', name));
       const snap = await getDocs(q);
       if (snap.empty) {
-        container.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:1.5rem;">You haven't added any picks yet!<br><a href="index.html" style="color:var(--accent);">Add your first recommendation →</a></p>';
+        container.innerHTML = `<p style="font-size:13px;color:var(--muted);text-align:center;padding:1.5rem;">You haven't added any picks yet!<br><a href="index.html" style="color:var(--accent);">Add your first recommendation →</a></p>`;
         return;
       }
       const typeEmojis = {"Burgers":"🍔","Cafe":"☕","Asian":"🍜","Pastries":"🥐","Sushi":"🍣","Street Food":"🌮","Desserts":"🍰","Restaurant":"🍽️","Sandwiches":"🥪","Fine Dining":"🥂"};
