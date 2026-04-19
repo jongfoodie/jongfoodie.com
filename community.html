@@ -556,6 +556,111 @@
     }
   };
 
+  // Load community posts from Firestore
+  async function loadPosts() {
+    const list = document.getElementById('postsList');
+    try {
+      const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+
+      // Keep static posts but add real ones at top
+      const staticPosts = list.innerHTML.includes('Marco R.') ? list.innerHTML : '';
+
+      if (snap.empty) {
+        list.innerHTML = staticPosts || '<p style="font-size:13px;color:var(--muted);">No posts yet!</p>';
+        return;
+      }
+
+      let postsHtml = '';
+      snap.docs.forEach(d => {
+        const p = d.data();
+        const initials = p.userName ? p.userName.substring(0,2).toUpperCase() : 'JF';
+        const timeAgo = p.createdAt ? 'Just now' : '';
+        const isRating = p.type === 'rating';
+
+        postsHtml += `<div class="post-card" data-id="${d.id}">
+          <div class="post-header">
+            <div class="post-avatar" style="background:var(--accent);">${initials}</div>
+            <div class="post-user-info">
+              <p class="post-username">${p.userName}</p>
+              <p class="post-location">Amsterdam</p>
+            </div>
+            <span class="post-time">${timeAgo}</span>
+          </div>
+          ${isRating ? `<div style="margin-bottom:6px;"><span style="background:var(--accent-pale);color:var(--accent);font-size:11px;padding:3px 8px;border-radius:8px;font-weight:500;">⭐ Rated: ${p.restaurant}</span></div>` : ''}
+          <p class="post-text">${p.text}</p>
+          ${isRating ? `<p style="color:#C8901A;font-size:14px;margin-top:4px;">${p.stars} ${p.rating}.0</p>` : ''}
+          <div class="post-footer">
+            <button class="post-action" onclick="toggleLikePost(this, '${d.id}')"><span>♡</span> <span class="like-count">${p.likes || 0}</span> likes</button>
+            <button class="post-action" onclick="toggleComments(this, '${d.id}')"><span>💬</span> Comments</button>
+            <button class="post-action" onclick="sharePost('${p.restaurant || p.text.substring(0,30)}')"><span>↗</span> Share</button>
+            ${currentUser && p.userName === (currentUser.displayName || currentUser.email.split('@')[0]) ? `<button class="post-action" style="color:var(--accent);" onclick="deletePost('${d.id}', this)">🗑 Delete</button>` : ''}
+          </div>
+          <div class="comments-section" id="comments-${d.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <div class="comments-list" id="comments-list-${d.id}"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-${d.id}" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('${d.id}')">
+              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('${d.id}')">Post</button>
+            </div>
+          </div>
+        </div>`;
+      });
+
+      list.innerHTML = postsHtml + staticPosts;
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  window.toggleLikePost = async function(btn, postId) {
+    const countEl = btn.querySelector('.like-count');
+    const span = btn.querySelector('span');
+    const liked = span.textContent === '♥';
+    const count = parseInt(countEl.textContent) || 0;
+    span.textContent = liked ? '♡' : '♥';
+    countEl.textContent = liked ? count - 1 : count + 1;
+    btn.style.color = liked ? '' : 'var(--accent)';
+  };
+
+  window.toggleComments = function(btn, postId) {
+    const section = document.getElementById('comments-' + postId);
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  };
+
+  window.addComment = function(postId) {
+    const input = document.getElementById('comment-input-' + postId);
+    const text = input.value.trim();
+    if (!text) return;
+    if (!currentUser) { showToast('Please log in to comment!'); return; }
+    const userName = currentUser.displayName || currentUser.email.split('@')[0];
+    const list = document.getElementById('comments-list-' + postId);
+    const comment = document.createElement('div');
+    comment.style.cssText = 'padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;';
+    comment.innerHTML = `<span style="font-weight:500;color:var(--accent);">${userName}:</span> ${text}`;
+    list.appendChild(comment);
+    input.value = '';
+    showToast('Comment posted! 💬');
+  };
+
+  window.sharePost = function(text) {
+    if (navigator.share) {
+      navigator.share({ title: 'Jong Foodie', text: text, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      showToast('Link copied to clipboard! 🔗');
+    }
+  };
+
+  window.deletePost = async function(postId, btn) {
+    if (!confirm('Delete this post?')) return;
+    await deleteDoc(doc(db, 'posts', postId));
+    btn.closest('.post-card').remove();
+    showToast('Post deleted!');
+  };
+
+  // Load posts on page load
+  loadPosts();
+
   window.deletePick = async function(docId, btn) {
     if (!confirm('Delete this pick?')) return;
     try {

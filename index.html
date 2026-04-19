@@ -1255,29 +1255,40 @@
     document.querySelectorAll('.rate-star').forEach((s, i) => s.classList.toggle('lit', i < n));
   }
 
-  function submitReview() {
+  async function submitReview() {
     const name = document.getElementById('rateRestaurant').value;
     const review = document.getElementById('rateReview').value.trim();
-    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!name) { showToast('Please select a restaurant!'); return; }
     if (!currentRating) { showToast('Please select a star rating!'); return; }
     if (!review) { showToast('Please write a short review!'); return; }
+    if (!currentUser) { showToast('Please log in first!'); return; }
+
+    const userName = currentUser.displayName || currentUser.email.split('@')[0];
     const stars = '★'.repeat(currentRating) + '☆'.repeat(5-currentRating);
-    const emojis = ['🍽️','🍔','☕','🍜','🥐','🍣','🌮'];
-    const emoji = emojis[Math.floor(Math.random()*emojis.length)];
-    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
-    const color = colors[Math.floor(Math.random()*colors.length)];
-    const card = document.createElement('div');
-    card.className = 'mini-card';
-    card.style.animation = 'fadeIn 0.4s ease both';
-    card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta">Community Review · Just now</p><h3 class="mini-title">${name}</h3><p style="font-size:13px;color:var(--ink-soft);">${review}</p><div class="mini-footer"><span class="mini-rating">${stars} ${currentRating}.0</span><button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button></div></div>`;
-    const grid = document.querySelector('.cards-grid');
-    grid.insertBefore(card, grid.firstChild);
-    document.getElementById('rateRestaurant').value = '';
-    document.getElementById('rateReview').value = '';
-    currentRating = 0;
-    document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
-    showToast('Review added! 🎉');
-    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      // Save to Firestore as a community post
+      const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await addDoc(collection(db, 'posts'), {
+        restaurant: name,
+        text: review,
+        rating: currentRating,
+        stars: stars,
+        userName: userName,
+        type: 'rating',
+        likes: 0,
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById('rateRestaurant').value = '';
+      document.getElementById('rateReview').value = '';
+      currentRating = 0;
+      document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
+      showToast('Review posted to Community! 🎉');
+    } catch(e) {
+      showToast('Could not save review. Try again!');
+      console.error(e);
+    }
   }
 
   function submitPick() {
