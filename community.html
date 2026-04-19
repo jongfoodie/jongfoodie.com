@@ -809,7 +809,68 @@
     }
   };
 
-  // loadPicks is defined in the main module above
+  async function loadPicks() {
+    const grid = document.getElementById('communityPicksGrid');
+    if (!grid) return;
+    try {
+      const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      grid.innerHTML = '';
+      if (snapshot.empty) {
+        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:span 2;">No picks yet — be the first to add one on the homepage!</p>';
+        return;
+      }
+
+      // Group by restaurant name
+      const grouped = {};
+      snapshot.docs.forEach(docSnap => {
+        const p = { id: docSnap.id, ...docSnap.data() };
+        const key = p.name.toLowerCase().trim();
+        if (!grouped[key]) grouped[key] = { main: p, reviews: [] };
+        grouped[key].reviews.push(p);
+      });
+
+      const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂','Drinks':'🍹'};
+      const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+
+      Object.values(grouped).forEach((group, i) => {
+        const p = group.main;
+        const reviews = group.reviews;
+        const emoji = typeEmojis[p.type] || '🍽️';
+        const color = colors[i % colors.length];
+        const count = reviews.length;
+
+        const reviewsHtml = reviews.map(r => {
+          const isOwner = currentUser && r.userName === (currentUser.displayName || currentUser.email.split('@')[0]);
+          return `<div style="padding:8px 0;border-bottom:1px solid var(--border);">
+            <p style="font-size:12px;font-weight:500;color:var(--accent);">by ${r.userName}</p>
+            <p style="font-size:13px;color:var(--ink-soft);">${r.why}</p>
+            ${isOwner ? `<button onclick="deletePick('${r.id}', this)" style="margin-top:4px;background:none;border:1px solid #e0d0c8;padding:3px 10px;border-radius:8px;font-size:11px;color:#D4521A;cursor:pointer;">🗑 Delete</button>` : ''}
+          </div>`;
+        }).join('');
+
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        card.style.gridColumn = count > 1 ? 'span 2' : '';
+        card.innerHTML = `
+          <div class="mini-img ${color}" style="font-size:40px;">${emoji}</div>
+          <div class="mini-body">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p>
+              ${count > 1 ? `<span style="background:var(--accent);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;">${count} people recommend this</span>` : ''}
+            </div>
+            <h3 class="mini-title">${p.name}</h3>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''}</p>
+            <div>${reviewsHtml}</div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    } catch(e) {
+      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
+      console.error(e);
+    }
+  }
+
   loadPicks();
 </script>
 <!-- MEMBER PROFILE MODAL -->
