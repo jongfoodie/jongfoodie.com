@@ -150,10 +150,17 @@
         <span class="post-tag">🍔 Burgers</span>
         <p class="post-body">Just tried Maijard Smashburgers for the first time and honestly blown away. The beef patty has this perfect crispy edge and the sauce is unreal. Jong Foodie's review was spot on — definitely a must visit if you're in the Netherlands!</p>
         <div class="post-actions">
-          <button class="post-action" onclick="toggleLike(this)">♡ 14 likes</button>
-          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 3 comments</button>
+          <button class="post-action" onclick="toggleLikePost(this, 'static-1')"><span>♡</span> <span class="like-count">14</span> likes</button>
+          <button class="post-action" onclick="toggleComments(this, 'static-1')">💬 3 comments</button>
           <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
         </div>
+          <div class="comments-section" id="comments-static-1" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <div class="comments-list" id="comments-list-static-1"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-1" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-1')">
+              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-1')">Post</button>
+            </div>
+          </div>
       </div>
 
       <div class="post-card">
@@ -168,10 +175,17 @@
         <span class="post-tag">🥪 Sandwiches</span>
         <p class="post-body">Has anyone tried the Banh Mi Deli shrimp sandwich? I went today and it was incredible — left the peppers in like the review suggested and it made all the difference. So fresh and flavourful. 10/10 would recommend!</p>
         <div class="post-actions">
-          <button class="post-action" onclick="toggleLike(this)">♡ 8 likes</button>
-          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 5 comments</button>
+          <button class="post-action" onclick="toggleLikePost(this, 'static-2')"><span>♡</span> <span class="like-count">8</span> likes</button>
+          <button class="post-action" onclick="toggleComments(this, 'static-2')">💬 5 comments</button>
           <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
         </div>
+          <div class="comments-section" id="comments-static-2" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <div class="comments-list" id="comments-list-static-2"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-2" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-2')">
+              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-2')">Post</button>
+            </div>
+          </div>
       </div>
 
       <div class="post-card">
@@ -186,10 +200,17 @@
         <span class="post-tag">🍽️ Restaurant</span>
         <p class="post-body">Mondi Restaurant in Amsterdam New West is seriously underrated. Went for dinner last night and the vibe was so cozy. Service was attentive without being over the top. Everything on the menu was delicious — going back next week for sure!</p>
         <div class="post-actions">
-          <button class="post-action" onclick="toggleLike(this)">♡ 21 likes</button>
-          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 9 comments</button>
+          <button class="post-action" onclick="toggleLikePost(this, 'static-3')"><span>♡</span> <span class="like-count">21</span> likes</button>
+          <button class="post-action" onclick="toggleComments(this, 'static-3')">💬 9 comments</button>
           <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
         </div>
+          <div class="comments-section" id="comments-static-3" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <div class="comments-list" id="comments-list-static-3"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-3" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-3')">
+              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-3')">Post</button>
+            </div>
+          </div>
       </div>
 
       <div class="post-card">
@@ -204,10 +225,17 @@
         <span class="post-tag">❓ Question</span>
         <p class="post-body">Anyone know good spots for Korean food in Amsterdam? Looking for something authentic and not too pricey. Budget around €15-20 per person. Would love some Jong Foodie community recommendations!</p>
         <div class="post-actions">
-          <button class="post-action" onclick="toggleLike(this)">♡ 6 likes</button>
-          <button class="post-action" onclick="showToast('Comments coming soon!')">💬 12 comments</button>
+          <button class="post-action" onclick="toggleLikePost(this, 'static-4')"><span>♡</span> <span class="like-count">6</span> likes</button>
+          <button class="post-action" onclick="toggleComments(this, 'static-4')">💬 12 comments</button>
           <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
         </div>
+          <div class="comments-section" id="comments-static-4" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <div class="comments-list" id="comments-list-static-4"></div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-4" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-4')">
+              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-4')">Post</button>
+            </div>
+          </div>
       </div>
 
     </div>
