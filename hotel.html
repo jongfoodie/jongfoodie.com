@@ -118,6 +118,11 @@
   <p>Honest hotel reviews from Jong Foodie — and a place to share your favourite stays around the world.</p>
 </div>
 
+<div style="background:var(--warm-white);border-bottom:1px solid var(--border);padding:0.75rem 2rem;display:flex;gap:0.75rem;align-items:center;justify-content:center;">
+  <input type="text" id="hotelSearchInput" placeholder="Search hotels, cities, countries..." onkeyup="searchHotels()" style="border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);outline:none;width:100%;max-width:500px;">
+  <button onclick="searchHotels()" style="background:#1A3A5C;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Search</button>
+</div>
+
 <div class="wrapper">
 
   <!-- JONG FOODIE HOTEL REVIEWS -->
@@ -360,6 +365,30 @@
       document.getElementById('hotelFormLoggedOut').style.display = 'block';
     }
   });
+
+  // Search hotels
+  // Auto-search from homepage
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('search');
+    if (q) {
+      const input = document.getElementById('hotelSearchInput');
+      if (input) {
+        input.value = q;
+        setTimeout(() => window.searchHotels(), 800);
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  });
+
+  window.searchHotels = function() {
+    const q = document.getElementById('hotelSearchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.hotel-review-card');
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      card.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+  };
 
   window.doLogout = async function() {
     await signOut(auth);

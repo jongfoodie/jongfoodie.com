@@ -809,8 +809,8 @@
   <h1>Discover your next<br><em>favourite bite</em></h1>
   <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks — all in one place.</p>
   <div class="hero-search">
-    <input type="text" placeholder="Search cafes, burgers, pastries…" />
-    <button>Search</button>
+    <input type="text" id="heroSearchInput" placeholder="Search cafes, burgers, pastries…" onkeydown="if(event.key==='Enter')doHeroSearch()" />
+    <button onclick="doHeroSearch()">Search</button>
   </div>
   <div class="hero-stats">
     <div class="stat">
@@ -952,7 +952,10 @@
         <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:0.5rem;">Jong <em style="color:#F5C896;">Hotel</em> is here!</h3>
         <p style="font-size:13px;color:rgba(255,255,255,0.7);">Hotel reviews + share your favourite stays around the world.</p>
       </div>
-      <button onclick="window.location.href='hotel.html'" style="background:#F5C896;color:#1A3A5C;border:none;padding:12px 24px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Explore Jong Hotel →</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="text" id="hotelSearchHome" placeholder="Search hotels..." onkeydown="if(event.key==='Enter')doHotelSearch()" style="border:none;border-radius:20px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:200px;">
+        <button onclick="doHotelSearch()" style="background:#F5C896;color:#1A3A5C;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Search Hotels →</button>
+      </div>
     </div>
 
     <!-- COMMUNITY QUICK RATE -->
@@ -1206,6 +1209,18 @@
 </div>
 
 <script>
+  function doHotelSearch() {
+    const q = document.getElementById('hotelSearchHome').value.trim();
+    if (!q) { window.location.href = 'hotel.html'; return; }
+    window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
+  }
+
+  function doHeroSearch() {
+    const q = document.getElementById('heroSearchInput').value.trim();
+    if (!q) return;
+    window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
+  }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;

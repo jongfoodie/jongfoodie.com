@@ -74,6 +74,10 @@
   <h1>All Reviews</h1>
   <p>Honest, first-hand reviews by Merdan Koc — Jong Foodie</p>
 </div>
+<div style="background:var(--warm-white);border-bottom:1px solid var(--border);padding:0.75rem 2rem;display:flex;gap:0.75rem;align-items:center;">
+  <input type="text" id="reviewSearchInput" placeholder="Search reviews..." onkeyup="searchReviews()" style="flex:1;border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);outline:none;max-width:400px;">
+  <button onclick="searchReviews()" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Search</button>
+</div>
 <div class="filters">
   <button class="filter-pill active" onclick="setFilter(this)">All</button>
   <button class="filter-pill" onclick="setFilter(this)">🍔 Burgers</button>
@@ -440,6 +444,36 @@
   }
 
   loadNewReviews();
+
+  // Search reviews by text
+  function searchReviews() {
+    const q = document.getElementById('reviewSearchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.review-card');
+    let found = 0;
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (!q || text.includes(q)) {
+        card.style.display = '';
+        found++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Auto-search if coming from homepage search
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('search');
+    if (q) {
+      const input = document.getElementById('reviewSearchInput');
+      if (input) {
+        input.value = q;
+        searchReviews();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  });
 </script>
 </body>
 </html>
