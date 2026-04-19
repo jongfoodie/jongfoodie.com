@@ -319,7 +319,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp, doc, setDoc, getDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -624,23 +624,49 @@
 
   window.toggleComments = function(btn, postId) {
     const section = document.getElementById('comments-' + postId);
-    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    const isHidden = section.style.display === 'none';
+    section.style.display = isHidden ? 'block' : 'none';
+    if (isHidden) loadComments(postId);
   };
 
-  window.addComment = function(postId) {
+  window.addComment = async function(postId) {
     const input = document.getElementById('comment-input-' + postId);
     const text = input.value.trim();
     if (!text) return;
     if (!currentUser) { showToast('Please log in to comment!'); return; }
     const userName = currentUser.displayName || currentUser.email.split('@')[0];
-    const list = document.getElementById('comments-list-' + postId);
-    const comment = document.createElement('div');
-    comment.style.cssText = 'padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;';
-    comment.innerHTML = `<span style="font-weight:500;color:var(--accent);">${userName}:</span> ${text}`;
-    list.appendChild(comment);
-    input.value = '';
-    showToast('Comment posted! 💬');
+    try {
+      await addDoc(collection(db, 'comments'), {
+        postId: postId,
+        text: text,
+        userName: userName,
+        createdAt: serverTimestamp()
+      });
+      input.value = '';
+      showToast('Comment posted! 💬');
+      loadComments(postId);
+    } catch(e) {
+      showToast('Could not post comment. Try again!');
+    }
   };
+
+  async function loadComments(postId) {
+    const list = document.getElementById('comments-list-' + postId);
+    if (!list) return;
+    try {
+      const q = query(collection(db, 'comments'), orderBy('createdAt', 'asc'));
+      const snap = await getDocs(q);
+      const filtered = snap.docs.filter(d => d.data().postId === postId);
+      list.innerHTML = filtered.map(d => {
+        const c = d.data();
+        return `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="font-weight:500;color:var(--accent);">${c.userName}:</span> ${c.text}
+        </div>`;
+      }).join('') || '<p style="font-size:12px;color:var(--muted);">No comments yet. Be the first!</p>';
+    } catch(e) {
+      console.error(e);
+    }
+  }
 
   window.sharePost = function(text) {
     if (navigator.share) {
