@@ -201,80 +201,101 @@
   </div>
 </div>
 
+<!-- GUIDE MODAL -->
+<div id="guideBg" style="display:none;position:fixed;inset:0;background:rgba(26,18,8,0.6);z-index:9999;overflow-y:auto;padding:2rem 1rem;" onclick="if(event.target===this)closeGuide()">
+  <div id="guideModal" style="background:#FFFDF9;border-radius:20px;padding:2rem;max-width:640px;width:100%;margin:auto;position:relative;">
+    <button onclick="closeGuide()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:22px;cursor:pointer;color:#8A7A66;">✕</button>
+    <div id="guideContent"></div>
+  </div>
+</div>
+
 <script>
-  const guides = {
-    burgers: {
-      title: '🍔 Best Smash Burgers in the Netherlands',
-      subtitle: 'From Maijard to Le Smash — every burger spot Jong Foodie has personally visited and rated.',
-      spots: [
-        { name: 'Maijard Smashburgers — The Original', rating: '★★★★½', price: '€14', location: 'Berenstraat 20, Amsterdam', tags: ['Must Try', 'Local Ingredients'], review: 'An absolute gem. Fresh locally-sourced ingredients, a perfect bun-to-patty ratio with two succulent patties, and an exquisite burger sauce. Every bite tells a story of culinary craftsmanship.' },
-        { name: 'Maijard — Chicken Smash Burger', rating: '★★★★★', price: '€15', location: 'Berenstraat 20, Amsterdam', tags: ['Must Try', 'Chicken'], review: 'The Chicken Smash Burger is a masterpiece! Juicy, flavorful, crispy on the outside. The bun is toasted to perfection and the sauce takes it to the next level.' },
-        { name: 'Le Smash — Le Special with Extra Bacon', rating: '★★★★½', price: '€12.95', location: 'Govert Flinckstraat 122, Amsterdam', tags: ['Must Try', 'Best Value'], review: 'Extra bacon, smash patty, secret sauce — this burger delivers on almost every front. One of the best smashburgers in De Pijp.' },
-      ]
-    },
-    sandwiches: {
-      title: '🥪 Best Asian Sandwiches in Amsterdam',
-      subtitle: 'Jong Foodie's top picks for Asian-inspired sandwiches across Amsterdam.',
-      spots: [
-        { name: 'Banh Mi Deli Amsterdam', rating: '★★★★☆', price: '€9.75', location: 'Prinsengracht 172, Amsterdam', tags: ['Vietnamese', 'Spicy'], review: 'Specialises in flavorful and spicy Asian sandwiches. The shrimp sandwich was generously filled. Keep the spicy peppers in — they make it!' },
-        { name: 'Cafe Nobuya — Gyudon Beef Sandwich', rating: '★★★★★', price: '€11.30', location: 'Herenstraat 28D, Amsterdam', tags: ['Japanese', 'Must Try'], review: 'The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one. A haven for food enthusiasts.' },
-        { name: 'Bonnie — Kimchi Croque', rating: '★★★★☆', price: '€11.95', location: 'Amstelveenseweg 226, Amsterdam', tags: ['Korean Fusion', 'Late Night'], review: 'The Kimchi Croque stands out with bold kimchi flavors. Got both varieties with the optional fried egg — worth the extra cost!' },
-        { name: 'Chun Cafe — Bacon Egg & Cheese', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Add Avocado!'], review: 'One of the best sandwiches in town! A nice brioche that opens from the top. Add the avocado for the best combination.' },
-      ]
-    }
-    ,coffee: { title: '☕ Best Cafes & Coffee in Amsterdam', subtitle: 'Jong Foodie picks for the best cafe spots in Amsterdam.', spots: [
-      { name: 'The Coffee', rating: '★★★★★', price: '€-', location: 'Eerste Constantijn Huygensstraat 33, Amsterdam', tags: ['Must Try', 'Matcha'], review: 'Must-try in Amsterdam: strawberry matcha + a fresh cookie.' },
-      { name: 'Chun Cafe Amsterdam', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Add Avocado!'], review: 'One of the best sandwiches in town! A nice brioche that opens from the top. Add the avocado for the best combination.' },
-    ]},
-    hidden: { title: '🌿 Hidden Gems in Amsterdam', subtitle: 'Under-the-radar spots Jong Foodie loves.', spots: [
+const allGuides = {
+  burgers: {
+    title: '🍔 Best Smash Burgers in the Netherlands',
+    subtitle: 'From Maijard to Le Smash — every burger spot Jong Foodie has personally visited.',
+    spots: [
+      { name: 'Maijard Smashburgers — The Original', rating: '★★★★½', price: '€14', location: 'Berenstraat 20, Amsterdam', tags: ['Must Try', 'Local Ingredients'], review: 'An absolute gem. Fresh locally-sourced ingredients, a perfect bun-to-patty ratio with two succulent patties, and an exquisite burger sauce. Every bite tells a story of culinary craftsmanship.' },
+      { name: 'Maijard — Chicken Smash Burger', rating: '★★★★★', price: '€15', location: 'Berenstraat 20, Amsterdam', tags: ['Must Try', 'Chicken'], review: 'The Chicken Smash Burger is a masterpiece! Juicy, flavorful, crispy on the outside. The bun is toasted to perfection and the sauce takes it to the next level.' },
+      { name: 'Le Smash — Le Special with Extra Bacon', rating: '★★★★½', price: '€12.95', location: 'Govert Flinckstraat 122, Amsterdam', tags: ['Must Try', 'Best Value'], review: 'Extra bacon, smash patty, secret sauce — this burger delivers on almost every front. One of the best smashburgers in De Pijp.' },
+    ]
+  },
+  sandwiches: {
+    title: '🥪 Best Asian Sandwiches in Amsterdam',
+    subtitle: 'Jong Foodie top picks for Asian-inspired sandwiches across Amsterdam.',
+    spots: [
+      { name: 'Banh Mi Deli Amsterdam', rating: '★★★★☆', price: '€9.75', location: 'Prinsengracht 172, Amsterdam', tags: ['Vietnamese', 'Spicy'], review: 'Specialises in flavorful and spicy Asian sandwiches. The shrimp sandwich was generously filled. Keep the spicy peppers in — they make it!' },
+      { name: 'Cafe Nobuya — Gyudon Beef Sandwich', rating: '★★★★★', price: '€11.30', location: 'Herenstraat 28D, Amsterdam', tags: ['Japanese', 'Must Try'], review: 'The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one.' },
+      { name: 'Bonnie — Kimchi Croque', rating: '★★★★☆', price: '€11.95', location: 'Amstelveenseweg 226, Amsterdam', tags: ['Korean Fusion', 'Late Night'], review: 'The Kimchi Croque stands out with bold kimchi flavors. Got both varieties with the optional fried egg — worth the extra cost!' },
+      { name: 'Chun Cafe — Bacon Egg & Cheese', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Add Avocado!'], review: 'One of the best sandwiches in town! A nice brioche that opens from the top. Add the avocado for the best combination.' },
+    ]
+  },
+  coffee: {
+    title: '☕ Best Cafes & Coffee in Amsterdam',
+    subtitle: 'Jong Foodie picks for the best cafe spots in Amsterdam.',
+    spots: [
+      { name: 'The Coffee', rating: '★★★★★', price: '€5–10', location: 'Eerste Constantijn Huygensstraat 33, Amsterdam', tags: ['Must Try', 'Matcha'], review: 'Must-try in Amsterdam: strawberry matcha + a fresh cookie. Cozy atmosphere and friendly staff.' },
+      { name: 'Chun Cafe Amsterdam', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Cozy'], review: 'One of the best cafes in the Jordaan. Perfect for breakfast or a slow morning coffee.' },
+    ]
+  },
+  hidden: {
+    title: '🌿 Hidden Gems in Amsterdam',
+    subtitle: 'Under-the-radar spots Jong Foodie loves.',
+    spots: [
       { name: 'Leauf Amsterdam', rating: '★★★★★', price: '€15', location: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', tags: ['Must Try', 'Top Service'], review: 'Absolutely delicious with fresh ingredients and perfectly balanced flavors. Service was exceptional.' },
       { name: 'Fabel Friet', rating: '★★★★★', price: '€5.50', location: 'Runstraat 1, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
-    ]},
-    asian: { title: '🍜 Best Asian Restaurants in Amsterdam', subtitle: 'The best Asian food Jong Foodie has found in Amsterdam.', spots: [
+      { name: 'Fort Negen Sandwich Bar', rating: '★★★☆☆', price: '€15', location: 'Jan Evertsenstraat 37, Amsterdam', tags: ['Sandwiches', 'Sourdough'], review: 'Known for the best croissants in Amsterdam. A great sandwich needs warmth, crunch, and freshness.' },
+    ]
+  },
+  asian: {
+    title: '🍜 Best Asian Restaurants in Amsterdam',
+    subtitle: 'The best Asian food Jong Foodie has found in Amsterdam.',
+    spots: [
       { name: 'IZAKAYA Asian Kitchen & Bar', rating: '★★★★★', price: 'Luxury', location: 'Albert Cuypstraat 2-6, Amsterdam', tags: ['Must Try', 'Best Sushi', 'Luxury'], review: 'The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty.' },
       { name: 'Cafe Nobuya', rating: '★★★★★', price: '€11.30', location: 'Herenstraat 28D, Amsterdam', tags: ['Japanese', 'Must Try'], review: 'The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one.' },
       { name: 'Banh Mi Deli Amsterdam', rating: '★★★★☆', price: '€9.75', location: 'Prinsengracht 172, Amsterdam', tags: ['Vietnamese', 'Spicy'], review: 'Specialises in flavorful and spicy Asian sandwiches. Keep the spicy peppers in — they make it!' },
-    ]},
-    pastry: { title: '🥐 Best Pastries & Bakeries in Amsterdam', subtitle: 'Jong Foodie bakery and pastry picks.', spots: [
-      { name: 'et CLAIRE — Pistachio Cube Croissant', rating: '★★★☆☆', price: '€9.65', location: 'Beethovenstraat 38, Amsterdam', tags: ['Pastries', 'Creative'], review: 'Eye-catching and creative — buttery, flaky layers with pistachio cream. The price is steep but worth trying for pastry lovers.' },
-      { name: 'Fort Negen Sandwich Bar', rating: '★★★☆☆', price: '€15', location: 'Jan Evertsenstraat 37, Amsterdam', tags: ['Sandwiches', 'Sourdough'], review: 'Known for the best croissants in Amsterdam. The pastrami sandwich had good flavour but too wet.' },
-    ]},
-  };
-
-  function openGuide(type) {
-    const g = guides[type];
-    const spotsHtml = g.spots.map(s => `
-      <div style="border:1px solid rgba(26,18,8,0.1);border-radius:12px;padding:1.25rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-          <h3 style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.3;">${s.name}</h3>
-          <span style="color:#C8901A;font-size:14px;white-space:nowrap;margin-left:1rem;">${s.rating}</span>
-        </div>
-        <p style="font-size:12px;color:#8A7A66;margin-bottom:8px;">📍 ${s.location} · 💰 ${s.price}</p>
-        <p style="font-size:13px;color:#3D2F1A;margin-bottom:8px;">${s.review}</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          ${s.tags.map(t => `<span style="background:#FBF3EF;color:#D4521A;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;">${t}</span>`).join('')}
-        </div>
-      </div>`).join('');
-
-    document.getElementById('guideContent').innerHTML = `
-      <h2 style="font-family:'Playfair Display',serif;font-size:24px;margin-bottom:0.5rem;">${g.title}</h2>
-      <p style="font-size:14px;color:#8A7A66;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(26,18,8,0.1);">${g.subtitle}</p>
-      ${spotsHtml}`;
-
-    const bg = document.getElementById('guideBg');
-    const modal = document.getElementById('guideModal');
-    bg.style.opacity = '1';
-    bg.style.pointerEvents = 'all';
-    modal.style.transform = 'scale(1)';
+    ]
+  },
+  pastry: {
+    title: '🥐 Best Pastries & Bakeries in Amsterdam',
+    subtitle: 'Jong Foodie bakery and pastry picks.',
+    spots: [
+      { name: 'et CLAIRE — Pistachio Cube Croissant', rating: '★★★☆☆', price: '€9.65', location: 'Beethovenstraat 38, Amsterdam', tags: ['Pastries', 'Creative'], review: 'Eye-catching and creative — buttery, flaky layers with pistachio cream. Worth trying for pastry lovers!' },
+      { name: 'Brioche Amsterdam — Grilled Cheese', rating: '★☆☆☆☆', price: '€-', location: 'Bilderdijkstraat 164, Amsterdam', tags: ['Breakfast', 'Overpriced'], review: 'The sandwich lacked flavour and I could not even finish it. High hopes, flat results.' },
+      { name: 'BISOUS Amsterdam', rating: '★★★★☆', price: '€12', location: 'Albert Cuypstraat 31, Amsterdam', tags: ['Late Night', 'Cozy'], review: 'Great late night spot with creative bites. The atmosphere is warm and the staff are friendly.' },
+    ]
   }
+};
 
-  function closeGuide() {
-    const bg = document.getElementById('guideBg');
-    const modal = document.getElementById('guideModal');
-    bg.style.opacity = '0';
-    bg.style.pointerEvents = 'none';
-    modal.style.transform = 'scale(0.95)';
-  }
+function openGuide(type) {
+  const g = allGuides[type];
+  if (!g) return;
+  const spotsHtml = g.spots.map(s => `
+    <div style="border:1px solid rgba(26,18,8,0.1);border-radius:12px;padding:1.25rem;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <h3 style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.3;margin:0;">${s.name}</h3>
+        <span style="color:#C8901A;font-size:14px;white-space:nowrap;margin-left:1rem;">${s.rating}</span>
+      </div>
+      <p style="font-size:12px;color:#8A7A66;margin:0 0 8px;">📍 ${s.location} · 💰 ${s.price}</p>
+      <p style="font-size:13px;color:#3D2F1A;margin:0 0 8px;">${s.review}</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${s.tags.map(t => `<span style="background:#FBF3EF;color:#D4521A;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;">${t}</span>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('guideContent').innerHTML = `
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin:0 0 0.5rem;">${g.title}</h2>
+    <p style="font-size:14px;color:#8A7A66;margin:0 0 1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(26,18,8,0.1);">${g.subtitle}</p>
+    ${spotsHtml}`;
+
+  document.getElementById('guideBg').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGuide() {
+  document.getElementById('guideBg').style.display = 'none';
+  document.body.style.overflow = '';
+}
 </script>
 </body>
 </html>
