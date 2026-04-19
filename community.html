@@ -759,8 +759,6 @@
     showToast('Post deleted!');
   };
 
-  // Load posts on page load
-  loadPosts();
 
   window.deletePick = async function(docId, btn) {
     if (!confirm('Delete this pick?')) return;
@@ -871,7 +869,6 @@
     }
   }
 
-  loadPicks();
 </script>
 <!-- MEMBER PROFILE MODAL -->
 <div class="member-profile-bg" id="memberProfileBg" onclick="closeMemberProfile(event)">
