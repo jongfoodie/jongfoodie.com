@@ -91,7 +91,7 @@
       <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;font-weight:500;">Editor's Pick</p>
       <h2>The Best Smash Burgers in <em>the Netherlands</em></h2>
       <p>From Maijard to hidden gems — a complete guide to the best smash burger spots Jong Foodie has personally visited and rated.</p>
-      <button class="btn-accent">Read the Guide</button>
+      <button class="btn-accent" onclick="openGuide('burgers')">Read the Guide</button>
     </div>
     <div class="featured-emoji">🍔</div>
   </div>
@@ -99,7 +99,7 @@
   <p class="section-label">All Guides</p>
   <div class="guides-grid">
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('burgers')">
       <div class="guide-img bg-burger">🍔
         <span class="guide-badge">Burgers</span>
       </div>
@@ -114,7 +114,7 @@
       </div>
     </div>
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('sandwiches')">
       <div class="guide-img bg-asian">🥪
         <span class="guide-badge">Sandwiches</span>
       </div>
@@ -129,7 +129,7 @@
       </div>
     </div>
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('coffee')">
       <div class="guide-img bg-cafe">☕
         <span class="guide-badge">Cafes</span>
       </div>
@@ -144,7 +144,7 @@
       </div>
     </div>
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('hidden')">
       <div class="guide-img bg-green">🌿
         <span class="guide-badge">Budget</span>
       </div>
@@ -159,7 +159,7 @@
       </div>
     </div>
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('asian')">
       <div class="guide-img bg-ramen">🍜
         <span class="guide-badge">Asian</span>
       </div>
@@ -174,7 +174,7 @@
       </div>
     </div>
 
-    <div class="guide-card">
+    <div class="guide-card" onclick="openGuide('pastry')">
       <div class="guide-img bg-pastry">🥐
         <span class="guide-badge">Pastries</span>
       </div>
@@ -222,6 +222,23 @@
         { name: 'Chun Cafe — Bacon Egg & Cheese', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Add Avocado!'], review: 'One of the best sandwiches in town! A nice brioche that opens from the top. Add the avocado for the best combination.' },
       ]
     }
+    ,coffee: { title: '☕ Best Cafes & Coffee in Amsterdam', subtitle: 'Jong Foodie picks for the best cafe spots in Amsterdam.', spots: [
+      { name: 'The Coffee', rating: '★★★★★', price: '€-', location: 'Eerste Constantijn Huygensstraat 33, Amsterdam', tags: ['Must Try', 'Matcha'], review: 'Must-try in Amsterdam: strawberry matcha + a fresh cookie.' },
+      { name: 'Chun Cafe Amsterdam', rating: '★★★★★', price: '€10', location: 'Berenstraat 8, Amsterdam', tags: ['Breakfast', 'Add Avocado!'], review: 'One of the best sandwiches in town! A nice brioche that opens from the top. Add the avocado for the best combination.' },
+    ]},
+    hidden: { title: '🌿 Hidden Gems in Amsterdam', subtitle: 'Under-the-radar spots Jong Foodie loves.', spots: [
+      { name: 'Leauf Amsterdam', rating: '★★★★★', price: '€15', location: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', tags: ['Must Try', 'Top Service'], review: 'Absolutely delicious with fresh ingredients and perfectly balanced flavors. Service was exceptional.' },
+      { name: 'Fabel Friet', rating: '★★★★★', price: '€5.50', location: 'Runstraat 1, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
+    ]},
+    asian: { title: '🍜 Best Asian Restaurants in Amsterdam', subtitle: 'The best Asian food Jong Foodie has found in Amsterdam.', spots: [
+      { name: 'IZAKAYA Asian Kitchen & Bar', rating: '★★★★★', price: 'Luxury', location: 'Albert Cuypstraat 2-6, Amsterdam', tags: ['Must Try', 'Best Sushi', 'Luxury'], review: 'The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty.' },
+      { name: 'Cafe Nobuya', rating: '★★★★★', price: '€11.30', location: 'Herenstraat 28D, Amsterdam', tags: ['Japanese', 'Must Try'], review: 'The Gyudon Beef Sandwich is a symphony of flavors — savory, spicy, sweet, sour, and crunchy all in one.' },
+      { name: 'Banh Mi Deli Amsterdam', rating: '★★★★☆', price: '€9.75', location: 'Prinsengracht 172, Amsterdam', tags: ['Vietnamese', 'Spicy'], review: 'Specialises in flavorful and spicy Asian sandwiches. Keep the spicy peppers in — they make it!' },
+    ]},
+    pastry: { title: '🥐 Best Pastries & Bakeries in Amsterdam', subtitle: 'Jong Foodie bakery and pastry picks.', spots: [
+      { name: 'et CLAIRE — Pistachio Cube Croissant', rating: '★★★☆☆', price: '€9.65', location: 'Beethovenstraat 38, Amsterdam', tags: ['Pastries', 'Creative'], review: 'Eye-catching and creative — buttery, flaky layers with pistachio cream. The price is steep but worth trying for pastry lovers.' },
+      { name: 'Fort Negen Sandwich Bar', rating: '★★★☆☆', price: '€15', location: 'Jan Evertsenstraat 37, Amsterdam', tags: ['Sandwiches', 'Sourdough'], review: 'Known for the best croissants in Amsterdam. The pastrami sandwich had good flavour but too wet.' },
+    ]},
   };
 
   function openGuide(type) {
