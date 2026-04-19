@@ -16,14 +16,14 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); }
 
     /* NAV */
-    nav { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 3rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; }
+    nav { background: var(--hotel); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0 3rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; text-decoration: none; }
     .nav-logo span { color: var(--accent); }
     .nav-logo sup { font-size: 10px; color: var(--hotel); font-family: 'DM Sans', sans-serif; letter-spacing: 0.1em; background: #E8F0F8; padding: 2px 6px; border-radius: 6px; margin-left: 4px; }
     nav ul { list-style: none; display: flex; gap: 2rem; }
-    nav ul a { text-decoration: none; font-size: 13px; letter-spacing: 0.05em; color: var(--ink-soft); font-weight: 500; }
+    nav ul a { text-decoration: none; font-size: 13px; letter-spacing: 0.05em; color: rgba(255,255,255,0.75); font-weight: 500; }
     nav ul a:hover { color: var(--accent); }
-    #navLogout { background: none; border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    #navLogout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
     /* HERO */
     .hero { background: var(--hotel); color: #fff; padding: 5rem 3rem; text-align: center; }
@@ -107,7 +107,7 @@
     <li><a href="hotel.html" style="color:var(--accent);">Jong Hotel</a></li>
   </ul>
   <div>
-    <span id="navUser" style="font-size:13px;color:var(--muted);margin-right:1rem;"></span>
+    <span id="navUser" style="font-size:13px;color:rgba(255,255,255,0.75);margin-right:1rem;"></span>
     <button id="navLogout" style="display:none;" onclick="doLogout()">Log out</button>
   </div>
 </nav>
