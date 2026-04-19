@@ -959,9 +959,28 @@
 
     <!-- LOGGED IN FORM -->
     <div id="rateForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; display:none;">
-      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Visited somewhere recently? Share a quick rating with the community.</p>
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Have you visited one of Jong Foodie's reviewed restaurants? Share your own rating!</p>
       <div class="rate-form">
-        <input id="rateRestaurant" class="rate-input" type="text" placeholder="Restaurant name…" style="height:40px;resize:none;">
+        <select id="rateRestaurant" class="rate-input" style="height:40px;cursor:pointer;">
+          <option value="">Select a restaurant from Jong Foodie's reviews…</option>
+          <option>Izakaya Amsterdam</option>
+          <option>Mondi Amsterdam Nieuw-West</option>
+          <option>Maijard Smashburgers</option>
+          <option>BISOUS Amsterdam</option>
+          <option>Fort Negen Sandwich Bar</option>
+          <option>Leauf Amsterdam</option>
+          <option>et CLAIRE</option>
+          <option>Cafe Nobuya</option>
+          <option>Brioche Amsterdam</option>
+          <option>Le Smash Amsterdam</option>
+          <option>Fabel Friet</option>
+          <option>Sjefietshé</option>
+          <option>Bonnie Amsterdam</option>
+          <option>Banh Mi Deli Amsterdam</option>
+          <option>Chun Cafe Amsterdam</option>
+          <option>Zorlu Center Istanbul</option>
+          <option>360 Istanbul</option>
+        </select>
         <div class="rate-stars-input" id="starRating">
           <span class="rate-star" onclick="setRating(1)">★</span>
           <span class="rate-star" onclick="setRating(2)">★</span>
@@ -969,8 +988,8 @@
           <span class="rate-star" onclick="setRating(4)">★</span>
           <span class="rate-star" onclick="setRating(5)">★</span>
         </div>
-        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think?…"></textarea>
-        <button class="btn-accent" onclick="submitReview()">Submit Review</button>
+        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think? Did you agree with Jong Foodie's review?…"></textarea>
+        <button class="btn-accent" onclick="submitReview()">Submit My Rating</button>
       </div>
     </div>
 
@@ -1167,6 +1186,7 @@
         <label class="modal-label">Password</label>
         <input class="modal-input" type="password" placeholder="Create a password">
       </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:0.75rem;text-align:center;">📧 Check your spam/junk folder if you don't receive our email!</p>
       <div class="modal-footer">
         <button class="btn-fill" style="width:100%;padding:11px;" onclick="doSignup()">Create account</button>
       </div>
@@ -1236,7 +1256,7 @@
   }
 
   function submitReview() {
-    const name = document.getElementById('rateRestaurant').value.trim();
+    const name = document.getElementById('rateRestaurant').value;
     const review = document.getElementById('rateReview').value.trim();
     if (!name) { showToast('Please enter a restaurant name!'); return; }
     if (!currentRating) { showToast('Please select a star rating!'); return; }
