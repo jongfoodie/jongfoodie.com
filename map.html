@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Map — Jong Foodie</title>
+<meta name="description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam and beyond.">
+<title>Food Map — Jong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -57,6 +58,12 @@
 
 </style>
 <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Jong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
 <div class="mobile-nav" id="mobileNav">
@@ -68,7 +75,15 @@
   <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
 </div>
 <nav>
-  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
   <ul class="nav-links">
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
@@ -202,6 +217,13 @@ function filterSpots(val) {
 
 // Load spots
 loadAllSpots();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
 </script>
 </body>
 </html>
