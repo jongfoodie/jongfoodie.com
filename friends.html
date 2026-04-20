@@ -12,7 +12,7 @@
   :root {
     --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
     --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
-    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D;
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
   nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
@@ -33,63 +33,47 @@
   .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
 
   .wrapper { max-width: 960px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 300px; gap: 2rem; }
-
   .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* Search */
-  .search-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
-  .search-input { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--warm-white); color: var(--ink); outline: none; }
-  .search-input:focus { border-color: var(--accent); }
-  .btn-search { background: var(--accent); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .not-logged-in { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; }
+  .not-logged-in h2 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 0.5rem; }
+  .not-logged-in p { color: var(--muted); margin-bottom: 1.5rem; }
+  .btn-login { background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 20px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; }
 
-  /* Feed */
   .feed { display: flex; flex-direction: column; gap: 1rem; }
   .feed-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
   .feed-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: #fff; flex-shrink: 0; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; color: #fff; flex-shrink: 0; background: var(--accent); }
   .feed-meta { flex: 1; }
   .feed-name { font-weight: 500; font-size: 14px; }
-  .feed-time { font-size: 12px; color: var(--muted); }
-  .feed-place { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.75rem; }
-  .place-emoji { width: 52px; height: 52px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
-  .place-info { flex: 1; }
-  .place-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; }
-  .place-meta { font-size: 12px; color: var(--muted); }
-  .place-stars { font-size: 13px; color: var(--gold); }
-  .place-comment { font-size: 13px; color: var(--ink-soft); margin-top: 0.25rem; font-style: italic; }
-  .feed-actions { display: flex; gap: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
-  .action-btn { background: none; border: none; font-size: 13px; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; padding: 0; }
-  .action-btn:hover { color: var(--accent); }
-  .action-btn.liked { color: var(--accent); }
+  .feed-sub { font-size: 12px; color: var(--muted); }
+  .feed-actions { display: flex; gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .action-btn { background: none; border: 1px solid var(--border); padding: 5px 14px; border-radius: 20px; font-size: 12px; color: var(--ink-soft); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .action-btn.following { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .action-btn.following:hover { background: #fee; color: var(--accent); border-color: var(--accent); }
 
-  /* Sidebar */
   .sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
   .sidebar-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
   .sidebar-title { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 1rem; }
-  .friend-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
-  .friend-row:last-child { border-bottom: none; }
-  .friend-info { flex: 1; }
-  .friend-name { font-size: 13px; font-weight: 500; }
-  .friend-reviews { font-size: 11px; color: var(--muted); }
-  .btn-follow { background: var(--ink); color: #fff; border: none; padding: 5px 14px; border-radius: 20px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+  .user-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .user-row:last-child { border-bottom: none; }
+  .user-info { flex: 1; }
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-email { font-size: 11px; color: var(--muted); }
+  .btn-follow { background: var(--ink); color: #fff; border: none; padding: 5px 14px; border-radius: 20px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; white-space: nowrap; }
   .btn-follow:hover { background: var(--accent); }
   .btn-follow.following { background: var(--cream); color: var(--ink); border: 1px solid var(--border); }
   .btn-follow.following:hover { background: #fee; color: var(--accent); border-color: var(--accent); }
+  .you-badge { font-size: 10px; background: var(--accent-pale); color: var(--accent); padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 
-  /* Add friend form */
-  .add-friend-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-  .add-input { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--cream); color: var(--ink); outline: none; }
-  .add-input:focus { border-color: var(--accent); }
-  .btn-add { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .loading { text-align: center; color: var(--muted); font-size: 13px; padding: 2rem; }
 
   .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 9999; pointer-events: none; }
   .toast.show { opacity: 1; }
 
-  @media (max-width: 700px) {
-    .wrapper { grid-template-columns: 1fr; }
-    nav { padding: 0 1rem; }
-  }
+  @media (max-width: 700px) { .wrapper { grid-template-columns: 1fr; } nav { padding: 0 1rem; } }
 </style>
 </head>
 <body>
@@ -128,186 +112,51 @@
 
 <div class="page-hero">
   <h1>Friends</h1>
-  <p>See what your friends are eating and follow fellow foodies</p>
+  <p>See who's on Jong Foodie and follow fellow foodies</p>
 </div>
 
 <div class="wrapper">
-
-  <!-- MAIN FEED -->
   <div>
-    <p class="section-label">Search Friends</p>
-    <div class="search-bar">
-      <input class="search-input" id="friendSearch" type="text" placeholder="Search by name or username…" oninput="searchFriends()">
-      <button class="btn-search" onclick="searchFriends()">Search</button>
-    </div>
-
-    <p class="section-label">Friends Feed</p>
+    <p class="section-label">Jong Foodie Members</p>
     <div class="feed" id="feed">
-
-      <div class="feed-card">
-        <div class="feed-top">
-          <div class="avatar" style="background:#D4521A;">SA</div>
-          <div class="feed-meta">
-            <div class="feed-name">Sara A.</div>
-            <div class="feed-time">2 minutes ago</div>
-          </div>
-        </div>
-        <div class="feed-place">
-          <div class="place-emoji" style="background:#5A3A0A;">🍔</div>
-          <div class="place-info">
-            <div class="place-name">Maijard Smashburgers</div>
-            <div class="place-meta">Amsterdam · Burgers · $$</div>
-            <div class="place-stars">★★★★★</div>
-            <div class="place-comment">"Best burger I've had this year. The double smash is incredible!"</div>
-          </div>
-        </div>
-        <div class="feed-actions">
-          <button class="action-btn liked" onclick="toggleLike(this)">♥ 4 likes</button>
-          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 2 comments</button>
-          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
-        </div>
-      </div>
-
-      <div class="feed-card">
-        <div class="feed-top">
-          <div class="avatar" style="background:#2D5A3D;">TK</div>
-          <div class="feed-meta">
-            <div class="feed-name">Tim K.</div>
-            <div class="feed-time">1 hour ago</div>
-          </div>
-        </div>
-        <div class="feed-place">
-          <div class="place-emoji" style="background:#3D2F1A;">☕</div>
-          <div class="place-info">
-            <div class="place-name">Chun Cafe</div>
-            <div class="place-meta">Amsterdam · Cafe · $$</div>
-            <div class="place-stars">★★★★★</div>
-            <div class="place-comment">"Matcha latte was the best I've ever had. Always a queue but worth it!"</div>
-          </div>
-        </div>
-        <div class="feed-actions">
-          <button class="action-btn" onclick="toggleLike(this)">♡ 1 like</button>
-          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 0 comments</button>
-          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
-        </div>
-      </div>
-
-      <div class="feed-card">
-        <div class="feed-top">
-          <div class="avatar" style="background:#C8901A;">LM</div>
-          <div class="feed-meta">
-            <div class="feed-name">Lisa M.</div>
-            <div class="feed-time">3 hours ago</div>
-          </div>
-        </div>
-        <div class="feed-place">
-          <div class="place-emoji" style="background:#8B1A1A;">🥪</div>
-          <div class="place-info">
-            <div class="place-name">Banh Mi Deli Amsterdam</div>
-            <div class="place-meta">Amsterdam · Vietnamese · $</div>
-            <div class="place-stars">★★★★☆</div>
-            <div class="place-comment">"Hidden gem on the Prinsengracht. Fresh and delicious!"</div>
-          </div>
-        </div>
-        <div class="feed-actions">
-          <button class="action-btn" onclick="toggleLike(this)">♡ 2 likes</button>
-          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 1 comment</button>
-          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
-        </div>
-      </div>
-
+      <div class="loading">Loading members...</div>
     </div>
   </div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
-
     <div class="sidebar-card">
-      <div class="sidebar-title">Your Friends</div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#D4521A;">SA</div>
-        <div class="friend-info"><div class="friend-name">Sara A.</div><div class="friend-reviews">12 reviews</div></div>
-        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
-      </div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#2D5A3D;">TK</div>
-        <div class="friend-info"><div class="friend-name">Tim K.</div><div class="friend-reviews">8 reviews</div></div>
-        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
-      </div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#C8901A;">LM</div>
-        <div class="friend-info"><div class="friend-name">Lisa M.</div><div class="friend-reviews">5 reviews</div></div>
-        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
-      </div>
+      <div class="sidebar-title">Your Account</div>
+      <div id="myProfile" class="loading">Log in to see your profile</div>
     </div>
-
     <div class="sidebar-card">
-      <div class="sidebar-title">Suggested</div>
-      <div class="add-friend-form">
-        <input class="add-input" type="text" placeholder="Add by username…" id="addFriendInput">
-        <button class="btn-add" onclick="addFriend()">Add</button>
-      </div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#1A3A5C;">RJ</div>
-        <div class="friend-info"><div class="friend-name">Ryan J.</div><div class="friend-reviews">24 reviews</div></div>
-        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
-      </div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#8B1A1A;">AN</div>
-        <div class="friend-info"><div class="friend-name">Ana N.</div><div class="friend-reviews">17 reviews</div></div>
-        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
-      </div>
-      <div class="friend-row">
-        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#5A3A0A;">MK</div>
-        <div class="friend-info"><div class="friend-name">Mike K.</div><div class="friend-reviews">9 reviews</div></div>
-        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
-      </div>
+      <div class="sidebar-title">All Members</div>
+      <div id="allUsers" class="loading">Loading...</div>
     </div>
-
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-  function toggleLike(btn) {
-    const liked = btn.classList.toggle('liked');
-    const parts = btn.textContent.match(/(\d+)/);
-    if (parts) {
-      const n = parseInt(parts[1]);
-      btn.textContent = (liked ? '♥ ' : '♡ ') + (liked ? n + 1 : n - 1) + ' likes';
-    }
-  }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, setDoc, getDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  function toggleFollow(btn) {
-    const isFollowing = btn.classList.contains('following');
-    if (isFollowing) {
-      btn.classList.remove('following');
-      btn.textContent = 'Follow';
-      showToast('Unfollowed');
-    } else {
-      btn.classList.add('following');
-      btn.textContent = 'Following';
-      showToast('Now following!');
-    }
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
 
-  function addFriend() {
-    const input = document.getElementById('addFriendInput');
-    const val = input.value.trim();
-    if (!val) return;
-    showToast('Friend request sent to ' + val + '!');
-    input.value = '';
-  }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  function searchFriends() {
-    const q = document.getElementById('friendSearch').value.toLowerCase();
-    document.querySelectorAll('.feed-card').forEach(card => {
-      const name = card.querySelector('.feed-name').textContent.toLowerCase();
-      const place = card.querySelector('.place-name').textContent.toLowerCase();
-      card.style.display = (!q || name.includes(q) || place.includes(q)) ? '' : 'none';
-    });
-  }
+  let currentUser = null;
+  let followingList = [];
 
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -315,6 +164,133 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2800);
   }
+
+  function getInitials(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  function getColor(str) {
+    const colors = ['#D4521A', '#2D5A3D', '#C8901A', '#1A3A5C', '#8B1A1A', '#5A3A0A', '#3D2F1A'];
+    let hash = 0;
+    for (let c of (str || '')) hash = c.charCodeAt(0) + hash;
+    return colors[hash % colors.length];
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+
+    // Show my profile
+    const myDiv = document.getElementById('myProfile');
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      myDiv.innerHTML = `
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <div class="avatar" style="background:${getColor(name)};width:44px;height:44px;font-size:15px;">${getInitials(name)}</div>
+          <div>
+            <div style="font-weight:500;font-size:14px;">${name}</div>
+            <div style="font-size:11px;color:var(--muted);">${user.email}</div>
+          </div>
+        </div>`;
+      
+      // Load who I'm following
+      try {
+        const followSnap = await getDocs(collection(db, 'users', user.uid, 'following'));
+        followingList = followSnap.docs.map(d => d.id);
+      } catch(e) { followingList = []; }
+    } else {
+      myDiv.innerHTML = `<p style="font-size:13px;color:var(--muted);">Log in to follow other foodies and see their activity!</p><a href="index.html" class="btn-login" style="margin-top:0.75rem;display:inline-block;">Log in</a>`;
+    }
+
+    // Load all users from Firestore 'users' collection
+    await loadUsers();
+  });
+
+  async function loadUsers() {
+    const feedDiv = document.getElementById('feed');
+    const allUsersDiv = document.getElementById('allUsers');
+    
+    try {
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const users = [];
+      usersSnap.forEach(doc => users.push({ id: doc.id, ...doc.data() }));
+
+      if (users.length === 0) {
+        feedDiv.innerHTML = `<div class="loading">No members yet — be the first to join!</div>`;
+        allUsersDiv.innerHTML = `<div class="loading">No members yet</div>`;
+        return;
+      }
+
+      // Build feed
+      feedDiv.innerHTML = users.map(u => {
+        const name = u.displayName || u.email?.split('@')[0] || 'Foodie';
+        const isMe = currentUser && u.id === currentUser.uid;
+        const isFollowing = followingList.includes(u.id);
+        return `
+          <div class="feed-card">
+            <div class="feed-top">
+              <div class="avatar" style="background:${getColor(name)};width:44px;height:44px;font-size:15px;">${getInitials(name)}</div>
+              <div class="feed-meta">
+                <div class="feed-name">${name} ${isMe ? '<span class="you-badge">You</span>' : ''}</div>
+                <div class="feed-sub">Jong Foodie member</div>
+              </div>
+            </div>
+            <div class="feed-actions">
+              ${!isMe ? `<button class="action-btn ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${u.id}', '${name}', this)">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+
+      // Build sidebar list
+      allUsersDiv.innerHTML = users.map(u => {
+        const name = u.displayName || u.email?.split('@')[0] || 'Foodie';
+        const isMe = currentUser && u.id === currentUser.uid;
+        const isFollowing = followingList.includes(u.id);
+        return `
+          <div class="user-row">
+            <div class="avatar" style="background:${getColor(name)};width:32px;height:32px;font-size:11px;">${getInitials(name)}</div>
+            <div class="user-info">
+              <div class="user-name">${name} ${isMe ? '<span class="you-badge">You</span>' : ''}</div>
+            </div>
+            ${!isMe ? `<button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollow('${u.id}', '${name}', this)">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
+          </div>`;
+      }).join('');
+
+    } catch(e) {
+      feedDiv.innerHTML = `<div class="loading">Could not load members. Please try again later.</div>`;
+      allUsersDiv.innerHTML = '';
+    }
+  }
+
+  window.toggleFollow = async (userId, name, btn) => {
+    if (!currentUser) { showToast('Log in to follow people!'); return; }
+    const isFollowing = btn.classList.contains('following');
+    const ref = doc(db, 'users', currentUser.uid, 'following', userId);
+    try {
+      if (isFollowing) {
+        await deleteDoc(ref);
+        btn.classList.remove('following');
+        btn.textContent = 'Follow';
+        showToast('Unfollowed ' + name);
+        followingList = followingList.filter(id => id !== userId);
+      } else {
+        await setDoc(ref, { followedAt: new Date().toISOString() });
+        btn.classList.add('following');
+        btn.textContent = 'Following';
+        showToast('Now following ' + name + '! 🎉');
+        followingList.push(userId);
+      }
+      // Update all buttons for this user
+      document.querySelectorAll(`[onclick*="${userId}"]`).forEach(b => {
+        if (b !== btn) {
+          b.classList.toggle('following', btn.classList.contains('following'));
+          b.textContent = btn.textContent;
+        }
+      });
+    } catch(e) {
+      showToast('Something went wrong. Try again!');
+    }
+  };
 </script>
 </body>
 </html>

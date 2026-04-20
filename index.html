@@ -1539,7 +1539,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1673,7 +1673,13 @@
     if (!name || !email || !password) { showToast('Please fill in all fields!'); return; }
     if (password.length < 6) { showToast('Password must be at least 6 characters!'); return; }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      // Save user profile to Firestore
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        displayName: name,
+        email: email,
+        createdAt: new Date().toISOString()
+      });
       closeModal();
       showToast('Welcome, ' + name + '! 🎉');
     } catch(e) {
