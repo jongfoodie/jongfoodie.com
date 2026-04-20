@@ -841,6 +841,7 @@
 
 <!-- NAV -->
 <nav>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
   <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
     <li><a href="reviews.html">Reviews</a></li>
@@ -851,7 +852,6 @@
     <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
   </ul>
   <div class="nav-actions">
-    <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
     <button id="navLogin" class="btn-ghost" onclick="openModal('login')">Log in</button>
     <button id="navSignup" class="btn-fill" onclick="openModal('signup')">Join free</button>
     <button id="navLogout" class="btn-ghost" onclick="doLogout()" style="display:none;">Log out</button>
