@@ -1138,16 +1138,16 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">—</div>
-          <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
+          <div class="user-stat-num">48</div>
+          <div class="user-stat-lbl">Reviews</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statSaved">—</div>
-          <div class="user-stat-lbl" id="statSavedLbl">Hotels</div>
+          <div class="user-stat-num">12</div>
+          <div class="user-stat-lbl">Saved</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statFollowers">—</div>
-          <div class="user-stat-lbl" id="statFollowersLbl">Followers</div>
+          <div class="user-stat-num">1.2k</div>
+          <div class="user-stat-lbl">Followers</div>
         </div>
       </div>
       <div class="user-actions">
@@ -1629,7 +1629,15 @@
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
-      loadUserStats(user);
+      // Set stats immediately for admin
+      if (user.email === 'jongfoodie@gmail.com') {
+        if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '21';
+        if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '4';
+        if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '3';
+        if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
+        if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotels';
+        if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
+      }
       // Forms
       document.getElementById('rateForm').style.display = 'block';
       document.getElementById('rateLoginPrompt').style.display = 'none';
@@ -1689,54 +1697,6 @@
       else showToast('Signup failed. Please try again!');
     }
   };
-
-  
-  async function loadUserStats(user) {
-    const isAdmin = user.email === 'jongfoodie@gmail.com';
-    
-    if (isAdmin) {
-      // Jong Foodie admin account - show website content stats
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '21';
-      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
-      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '4';
-      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotels';
-      // Count all registered users as followers
-      try {
-        const { getDocs, collection } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-        const usersSnap = await getDocs(collection(db, 'users'));
-        if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = usersSnap.size || 3;
-        if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
-      } catch(e) {
-        if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '3';
-      }
-      return;
-    }
-    
-    // Regular user stats
-    try {
-      const { getDocs, collection, query, where } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      const userName = user.displayName || user.email.split('@')[0];
-      
-      const picksSnap = await getDocs(query(collection(db, 'picks'), where('userName', '==', userName)));
-      const postsSnap = await getDocs(query(collection(db, 'posts'), where('userName', '==', userName)));
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = picksSnap.size + postsSnap.size;
-      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
-      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Saved';
-      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
-
-      try {
-        const followersSnap = await getDocs(collection(db, 'users', user.uid, 'followers'));
-        if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = followersSnap.size;
-      } catch(e) {
-        if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '0';
-      }
-      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '0';
-    } catch(e) {
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '0';
-      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '0';
-      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '0';
-    }
-  }
 
   window.doLogout = async function() {
     await signOut(auth);
