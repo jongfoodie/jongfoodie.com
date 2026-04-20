@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends — Jong Foodie</title>
+<meta name="description" content="See what your friends are eating and discovering on Jong Foodie.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 300px; gap: 2rem; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Search */
+  .search-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .search-input { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--warm-white); color: var(--ink); outline: none; }
+  .search-input:focus { border-color: var(--accent); }
+  .btn-search { background: var(--accent); color: #fff; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  /* Feed */
+  .feed { display: flex; flex-direction: column; gap: 1rem; }
+  .feed-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
+  .feed-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: #fff; flex-shrink: 0; }
+  .feed-meta { flex: 1; }
+  .feed-name { font-weight: 500; font-size: 14px; }
+  .feed-time { font-size: 12px; color: var(--muted); }
+  .feed-place { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.75rem; }
+  .place-emoji { width: 52px; height: 52px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+  .place-info { flex: 1; }
+  .place-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; }
+  .place-meta { font-size: 12px; color: var(--muted); }
+  .place-stars { font-size: 13px; color: var(--gold); }
+  .place-comment { font-size: 13px; color: var(--ink-soft); margin-top: 0.25rem; font-style: italic; }
+  .feed-actions { display: flex; gap: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .action-btn { background: none; border: none; font-size: 13px; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; padding: 0; }
+  .action-btn:hover { color: var(--accent); }
+  .action-btn.liked { color: var(--accent); }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+  .sidebar-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
+  .sidebar-title { font-family: 'Playfair Display', serif; font-size: 16px; margin-bottom: 1rem; }
+  .friend-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .friend-row:last-child { border-bottom: none; }
+  .friend-info { flex: 1; }
+  .friend-name { font-size: 13px; font-weight: 500; }
+  .friend-reviews { font-size: 11px; color: var(--muted); }
+  .btn-follow { background: var(--ink); color: #fff; border: none; padding: 5px 14px; border-radius: 20px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+  .btn-follow:hover { background: var(--accent); }
+  .btn-follow.following { background: var(--cream); color: var(--ink); border: 1px solid var(--border); }
+  .btn-follow.following:hover { background: #fee; color: var(--accent); border-color: var(--accent); }
+
+  /* Add friend form */
+  .add-friend-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .add-input { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--cream); color: var(--ink); outline: none; }
+  .add-input:focus { border-color: var(--accent); }
+  .btn-add { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 9999; pointer-events: none; }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 700px) {
+    .wrapper { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg width="32" height="32" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    Jong <span>Foodie</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="friends.html" class="active">Friends</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="page-hero">
+  <h1>Friends</h1>
+  <p>See what your friends are eating and follow fellow foodies</p>
+</div>
+
+<div class="wrapper">
+
+  <!-- MAIN FEED -->
+  <div>
+    <p class="section-label">Search Friends</p>
+    <div class="search-bar">
+      <input class="search-input" id="friendSearch" type="text" placeholder="Search by name or username…" oninput="searchFriends()">
+      <button class="btn-search" onclick="searchFriends()">Search</button>
+    </div>
+
+    <p class="section-label">Friends Feed</p>
+    <div class="feed" id="feed">
+
+      <div class="feed-card">
+        <div class="feed-top">
+          <div class="avatar" style="background:#D4521A;">SA</div>
+          <div class="feed-meta">
+            <div class="feed-name">Sara A.</div>
+            <div class="feed-time">2 minutes ago</div>
+          </div>
+        </div>
+        <div class="feed-place">
+          <div class="place-emoji" style="background:#5A3A0A;">🍔</div>
+          <div class="place-info">
+            <div class="place-name">Maijard Smashburgers</div>
+            <div class="place-meta">Amsterdam · Burgers · $$</div>
+            <div class="place-stars">★★★★★</div>
+            <div class="place-comment">"Best burger I've had this year. The double smash is incredible!"</div>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <button class="action-btn liked" onclick="toggleLike(this)">♥ 4 likes</button>
+          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 2 comments</button>
+          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <div class="feed-top">
+          <div class="avatar" style="background:#2D5A3D;">TK</div>
+          <div class="feed-meta">
+            <div class="feed-name">Tim K.</div>
+            <div class="feed-time">1 hour ago</div>
+          </div>
+        </div>
+        <div class="feed-place">
+          <div class="place-emoji" style="background:#3D2F1A;">☕</div>
+          <div class="place-info">
+            <div class="place-name">Chun Cafe</div>
+            <div class="place-meta">Amsterdam · Cafe · $$</div>
+            <div class="place-stars">★★★★★</div>
+            <div class="place-comment">"Matcha latte was the best I've ever had. Always a queue but worth it!"</div>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <button class="action-btn" onclick="toggleLike(this)">♡ 1 like</button>
+          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 0 comments</button>
+          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <div class="feed-top">
+          <div class="avatar" style="background:#C8901A;">LM</div>
+          <div class="feed-meta">
+            <div class="feed-name">Lisa M.</div>
+            <div class="feed-time">3 hours ago</div>
+          </div>
+        </div>
+        <div class="feed-place">
+          <div class="place-emoji" style="background:#8B1A1A;">🥪</div>
+          <div class="place-info">
+            <div class="place-name">Banh Mi Deli Amsterdam</div>
+            <div class="place-meta">Amsterdam · Vietnamese · $</div>
+            <div class="place-stars">★★★★☆</div>
+            <div class="place-comment">"Hidden gem on the Prinsengracht. Fresh and delicious!"</div>
+          </div>
+        </div>
+        <div class="feed-actions">
+          <button class="action-btn" onclick="toggleLike(this)">♡ 2 likes</button>
+          <button class="action-btn" onclick="showToast('Comments coming soon!')">💬 1 comment</button>
+          <button class="action-btn" onclick="showToast('Place saved!')">🔖 Save</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Your Friends</div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#D4521A;">SA</div>
+        <div class="friend-info"><div class="friend-name">Sara A.</div><div class="friend-reviews">12 reviews</div></div>
+        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
+      </div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#2D5A3D;">TK</div>
+        <div class="friend-info"><div class="friend-name">Tim K.</div><div class="friend-reviews">8 reviews</div></div>
+        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
+      </div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#C8901A;">LM</div>
+        <div class="friend-info"><div class="friend-name">Lisa M.</div><div class="friend-reviews">5 reviews</div></div>
+        <button class="btn-follow following" onclick="toggleFollow(this)">Following</button>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Suggested</div>
+      <div class="add-friend-form">
+        <input class="add-input" type="text" placeholder="Add by username…" id="addFriendInput">
+        <button class="btn-add" onclick="addFriend()">Add</button>
+      </div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#1A3A5C;">RJ</div>
+        <div class="friend-info"><div class="friend-name">Ryan J.</div><div class="friend-reviews">24 reviews</div></div>
+        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
+      </div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#8B1A1A;">AN</div>
+        <div class="friend-info"><div class="friend-name">Ana N.</div><div class="friend-reviews">17 reviews</div></div>
+        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
+      </div>
+      <div class="friend-row">
+        <div class="avatar" style="width:32px;height:32px;font-size:11px;background:#5A3A0A;">MK</div>
+        <div class="friend-info"><div class="friend-name">Mike K.</div><div class="friend-reviews">9 reviews</div></div>
+        <button class="btn-follow" onclick="toggleFollow(this)">Follow</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toggleLike(btn) {
+    const liked = btn.classList.toggle('liked');
+    const parts = btn.textContent.match(/(\d+)/);
+    if (parts) {
+      const n = parseInt(parts[1]);
+      btn.textContent = (liked ? '♥ ' : '♡ ') + (liked ? n + 1 : n - 1) + ' likes';
+    }
+  }
+
+  function toggleFollow(btn) {
+    const isFollowing = btn.classList.contains('following');
+    if (isFollowing) {
+      btn.classList.remove('following');
+      btn.textContent = 'Follow';
+      showToast('Unfollowed');
+    } else {
+      btn.classList.add('following');
+      btn.textContent = 'Following';
+      showToast('Now following!');
+    }
+  }
+
+  function addFriend() {
+    const input = document.getElementById('addFriendInput');
+    const val = input.value.trim();
+    if (!val) return;
+    showToast('Friend request sent to ' + val + '!');
+    input.value = '';
+  }
+
+  function searchFriends() {
+    const q = document.getElementById('friendSearch').value.toLowerCase();
+    document.querySelectorAll('.feed-card').forEach(card => {
+      const name = card.querySelector('.feed-name').textContent.toLowerCase();
+      const place = card.querySelector('.place-name').textContent.toLowerCase();
+      card.style.display = (!q || name.includes(q) || place.includes(q)) ? '' : 'none';
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
