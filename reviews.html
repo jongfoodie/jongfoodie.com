@@ -3,19 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Reviews — Jong Foodie | Amsterdam Restaurant Reviews</title>
-  <meta name="description" content="All Jong Foodie restaurant reviews. Burgers, sandwiches, cafes, sushi and more in Amsterdam and the Netherlands. Honest ratings by Merdan Koc.">
-  <meta name="keywords" content="Jong Foodie reviews, Amsterdam restaurants, best food Amsterdam, burgers Amsterdam, sandwiches Amsterdam, cafes Amsterdam">
-  <meta name="author" content="Merdan Koc — Jong Foodie">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="All Reviews — Jong Foodie | Amsterdam Restaurant Reviews">
-  <meta property="og:description" content="All Jong Foodie restaurant reviews. Burgers, sandwiches, cafes, sushi and more in Amsterdam and the Netherlands. Honest ratings by Merdan Koc.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.jongfoodie.com">
-  <meta property="og:image" content="https://www.jongfoodie.com/preview.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="All Reviews — Jong Foodie | Amsterdam Restaurant Reviews">
-  <meta name="twitter:description" content="All Jong Foodie restaurant reviews. Burgers, sandwiches, cafes, sushi and more in Amsterdam and the Netherlands. Honest ratings by Merdan Koc.">
+<title>Reviews — Jong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,6 +59,7 @@
     .nav-links { display: none; }
   }
 </style>
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
 </head>
 <body>
 <nav>
@@ -478,6 +467,19 @@
     const params = new URLSearchParams(window.location.search);
     const q = params.get('search');
     if (q) {
+      const ql = q.toLowerCase();
+      if (ql.includes('hotel') || ql.includes('craftsmen') || ql.includes('kimpton') || ql.includes('stay') || ql.includes('accommodation')) {
+        window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
+        return;
+      }
+      if (ql.includes('community') || ql.includes('picks')) {
+        window.location.href = 'community.html';
+        return;
+      }
+      if (ql.includes('map') || ql.includes('locations')) {
+        window.location.href = 'map.html';
+        return;
+      }
       const input = document.getElementById('reviewSearchInput');
       if (input) {
         input.value = q;

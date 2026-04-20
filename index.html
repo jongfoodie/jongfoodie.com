@@ -3,19 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond</title>
-  <meta name="description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
-  <meta name="keywords" content="Jong Foodie, restaurant reviews Amsterdam, best burgers Amsterdam, best cafes Amsterdam, food blog Netherlands, Maijard, Le Smash, Banh Mi Deli, IZAKAYA">
-  <meta name="author" content="Merdan Koc — Jong Foodie">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond">
-  <meta property="og:description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.jongfoodie.com">
-  <meta property="og:image" content="https://www.jongfoodie.com/preview.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond">
-  <meta name="twitter:description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
+<title>Jong Foodie — Honest Reviews, Real Eats</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -795,6 +783,7 @@
     .site-wrapper { padding: 2rem 1rem; }
   }
 </style>
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
 </head>
 <body>
 
@@ -1242,7 +1231,18 @@
   function doHeroSearch() {
     const q = document.getElementById('heroSearchInput').value.trim();
     if (!q) return;
-    window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
+    const ql = q.toLowerCase();
+    if (ql.includes('hotel') || ql.includes('craftsmen') || ql.includes('kimpton') || ql.includes('stay') || ql.includes('accommodation')) {
+      window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
+    } else if (ql.includes('community') || ql.includes('picks')) {
+      window.location.href = 'community.html?search=' + encodeURIComponent(q);
+    } else if (ql.includes('map') || ql.includes('locations')) {
+      window.location.href = 'map.html';
+    } else if (ql.includes('guide')) {
+      window.location.href = 'guides.html';
+    } else {
+      window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
+    }
   }
 
   function showToast(msg) {
