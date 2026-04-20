@@ -1138,15 +1138,15 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num">48</div>
+          <div class="user-stat-num" id="statReviews">—</div>
           <div class="user-stat-lbl">Reviews</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num">12</div>
+          <div class="user-stat-num" id="statSaved">—</div>
           <div class="user-stat-lbl">Saved</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num">1.2k</div>
+          <div class="user-stat-num" id="statFollowers">—</div>
           <div class="user-stat-lbl">Followers</div>
         </div>
       </div>
@@ -1629,6 +1629,8 @@
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
+      // Load real stats
+      loadUserStats(user);
       // Forms
       document.getElementById('rateForm').style.display = 'block';
       document.getElementById('rateLoginPrompt').style.display = 'none';
@@ -1692,6 +1694,35 @@
   window.doLogout = async function() {
     await signOut(auth);
     showToast('Logged out! See you soon 👋');
+  };
+
+  window.loadUserStats = async function(user) {
+    try {
+      const { getDocs, collection, query, where, getCountFromServer } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      
+      // Count reviews (posts by this user)
+      const reviewsQ = query(collection(db, 'posts'), where('userId', '==', user.uid));
+      const reviewsSnap = await getDocs(reviewsQ);
+      const reviewCount = reviewsSnap.size;
+      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = reviewCount;
+      
+      // Count saved places
+      const savedQ = query(collection(db, 'saved'), where('userId', '==', user.uid));
+      const savedSnap = await getDocs(savedQ);
+      const savedCount = savedSnap.size;
+      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = savedCount;
+      
+      // Count followers
+      const followersQ = query(collection(db, 'users', user.uid, 'followers'));
+      const followersSnap = await getDocs(followersQ);
+      const followerCount = followersSnap.size;
+      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = followerCount;
+      
+    } catch(e) {
+      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '0';
+      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '0';
+      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '0';
+    }
   };
 
   window.loadMyPicks = async function(name, container) {
