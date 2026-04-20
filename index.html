@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jong Foodie — Honest Reviews, Real Eats</title>
+<meta name="description" content="Jong Foodie — Real restaurant reviews by Merdan Koc. Discover the best cafes, burgers, sushi and hidden gems in Amsterdam and beyond.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -208,6 +209,8 @@
     gap: 0.5rem;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
   }
   .tags-bar::-webkit-scrollbar { display: none; }
   .tag-pill {
@@ -1233,19 +1236,7 @@
     const q = document.getElementById('heroSearchInput').value.trim();
     if (!q) return;
     const ql = q.toLowerCase();
-    if (ql.includes('hotel') || ql.includes('craftsmen') || ql.includes('kimpton') || ql.includes('stay') || ql.includes('accommodation')) {
-      window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
-    } else if (ql.includes('community') || ql.includes('picks')) {
-      window.location.href = 'community.html';
-    } else if (ql.includes('video') || ql.includes('youtube') || ql.includes('watch')) {
-      window.location.href = 'videos.html';
-    } else if (ql.includes('map') || ql.includes('location')) {
-      window.location.href = 'map.html';
-    } else if (ql.includes('guide')) {
-      window.location.href = 'guides.html';
-    } else {
-      window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
-    }
+    if (ql.includes("hotel")) { window.location.href = "hotel.html?search=" + encodeURIComponent(q); } else { window.location.href = "reviews.html?search=" + encodeURIComponent(q); }
   }
 
   function showToast(msg) {
