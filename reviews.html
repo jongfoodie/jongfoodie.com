@@ -67,6 +67,7 @@
   <ul class="nav-links">
     <li><a href="reviews.html" class="active">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
   </ul>
@@ -467,19 +468,6 @@
     const params = new URLSearchParams(window.location.search);
     const q = params.get('search');
     if (q) {
-      const ql = q.toLowerCase();
-      if (ql.includes('hotel') || ql.includes('craftsmen') || ql.includes('kimpton') || ql.includes('stay') || ql.includes('accommodation')) {
-        window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
-        return;
-      }
-      if (ql.includes('community') || ql.includes('picks')) {
-        window.location.href = 'community.html';
-        return;
-      }
-      if (ql.includes('map') || ql.includes('locations')) {
-        window.location.href = 'map.html';
-        return;
-      }
       const input = document.getElementById('reviewSearchInput');
       if (input) {
         input.value = q;

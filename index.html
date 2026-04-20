@@ -793,6 +793,7 @@
   <ul class="nav-links">
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
     <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
@@ -1235,8 +1236,10 @@
     if (ql.includes('hotel') || ql.includes('craftsmen') || ql.includes('kimpton') || ql.includes('stay') || ql.includes('accommodation')) {
       window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
     } else if (ql.includes('community') || ql.includes('picks')) {
-      window.location.href = 'community.html?search=' + encodeURIComponent(q);
-    } else if (ql.includes('map') || ql.includes('locations')) {
+      window.location.href = 'community.html';
+    } else if (ql.includes('video') || ql.includes('youtube') || ql.includes('watch')) {
+      window.location.href = 'videos.html';
+    } else if (ql.includes('map') || ql.includes('location')) {
       window.location.href = 'map.html';
     } else if (ql.includes('guide')) {
       window.location.href = 'guides.html';
