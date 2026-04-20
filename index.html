@@ -1509,10 +1509,49 @@
     document.getElementById('myProfileName').textContent = name;
     document.getElementById('myProfileBg').classList.add('open');
 
-    // Load picks from Firestore
     const picksList = document.getElementById('myProfilePicksList');
+
+    // For Jong Foodie admin - show all website reviews and hotels
+    if (currentUser && currentUser.email === 'jongfoodie@gmail.com') {
+      const allReviews = [
+        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
+        { emoji: '🍣', name: 'Izakaya Amsterdam', meta: 'Amsterdam · Sushi / Japanese · Luxury', type: 'Review' },
+        { emoji: '🍽️', name: 'Mondi Amsterdam Nieuw-West', meta: 'Amsterdam · Caribbean · €74', type: 'Review' },
+        { emoji: '🍔', name: 'Maijard Smashburgers', meta: 'Amsterdam · Burgers', type: 'Review' },
+        { emoji: '🍗', name: 'BISOUS Amsterdam', meta: 'Amsterdam · Chicken', type: 'Review' },
+        { emoji: '🥪', name: 'Fort Negen Sandwich Bar', meta: 'Amsterdam · Sandwiches', type: 'Review' },
+        { emoji: '🥗', name: 'Leauf Amsterdam', meta: 'Amsterdam · Sandwiches', type: 'Review' },
+        { emoji: '🥐', name: 'et CLAIRE', meta: 'Amsterdam · Pastries', type: 'Review' },
+        { emoji: '🍜', name: 'Cafe Nobuya', meta: 'Amsterdam · Japanese Fusion', type: 'Review' },
+        { emoji: '🧀', name: 'Brioche Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🍔', name: 'Le Smash Amsterdam', meta: 'Amsterdam · Burgers', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🐙', name: 'Sjefietshé', meta: 'Amsterdam · Seafood', type: 'Review' },
+        { emoji: '🫔', name: 'Bonnie Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🥪', name: 'Banh Mi Deli Amsterdam', meta: 'Amsterdam · Vietnamese', type: 'Review' },
+        { emoji: '☕', name: 'Chun Cafe Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🥩', name: 'Zorlu Center', meta: 'Istanbul · Steak', type: 'Review' },
+        { emoji: '🥩', name: '360 Istanbul', meta: 'Istanbul · Steak', type: 'Review' },
+        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
+        { emoji: '🏛️', name: 'Hotel The Craftsmen', meta: 'Amsterdam · Boutique', type: 'Hotel' },
+        { emoji: '🌴', name: 'Kimpton De Witt', meta: 'Amsterdam · Luxury', type: 'Hotel' },
+        { emoji: '🏨', name: 'Hotel V Nesplein', meta: 'Amsterdam · Boutique', type: 'Hotel' },
+        { emoji: '🏰', name: 'Conservatorium Hotel', meta: 'Amsterdam · Luxury', type: 'Hotel' },
+      ];
+      picksList.innerHTML = allReviews.map(r => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="width:36px;height:36px;background:${r.type==='Hotel'?'#1A3A5C':'#5A3A0A'};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${r.emoji}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">${r.name}</div>
+            <div style="font-size:11px;color:var(--muted);">${r.meta}</div>
+          </div>
+          <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${r.type==='Hotel'?'#E8F0F8':'var(--accent-pale)'};color:${r.type==='Hotel'?'#1A3A5C':'var(--accent)'};">${r.type}</span>
+        </div>`).join('');
+      return;
+    }
+
+    // For regular users - load their picks from Firestore
     picksList.innerHTML = '<p style="font-size:13px;color:var(--muted);">Loading your picks...</p>';
-    // Load from Firestore via window function set by firebase module
     if (window.loadMyPicks) window.loadMyPicks(name, picksList);
   }
 
