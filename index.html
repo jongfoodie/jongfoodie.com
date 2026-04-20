@@ -904,7 +904,7 @@
   <button class="tag-pill" onclick="setTag(this)">☕ Cafes</button>
   <button class="tag-pill" onclick="setTag(this)">🍔 Burgers</button>
   <button class="tag-pill" onclick="setTag(this)">🥐 Pastries</button>
-  <button class="tag-pill" onclick="setTag(this)">🍜 Noodles</button>
+  <button class="tag-pill" onclick="setTag(this)">🥪 Sandwiches</button>
   <button class="tag-pill" onclick="setTag(this)">🍣 Sushi</button>
   <button class="tag-pill" onclick="setTag(this)">🌮 Street Food</button>
   <button class="tag-pill" onclick="setTag(this)">🍰 Desserts</button>
@@ -1353,7 +1353,38 @@
   function setTag(el) {
     document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    showToast(`Filtering by: ${el.textContent}`);
+    const tag = el.textContent.trim().toLowerCase().replace(/^[^\w]+/, '').trim();
+    const cards = document.querySelectorAll('.mini-card');
+    cards.forEach(card => {
+      const meta = card.querySelector('.mini-meta');
+      const title = card.querySelector('.mini-title');
+      const text = ((meta ? meta.textContent : '') + ' ' + (title ? title.textContent : '')).toLowerCase();
+      if (tag === 'all') {
+        card.style.display = '';
+      } else if (tag === 'cafes' || tag === 'cafe') {
+        card.style.display = text.includes('cafe') || text.includes('coffee') || text.includes('chun') || text.includes('brioche') || text.includes('leauf') ? '' : 'none';
+      } else if (tag === 'burgers') {
+        card.style.display = text.includes('burger') || text.includes('smash') || text.includes('maijard') || text.includes('bisous') ? '' : 'none';
+      } else if (tag === 'pastries') {
+        card.style.display = text.includes('pastry') || text.includes('pastries') || text.includes('croissant') || text.includes('claire') || text.includes('fabel') ? '' : 'none';
+      } else if (tag === 'noodles') {
+        card.style.display = text.includes('noodle') || text.includes('ramen') || text.includes('nobuya') || text.includes('asian') ? '' : 'none';
+      } else if (tag === 'sushi') {
+        card.style.display = text.includes('sushi') || text.includes('izakaya') || text.includes('japanese') ? '' : 'none';
+      } else if (tag === 'street food') {
+        card.style.display = text.includes('street') || text.includes('fries') || text.includes('friet') || text.includes('hotdog') || text.includes('sjefietsh') ? '' : 'none';
+      } else if (tag === 'sandwiches') {
+        card.style.display = text.includes('sandwich') || text.includes('banh mi') || text.includes('bonnie') || text.includes('steak sandwich') || text.includes('croque') || text.includes('fort negen') ? '' : 'none';
+      } else if (tag === 'desserts') {
+        card.style.display = text.includes('dessert') || text.includes('donut') || text.includes('cake') || text.includes('mochi') || text.includes('pistachio') ? '' : 'none';
+      } else if (tag === 'budget') {
+        card.style.display = text.includes('$') && !text.includes('$$$') ? '' : 'none';
+      } else if (tag === 'fine dining') {
+        card.style.display = text.includes('luxury') || text.includes('$$$') || text.includes('mondi') || text.includes('izakaya') || text.includes('360') ? '' : 'none';
+      } else {
+        card.style.display = text.includes(tag) ? '' : 'none';
+      }
+    });
   }
 
 
