@@ -1138,21 +1138,21 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num">48</div>
-          <div class="user-stat-lbl">Reviews</div>
+          <div class="user-stat-num" id="statReviews">—</div>
+          <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num">12</div>
-          <div class="user-stat-lbl">Saved</div>
+          <div class="user-stat-num" id="statSaved">—</div>
+          <div class="user-stat-lbl" id="statSavedLbl">Saved</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num">1.2k</div>
-          <div class="user-stat-lbl">Followers</div>
+          <div class="user-stat-num" id="statFollowers">—</div>
+          <div class="user-stat-lbl" id="statFollowersLbl">Followers</div>
         </div>
       </div>
       <div class="user-actions">
         <button class="btn-white" onclick="openMyProfile()">My Profile</button>
-        <button class="btn-ghost-white" onclick="openSettings()">⚙ Settings</button>
+        <button class="btn-ghost-white" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin settings are locked!');}else{openSettings();}">⚙ Settings</button>
       </div>
     </div>
 
@@ -1226,7 +1226,7 @@
     <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:500;">My Recommendations</p>
     <div id="myProfilePicksList" style="max-height:300px;overflow-y:auto;"></div>
     <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
-      <button class="btn-fill" style="flex:1;" onclick="document.getElementById('myProfileBg').classList.remove('open');openSettings()">⚙ Change Display Name</button>
+      <button class="btn-fill" style="flex:1;" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin name cannot be changed!');}else{document.getElementById('myProfileBg').classList.remove('open');openSettings();}">⚙ Change Display Name</button>
       <button class="btn-ghost" style="flex:1;" onclick="window.location.href='community.html'">Go to Community →</button>
     </div>
   </div>
