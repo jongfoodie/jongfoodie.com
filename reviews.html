@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="All restaurant reviews by Jong Foodie. Honest, first-hand reviews of the best spots in Amsterdam and beyond.">
 <title>Reviews — Jong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -59,51 +58,17 @@
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
-
-  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
-  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
-  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
-  .mobile-nav a:last-child { border-bottom: none; }
-  .mobile-nav a:hover { color: var(--accent); }
-
 </style>
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#D4521A">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Jong Foodie">
-<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
-<div class="mobile-nav" id="mobileNav">
-  <a href="reviews.html">🍽️ Reviews</a>
-  <a href="guides.html">📖 Guides</a>
-  <a href="videos.html">🎬 Videos</a>
-  <a href="map.html">🗺️ Map</a>
-  <a href="community.html">👥 Community</a>
-  <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
-</div>
 <nav>
-  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
-      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
-      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
-      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
-    </svg>
-    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
-  </a>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
     <li><a href="reviews.html" class="active">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
   </ul>
-  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
 <div class="page-hero">
   <h1>All Reviews</h1>
@@ -114,22 +79,34 @@
   <button onclick="searchReviews()" style="background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Search</button>
 </div>
 <div class="filters">
-  <button class="filter-pill active" onclick="setFilter(this)">All</button>
-  <button class="filter-pill" onclick="setFilter(this)">🍔 Burgers</button>
-  <button class="filter-pill" onclick="setFilter(this)">☕ Cafes</button>
-  <button class="filter-pill" onclick="setFilter(this)">🥐 Pastries</button>
-  <button class="filter-pill" onclick="setFilter(this)">🍣 Sushi</button>
-  <button class="filter-pill" onclick="setFilter(this)">🥪 Sandwiches</button>
-  <button class="filter-pill" onclick="setFilter(this)">🥩 Steak</button>
-  <button class="filter-pill" onclick="setFilter(this)">⭐ Top Rated</button>
+  <button class="filter-pill active" onclick="setFilter(this)" data-filter="all">All</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="burger">🍔 Burgers</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="cafe">☕ Cafes</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="italian">🍝 Italian</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="pastry">🥐 Pastries</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="sushi">🍣 Sushi</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="sandwich">🥪 Sandwiches</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="steak">🥩 Steak</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="pizza">🍕 Pizza</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="mexican">🌮 Mexican</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="seafood">🦞 Seafood</button>
+  <button class="filter-pill" onclick="setFilter(this)" data-filter="top">⭐ Top Rated</button>
+</div>
+<div class="filters" style="background:#F0EBE3;">
+  <button class="filter-pill" onclick="setCountry(this)" data-country="all">🌍 All Countries</button>
+  <button class="filter-pill" onclick="setCountry(this)" data-country="netherlands">🇳🇱 Netherlands</button>
+  <button class="filter-pill" onclick="setCountry(this)" data-country="usa">🇺🇸 USA</button>
+  <button class="filter-pill" onclick="setCountry(this)" data-country="aruba">🇦🇼 Aruba</button>
+  <button class="filter-pill" onclick="setCountry(this)" data-country="turkey">🇹🇷 Turkey</button>
 </div>
 <div class="wrapper">
-  <p class="section-label">15 Reviews · Amsterdam &amp; Beyond</p>
+  <p class="section-label"><span class="reviews-count">36</span> Reviews · Worldwide</p>
   <div class="reviews-list">
 
     <div class="review-card">
       <div class="review-img bg-sushi">🍣</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Fri: 12:00-14:30 &amp; 18:00-23:00 · Sat: 12:00-15:00 &amp; 18:00-23:30 · Sun: 12:00-16:00 &amp; 18:00-23:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Izakaya Amsterdam</h2>
           <span class="stars">★★★★★</span>
@@ -143,6 +120,7 @@
     <div class="review-card" id="mondi">
       <div class="review-img bg-ramen">🍽️</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Lunch: 12:30-16:00 · Dinner: 17:30-22:00 · Bar &amp; Lounge: 12:30-00:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Mondi Amsterdam Nieuw-West</h2>
           <span class="stars">★★★★★</span>
@@ -156,6 +134,7 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Thu: 12:00-21:00 · Fri-Sat: 12:00-22:00 · Sun: 12:00-21:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Maijard Smashburger — Chicken Smash</h2>
           <span class="stars">★★★★★</span>
@@ -169,6 +148,7 @@
     <div class="review-card">
       <div class="review-img bg-ramen">🍗</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Tue-Sun: 17:00-23:00 · Mon: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Bisous Amsterdam — Poulet Suprême</h2>
           <span class="stars">★★★★☆</span>
@@ -182,6 +162,7 @@
     <div class="review-card" id="fort-negen">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Fri: 08:00-17:00 · Sat-Sun: 09:00-17:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Fort Negen Sandwich Bar</h2>
           <span class="stars">★★★☆☆</span>
@@ -195,6 +176,7 @@
     <div class="review-card" id="leauf">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Fri: 08:00-17:00 · Sat: 09:00-17:00 · Sun: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Leauf Amsterdam — Leauf du Chef</h2>
           <span class="stars">★★★★★</span>
@@ -208,6 +190,7 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍗</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Thu: 12:00-21:00 · Fri-Sat: 12:00-22:00 · Sun: 12:00-21:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Maijard Chicken Smashed Burger</h2>
           <span class="stars">★★★★☆</span>
@@ -221,6 +204,7 @@
     <div class="review-card" id="et-claire">
       <div class="review-img bg-pastry">🥐</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Wed-Fri: 09:00-17:00 · Sat-Sun: 09:00-17:00 · Mon-Tue: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">et CLAIRE — Pistachio Cube Croissant</h2>
           <span class="stars">★★★☆☆</span>
@@ -234,6 +218,7 @@
     <div class="review-card" id="cafe-nobuya">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Wed-Sun: 09:00-17:00 · Mon-Tue: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Cafe Nobuya — Mochi Donuts &amp; Gyudon Beef</h2>
           <span class="stars">★★★★★</span>
@@ -247,6 +232,7 @@
     <div class="review-card" id="brioche">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Wed-Fri: 08:00-17:30 · Sat-Sun: 09:00-17:00 · Mon-Tue: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Brioche Amsterdam — Grilled Cheese</h2>
           <span class="stars">★☆☆☆☆</span>
@@ -260,6 +246,7 @@
     <div class="review-card">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Daily: 12:00-21:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Le Smash — Le Special with Extra Bacon</h2>
           <span class="stars">★★★★½</span>
@@ -273,6 +260,7 @@
     <div class="review-card">
       <div class="review-img bg-steak">🥩</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Daily: 12:00-23:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Zorlu Center — Steak Tater with Garlic Sauce</h2>
           <span class="stars">★★★★☆</span>
@@ -286,6 +274,7 @@
     <div class="review-card" id="fabel-friet">
       <div class="review-img bg-fries">🍟</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Wed-Sun: 17:00-23:00 · Mon-Tue: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Fabel Friet — Parmesan Truffle Fries</h2>
           <span class="stars">★★★★★</span>
@@ -299,6 +288,7 @@
     <div class="review-card">
       <div class="review-img bg-steak">🥩</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Daily: 12:00-00:00</span></div>
         <div class="review-top">
           <h2 class="review-title">360 Istanbul — Steak &amp; Live Music</h2>
           <span class="stars">★★★★☆</span>
@@ -312,6 +302,7 @@
     <div class="review-card">
       <div class="review-img bg-seafood">🐙</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Tue-Sun: 12:00-22:00 · Mon: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Sjefietshé — Hotdoctopus</h2>
           <span class="stars">★★★★☆</span>
@@ -325,6 +316,7 @@
     <div class="review-card" id="bonnie">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Daily: 08:00-18:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Bonnie — Kimchi Croque</h2>
           <span class="stars">★★★★☆</span>
@@ -338,6 +330,7 @@
     <div class="review-card" id="banh-mi">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Sat: 11:00-20:00 · Sun: 12:00-18:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Banh Mi Deli Amsterdam</h2>
           <span class="stars">★★★★☆</span>
@@ -351,6 +344,7 @@
     <div class="review-card" id="maijard">
       <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Mon-Thu: 12:00-21:00 · Fri-Sat: 12:00-22:00 · Sun: 12:00-21:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Maijard Smashburgers — The Original</h2>
           <span class="stars">★★★★½</span>
@@ -366,6 +360,7 @@
     <div class="review-card">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Daily: 08:00-18:00</span></div>
         <div class="review-top">
           <h2 class="review-title">Bonnie — Best Steak Sandwich in Amsterdam</h2>
           <span class="stars">★★★★☆</span>
@@ -379,6 +374,7 @@
     <div class="review-card" id="chun-cafe">
       <div class="review-img bg-sandwich">🥪</div>
       <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">🕐 Wed-Sun: 12:00-20:00 · Mon-Tue: Closed</span></div>
         <div class="review-top">
           <h2 class="review-title">Chun Cafe Amsterdam — Bacon Egg & Cheese</h2>
           <span class="stars">★★★★★</span>
@@ -389,6 +385,339 @@
       </div>
     </div>
 
+
+    <!-- NEW RESTAURANTS - Netherlands -->
+    <div class="review-card" data-country="netherlands" data-type="italian">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍝</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon: Closed · Tue-Fri: 12:00-14:30 &amp; 17:30-21:30 · Sat: 09:00-14:30 &amp; 17:30-21:30 · Sun: 12:00-14:30 &amp; 17:30-21:30</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Bussia</h2></div>
+        <div class="review-meta"><span>📍 Reestraat 28-32, Amsterdam</span><span>Italian Fine Dining</span></div>
+        <p class="review-excerpt">Modern Italian fine dining in the heart of the Nine Streets. Handmade pasta, sourdough bread and an all-Italian wine list. One of the best dining experiences in Amsterdam.</p>
+        <div class="review-tags"><span class="review-tag">Fine Dining</span><span class="review-tag">Italian</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌿</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 09:00-18:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">PLUK Berenstraat</h2></div>
+        <div class="review-meta"><span>📍 Berenstraat 19, Amsterdam</span><span>Cafe / Brunch</span></div>
+        <p class="review-excerpt">A hip brunch cafe in the Nine Streets. Known for avocado toasts, smoothie bowls, and a beautiful aesthetic. Perfect for a slow morning with great coffee.</p>
+        <div class="review-tags"><span class="review-tag">Brunch</span><span class="review-tag">Cafe</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="sandwich">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥯</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon: Closed · Tue-Sun: 09:00-15:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">BagelBoy</h2></div>
+        <div class="review-meta"><span>📍 Albert Cuypstraat 190, Amsterdam</span><span>Bagels / Sandwiches</span></div>
+        <p class="review-excerpt">Classic NYC-style bagels in Amsterdam. Fresh, chewy bagels with creative toppings. A must-visit on the Albert Cuyp market.</p>
+        <div class="review-tags"><span class="review-tag">Bagels</span><span class="review-tag">Sandwiches</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="sandwich">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Wed: 10:00-21:00 · Thu: 10:00-01:00 · Fri-Sat: 10:00-02:00 · Sun: 10:30-20:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Eetsalon Van Dobben</h2></div>
+        <div class="review-meta"><span>📍 Korte Reguliersdwarsstraat 5-7, Amsterdam</span><span>Dutch / Sandwiches</span></div>
+        <p class="review-excerpt">An Amsterdam institution since 1945. Famous for their house-made croquettes (kroket) on a white bun with mustard. A true taste of Dutch heritage.</p>
+        <div class="review-tags"><span class="review-tag">Dutch Classic</span><span class="review-tag">Must Try</span><span class="review-tag">Croquettes</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍗</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-00:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">KID Amsterdam</h2></div>
+        <div class="review-meta"><span>📍 Frederik Hendrikplantsoen 36, Amsterdam</span><span>Asian / Burgers / Cafe</span></div>
+        <p class="review-excerpt">One of Amsterdam's hottest all-day spots. Asian-inspired menu with the best fried chicken burger in the city. Beautiful interior, great vibes, community feel.</p>
+        <div class="review-tags"><span class="review-tag">Must Try</span><span class="review-tag">Fried Chicken</span><span class="review-tag">Asian</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="steak">
+      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 12:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">L'Entrecôte et les Dames</h2></div>
+        <div class="review-meta"><span>📍 Van Baerlestraat 47-49, Amsterdam</span><span>French / Steak</span></div>
+        <p class="review-excerpt">A Amsterdam classic. The set menu — entrecôte with their famous secret sauce and unlimited frites — is one of the best deals in town. Always packed for a reason.</p>
+        <div class="review-tags"><span class="review-tag">Steak</span><span class="review-tag">French</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="italian">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍽️</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: Lunch &amp; Dinner · Sun Brunch: 12:00-16:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Cecconi's Amsterdam</h2></div>
+        <div class="review-meta"><span>📍 Spuistraat 210, Amsterdam · Soho House</span><span>Italian / Fine Dining</span></div>
+        <p class="review-excerpt">The iconic Soho House restaurant in Amsterdam. Classic Italian dishes executed to perfection in a stunning setting. The breakfast is especially legendary.</p>
+        <div class="review-tags"><span class="review-tag">Italian</span><span class="review-tag">Fine Dining</span><span class="review-tag">Soho House</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Wed-Sun: 17:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Beef Chief // Transit Bar</h2></div>
+        <div class="review-meta"><span>📍 Aambeeldstraat 38, Amsterdam</span><span>Burgers / Bar</span></div>
+        <p class="review-excerpt">Hidden gem in Amsterdam-Noord. Exceptional smash burgers in a cool bar setting. Worth the trip across the water for some of the best beef in the city.</p>
+        <div class="review-tags"><span class="review-tag">Burgers</span><span class="review-tag">Hidden Gem</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="sushi">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍜</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 By reservation only</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Men Impossible</h2></div>
+        <div class="review-meta"><span>📍 Hazenstraat 19H, Amsterdam</span><span>Vegan Ramen</span></div>
+        <p class="review-excerpt">The best vegan ramen in Amsterdam. Chef Atsushi creates an impossibly rich broth without any animal products. Handmade spelt noodles and a reservation-only format.</p>
+        <div class="review-tags"><span class="review-tag">Ramen</span><span class="review-tag">Vegan</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="pizza">
+      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍕</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-20:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Zero Zero</h2></div>
+        <div class="review-meta"><span>📍 Nieuwe Spiegelstraat 3A, Amsterdam</span><span>Pizza / Sandwiches</span></div>
+        <p class="review-excerpt">Incredible pizza sandwiches with top-quality ingredients. Long queues but worth every minute. The Bresaola and Capocollo are standouts. Great canal-side eating.</p>
+        <div class="review-tags"><span class="review-tag">Pizza</span><span class="review-tag">Sandwiches</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="pastry">
+      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥐</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Tue-Fri: 09:00-16:00 · Sat: 09:00-17:00 · Sun: 09:30-17:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Salvo Bake House</h2></div>
+        <div class="review-meta"><span>📍 Tweede Hugo de Grootstraat 9, Amsterdam</span><span>Bakery / Pastries</span></div>
+        <p class="review-excerpt">A hidden bakery gem in the Jordaan. Outstanding sourdough, pastries, and breads made with exceptional craft. One of Amsterdam's best kept secrets.</p>
+        <div class="review-tags"><span class="review-tag">Bakery</span><span class="review-tag">Pastries</span><span class="review-tag">Hidden Gem</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="italian">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍝</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 12:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Ceppi's</h2></div>
+        <div class="review-meta"><span>📍 Lijnbaansgracht 256, Amsterdam</span><span>Italian</span></div>
+        <p class="review-excerpt">A charming Italian restaurant on the canal. Great pasta, warm atmosphere, and honest Italian cooking. A neighbourhood favourite in Amsterdam.</p>
+        <div class="review-tags"><span class="review-tag">Italian</span><span class="review-tag">Pasta</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="pizza">
+      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍕</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">nNea Pizza</h2></div>
+        <div class="review-meta"><span>📍 Bilderdijkstraat 92, Amsterdam</span><span>Neapolitan Pizza</span></div>
+        <p class="review-excerpt">Authentic Neapolitan pizza in Amsterdam. Perfect leopard-spotted crust, fresh ingredients, and a wood-fired oven. One of the best pizzas in the Netherlands.</p>
+        <div class="review-tags"><span class="review-tag">Pizza</span><span class="review-tag">Neapolitan</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Fri: 17:00-22:00 · Sat-Sun: 14:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">THE GOAT Rotterdam</h2></div>
+        <div class="review-meta"><span>📍 Schiedamse Vest 14, Rotterdam</span><span>Smash Burgers</span></div>
+        <p class="review-excerpt">Rotterdam's legendary smash burger spot. Where the Netherlands' smashburger craze started. Juicy beef patties, incredible Korean kimchi burger, and creamy milkshakes.</p>
+        <div class="review-tags"><span class="review-tag">Burgers</span><span class="review-tag">Must Try</span><span class="review-tag">Rotterdam</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="netherlands" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Republiek Bloemendaal</h2></div>
+        <div class="review-meta"><span>📍 Zeeweg 94, Overveen</span><span>Beach Club / Restaurant</span></div>
+        <p class="review-excerpt">A beautiful beach club just outside Amsterdam. Great food, incredible ocean views, and a relaxed atmosphere. Perfect for a summer day trip from Amsterdam.</p>
+        <div class="review-tags"><span class="review-tag">Beach Club</span><span class="review-tag">Day Trip</span></div>
+      </div>
+    </div>
+
+    <!-- USA -->
+    <div class="review-card" data-country="usa" data-type="mexican">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌮</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Amigos Birria Tacos</h2></div>
+        <div class="review-meta"><span>📍 46 Windward Ave, Venice Beach</span><span>Mexican / Tacos</span></div>
+        <p class="review-excerpt">The best birria tacos in Venice Beach. Slow-cooked beef in rich chili broth, crispy red tortillas, melted cheese and consommé for dipping. An LA must.</p>
+        <div class="review-tags"><span class="review-tag">Tacos</span><span class="review-tag">Must Try</span><span class="review-tag">Street Food</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌞</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 08:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Great White Venice</h2></div>
+        <div class="review-meta"><span>📍 1604 Pacific Ave, Venice</span><span>Cafe / Brunch</span></div>
+        <p class="review-excerpt">Venice Beach's most beloved brunch spot. Laid-back California vibes with exceptional food. The avocado toast and pancakes are world-class. Always a queue, always worth it.</p>
+        <div class="review-tags"><span class="review-tag">Brunch</span><span class="review-tag">Must Try</span><span class="review-tag">Venice Beach</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="italian">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍽️</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Cecconi's West Hollywood</h2></div>
+        <div class="review-meta"><span>📍 8764 Melrose Ave, West Hollywood</span><span>Italian / Fine Dining</span></div>
+        <p class="review-excerpt">The LA version of the iconic Soho House restaurant. Perfect Italian dishes in a stunning setting on Melrose. Celebrity hotspot with food to match the hype.</p>
+        <div class="review-tags"><span class="review-tag">Italian</span><span class="review-tag">Fine Dining</span><span class="review-tag">Celebrity Spot</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🏨</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-00:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Soho House West Hollywood</h2></div>
+        <div class="review-meta"><span>📍 9200 Sunset Blvd, West Hollywood</span><span>Restaurant / Members Club</span></div>
+        <p class="review-excerpt">The iconic Soho House on Sunset Strip. Stunning rooftop pool with views over LA. The food and cocktails are excellent. An unforgettable LA experience.</p>
+        <div class="review-tags"><span class="review-tag">Rooftop</span><span class="review-tag">Must Try</span><span class="review-tag">Sunset Strip</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="cafe">
+      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Thu: 17:00-23:00 · Fri-Sun: 11:00-14:30 &amp; 17:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">RVR Venice</h2></div>
+        <div class="review-meta"><span>📍 1305 Abbot Kinney Blvd, Venice</span><span>Cafe / Restaurant</span></div>
+        <p class="review-excerpt">A stylish spot on the famous Abbot Kinney Boulevard. Great coffee, creative menu, and excellent people-watching on one of LA's most vibrant streets.</p>
+        <div class="review-tags"><span class="review-tag">Abbot Kinney</span><span class="review-tag">Cafe</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="steak">
+      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍷</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:30-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">A.O.C.</h2></div>
+        <div class="review-meta"><span>📍 8700 W 3rd St, Los Angeles</span><span>Wine Bar / Mediterranean</span></div>
+        <p class="review-excerpt">One of LA's best wine bars and restaurants. Exceptional small plates, incredible wine selection, and a gorgeous space. Suzanne Goin's masterpiece — a true LA institution.</p>
+        <div class="review-tags"><span class="review-tag">Wine Bar</span><span class="review-tag">Mediterranean</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍸</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:00-02:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Met Her At A Bar</h2></div>
+        <div class="review-meta"><span>📍 759 S La Brea Ave, Los Angeles</span><span>Bar / Restaurant</span></div>
+        <p class="review-excerpt">A cool bar and restaurant on La Brea with excellent cocktails and great food. Buzzing atmosphere and one of the most fun spots in Mid-City LA.</p>
+        <div class="review-tags"><span class="review-tag">Bar</span><span class="review-tag">Cocktails</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">☕</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Kings Road</h2></div>
+        <div class="review-meta"><span>📍 8361 Beverly Blvd, Los Angeles</span><span>Cafe / Brunch</span></div>
+        <p class="review-excerpt">A beloved WeHo cafe with great coffee and solid brunch menu. A neighbourhood staple that's been drawing locals for years. The perfect afternoon coffee spot.</p>
+        <div class="review-tags"><span class="review-tag">Cafe</span><span class="review-tag">Brunch</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="pastry">
+      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥐</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 08:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">République</h2></div>
+        <div class="review-meta"><span>📍 624 S La Brea Ave, Los Angeles</span><span>French / Bakery / Fine Dining</span></div>
+        <p class="review-excerpt">Walter and Margarita Manzke's masterpiece. A stunning historic building housing one of LA's best restaurants. The pastries at breakfast are legendary. Fine dining at dinner.</p>
+        <div class="review-tags"><span class="review-tag">French</span><span class="review-tag">Must Try</span><span class="review-tag">Pastries</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:30-01:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">In-N-Out Burger Hollywood</h2></div>
+        <div class="review-meta"><span>📍 7009 Sunset Blvd, Hollywood</span><span>Burgers / Fast Food</span></div>
+        <p class="review-excerpt">The California classic. Double-Double animal style with fresh ingredients at an unbeatable price. A rite of passage for any LA visitor. Simple, perfect, iconic.</p>
+        <div class="review-tags"><span class="review-tag">Burgers</span><span class="review-tag">California Classic</span><span class="review-tag">Must Try</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="cafe">
+      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌿</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-18:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Mauro Cafe</h2></div>
+        <div class="review-meta"><span>📍 7469 Melrose Ave, Los Angeles</span><span>Cafe / Italian</span></div>
+        <p class="review-excerpt">A charming Italian cafe on Melrose Ave. Great espresso, light bites, and a stylish crowd. Perfect for a mid-shopping coffee break in the heart of LA.</p>
+        <div class="review-tags"><span class="review-tag">Cafe</span><span class="review-tag">Italian</span><span class="review-tag">Melrose</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="mexican">
+      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌮</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">El Agave Restaurant</h2></div>
+        <div class="review-meta"><span>📍 2304 San Diego Ave, San Diego</span><span>Mexican / Tequila Bar</span></div>
+        <p class="review-excerpt">Award-winning Mexican restaurant in Old Town San Diego. Incredible mole sauces, fresh seafood, and one of the world's most impressive tequila collections.</p>
+        <div class="review-tags"><span class="review-tag">Mexican</span><span class="review-tag">Must Try</span><span class="review-tag">Tequila</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="usa" data-type="seafood">
+      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Georges at the Cove</h2></div>
+        <div class="review-meta"><span>📍 1250 Prospect St, La Jolla</span><span>Seafood / Fine Dining</span></div>
+        <p class="review-excerpt">Stunning ocean views from La Jolla's finest restaurant. Three levels of dining from casual to fine. The rooftop terrace with Pacific views is absolutely breathtaking.</p>
+        <div class="review-tags"><span class="review-tag">Seafood</span><span class="review-tag">Fine Dining</span><span class="review-tag">Ocean View</span></div>
+      </div>
+    </div>
+
+    <!-- ARUBA -->
+    <div class="review-card" data-country="aruba" data-type="burger">
+      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍺</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
+        <div class="review-top"><h2 class="review-title">Local Store Aruba</h2></div>
+        <div class="review-meta"><span>📍 Palm Beach 13A, Noord</span><span>Bar / Wings / Craft Beer</span></div>
+        <p class="review-excerpt">Aruba's best craft beer bar with incredible chicken wings in 15+ flavors. The local hotspot where Arubans go after work. Homemade chips and fried polenta are must-orders.</p>
+        <div class="review-tags"><span class="review-tag">Craft Beer</span><span class="review-tag">Wings</span><span class="review-tag">Local Favourite</span></div>
+      </div>
+    </div>
+
+    <div class="review-card" data-country="aruba" data-type="seafood">
+      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🦞</div>
+      <div class="review-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Sat: 18:00-21:30 · Sun: Closed</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
+        <div class="review-top"><h2 class="review-title">Papiamento Restaurant</h2></div>
+        <div class="review-meta"><span>📍 Washington 61, Noord</span><span>Caribbean / Seafood / Fine Dining</span></div>
+        <p class="review-excerpt">Aruba's most iconic restaurant since 1983. Dining in a 175-year-old cunucu house under tropical trees by a pool. The keshi yena and lobster are unforgettable.</p>
+        <div class="review-tags"><span class="review-tag">Fine Dining</span><span class="review-tag">Must Try</span><span class="review-tag">Caribbean</span></div>
+      </div>
+    </div>
   </div>
 
   <p class="section-label">Community Picks</p>
@@ -400,9 +729,48 @@
 </div>
 
 <script>
+  let activeCountry = 'all';
+  let activeFilter = 'all';
+
   function setFilter(el) {
-    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.filters:first-of-type .filter-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
+    activeFilter = el.dataset.filter || 'all';
+    applyFilters();
+  }
+
+  function setCountry(el) {
+    document.querySelectorAll('.filters:last-of-type .filter-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    activeCountry = el.dataset.country || 'all';
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.review-card');
+    cards.forEach(card => {
+      const country = card.dataset.country || 'netherlands';
+      const type = card.dataset.type || '';
+      const text = card.innerText.toLowerCase();
+
+      const countryMatch = activeCountry === 'all' || country === activeCountry;
+      let typeMatch = activeFilter === 'all';
+      if (!typeMatch) {
+        if (activeFilter === 'burger') typeMatch = type.includes('burger') || text.includes('burger') || text.includes('smash');
+        else if (activeFilter === 'cafe') typeMatch = type.includes('cafe') || text.includes('cafe') || text.includes('coffee') || text.includes('brunch');
+        else if (activeFilter === 'italian') typeMatch = type.includes('italian') || text.includes('italian') || text.includes('pasta') || text.includes('pizza');
+        else if (activeFilter === 'pastry') typeMatch = type.includes('pastry') || text.includes('pastry') || text.includes('bakery') || text.includes('croissant');
+        else if (activeFilter === 'sushi') typeMatch = type.includes('sushi') || text.includes('sushi') || text.includes('ramen') || text.includes('japanese');
+        else if (activeFilter === 'sandwich') typeMatch = type.includes('sandwich') || text.includes('sandwich') || text.includes('bagel') || text.includes('kroket');
+        else if (activeFilter === 'steak') typeMatch = type.includes('steak') || text.includes('steak') || text.includes('entrecôte');
+        else if (activeFilter === 'pizza') typeMatch = type.includes('pizza') || text.includes('pizza');
+        else if (activeFilter === 'mexican') typeMatch = type.includes('mexican') || text.includes('mexican') || text.includes('taco') || text.includes('birria');
+        else if (activeFilter === 'seafood') typeMatch = type.includes('seafood') || text.includes('seafood') || text.includes('lobster');
+        else if (activeFilter === 'top') typeMatch = text.includes('★★★★★');
+      }
+
+      card.style.display = (countryMatch && typeMatch) ? '' : 'none';
+    });
   }
 </script>
 
@@ -509,13 +877,6 @@
       }
     }
   });
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
 </script>
 </body>
 </html>

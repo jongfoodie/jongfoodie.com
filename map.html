@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam and beyond.">
-<title>Food Map — Jong Foodie</title>
+<title>Map — Jong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -47,57 +46,31 @@
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
-
-  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
-  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
-  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
-  .mobile-nav a:last-child { border-bottom: none; }
-  .mobile-nav a:hover { color: var(--accent); }
-
 </style>
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#D4521A">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Jong Foodie">
-<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
-<div class="mobile-nav" id="mobileNav">
-  <a href="reviews.html">🍽️ Reviews</a>
-  <a href="guides.html">📖 Guides</a>
-  <a href="videos.html">🎬 Videos</a>
-  <a href="map.html">🗺️ Map</a>
-  <a href="community.html">👥 Community</a>
-  <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
-</div>
 <nav>
-  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
-      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
-      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
-      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
-    </svg>
-    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
-  </a>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
     <li><a href="map.html" class="active">Map</a></li>
     <li><a href="community.html">Community</a></li>
   </ul>
-  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
 <div class="page-hero">
   <h1>Food Map</h1>
   <p>All Jong Foodie reviewed spots in Amsterdam & beyond</p>
 </div>
 <div class="map-layout" style="position:relative;">
+  
+<div style="background:var(--warm-white);border-bottom:1px solid var(--border);padding:0.5rem 1rem;display:flex;gap:0.5rem;overflow-x:auto;">
+  <button onclick="filterByCountry('all')" style="background:#1A1208;color:#fff;border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🌍 All</button>
+  <button onclick="filterByCountry('netherlands')" style="background:var(--tag-bg);color:var(--ink);border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇳🇱 Netherlands</button>
+  <button onclick="filterByCountry('usa')" style="background:var(--tag-bg);color:var(--ink);border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇺🇸 USA</button>
+  <button onclick="filterByCountry('aruba')" style="background:var(--tag-bg);color:var(--ink);border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇦🇼 Aruba</button>
+  <button onclick="filterByCountry('turkey')" style="background:var(--tag-bg);color:var(--ink);border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇹🇷 Turkey</button>
+</div>
   <div id="loadingBar" class="loading-bar">📍 Loading restaurant locations...</div>
   <div class="spots-panel">
     <div class="spots-search">
@@ -111,8 +84,8 @@
 
 <script>
 const spots = [
-  { name: 'The Coffee', address: 'Eerste Constantijn Huygensstraat 33, Amsterdam', hours: 'Mon–Thu 08:00–17:00 · Fri 08:00–19:00 · Sat 09:00–19:00 · Sun 09:00–17:00', rating: '★★★★★', emoji: '☕', lat: 52.3643067, lng: 4.8745352 },
-  { name: 'IZAKAYA Asian Kitchen & Bar', address: 'Albert Cuypstraat 2-6 De Pijp Amsterdam Netherlands', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★', emoji: '🍣' },
+  { name: 'The Coffee', country: 'netherlands',, address: 'Eerste Constantijn Huygensstraat 33, Amsterdam', hours: 'Mon–Thu 08:00–17:00 · Fri 08:00–19:00 · Sat 09:00–19:00 · Sun 09:00–17:00', rating: '★★★★★', emoji: '☕', lat: 52.3643067, lng: 4.8745352 },
+  { name: 'IZAKAYA Asian Kitchen & Bar', country: 'netherlands',, address: 'Albert Cuypstraat 2-6 De Pijp Amsterdam Netherlands', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★', emoji: '🍣' },
   { name: 'Mondi Amsterdam Nieuw-West', address: 'Transformatorweg 38, Amsterdam', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight', rating: '★★★★★', emoji: '🍽️' },
   { name: 'Maijard Smashburgers', address: 'Berenstraat 20, Amsterdam', hours: 'Daily 10:00–19:00', rating: '★★★★½', emoji: '🍔' },
   { name: 'BISOUS Amsterdam', address: 'Albert Cuypstraat 31, Amsterdam', hours: 'Mon–Thu 17:30–01:00 · Fri–Sat 16:00–02:00 · Sun Closed', rating: '★★★★☆', emoji: '🍗' },
@@ -129,6 +102,40 @@ const spots = [
   { name: 'Chun Cafe Amsterdam', address: 'Berenstraat 8, Amsterdam', hours: 'Daily 10:00–17:00', rating: '★★★★★', emoji: '☕' },
   { name: 'Zorlu Center', address: 'Zorlu Center, Istanbul, Turkey', hours: 'Istanbul, Turkey', rating: '★★★★☆', emoji: '🥩' },
   { name: '360 Istanbul', address: '360 Istanbul restaurant Beyoglu', hours: 'Istanbul, Turkey · Live Music Saturdays', rating: '★★★★☆', emoji: '🥩' },
+
+  // Netherlands - New
+  { name: 'Bussia', address: 'Reestraat 28-32, Amsterdam', hours: 'Tue-Sun: Lunch & Dinner', rating: '★★★★★', emoji: '🍝', lat: 52.371300, lng: 4.883700, country: 'netherlands' },
+  { name: 'PLUK Berenstraat', address: 'Berenstraat 19, Amsterdam', hours: 'Daily 09:00-18:00', rating: '★★★★☆', emoji: '🌿', lat: 52.3703059, lng: 4.8834783, country: 'netherlands' },
+  { name: 'BagelBoy', address: 'Albert Cuypstraat 190, Amsterdam', hours: 'Daily 08:00-17:00', rating: '★★★★☆', emoji: '🥯', lat: 52.355893, lng: 4.895605, country: 'netherlands' },
+  { name: 'Eetsalon Van Dobben', address: 'Korte Reguliersdwarsstraat 5-7-9, Amsterdam', hours: 'Daily 10:00-21:00', rating: '★★★★★', emoji: '🥩', lat: 52.3660107, lng: 4.8951546, country: 'netherlands' },
+  { name: 'KID Amsterdam', address: 'Frederik Hendrikplantsoen 36, Amsterdam', hours: 'Daily 10:00-00:00', rating: '★★★★★', emoji: '🍗', lat: 52.3798831, lng: 4.8770463, country: 'netherlands' },
+  { name: "L'Entrecôte et les Dames", address: 'Van Baerlestraat 47-49, Amsterdam', hours: 'Daily 12:00-23:00', rating: '★★★★★', emoji: '🥩', lat: 52.3556956, lng: 4.8805113, country: 'netherlands' },
+  { name: "Cecconi's Amsterdam", address: 'Spuistraat 210, Amsterdam', hours: 'Daily 07:00-23:00', rating: '★★★★★', emoji: '🍽️', lat: 52.372083, lng: 4.8892396, country: 'netherlands' },
+  { name: 'Beef Chief // Transit Bar', address: 'Aambeeldstraat 38, Amsterdam', hours: 'Wed-Sun 17:00-23:00', rating: '★★★★★', emoji: '🍔', lat: 52.3844986, lng: 4.9288488, country: 'netherlands' },
+  { name: 'Men Impossible', address: 'Hazenstraat 19H, Amsterdam', hours: 'By reservation only', rating: '★★★★★', emoji: '🍜', lat: 52.3707002, lng: 4.8799628, country: 'netherlands' },
+  { name: 'Zero Zero', address: 'Nieuwe Spiegelstraat 3A, Amsterdam', hours: 'Daily 11:00-20:00', rating: '★★★★☆', emoji: '🍕', lat: 52.3650841, lng: 4.8902906, country: 'netherlands' },
+  { name: 'Salvo Bake House', address: 'Tweede Hugo de Grootstraat 9, Amsterdam', hours: 'Tue-Sun 08:00-17:00', rating: '★★★★★', emoji: '🥐', lat: 52.3741092, lng: 4.8744115, country: 'netherlands' },
+  { name: "Ceppi's", address: 'Lijnbaansgracht 256, Amsterdam', hours: 'Daily 12:00-22:00', rating: '★★★★☆', emoji: '🍝', lat: 52.3627598, lng: 4.8850914, country: 'netherlands' },
+  { name: 'nNea Pizza', address: 'Bilderdijkstraat 92, Amsterdam', hours: 'Daily 17:00-22:00', rating: '★★★★★', emoji: '🍕', lat: 52.3694202, lng: 4.8703501, country: 'netherlands' },
+  { name: 'THE GOAT Rotterdam', address: 'Schiedamse Vest 14, Rotterdam', hours: 'Daily 12:00-22:00', rating: '★★★★★', emoji: '🍔', lat: 51.9171022, lng: 4.4803105, country: 'netherlands' },
+  { name: 'Republiek Bloemendaal', address: 'Zeeweg 94, Overveen', hours: 'Daily 10:00-23:00', rating: '★★★★☆', emoji: '🌊', lat: 52.4017809, lng: 4.5429962, country: 'netherlands' },
+  // USA
+  { name: 'Amigos Birria Tacos', address: '46 Windward Ave, Venice, CA', hours: 'Daily 10:00-22:00', rating: '★★★★★', emoji: '🌮', lat: 33.9872055, lng: -118.472753, country: 'usa' },
+  { name: 'Great White Venice', address: '1604 Pacific Ave, Venice, CA', hours: 'Daily 08:00-16:00', rating: '★★★★★', emoji: '🌞', lat: 33.9877317, lng: -118.4717929, country: 'usa' },
+  { name: 'Soho House West Hollywood', address: '9200 Sunset Blvd, West Hollywood, CA', hours: 'Daily 07:00-00:00', rating: '★★★★★', emoji: '🏨', lat: 34.0898923, lng: -118.3928127, country: 'usa' },
+  { name: "Cecconi's West Hollywood", address: '8764 Melrose Ave, West Hollywood, CA', hours: 'Daily 07:00-23:00', rating: '★★★★★', emoji: '🍽️', lat: 34.0805051, lng: -118.3850408, country: 'usa' },
+  { name: 'RVR Venice', address: '1305 Abbot Kinney Blvd, Venice, CA', hours: 'Daily 08:00-22:00', rating: '★★★★☆', emoji: '🌊', lat: 33.99135, lng: -118.4679423, country: 'usa' },
+  { name: 'A.O.C.', address: '8700 W 3rd St, Los Angeles, CA', hours: 'Daily 17:30-22:00', rating: '★★★★★', emoji: '🍷', lat: 34.0734135, lng: -118.3819272, country: 'usa' },
+  { name: 'Met Her At A Bar', address: '759 S La Brea Ave, Los Angeles, CA', hours: 'Daily 17:00-02:00', rating: '★★★★☆', emoji: '🍸', lat: 34.0606376, lng: -118.3448225, country: 'usa' },
+  { name: 'Kings Road', address: '8361 Beverly Blvd, Los Angeles, CA', hours: 'Daily 07:00-22:00', rating: '★★★★☆', emoji: '☕', lat: 34.076252, lng: -118.372261, country: 'usa' },
+  { name: 'République', address: '624 S La Brea Ave, Los Angeles, CA', hours: 'Daily 08:00-23:00', rating: '★★★★★', emoji: '🥐', lat: 34.0641589, lng: -118.343697, country: 'usa' },
+  { name: 'In-N-Out Burger Hollywood', address: '7009 Sunset Blvd, Hollywood, CA', hours: 'Daily 10:30-01:00', rating: '★★★★☆', emoji: '🍔', lat: 34.0982287, lng: -118.3416747, country: 'usa' },
+  { name: 'Mauro Cafe', address: '7469 Melrose Ave, Los Angeles, CA', hours: 'Daily 07:00-18:00', rating: '★★★★☆', emoji: '🌿', lat: 34.0838345, lng: -118.3528037, country: 'usa' },
+  { name: 'El Agave Restaurant', address: '2304 San Diego Ave, San Diego, CA', hours: 'Daily 11:00-22:00', rating: '★★★★★', emoji: '🌮', lat: 32.7496746, lng: -117.1921775, country: 'usa' },
+  { name: 'Georges at the Cove', address: '1250 Prospect St, La Jolla, CA', hours: 'Daily 11:00-22:00', rating: '★★★★★', emoji: '🌊', lat: 32.8494006, lng: -117.2719319, country: 'usa' },
+  // Aruba
+  { name: 'Local Store Aruba', address: 'Palm Beach 13A, Noord, Aruba', hours: 'Daily 16:00-01:00', rating: '★★★★☆', emoji: '🍺', lat: 12.5656793, lng: -70.0390884, country: 'aruba' },
+  { name: 'Papiamento Restaurant', address: 'Washington 61, Noord, Aruba', hours: 'Mon-Sat 18:00-22:30', rating: '★★★★★', emoji: '🦞', lat: 12.5625007, lng: -70.0372658, country: 'aruba' },
 ];
 
 const map = L.map('map').setView([52.3676, 4.8897], 13);
@@ -163,6 +170,9 @@ function loadAllSpots() {
     'Zorlu Center':                   [41.06950, 29.01080],
     '360 Istanbul':                   [41.03360, 28.97740],
   };
+
+  // Add country to existing spots without it
+  spots.forEach(s => { if (!s.country) s.country = 'netherlands'; });
 
   spots.forEach(s => {
     const c = coords[s.name];
@@ -211,6 +221,17 @@ function buildList(filtered) {
   });
 }
 
+
+function filterByCountry(country) {
+  const filtered = country === 'all' ? spots : spots.filter(s => s.country === country);
+  buildList(filtered);
+  // Center map on country
+  if (country === 'usa') map.setView([34.05, -118.35], 9);
+  else if (country === 'aruba') map.setView([12.52, -70.03], 13);
+  else if (country === 'turkey') map.setView([41.01, 28.97], 10);
+  else map.setView([52.37, 4.89], 12);
+}
+
 function filterSpots(val) {
   const v = val.toLowerCase();
   buildList(spots.filter(s => s.name.toLowerCase().includes(v) || s.address.toLowerCase().includes(v)));
@@ -218,13 +239,6 @@ function filterSpots(val) {
 
 // Load spots
 loadAllSpots();
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
 </script>
 </body>
 </html>
