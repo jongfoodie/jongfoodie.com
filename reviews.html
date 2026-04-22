@@ -34,7 +34,7 @@
   .review-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 160px 1fr; transition: transform 0.2s, box-shadow 0.2s; }
   .review-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,18,8,0.08); }
   .review-img { display: flex; align-items: center; justify-content: center; font-size: 52px; min-height: 160px; }
-  .review-body { padding: 1.25rem 1.5rem; }
+  .review-body { padding: 1.25rem 1.5rem; min-height: 160px; display: flex; flex-direction: column; justify-content: space-between; }
   .review-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.4rem; }
   .review-title { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.25; }
   .stars { color: var(--gold); font-size: 13px; white-space: nowrap; }
@@ -388,7 +388,7 @@
 
     <!-- NEW RESTAURANTS - Netherlands -->
     <div class="review-card" data-country="netherlands" data-type="italian">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍝</div>
+      <div class="review-img bg-ramen">🍝</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon: Closed · Tue-Fri: 12:00-14:30 &amp; 17:30-21:30 · Sat: 09:00-14:30 &amp; 17:30-21:30 · Sun: 12:00-14:30 &amp; 17:30-21:30</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Bussia</h2></div>
@@ -399,7 +399,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌿</div>
+      <div class="review-img bg-cafe">🌿</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 09:00-18:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">PLUK Berenstraat</h2></div>
@@ -410,7 +410,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="sandwich">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥯</div>
+      <div class="review-img bg-burger">🥯</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon: Closed · Tue-Sun: 09:00-15:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">BagelBoy</h2></div>
@@ -421,7 +421,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="sandwich">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-img bg-ramen">🥩</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Wed: 10:00-21:00 · Thu: 10:00-01:00 · Fri-Sat: 10:00-02:00 · Sun: 10:30-20:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Eetsalon Van Dobben</h2></div>
@@ -432,7 +432,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍗</div>
+      <div class="review-img bg-burger">🍗</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-00:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">KID Amsterdam</h2></div>
@@ -443,7 +443,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="steak">
-      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-img bg-sushi">🥩</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 12:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">L'Entrecôte et les Dames</h2></div>
@@ -454,7 +454,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="italian">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍽️</div>
+      <div class="review-img bg-ramen">🍽️</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: Lunch &amp; Dinner · Sun Brunch: 12:00-16:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Cecconi's Amsterdam</h2></div>
@@ -465,7 +465,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Wed-Sun: 17:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Beef Chief // Transit Bar</h2></div>
@@ -476,7 +476,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="sushi">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍜</div>
+      <div class="review-img bg-ramen">🍜</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 By reservation only</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Men Impossible</h2></div>
@@ -487,7 +487,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="pizza">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍕</div>
+      <div class="review-img bg-pastry">🍕</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-20:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">Zero Zero</h2></div>
@@ -498,7 +498,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="pastry">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥐</div>
+      <div class="review-img bg-pastry">🥐</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Tue-Fri: 09:00-16:00 · Sat: 09:00-17:00 · Sun: 09:30-17:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Salvo Bake House</h2></div>
@@ -509,7 +509,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="italian">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍝</div>
+      <div class="review-img bg-ramen">🍝</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 12:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">Ceppi's</h2></div>
@@ -520,7 +520,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="pizza">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍕</div>
+      <div class="review-img bg-pastry">🍕</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">nNea Pizza</h2></div>
@@ -531,7 +531,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Fri: 17:00-22:00 · Sat-Sun: 14:00-22:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">THE GOAT Rotterdam</h2></div>
@@ -542,7 +542,7 @@
     </div>
 
     <div class="review-card" data-country="netherlands" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-img bg-cafe">🌊</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">Republiek Bloemendaal</h2></div>
@@ -554,7 +554,7 @@
 
     <!-- USA -->
     <div class="review-card" data-country="usa" data-type="mexican">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌮</div>
+      <div class="review-img bg-ramen">🌮</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:00-22:00</span></div>
         <div class="review-top"><h2 class="review-title">Amigos Birria Tacos</h2></div>
@@ -565,7 +565,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌞</div>
+      <div class="review-img bg-cafe">🌞</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 08:00-22:00</span></div>
         <div class="review-top"><h2 class="review-title">Great White Venice</h2></div>
@@ -576,7 +576,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="italian">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍽️</div>
+      <div class="review-img bg-ramen">🍽️</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-23:00</span></div>
         <div class="review-top"><h2 class="review-title">Cecconi's West Hollywood</h2></div>
@@ -587,7 +587,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🏨</div>
+      <div class="review-img bg-cafe">🏨</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-00:00</span></div>
         <div class="review-top"><h2 class="review-title">Soho House West Hollywood</h2></div>
@@ -598,7 +598,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="cafe">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-img bg-pastry">🌊</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Thu: 17:00-23:00 · Fri-Sun: 11:00-14:30 &amp; 17:00-23:00</span></div>
         <div class="review-top"><h2 class="review-title">RVR Venice</h2></div>
@@ -609,7 +609,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="steak">
-      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍷</div>
+      <div class="review-img bg-sushi">🍷</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:30-22:00</span></div>
         <div class="review-top"><h2 class="review-title">A.O.C.</h2></div>
@@ -620,7 +620,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍸</div>
+      <div class="review-img bg-burger">🍸</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 17:00-02:00</span></div>
         <div class="review-top"><h2 class="review-title">Met Her At A Bar</h2></div>
@@ -631,7 +631,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">☕</div>
+      <div class="review-img bg-cafe">☕</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-22:00</span></div>
         <div class="review-top"><h2 class="review-title">Kings Road</h2></div>
@@ -642,7 +642,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="pastry">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥐</div>
+      <div class="review-img bg-pastry">🥐</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 08:00-23:00</span></div>
         <div class="review-top"><h2 class="review-title">République</h2></div>
@@ -653,7 +653,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍔</div>
+      <div class="review-img bg-burger">🍔</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 10:30-01:00</span></div>
         <div class="review-top"><h2 class="review-title">In-N-Out Burger Hollywood</h2></div>
@@ -664,7 +664,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="cafe">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌿</div>
+      <div class="review-img bg-cafe">🌿</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 07:00-18:00</span></div>
         <div class="review-top"><h2 class="review-title">Mauro Cafe</h2></div>
@@ -675,7 +675,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="mexican">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌮</div>
+      <div class="review-img bg-ramen">🌮</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-22:00</span></div>
         <div class="review-top"><h2 class="review-title">El Agave Restaurant</h2></div>
@@ -686,7 +686,7 @@
     </div>
 
     <div class="review-card" data-country="usa" data-type="seafood">
-      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌊</div>
+      <div class="review-img bg-sushi">🌊</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-22:00</span></div>
         <div class="review-top"><h2 class="review-title">Georges at the Cove</h2></div>
@@ -698,7 +698,7 @@
 
     <!-- ARUBA -->
     <div class="review-card" data-country="aruba" data-type="burger">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍺</div>
+      <div class="review-img bg-burger">🍺</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Daily: 11:00-23:00</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★☆</span></div>
         <div class="review-top"><h2 class="review-title">Local Store Aruba</h2></div>
@@ -709,7 +709,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="seafood">
-      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🦞</div>
+      <div class="review-img bg-sushi">🦞</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Mon-Sat: 18:00-21:30 · Sun: Closed</span><span class="stars" style="color:#C8901A;font-size:14px;">★★★★★</span></div>
         <div class="review-top"><h2 class="review-title">Papiamento Restaurant</h2></div>
@@ -720,7 +720,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="italian">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍝</div>
+      <div class="review-img bg-pastry">🍝</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Gianni's Ristorante Italiano</h2></div>
@@ -731,7 +731,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="mexican">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌮</div>
+      <div class="review-img bg-burger">🌮</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Lola Taqueria</h2></div>
@@ -742,7 +742,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="seafood">
-      <div class="review-img bg-sushi" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🐟</div>
+      <div class="review-img bg-sushi">🐟</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Flying Fishbone</h2></div>
@@ -753,7 +753,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="steak">
-      <div class="review-img bg-burger" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-img bg-burger">🥩</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">BLT Steak (The Ritz-Carlton)</h2></div>
@@ -764,7 +764,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="steak">
-      <div class="review-img bg-ramen" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🥩</div>
+      <div class="review-img bg-ramen">🥩</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Ruth's Chris Steak House (Marriott Resort)</h2></div>
@@ -775,7 +775,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="caribbean">
-      <div class="review-img bg-cafe" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌶️</div>
+      <div class="review-img bg-cafe">🌶️</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Madame Jeanette</h2></div>
@@ -786,7 +786,7 @@
     </div>
 
     <div class="review-card" data-country="aruba" data-type="italian">
-      <div class="review-img bg-pastry" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🍕</div>
+      <div class="review-img bg-pastry">🍕</div>
       <div class="review-body">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span class="hours-badge" style="font-size:10px;">🕐 Check Google Maps for latest hours</span><span class="stars" style="color:#C8901A;font-size:14px;"></span></div>
         <div class="review-top"><h2 class="review-title">Lucca Trattoria Aruba</h2></div>
