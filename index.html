@@ -1699,33 +1699,37 @@
 
   async function loadUserStats(user) {
     try {
-      // Count food reviews (picks submitted by this user)
-      const reviewsSnap = await getDocs(query(collection(db, 'picks'), where('userEmail', '==', user.email)));
-      const foodReviews = reviewsSnap.size;
+      let foodReviews, hotelReviews, friends;
 
-      // Count hotel reviews submitted by this user
-      const hotelSnap = await getDocs(query(collection(db, 'hotelRatings'), where('userEmail', '==', user.email)));
-      const hotelReviews = hotelSnap.size;
+      if (user.email === 'jongfoodie@gmail.com') {
+        // Admin: count from Firestore collections
+        const reviewsSnap = await getDocs(collection(db, 'reviews'));
+        foodReviews = reviewsSnap.size;
 
-      // Count friends (followers)
-      const friendsSnap = await getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid)));
-      const friends = friendsSnap.size;
+        const hotelSnap = await getDocs(collection(db, 'hotelreviews'));
+        hotelReviews = hotelSnap.size;
+
+        friends = 3; // fixed for admin
+      } else {
+        // Regular user: count their own picks and ratings
+        const reviewsSnap = await getDocs(query(collection(db, 'picks'), where('userEmail', '==', user.email)));
+        foodReviews = reviewsSnap.size;
+
+        const hotelSnap = await getDocs(query(collection(db, 'hotelRatings'), where('userEmail', '==', user.email)));
+        hotelReviews = hotelSnap.size;
+
+        const friendsSnap = await getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid)));
+        friends = friendsSnap.size;
+      }
 
       if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = foodReviews;
       if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = hotelReviews;
       if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = friends;
-      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Food Reviews';
-      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotel Reviews';
-      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Friends';
+      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
+      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotels';
+      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
     } catch(e) {
       console.log('Stats load error:', e);
-      // Fallback to 0
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '0';
-      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = '0';
-      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = '0';
-      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Food Reviews';
-      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotel Reviews';
-      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Friends';
     }
   }
 
