@@ -1140,7 +1140,7 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">51</div>
+          <div class="user-stat-num" id="statReviews">52</div>
           <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
         </div>
         <div class="user-stat">
@@ -1611,14 +1611,14 @@
       const totalRestaurants = reviewsSnap.size;
       const totalMembers = usersSnap.size;
 
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = totalRestaurants;
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
+      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
       if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
     } catch(e) {
       console.log('Hero stats error:', e);
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '52';
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
       if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
-      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '3';
+      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
     }
   }
   loadHeroStats();
