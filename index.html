@@ -1391,15 +1391,15 @@
       const title = card.querySelector('.mini-title');
       const text = ((meta ? meta.textContent : '') + ' ' + (title ? title.textContent : '')).toLowerCase();
       if (tag === 'all') { card.style.display = ''; }
-      else if (tag === 'cafes') { card.style.display = text.includes('cafe') || text.includes('chun') || text.includes('brioche') || text.includes('leauf') ? '' : 'none'; }
-      else if (tag === 'burgers') { card.style.display = text.includes('burger') || text.includes('smash') || text.includes('maijard') ? '' : 'none'; }
-      else if (tag === 'pastries') { card.style.display = text.includes('pastry') || text.includes('pastries') || text.includes('croissant') || text.includes('claire') ? '' : 'none'; }
-      else if (tag === 'sandwiches') { card.style.display = text.includes('sandwich') || text.includes('banh mi') || text.includes('bonnie') || text.includes('croque') ? '' : 'none'; }
+      else if (tag === 'cafes') { card.style.display = text.includes('the coffee') || text.includes('et claire') || text.includes('claire') || text.includes('cafe nobuya') || text.includes('nobuya') || text.includes('brioche') || text.includes('chun') || text.includes('pluk') || text.includes('salvo') || text.includes('met her at a bar') || text.includes('a.o.c') || text.includes('aoc') || text.includes('mauro') ? '' : 'none'; }
+      else if (tag === 'burgers') { card.style.display = text.includes('maijard') || text.includes('le smash') || text.includes('chun') || text.includes('bonnie') || text.includes('kid') || text.includes('beef chief') || text.includes('the goat') || text.includes('goat') || text.includes('in-n-out') || text.includes('innout') || text.includes('local store') || text.includes('blt') || text.includes('burger') || text.includes('smash') ? '' : 'none'; }
+      else if (tag === 'pastries') { card.style.display = text.includes('pastry') || text.includes('pastries') || text.includes('croissant') || text.includes('claire') || text.includes('brioche') || text.includes('salvo') ? '' : 'none'; }
+      else if (tag === 'sandwiches') { card.style.display = text.includes('sandwich') || text.includes('banh mi') || text.includes('bonnie') || text.includes('fort negen') || text.includes('croque') ? '' : 'none'; }
       else if (tag === 'sushi') { card.style.display = text.includes('sushi') || text.includes('izakaya') || text.includes('japanese') ? '' : 'none'; }
-      else if (tag === 'street food') { card.style.display = text.includes('street') || text.includes('fries') || text.includes('friet') || text.includes('sjefietsh') ? '' : 'none'; }
-      else if (tag === 'desserts') { card.style.display = text.includes('dessert') || text.includes('donut') || text.includes('mochi') || text.includes('pistachio') ? '' : 'none'; }
-      else if (tag === 'budget') { card.style.display = text.includes('$') && !text.includes('$$$') ? '' : 'none'; }
-      else if (tag === 'fine dining') { card.style.display = text.includes('luxury') || text.includes('$$$') || text.includes('mondi') || text.includes('izakaya') ? '' : 'none'; }
+      else if (tag === 'street food') { card.style.display = text.includes('street') || text.includes('fries') || text.includes('friet') || text.includes('sjefietsh') || text.includes('fabel') ? '' : 'none'; }
+      else if (tag === 'desserts') { card.style.display = text.includes('dessert') || text.includes('donut') || text.includes('mochi') || text.includes('pistachio') || text.includes('bisous') ? '' : 'none'; }
+      else if (tag === 'budget') { card.style.display = text.includes('€15') || text.includes('€10') || text.includes('€12') || text.includes('$') && !text.includes('$$$') ? '' : 'none'; }
+      else if (tag === 'fine dining') { card.style.display = text.includes('luxury') || text.includes('$$$') || text.includes('mondi') || text.includes('izakaya') || text.includes('secret garden') || text.includes('cecconi') || text.includes('republic') || text.includes('a.o.c') ? '' : 'none'; }
       else { card.style.display = text.includes(tag) ? '' : 'none'; }
     });
   }
