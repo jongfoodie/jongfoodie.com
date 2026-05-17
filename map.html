@@ -2,20 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Food Map — Jong Foodie | Restaurant Map Amsterdam</title>
-  <meta name="description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam. Find the best food spots near you.">
-  <meta name="keywords" content="restaurant map Amsterdam, food map Amsterdam, Jong Foodie map, best restaurants Amsterdam map">
-  <meta name="author" content="Merdan Koc — Jong Foodie">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Food Map — Jong Foodie | Restaurant Map Amsterdam">
-  <meta property="og:description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam. Find the best food spots near you.">
+<meta name="description" content="Interactive food map with all Jong Foodie reviewed restaurants. Find the best spots in Amsterdam, USA, Aruba and Turkey.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.jongfoodie.com">
-  <meta property="og:image" content="https://www.jongfoodie.com/preview.jpg">
+  <meta property="og:site_name" content="Jong Foodie">
+  <meta property="og:title" content="Food Map — Jong Foodie">
+  <meta property="og:description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam and beyond.">
+  <meta property="og:url" content="https://www.jongfoodie.com/map.html">
+  <meta property="og:image" content="https://www.jongfoodie.com/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Food Map — Jong Foodie | Restaurant Map Amsterdam">
-  <meta name="twitter:description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam. Find the best food spots near you.">
+  <meta name="twitter:title" content="Food Map — Jong Foodie">
+  <meta name="twitter:description" content="Interactive map of all Jong Foodie reviewed restaurants in Amsterdam and beyond.">
+  <link rel="canonical" href="https://www.jongfoodie.com/map.html">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Map",
+  "name": "Jong Foodie Food Map",
+  "description": "Interactive map of all Jong Foodie reviewed restaurants worldwide.",
+  "url": "https://www.jongfoodie.com/map.html"
+}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Map — Jong Foodie | Restaurant Locations Worldwide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -36,7 +44,8 @@
   .page-hero { background: var(--ink); color: #fff; padding: 2rem; text-align: center; }
   .page-hero h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.25rem; }
   .page-hero p { color: rgba(255,255,255,0.6); font-size: 14px; }
-  .map-layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 140px); }
+  .country-filters { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0.5rem 1rem; display: flex; gap: 0.5rem; overflow-x: auto; }
+  .map-layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 185px); }
   .spots-panel { background: var(--warm-white); border-right: 1px solid var(--border); overflow-y: auto; }
   .spots-search { padding: 1rem; border-bottom: 1px solid var(--border); }
   .search-input { width: 100%; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); background: var(--cream); outline: none; }
@@ -64,15 +73,26 @@
 <nav>
   <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
     <li><a href="map.html" class="active">Map</a></li>
     <li><a href="community.html">Community</a></li>
+    <li><a href="friends.html">Friends</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
   </ul>
 </nav>
 <div class="page-hero">
   <h1>Food Map</h1>
   <p>All Jong Foodie reviewed spots in Amsterdam & beyond</p>
+</div>
+<div class="country-filters">
+  <button onclick="filterByCountry('all')" style="background:#1A1208;color:#fff;border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🌍 All</button>
+  <button onclick="filterByCountry('netherlands')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇳🇱 Netherlands</button>
+  <button onclick="filterByCountry('usa')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇺🇸 USA</button>
+  <button onclick="filterByCountry('aruba')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇦🇼 Aruba</button>
+  <button onclick="filterByCountry('turkey')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇹🇷 Turkey</button>
 </div>
 <div class="map-layout" style="position:relative;">
   <div id="loadingBar" class="loading-bar">📍 Loading restaurant locations...</div>
@@ -88,9 +108,8 @@
 
 <script>
 const spots = [
-  { name: 'BUNS Amsterdam', address: 'Ferdinand Bolstraat 149H, Amsterdam', hours: 'Check Google Maps', rating: '★★★★★', emoji: '🍔', lat: 52.351542231443815, lng: 4.891562967632441 },
-  { name: 'The Coffee', address: 'Eerste Constantijn Huygensstraat 33, Amsterdam', hours: 'Mon–Thu 08:00–17:00 · Fri 08:00–19:00 · Sat 09:00–19:00 · Sun 09:00–17:00', rating: '★★★★★', emoji: '☕', lat: 52.3643067, lng: 4.8745352 },
-  { name: 'IZAKAYA Asian Kitchen & Bar', address: 'Albert Cuypstraat 2-6 De Pijp Amsterdam Netherlands', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★', emoji: '🍣' },
+  { name: 'The Coffee', country: 'netherlands', address: 'Eerste Constantijn Huygensstraat 33, Amsterdam', hours: 'Mon–Thu 08:00–17:00 · Fri 08:00–19:00 · Sat 09:00–19:00 · Sun 09:00–17:00', rating: '★★★★★', emoji: '☕', lat: 52.3643067, lng: 4.8745352 },
+  { name: 'IZAKAYA Asian Kitchen & Bar', country: 'netherlands', address: 'Albert Cuypstraat 2-6 De Pijp Amsterdam Netherlands', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★', emoji: '🍣' },
   { name: 'Mondi Amsterdam Nieuw-West', address: 'Transformatorweg 38, Amsterdam', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight', rating: '★★★★★', emoji: '🍽️' },
   { name: 'Maijard Smashburgers', address: 'Berenstraat 20, Amsterdam', hours: 'Daily 10:00–19:00', rating: '★★★★½', emoji: '🍔' },
   { name: 'BISOUS Amsterdam', address: 'Albert Cuypstraat 31, Amsterdam', hours: 'Mon–Thu 17:30–01:00 · Fri–Sat 16:00–02:00 · Sun Closed', rating: '★★★★☆', emoji: '🍗' },
@@ -100,13 +119,59 @@ const spots = [
   { name: 'Cafe Nobuya', address: 'Herenstraat 28, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★★', emoji: '🍜' },
   { name: 'Brioche Amsterdam', address: 'Bilderdijkstraat 164, Amsterdam', hours: 'Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed', rating: '★☆☆☆☆', emoji: '🧀' },
   { name: 'Le Smash Amsterdam', address: 'Govert Flinckstraat 122, Amsterdam', hours: 'Daily 12:00–22:00', rating: '★★★★½', emoji: '🍔' },
-  { name: 'Fabel Friet', address: 'Runstraat 1, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
+  { name: 'Fabel Friet — Oude Hoogstraat', address: 'Oude Hoogstraat 21, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
+  { name: 'Fabel Friet — Nieuwendijk', address: 'Nieuwendijk 10A, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
+  { name: 'Fabel Friet — Damrak', address: 'Damrak 58, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
+  { name: 'Fabel Friet — Runstraat', address: 'Runstraat 1, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
+  { name: 'Fabel Friet — Leidsestraat', address: 'Leidsestraat 85, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟' },
   { name: 'Sjefietshé', address: 'Van Ostadestraat 1, Amsterdam', hours: 'Tue–Thu 17:30–01:00 · Fri–Sun 17:00–01:00 · Mon Closed', rating: '★★★★☆', emoji: '🐙' },
   { name: 'Bonnie Amsterdam', address: 'Amstelveenseweg 226, Amsterdam', hours: 'Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri–Sat 10:00–03:00 · Sun 10:00–00:00', rating: '★★★★☆', emoji: '🫔' },
   { name: 'Banh Mi Deli Amsterdam', address: 'Prinsengracht 172, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★☆', emoji: '🥪' },
   { name: 'Chun Cafe Amsterdam', address: 'Berenstraat 8, Amsterdam', hours: 'Daily 10:00–17:00', rating: '★★★★★', emoji: '☕' },
-  { name: 'Zorlu Center', address: 'Zorlu Center, Istanbul, Turkey', hours: 'Istanbul, Turkey', rating: '★★★★☆', emoji: '🥩' },
-  { name: '360 Istanbul', address: '360 Istanbul restaurant Beyoglu', hours: 'Istanbul, Turkey · Live Music Saturdays', rating: '★★★★☆', emoji: '🥩' },
+  { name: 'Zorlu Center', address: 'Zorlu Center, Istanbul, Turkey', hours: 'Istanbul, Turkey', rating: '', emoji: '🥩' },
+  { name: '360 Istanbul', address: '360 Istanbul restaurant Beyoglu', hours: 'Istanbul, Turkey · Live Music Saturdays', rating: '', emoji: '🥩' },
+
+  // Netherlands - New
+  { name: 'Bussia', address: 'Reestraat 28-32, Amsterdam', hours: 'Tue-Sun: Lunch & Dinner', rating: '★★★★★', emoji: '🍝', lat: 52.371300, lng: 4.883700, country: 'netherlands' },
+  { name: 'Secret Garden', address: 'Reguliersdwarsstraat 38, 1017 BM Amsterdam', hours: 'Mon–Tue: 18:00–01:00 · Wed–Thu: 18:00–01:00 · Fri–Sat: 12:30–15:00 & 18:00–02:00 · Sun: 12:30–15:00 & 18:00–01:00', rating: '★★★★☆', emoji: '🌿', lat: 52.3662857, lng: 4.8910769, country: 'netherlands' },
+  { name: 'PLUK Berenstraat', address: 'Berenstraat 19, Amsterdam', hours: 'Daily 09:00-18:00', rating: '★★★★☆', emoji: '🌿', lat: 52.3703059, lng: 4.8834783, country: 'netherlands' },
+  { name: 'BagelBoy', address: 'Albert Cuypstraat 190, Amsterdam', hours: 'Daily 08:00-17:00', rating: '★★★★☆', emoji: '🥯', lat: 52.355893, lng: 4.895605, country: 'netherlands' },
+  { name: 'Eetsalon Van Dobben', address: 'Korte Reguliersdwarsstraat 5-7-9, Amsterdam', hours: 'Daily 10:00-21:00', rating: '★★★★★', emoji: '🥩', lat: 52.3660107, lng: 4.8951546, country: 'netherlands' },
+  { name: 'KID Amsterdam', address: 'Frederik Hendrikplantsoen 36, Amsterdam', hours: 'Daily 10:00-00:00', rating: '★★★★★', emoji: '🍗', lat: 52.3798831, lng: 4.8770463, country: 'netherlands' },
+  { name: "L'Entrecôte et les Dames", address: 'Van Baerlestraat 47-49, Amsterdam', hours: 'Daily 12:00-23:00', rating: '★★★★★', emoji: '🥩', lat: 52.3556956, lng: 4.8805113, country: 'netherlands' },
+  { name: "Cecconi's Amsterdam", address: 'Spuistraat 210, Amsterdam', hours: 'Daily 07:00-23:00', rating: '★★★★★', emoji: '🍽️', lat: 52.372083, lng: 4.8892396, country: 'netherlands' },
+  { name: 'Beef Chief // Transit Bar', address: 'Aambeeldstraat 38, Amsterdam', hours: 'Wed-Sun 17:00-23:00', rating: '★★★★★', emoji: '🍔', lat: 52.3844986, lng: 4.9288488, country: 'netherlands' },
+  { name: 'Men Impossible', address: 'Hazenstraat 19H, Amsterdam', hours: 'By reservation only', rating: '★★★★★', emoji: '🍜', lat: 52.3707002, lng: 4.8799628, country: 'netherlands' },
+  { name: 'Zero Zero', address: 'Nieuwe Spiegelstraat 3A, Amsterdam', hours: 'Daily 11:00-20:00', rating: '★★★★☆', emoji: '🍕', lat: 52.3650841, lng: 4.8902906, country: 'netherlands' },
+  { name: 'Salvo Bake House', address: 'Tweede Hugo de Grootstraat 9, Amsterdam', hours: 'Tue-Sun 08:00-17:00', rating: '★★★★★', emoji: '🥐', lat: 52.3741092, lng: 4.8744115, country: 'netherlands' },
+  { name: "Ceppi's", address: 'Lijnbaansgracht 256, Amsterdam', hours: 'Daily 12:00-22:00', rating: '★★★★☆', emoji: '🍝', lat: 52.3627598, lng: 4.8850914, country: 'netherlands' },
+  { name: 'nNea Pizza', address: 'Bilderdijkstraat 92, Amsterdam', hours: 'Daily 17:00-22:00', rating: '★★★★★', emoji: '🍕', lat: 52.3694202, lng: 4.8703501, country: 'netherlands' },
+  { name: 'THE GOAT Rotterdam', address: 'Schiedamse Vest 14, Rotterdam', hours: 'Daily 12:00-22:00', rating: '★★★★★', emoji: '🍔', lat: 51.9171022, lng: 4.4803105, country: 'netherlands' },
+  { name: 'Republiek Bloemendaal', address: 'Zeeweg 94, Overveen', hours: 'Daily 10:00-23:00', rating: '★★★★☆', emoji: '🌊', lat: 52.4017809, lng: 4.5429962, country: 'netherlands' },
+  // USA
+  { name: 'Amigos Birria Tacos', address: '46 Windward Ave, Venice, CA', hours: 'Daily 10:00-22:00', rating: '', emoji: '🌮', lat: 33.9872055, lng: -118.472753, country: 'usa' },
+  { name: 'Great White Venice', address: '1604 Pacific Ave, Venice, CA', hours: 'Daily 08:00-16:00', rating: '', emoji: '🌞', lat: 33.9877317, lng: -118.4717929, country: 'usa' },
+  { name: 'Soho House West Hollywood', address: '9200 Sunset Blvd, West Hollywood, CA', hours: 'Daily 07:00-00:00', rating: '', emoji: '🏨', lat: 34.0898923, lng: -118.3928127, country: 'usa' },
+  { name: "Cecconi's West Hollywood", address: '8764 Melrose Ave, West Hollywood, CA', hours: 'Daily 07:00-23:00', rating: '', emoji: '🍽️', lat: 34.0805051, lng: -118.3850408, country: 'usa' },
+  { name: 'RVR Venice', address: '1305 Abbot Kinney Blvd, Venice, CA', hours: 'Daily 08:00-22:00', rating: '', emoji: '🌊', lat: 33.99135, lng: -118.4679423, country: 'usa' },
+  { name: 'A.O.C.', address: '8700 W 3rd St, Los Angeles, CA', hours: 'Daily 17:30-22:00', rating: '', emoji: '🍷', lat: 34.0734135, lng: -118.3819272, country: 'usa' },
+  { name: 'Met Her At A Bar', address: '759 S La Brea Ave, Los Angeles, CA', hours: 'Daily 17:00-02:00', rating: '', emoji: '🍸', lat: 34.0606376, lng: -118.3448225, country: 'usa' },
+  { name: 'Kings Road', address: '8361 Beverly Blvd, Los Angeles, CA', hours: 'Daily 07:00-22:00', rating: '', emoji: '☕', lat: 34.076252, lng: -118.372261, country: 'usa' },
+  { name: 'République', address: '624 S La Brea Ave, Los Angeles, CA', hours: 'Daily 08:00-23:00', rating: '', emoji: '🥐', lat: 34.0641589, lng: -118.343697, country: 'usa' },
+  { name: 'In-N-Out Burger Hollywood', address: '7009 Sunset Blvd, Hollywood, CA', hours: 'Daily 10:30-01:00', rating: '', emoji: '🍔', lat: 34.0982287, lng: -118.3416747, country: 'usa' },
+  { name: 'Mauro Cafe', address: '7469 Melrose Ave, Los Angeles, CA', hours: 'Daily 07:00-18:00', rating: '', emoji: '🌿', lat: 34.0838345, lng: -118.3528037, country: 'usa' },
+  { name: 'El Agave Restaurant', address: '2304 San Diego Ave, San Diego, CA', hours: 'Daily 11:00-22:00', rating: '', emoji: '🌮', lat: 32.7496746, lng: -117.1921775, country: 'usa' },
+  { name: 'Georges at the Cove', address: '1250 Prospect St, La Jolla, CA', hours: 'Daily 11:00-22:00', rating: '', emoji: '🌊', lat: 32.8494006, lng: -117.2719319, country: 'usa' },
+  // Aruba
+  { name: 'Local Store Aruba', address: 'Palm Beach 13A, Noord, Aruba', hours: 'Daily 16:00-01:00', rating: '★★★★☆', emoji: '🍺', lat: 12.5656793, lng: -70.0390884, country: 'aruba' },
+  { name: 'Papiamento Restaurant', address: 'Washington 61, Noord, Aruba', hours: 'Mon-Sat 18:00-22:30', rating: '★★★★★', emoji: '🦞', lat: 12.5625007, lng: -70.0372658, country: 'aruba' },
+  { name: "Gianni's Ristorante Italiano", address: 'J.E. Irausquin Blvd 348, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🍝', lat: 12.5686111, lng: -70.0450972, country: 'aruba' },
+  { name: 'Lola Taqueria', address: 'J.E. Irausquin Blvd 348-A, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🌮', lat: 12.5682498, lng: -70.0452488, country: 'aruba' },
+  { name: 'Flying Fishbone', address: 'Savaneta 344, Savaneta, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🐟', lat: 12.444932, lng: -69.9442279, country: 'aruba' },
+  { name: 'BLT Steak (The Ritz-Carlton)', address: 'L.G. Smith Blvd 107, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🥩', lat: 12.5829965, lng: -70.0438942, country: 'aruba' },
+  { name: "Ruth's Chris Steak House (Marriott Resort)", address: 'L.G. Smith Blvd 101, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🥩', lat: 12.5811019, lng: -70.0434559, country: 'aruba' },
+  { name: 'Madame Jeanette', address: 'Cunucu Abao 37, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🌶️', lat: 12.5473172, lng: -70.04324, country: 'aruba' },
+  { name: 'Lucca Trattoria Aruba', address: 'J.E. Irausquin Blvd 374, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🍕', lat: 12.5694622, lng: -70.0437698, country: 'aruba' },
 ];
 
 const map = L.map('map').setView([52.3676, 4.8897], 13);
@@ -132,22 +197,27 @@ function loadAllSpots() {
     'Cafe Nobuya':                    [52.3773429, 4.8886939],
     'Brioche Amsterdam':              [52.3673541, 4.871753],
     'Le Smash Amsterdam':             [52.3545069, 4.8908168],
-    'Fabel Friet':                    [52.3688273, 4.8840617],
+    'Fabel Friet — Oude Hoogstraat':   [52.3716, 4.8997],
+    'Fabel Friet — Nieuwendijk':        [52.3764, 4.8936],
+    'Fabel Friet — Damrak':             [52.3748, 4.8961],
+    'Fabel Friet — Runstraat':          [52.3688273, 4.8840617],
+    'Fabel Friet — Leidsestraat':       [52.3640, 4.8827],
     'Sjefietshé':                     [52.3516313, 4.8870853],
     'Bonnie Amsterdam':               [52.3508957, 4.8565299],
     'Banh Mi Deli Amsterdam':         [52.3745504, 4.8827738],
     'Chun Cafe Amsterdam':            [52.3704688, 4.8839422],
-    'BUNS Amsterdam':                 [52.351542231443815, 4.891562967632441],
     'The Coffee':                     [52.3643067, 4.8745352],
     'Zorlu Center':                   [41.06950, 29.01080],
     '360 Istanbul':                   [41.03360, 28.97740],
   };
 
+  // Add country to existing spots without it
+  spots.forEach(s => { if (!s.country) s.country = 'netherlands'; });
+
   spots.forEach(s => {
     const c = coords[s.name];
-    if (!c) return;
-    s.lat = c[0];
-    s.lng = c[1];
+    if (c) { s.lat = c[0]; s.lng = c[1]; }
+    if (!s.lat || !s.lng) return;
     const icon = L.divIcon({
       className: '',
       html: `<div style="background:#D4521A;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${s.emoji}</div>`,
@@ -188,6 +258,17 @@ function buildList(filtered) {
     };
     list.appendChild(div);
   });
+}
+
+
+function filterByCountry(country) {
+  const filtered = country === 'all' ? spots : spots.filter(s => s.country === country);
+  buildList(filtered);
+  // Center map on country
+  if (country === 'usa') map.setView([34.05, -118.35], 9);
+  else if (country === 'aruba') map.setView([12.52, -70.03], 13);
+  else if (country === 'turkey') map.setView([41.01, 28.97], 10);
+  else map.setView([52.37, 4.89], 12);
 }
 
 function filterSpots(val) {
