@@ -3,36 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Real eats, honest reviews. Jong Foodie covers the best restaurants, hotels and hidden gems — from Amsterdam to the world.">
+<title>Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond</title>
+  <meta name="description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
+  <meta name="keywords" content="Jong Foodie, restaurant reviews Amsterdam, best burgers Amsterdam, best cafes Amsterdam, food blog Netherlands, Maijard, Le Smash, Banh Mi Deli, IZAKAYA">
+  <meta name="author" content="Merdan Koc — Jong Foodie">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond">
+  <meta property="og:description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Jong Foodie">
-  <meta property="og:title" content="Jong Foodie — Honest Restaurant & Hotel Reviews">
-  <meta property="og:description" content="Real eats, honest reviews. Discover the best restaurants and hotels from Amsterdam to the world.">
-  <meta property="og:url" content="https://www.jongfoodie.com/">
-  <meta property="og:image" content="https://www.jongfoodie.com/icon-512.png">
+  <meta property="og:url" content="https://www.jongfoodie.com">
+  <meta property="og:image" content="https://www.jongfoodie.com/preview.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Jong Foodie — Honest Restaurant & Hotel Reviews">
-  <meta name="twitter:description" content="Real eats, honest reviews. Discover the best restaurants and hotels from Amsterdam to the world.">
-  <link rel="canonical" href="https://www.jongfoodie.com/">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Jong Foodie",
-  "url": "https://www.jongfoodie.com",
-  "description": "Real eats, honest reviews. Jong Foodie covers the best restaurants, hotels and hidden gems — from Amsterdam to the world.",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://www.jongfoodie.com/reviews.html?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
-<title>Jong Foodie — Honest Restaurant & Hotel Reviews Worldwide</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+  <meta name="twitter:title" content="Jong Foodie — Honest Restaurant Reviews in Amsterdam & Beyond">
+  <meta name="twitter:description" content="Jong Foodie reviews the best restaurants, cafes, burgers, sandwiches and hidden gems in Amsterdam and beyond. Honest, real reviews by Merdan Koc.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -234,7 +218,8 @@
     padding: 0.75rem 2rem;
     display: flex;
     gap: 0.5rem;
-    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
   .tags-bar::-webkit-scrollbar { display: none; }
   .tag-pill {
@@ -800,102 +785,27 @@
     .featured-card { grid-template-columns: 1fr; }
     .featured-img { height: 200px; }
   }
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 6px;
-    font-size: 22px;
-    color: var(--ink);
-  }
-
   @media (max-width: 600px) {
     nav { padding: 0 1rem; }
-    .nav-links { display: none !important; }
-    .hamburger { display: flex !important; }
+    .nav-links { display: none; }
     .cards-grid { grid-template-columns: 1fr; }
     .sidebar { grid-template-columns: 1fr; }
     .hero { padding: 3rem 1rem 2.5rem; }
     .hero-stats { gap: 1.5rem; }
     .site-wrapper { padding: 2rem 1rem; }
   }
-
-  .mobile-nav {
-    display: none;
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: var(--warm-white);
-    border-bottom: 1px solid var(--border);
-    z-index: 999;
-    flex-direction: column;
-    padding: 1rem 1.5rem;
-    gap: 0;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a {
-    text-decoration: none;
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .mobile-nav a:last-child { border-bottom: none; }
-  .mobile-nav a:hover { color: var(--accent); }
 </style>
-<link rel="dns-prefetch" href="https://www.gstatic.com">
-<link rel="dns-prefetch" href="https://firestore.googleapis.com">
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.defer=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#D4521A">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Jong Foodie">
-<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
 
-<!-- MOBILE NAV MENU -->
-<div class="mobile-nav" id="mobileNav">
-  <a href="index.html">🏠 Home</a>
-  <a href="reviews.html">🍽️ Reviews</a>
-  <a href="guides.html">📖 Guides</a>
-  <a href="videos.html">🎬 Videos</a>
-  <a href="map.html">🗺️ Map</a>
-  <a href="community.html">👥 Community</a>
-  <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
-</div>
-
 <!-- NAV -->
 <nav>
-  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
-  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
-      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
-      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
-      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
-    </svg>
-    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
-  </a>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
-    <li><a href="index.html" class="active">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
-    <li><a href="videos.html">Videos</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
-    <li><a href="friends.html">Friends</a></li>
     <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
   </ul>
   <div class="nav-actions">
@@ -916,15 +826,15 @@
   </div>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num" id="heroReviews">—</div>
+      <div class="stat-num">248</div>
       <div class="stat-label">Reviews</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="heroRestaurants">—</div>
+      <div class="stat-num">90+</div>
       <div class="stat-label">Restaurants</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="heroMembers">—</div>
+      <div class="stat-num">1.2k</div>
       <div class="stat-label">Members</div>
     </div>
   </div>
@@ -936,7 +846,7 @@
   <button class="tag-pill" onclick="setTag(this)">☕ Cafes</button>
   <button class="tag-pill" onclick="setTag(this)">🍔 Burgers</button>
   <button class="tag-pill" onclick="setTag(this)">🥐 Pastries</button>
-  <button class="tag-pill" onclick="setTag(this)">🥪 Sandwiches</button>
+  <button class="tag-pill" onclick="setTag(this)">🍜 Noodles</button>
   <button class="tag-pill" onclick="setTag(this)">🍣 Sushi</button>
   <button class="tag-pill" onclick="setTag(this)">🌮 Street Food</button>
   <button class="tag-pill" onclick="setTag(this)">🍰 Desserts</button>
@@ -950,26 +860,27 @@
     <!-- FEATURED -->
     <p class="section-label">Featured Review</p>
     <div class="featured-card">
-      <div class="featured-img bg-cafe" style="font-size:72px;">☕</div>
+      <div class="featured-img bg-ramen" style="font-size:72px;">🍜</div>
       <div class="featured-body">
         <div>
           <div class="rating">
             <span class="stars">★★★★★</span>
-            <span class="rating-num">5.0</span>
+            <span class="rating-num">4.9</span>
+            <span class="rating-count">(124 reviews)</span>
           </div>
-          <h2 class="card-title">The Coffee</h2>
+          <h2 class="card-title">Cafe Nobuya — Where Every Bite Tells a Story</h2>
           <div class="card-meta">
-            <span>Amsterdam</span>
+            <span>Kuala Lumpur</span>
             <span class="dot"></span>
-            <span>Drinks</span>
+            <span>Japanese Fusion</span>
             <span class="dot"></span>
-            <span>€</span>
+            <span>$$</span>
           </div>
-          <p class="card-excerpt">Must-try in Amsterdam: strawberry matcha + a fresh cookie.</p>
+          <p class="card-excerpt">From the chewiest Mochi Donuts to a Gyudon Beef Sandwich that hits every note — sweet, savoury, spicy, crunchy — Cafe Nobuya is one of those rare spots that earns every bit of its hype.</p>
           <div class="card-tags">
             <span class="card-tag">Must Try</span>
-            <span class="card-tag">Coffee</span>
-            <span class="card-tag">Amsterdam</span>
+            <span class="card-tag">Japanese</span>
+            <span class="card-tag">Donuts</span>
           </div>
         </div>
         <div class="card-footer">
@@ -979,7 +890,7 @@
           </div>
           <div class="card-actions">
             <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
-            <button class="icon-btn" title="Save" onclick="toggleSave(this, 'The Coffee')">🔖</button>
+            <button class="icon-btn" title="Save" onclick="toggleSave(this, 'Cafe Nobuya')">🔖</button>
             <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
           </div>
         </div>
@@ -990,32 +901,48 @@
     <p class="section-label">Latest Reviews</p>
     <div class="cards-grid">
       <div class="mini-card">
-        <div class="mini-img bg-cafe">☕</div>
+        <div class="mini-img bg-burger">🍔</div>
         <div class="mini-body">
-          <p class="mini-meta">The Coffee · Drinks · Amsterdam</p>
-          <h3 class="mini-title">The Coffee</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Must-try in Amsterdam: strawberry matcha + a fresh cookie.</p>
+          <p class="mini-meta">Le Smash · Burgers · $$</p>
+          <h3 class="mini-title">Le Special: Is It Worth the Hype?</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Extra bacon, smash patty, secret sauce — this burger delivers on almost every front.</p>
           <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
+            <span class="mini-rating">★★★★☆ 4.2</span>
             <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'The Coffee')">🔖</button>
+              <a href="reviews.html#le-smash" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Le Special Burger')">🔖</button>
             </div>
           </div>
         </div>
       </div>
 
       <div class="mini-card">
-        <div class="mini-img bg-ramen">🌿</div>
+        <div class="mini-img bg-pastry">🥐</div>
         <div class="mini-body">
-          <p class="mini-meta">Secret Garden · Restaurant · Amsterdam</p>
-          <h3 class="mini-title">SECRET GARDEN</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Must-tries: the Tuna Tartare, Beef Tenderloin and Rib-Eye (400g).</p>
+          <p class="mini-meta">Maison · Pastries · $$$</p>
+          <h3 class="mini-title">Pistachio Cube Croissant: Beautiful but Pricey</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Eye-catching cube shape, gorgeous pistachio cream — but the price might leave you wanting more flavour for your money.</p>
           <div class="mini-footer">
-            <span class="mini-rating">★★★★☆ 4.0</span>
+            <span class="mini-rating">★★★★☆ 3.8</span>
             <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Secret Garden')">🔖</button>
+              <a href="reviews.html#et-claire" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Pistachio Cube Croissant')">🔖</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-cafe">☕</div>
+        <div class="mini-body">
+          <p class="mini-meta">Brioche & Co · Cafe · $$</p>
+          <h3 class="mini-title">Brioche Grilled Cheese: Disappointed at This Price</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">The sandwich lacked flavour and I couldn't even finish it. High hopes, flat results — they need to step it up.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★☆☆☆ 2.1</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <a href="reviews.html#brioche" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Brioche Grilled Cheese')">🔖</button>
             </div>
           </div>
         </div>
@@ -1024,30 +951,14 @@
       <div class="mini-card">
         <div class="mini-img bg-sushi">🍣</div>
         <div class="mini-body">
-          <p class="mini-meta">Izakaya Amsterdam · Sushi / Japanese · Luxury</p>
-          <h3 class="mini-title">Izakaya Amsterdam</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">The best sushi in the Netherlands. The food is ridiculously fresh, the rolls are next-level creative.</p>
+          <p class="mini-meta">Tori · Japanese · $$$</p>
+          <h3 class="mini-title">Chicken Smash Burger from Maijard — Close to Perfect</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Fresh veg, juicy patty, sturdy bun — just needs a cheese slice and better sauce to reach the top tier.</p>
           <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
+            <span class="mini-rating">★★★★☆ 4.0</span>
             <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Izakaya Amsterdam')">🔖</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mini-card">
-        <div class="mini-img bg-burger">🍽️</div>
-        <div class="mini-body">
-          <p class="mini-meta">Mondi Amsterdam · Restaurant · €74</p>
-          <h3 class="mini-title">Mondi Amsterdam Nieuw-West</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Super cozy and inviting, top-notch service, and everything was absolutely delicious.</p>
-          <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Mondi Amsterdam')">🔖</button>
+              <a href="reviews.html#maijard" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Chicken Smash Burger')">🔖</button>
             </div>
           </div>
         </div>
@@ -1100,11 +1011,7 @@
           <option>Cafe Nobuya</option>
           <option>Brioche Amsterdam</option>
           <option>Le Smash Amsterdam</option>
-          <option>Fabel Friet — Oude Hoogstraat</option>
-          <option>Fabel Friet — Nieuwendijk</option>
-          <option>Fabel Friet — Damrak</option>
-          <option>Fabel Friet — Runstraat</option>
-          <option>Fabel Friet — Leidsestraat</option>
+          <option>Fabel Friet</option>
           <option>Sjefietshé</option>
           <option>Bonnie Amsterdam</option>
           <option>Banh Mi Deli Amsterdam</option>
@@ -1172,21 +1079,21 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">52</div>
-          <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
+          <div class="user-stat-num">48</div>
+          <div class="user-stat-lbl">Reviews</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statSaved">6</div>
-          <div class="user-stat-lbl" id="statSavedLbl">Hotels</div>
+          <div class="user-stat-num">12</div>
+          <div class="user-stat-lbl">Saved</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statFollowers">3</div>
-          <div class="user-stat-lbl" id="statFollowersLbl">Followers</div>
+          <div class="user-stat-num">1.2k</div>
+          <div class="user-stat-lbl">Followers</div>
         </div>
       </div>
       <div class="user-actions">
         <button class="btn-white" onclick="openMyProfile()">My Profile</button>
-        <button class="btn-ghost-white" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin settings are locked!');}else{openSettings();}">⚙ Settings</button>
+        <button class="btn-ghost-white" onclick="openSettings()">⚙ Settings</button>
       </div>
     </div>
 
@@ -1260,7 +1167,7 @@
     <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:500;">My Recommendations</p>
     <div id="myProfilePicksList" style="max-height:300px;overflow-y:auto;"></div>
     <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
-      <button class="btn-fill" style="flex:1;" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin name is locked!');}else{document.getElementById('myProfileBg').classList.remove('open');openSettings();}">⚙ Change Display Name</button>
+      <button class="btn-fill" style="flex:1;" onclick="document.getElementById('myProfileBg').classList.remove('open');openSettings()">⚙ Change Display Name</button>
       <button class="btn-ghost" style="flex:1;" onclick="window.location.href='community.html'">Go to Community →</button>
     </div>
   </div>
@@ -1335,7 +1242,7 @@
   function doHeroSearch() {
     const q = document.getElementById('heroSearchInput').value.trim();
     if (!q) return;
-    const ql = q.toLowerCase(); if (ql.includes("hotel")) { window.location.href = "hotel.html?search=" + encodeURIComponent(q); } else { window.location.href = "reviews.html?search=" + encodeURIComponent(q); }
+    window.location.href = 'reviews.html?search=' + encodeURIComponent(q);
   }
 
   function showToast(msg) {
@@ -1388,24 +1295,7 @@
   function setTag(el) {
     document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    const tag = el.textContent.trim().toLowerCase().replace(/^[^\w]+/, '').trim();
-    const cards = document.querySelectorAll('.mini-card');
-    cards.forEach(card => {
-      const meta = card.querySelector('.mini-meta');
-      const title = card.querySelector('.mini-title');
-      const text = ((meta ? meta.textContent : '') + ' ' + (title ? title.textContent : '')).toLowerCase();
-      if (tag === 'all') { card.style.display = ''; }
-      else if (tag === 'cafes') { card.style.display = text.includes('the coffee') || text.includes('et claire') || text.includes('claire') || text.includes('cafe nobuya') || text.includes('nobuya') || text.includes('brioche') || text.includes('chun') || text.includes('pluk') || text.includes('salvo') || text.includes('met her at a bar') || text.includes('a.o.c') || text.includes('aoc') || text.includes('mauro') ? '' : 'none'; }
-      else if (tag === 'burgers') { card.style.display = text.includes('maijard') || text.includes('le smash') || text.includes('chun') || text.includes('bonnie') || text.includes('kid') || text.includes('beef chief') || text.includes('the goat') || text.includes('goat') || text.includes('in-n-out') || text.includes('innout') || text.includes('local store') || text.includes('blt') || text.includes('burger') || text.includes('smash') ? '' : 'none'; }
-      else if (tag === 'pastries') { card.style.display = text.includes('pastry') || text.includes('pastries') || text.includes('croissant') || text.includes('claire') || text.includes('brioche') || text.includes('salvo') ? '' : 'none'; }
-      else if (tag === 'sandwiches') { card.style.display = text.includes('sandwich') || text.includes('banh mi') || text.includes('bonnie') || text.includes('fort negen') || text.includes('croque') ? '' : 'none'; }
-      else if (tag === 'sushi') { card.style.display = text.includes('sushi') || text.includes('izakaya') || text.includes('japanese') ? '' : 'none'; }
-      else if (tag === 'street food') { card.style.display = text.includes('street') || text.includes('fries') || text.includes('friet') || text.includes('sjefietsh') || text.includes('fabel') ? '' : 'none'; }
-      else if (tag === 'desserts') { card.style.display = text.includes('dessert') || text.includes('donut') || text.includes('mochi') || text.includes('pistachio') || text.includes('bisous') ? '' : 'none'; }
-      else if (tag === 'budget') { card.style.display = text.includes('€15') || text.includes('€10') || text.includes('€12') || text.includes('$') && !text.includes('$$$') ? '' : 'none'; }
-      else if (tag === 'fine dining') { card.style.display = text.includes('luxury') || text.includes('$$$') || text.includes('mondi') || text.includes('izakaya') || text.includes('secret garden') || text.includes('cecconi') || text.includes('republic') || text.includes('a.o.c') ? '' : 'none'; }
-      else { card.style.display = text.includes(tag) ? '' : 'none'; }
-    });
+    showToast(`Filtering by: ${el.textContent}`);
   }
 
 
@@ -1496,8 +1386,10 @@
 
 
   const extraReviews = [
+    { emoji: '🍣', color: 'bg-sushi', title: 'Izakaya Amsterdam', meta: 'Sushi · Luxury · Jan 2025', text: 'The best sushi in the Netherlands. Ridiculously fresh, next-level creative rolls, and staff that treat you like royalty. The perfect mix of luxury, flavor, and atmosphere.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍽️', color: 'bg-ramen', title: 'Mondi Amsterdam Nieuw-West', meta: 'Caribbean · $$$ · Jan 2025', text: 'A unique dining experience combining Caribbean flavors with French sophistication. The atmosphere, music, and food all blend perfectly. A must-visit in Nieuw-West.', stars: '★★★★★', rating: '5.0' },
     { emoji: '🍔', color: 'bg-burger', title: 'Maijard — Chicken Smash Burger', meta: 'Burgers · $$ · Oct 2024', text: 'Fresh veg, juicy patty, solid bun. The smash technique gives it that perfect crispy edge. Just needs a better sauce to reach the absolute top tier.', stars: '★★★★★', rating: '5.0' },
-    { emoji: '🍟', color: 'bg-burger', title: 'Fabel Friet — Parmesan Truffle Fries', meta: 'Fries · $ · Dec 2024 · 5 locaties', text: 'Perfectly crispy Dutch fries with freshly grated parmesan and homemade truffle mayo. Simple, fresh, and absolutely worth the queue. Open daily 11:00–21:00 at Oude Hoogstraat, Nieuwendijk, Damrak, Runstraat & Leidsestraat.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍟', color: 'bg-burger', title: 'Fabel Friet — Parmesan Truffle Fries', meta: 'Fries · $ · Dec 2024', text: 'Perfectly crispy Dutch fries with freshly grated parmesan and homemade truffle mayo. Simple, fresh, and absolutely worth the queue.', stars: '★★★★★', rating: '5.0' },
     { emoji: '🐙', color: 'bg-ramen', title: 'Sjefietshé — Hotdoctopus', meta: 'Seafood · $$ · Nov 2024', text: 'The hotdoctopus dish is unlike anything else in Amsterdam. Creative, bold, and delicious. A hidden gem in De Pijp that deserves way more attention.', stars: '★★★★☆', rating: '4.0' },
     { emoji: '🥗', color: 'bg-cafe', title: 'Leauf Amsterdam — Leauf du Chef', meta: 'Sandwiches · $$ · Dec 2024', text: 'Paris meets Jordaan. Michelin-star precision in a sandwich shop. The freshest ingredients, crispiest bread, and the most creative flavor combinations in Amsterdam.', stars: '★★★★★', rating: '5.0' },
     { emoji: '🥐', color: 'bg-pastry', title: 'et CLAIRE — Pistachio Cube Croissant', meta: 'Pastries · $$ · Oct 2024', text: 'Beautiful cube shape and gorgeous pistachio cream. Eye-catching and Instagram-worthy but the price left me wanting more flavor for my money.', stars: '★★★☆☆', rating: '3.0' },
@@ -1541,53 +1433,10 @@
     document.getElementById('myProfileName').textContent = name;
     document.getElementById('myProfileBg').classList.add('open');
 
+    // Load picks from Firestore
     const picksList = document.getElementById('myProfilePicksList');
-
-    // For Jong Foodie admin - show all website reviews and hotels
-    if (currentUser && currentUser.email === 'jongfoodie@gmail.com') {
-      const allReviews = [
-        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
-        { emoji: '🍣', name: 'Izakaya Amsterdam', meta: 'Amsterdam · Sushi / Japanese · Luxury', type: 'Review' },
-        { emoji: '🍽️', name: 'Mondi Amsterdam Nieuw-West', meta: 'Amsterdam · Caribbean · €74', type: 'Review' },
-        { emoji: '🍔', name: 'Maijard Smashburgers', meta: 'Amsterdam · Burgers', type: 'Review' },
-        { emoji: '🍗', name: 'BISOUS Amsterdam', meta: 'Amsterdam · Chicken', type: 'Review' },
-        { emoji: '🥪', name: 'Fort Negen Sandwich Bar', meta: 'Amsterdam · Sandwiches', type: 'Review' },
-        { emoji: '🥗', name: 'Leauf Amsterdam', meta: 'Amsterdam · Sandwiches', type: 'Review' },
-        { emoji: '🥐', name: 'et CLAIRE', meta: 'Amsterdam · Pastries', type: 'Review' },
-        { emoji: '🍜', name: 'Cafe Nobuya', meta: 'Amsterdam · Japanese Fusion', type: 'Review' },
-        { emoji: '🧀', name: 'Brioche Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
-        { emoji: '🍔', name: 'Le Smash Amsterdam', meta: 'Amsterdam · Burgers', type: 'Review' },
-        { emoji: '🍟', name: 'Fabel Friet — Oude Hoogstraat', meta: 'Amsterdam · Fries', type: 'Review' },
-        { emoji: '🍟', name: 'Fabel Friet — Nieuwendijk', meta: 'Amsterdam · Fries', type: 'Review' },
-        { emoji: '🍟', name: 'Fabel Friet — Damrak', meta: 'Amsterdam · Fries', type: 'Review' },
-        { emoji: '🍟', name: 'Fabel Friet — Runstraat', meta: 'Amsterdam · Fries', type: 'Review' },
-        { emoji: '🍟', name: 'Fabel Friet — Leidsestraat', meta: 'Amsterdam · Fries', type: 'Review' },
-        { emoji: '🐙', name: 'Sjefietshé', meta: 'Amsterdam · Seafood', type: 'Review' },
-        { emoji: '🫔', name: 'Bonnie Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
-        { emoji: '🥪', name: 'Banh Mi Deli Amsterdam', meta: 'Amsterdam · Vietnamese', type: 'Review' },
-        { emoji: '☕', name: 'Chun Cafe Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
-        { emoji: '🥩', name: 'Zorlu Center', meta: 'Istanbul · Steak', type: 'Review' },
-        { emoji: '🥩', name: '360 Istanbul', meta: 'Istanbul · Steak', type: 'Review' },
-        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
-        { emoji: '🏛️', name: 'Hotel The Craftsmen', meta: 'Amsterdam · Boutique', type: 'Hotel' },
-        { emoji: '🌴', name: 'Kimpton De Witt', meta: 'Amsterdam · Luxury', type: 'Hotel' },
-        { emoji: '🏨', name: 'Hotel V Nesplein', meta: 'Amsterdam · Boutique', type: 'Hotel' },
-        { emoji: '🏰', name: 'Conservatorium Hotel', meta: 'Amsterdam · Luxury', type: 'Hotel' },
-      ];
-      picksList.innerHTML = allReviews.map(r => `
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-          <div style="width:36px;height:36px;background:${r.type==='Hotel'?'#1A3A5C':'#5A3A0A'};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${r.emoji}</div>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:500;">${r.name}</div>
-            <div style="font-size:11px;color:var(--muted);">${r.meta}</div>
-          </div>
-          <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${r.type==='Hotel'?'#E8F0F8':'var(--accent-pale)'};color:${r.type==='Hotel'?'#1A3A5C':'var(--accent)'};">${r.type}</span>
-        </div>`).join('');
-      return;
-    }
-
-    // For regular users - load their picks from Firestore
     picksList.innerHTML = '<p style="font-size:13px;color:var(--muted);">Loading your picks...</p>';
+    // Load from Firestore via window function set by firebase module
     if (window.loadMyPicks) window.loadMyPicks(name, picksList);
   }
 
@@ -1615,7 +1464,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1631,31 +1480,6 @@
   const db = getFirestore(app);
 
   let currentUser = null;
-
-  // Load live hero stats
-  async function loadHeroStats() {
-    try {
-      // Reviews = food reviews + hotel reviews
-      const [reviewsSnap, hotelSnap, usersSnap] = await Promise.all([
-        getDocs(collection(db, 'reviews')),
-        getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'users'))
-      ]);
-      const totalReviews = reviewsSnap.size + hotelSnap.size;
-      const totalRestaurants = reviewsSnap.size;
-      const totalMembers = usersSnap.size;
-
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
-      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
-    } catch(e) {
-      console.log('Hero stats error:', e);
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
-      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
-    }
-  }
-  loadHeroStats();
 
   // Load all picks from Firestore on page load
   async function loadPicks() {
@@ -1729,9 +1553,6 @@
       document.getElementById('navLogin').style.display = 'none';
       document.getElementById('navSignup').style.display = 'none';
       document.getElementById('navLogout').style.display = 'block';
-      // Load dynamic stats for any logged-in user
-      loadUserStats(user);
-
       // Forms
       document.getElementById('rateForm').style.display = 'block';
       document.getElementById('rateLoginPrompt').style.display = 'none';
@@ -1756,42 +1577,6 @@
     loadPicks();
   });
 
-  async function loadUserStats(user) {
-    try {
-      let foodReviews, hotelReviews, friends;
-
-      if (user.email === 'jongfoodie@gmail.com') {
-        // Admin: count from Firestore collections
-        const reviewsSnap = await getDocs(collection(db, 'reviews'));
-        foodReviews = reviewsSnap.size;
-
-        const hotelSnap = await getDocs(collection(db, 'hotelreviews'));
-        hotelReviews = hotelSnap.size;
-
-        friends = 3; // fixed for admin
-      } else {
-        // Regular user: count their own picks and ratings
-        const reviewsSnap = await getDocs(query(collection(db, 'picks'), where('userEmail', '==', user.email)));
-        foodReviews = reviewsSnap.size;
-
-        const hotelSnap = await getDocs(query(collection(db, 'hotelRatings'), where('userEmail', '==', user.email)));
-        hotelReviews = hotelSnap.size;
-
-        const friendsSnap = await getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid)));
-        friends = friendsSnap.size;
-      }
-
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = foodReviews;
-      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = hotelReviews;
-      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = friends;
-      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
-      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotels';
-      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
-    } catch(e) {
-      console.log('Stats load error:', e);
-    }
-  }
-
   window.doLogin = async function() {
     const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
     const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
@@ -1813,13 +1598,7 @@
     if (!name || !email || !password) { showToast('Please fill in all fields!'); return; }
     if (password.length < 6) { showToast('Password must be at least 6 characters!'); return; }
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      // Save user profile to Firestore
-      await setDoc(doc(db, 'users', cred.user.uid), {
-        displayName: name,
-        email: email,
-        createdAt: new Date().toISOString()
-      });
+      await createUserWithEmailAndPassword(auth, email, password);
       closeModal();
       showToast('Welcome, ' + name + '! 🎉');
     } catch(e) {
@@ -1877,13 +1656,6 @@
       showToast('Could not update name. Please try again!');
     }
   };
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
 </script>
 </body>
 </html>

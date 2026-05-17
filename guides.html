@@ -3,8 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Curated food guides by Jong Foodie. Best burgers, sandwiches, and more in Amsterdam.">
-<title>Food Guides — Jong Foodie</title>
+<title>Food Guides — Jong Foodie | Best Restaurants Amsterdam</title>
+  <meta name="description" content="Curated food guides by Jong Foodie. Best smash burgers, best Asian sandwiches, best cafes and hidden gems in Amsterdam.">
+  <meta name="keywords" content="best burgers Amsterdam, best sandwiches Amsterdam, food guide Amsterdam, Jong Foodie guides">
+  <meta name="author" content="Merdan Koc — Jong Foodie">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Food Guides — Jong Foodie | Best Restaurants Amsterdam">
+  <meta property="og:description" content="Curated food guides by Jong Foodie. Best smash burgers, best Asian sandwiches, best cafes and hidden gems in Amsterdam.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.jongfoodie.com">
+  <meta property="og:image" content="https://www.jongfoodie.com/preview.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Food Guides — Jong Foodie | Best Restaurants Amsterdam">
+  <meta name="twitter:description" content="Curated food guides by Jong Foodie. Best smash burgers, best Asian sandwiches, best cafes and hidden gems in Amsterdam.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,57 +77,18 @@
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
-
-  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
-  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
-  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
-  .mobile-nav a:last-child { border-bottom: none; }
-  .mobile-nav a:hover { color: var(--accent); }
-
 </style>
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#D4521A">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Jong Foodie">
-<link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
-<div class="mobile-nav" id="mobileNav">
-  <a href="index.html">🏠 Home</a>
-  <a href="reviews.html">🍽️ Reviews</a>
-  <a href="guides.html">📖 Guides</a>
-  <a href="videos.html">🎬 Videos</a>
-  <a href="map.html">🗺️ Map</a>
-  <a href="community.html">👥 Community</a>
-  <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
-</div>
 
 <nav>
-  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
-      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
-      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
-      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
-    </svg>
-    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
-  </a>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html" class="active">Guides</a></li>
-    <li><a href="videos.html">Videos</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
-    <li><a href="friends.html">Friends</a></li>
-    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Jong Hotel</a></li>
   </ul>
-  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
 
 <div class="page-hero">
@@ -275,11 +247,7 @@ const allGuides = {
     subtitle: 'Under-the-radar spots Jong Foodie loves.',
     spots: [
       { name: 'Leauf Amsterdam', rating: '★★★★★', price: '€15', location: 'Tweede Goudsbloemdwarsstraat 26, Amsterdam', tags: ['Must Try', 'Top Service'], review: 'Absolutely delicious with fresh ingredients and perfectly balanced flavors. Service was exceptional.' },
-      { name: 'Fabel Friet — Oude Hoogstraat', rating: '★★★★★', price: '€5.50', location: 'Oude Hoogstraat 21, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
-      { name: 'Fabel Friet — Nieuwendijk', rating: '★★★★★', price: '€5.50', location: 'Nieuwendijk 10A, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
-      { name: 'Fabel Friet — Damrak', rating: '★★★★★', price: '€5.50', location: 'Damrak 58, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
-      { name: 'Fabel Friet — Runstraat', rating: '★★★★★', price: '€5.50', location: 'Runstraat 1, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
-      { name: 'Fabel Friet — Leidsestraat', rating: '★★★★★', price: '€5.50', location: 'Leidsestraat 85, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
+      { name: 'Fabel Friet', rating: '★★★★★', price: '€5.50', location: 'Runstraat 1, Amsterdam', tags: ['Must Try', 'Truffle Mayo'], review: 'The best Dutch fries in Amsterdam. Try with freshly grated parmesan and homemade truffle mayo.' },
       { name: 'Fort Negen Sandwich Bar', rating: '★★★☆☆', price: '€15', location: 'Jan Evertsenstraat 37, Amsterdam', tags: ['Sandwiches', 'Sourdough'], review: 'Known for the best croissants in Amsterdam. A great sandwich needs warmth, crunch, and freshness.' },
     ]
   },
@@ -336,13 +304,6 @@ function closeGuide() {
   document.getElementById('guideBg').style.display = 'none';
   document.body.style.overflow = '';
 }
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
 </script>
 </body>
 </html>
