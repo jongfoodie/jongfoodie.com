@@ -129,7 +129,7 @@
   <button class="filter-pill" onclick="setCountry(this)" data-country="turkey">🇹🇷 Turkey</button>
 </div>
 <div class="wrapper">
-  <p class="section-label"><span class="reviews-count">36</span> Reviews · Worldwide</p>
+  <p class="section-label"><span class="reviews-count">51</span> Reviews · Worldwide</p>
   <div class="reviews-list">
 
     <div class="review-card">
@@ -901,10 +901,7 @@
     try {
       const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      if (snap.empty) return;
-
       const grid = document.querySelector('.reviews-list');
-      if (!grid) return;
 
       const bgColors = ['bg-sushi','bg-burger','bg-ramen','bg-pastry','bg-cafe','bg-seafood'];
 
@@ -945,8 +942,7 @@
       // Update count
       const countEl = document.querySelector('.reviews-count');
       if (countEl) {
-        const existing = parseInt(countEl.textContent) || 20;
-        countEl.textContent = existing + snap.docs.length;
+        countEl.textContent = 51 + snap.docs.length;
       }
     } catch(e) {
       console.error('Could not load new reviews:', e);
