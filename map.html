@@ -239,10 +239,17 @@ function buildList(filtered) {
   filtered.forEach(s => {
     const div = document.createElement('div');
     div.className = 'spot-item';
+
+    const leftHtml = s.photoUrl
+      ? `<img src="${s.photoUrl}" style="width:42px;height:42px;object-fit:cover;border-radius:8px;flex-shrink:0;">`
+      : `<span class="spot-emoji">${s.emoji}</span>`;
+
+    const newBadge = s.isNew ? `<span style="background:#D4521A;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:4px;">NEW</span>` : '';
+
     div.innerHTML = `
-      <span class="spot-emoji">${s.emoji}</span>
+      ${leftHtml}
       <div class="spot-info">
-        <p class="spot-name">${s.name}</p>
+        <p class="spot-name">${s.name}${newBadge}</p>
         <p class="spot-address">📍 ${s.address}</p>
         <p class="spot-hours">🕐 ${s.hours}</p>
       </div>
@@ -278,6 +285,93 @@ function filterSpots(val) {
 
 // Load spots
 loadAllSpots();
+
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadFirebaseReviews() {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+
+      const newSpots = [];
+
+      snap.docs.forEach(d => {
+        const r = d.data();
+        if (!r.lat || !r.lng) return;
+
+        const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
+
+        // Photo in popup
+        const photoHtml = r.photoUrl
+          ? `<img src="${r.photoUrl}" alt="${r.name}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
+          : '';
+
+        const icon = L.divIcon({
+          className: '',
+          html: `<div style="background:#2D5A3D;color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${r.emoji || '🍽️'}</div>`,
+          iconSize: [38,38], iconAnchor: [19,19], popupAnchor: [0,-24]
+        });
+
+        const marker = L.marker([r.lat, r.lng], { icon }).addTo(window._leafletMap || map);
+        marker.bindPopup(`
+          <div style="width:200px;">
+            ${photoHtml}
+            <b style="font-size:13px;">${r.name}</b>
+            <span style="display:inline-block;margin-left:4px;background:#D4521A;color:#fff;font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;">NEW</span><br>
+            <span style="font-size:11px;color:#8A7A66;">📍 ${r.city}</span><br>
+            <span style="font-size:11px;color:#8A7A66;">🍽️ ${r.type}</span><br>
+            ${r.price ? `<span style="font-size:11px;color:#8A7A66;">💰 ${r.price}</span><br>` : ''}
+            ${r.hours ? `<span style="font-size:11px;color:#2D5A3D;">🕐 ${r.hours}</span><br>` : ''}
+            <span style="font-size:12px;color:#C8901A;">${stars}</span>
+          </div>
+        `);
+
+        // Add to sidebar list data
+        const spotData = {
+          name: r.name,
+          address: r.city,
+          hours: r.hours || '',
+          rating: stars,
+          emoji: r.emoji || '🍽️',
+          lat: r.lat,
+          lng: r.lng,
+          country: 'firebase',
+          photoUrl: r.photoUrl || '',
+          isNew: true
+        };
+        newSpots.push({ spot: spotData, marker });
+        spots.unshift(spotData);
+        markers.unshift({ spot: spotData, marker });
+      });
+
+      // Rebuild sidebar list to include new spots
+      buildList(spots);
+
+    } catch(e) {
+      console.error('Could not load Firebase reviews on map:', e);
+    }
+  }
+
+  // Make map accessible to module
+  window._leafletMap = map;
+  loadFirebaseReviews();
 </script>
 </body>
 </html>

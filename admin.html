@@ -49,9 +49,11 @@
   .photo-upload-area .upload-icon { font-size: 32px; margin-bottom: 8px; }
   .photo-upload-area p { font-size: 13px; color: var(--muted); }
   .photo-upload-area strong { font-size: 14px; color: var(--ink); display: block; margin-bottom: 4px; }
-  .photo-preview { margin-top: 1rem; border-radius: 12px; overflow: hidden; display: none; }
-  .photo-preview img { width: 100%; max-height: 280px; object-fit: cover; border-radius: 12px; display: block; }
-  .photo-preview .photo-name { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .photo-preview { margin-top: 1rem; border-radius: 12px; overflow: hidden; display: none; border: 2px solid var(--accent); position: relative; }
+  .photo-preview img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px; display: block; }
+  .photo-preview .photo-name { font-size: 12px; color: var(--muted); margin-top: 6px; padding: 0 4px 6px; }
+  .photo-preview .photo-badge { position: absolute; top: 10px; right: 10px; background: rgba(26,18,8,0.7); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px); }
+  .photo-preview .btn-remove-photo { position: absolute; top: 10px; left: 10px; background: rgba(212,82,26,0.9); color: #fff; border: none; border-radius: 20px; font-size: 11px; padding: 4px 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
   .upload-progress { display: none; margin-top: 0.75rem; background: #eee; border-radius: 100px; height: 6px; overflow: hidden; }
   .upload-progress-bar { height: 100%; background: var(--accent); border-radius: 100px; width: 0%; transition: width 0.3s; }
 
@@ -176,7 +178,9 @@
         <p>JPG, PNG of WebP · max 10MB</p>
       </div>
       <div class="photo-preview" id="photoPreview">
+        <button class="btn-remove-photo" onclick="removePhoto()">✕ Verwijder</button>
         <img id="photoPreviewImg" src="" alt="Preview">
+        <span class="photo-badge" id="photoBadge">📷 Foto geselecteerd</span>
         <p class="photo-name" id="photoPreviewName"></p>
       </div>
       <div class="upload-progress" id="uploadProgress">
@@ -296,10 +300,21 @@
     const preview = document.getElementById('photoPreview');
     const img = document.getElementById('photoPreviewImg');
     const name = document.getElementById('photoPreviewName');
+    const badge = document.getElementById('photoBadge');
     img.src = URL.createObjectURL(file);
-    name.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    name.textContent = file.name + ' · ' + sizeMB + ' MB';
+    badge.textContent = '📷 ' + sizeMB + ' MB klaar om te uploaden';
     preview.style.display = 'block';
     document.getElementById('photoUploadArea').style.borderColor = 'var(--accent)';
+    document.getElementById('photoUploadArea').style.background = '#FFF8F5';
+  };
+
+  window.removePhoto = function() {
+    document.getElementById('rPhoto').value = '';
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoUploadArea').style.borderColor = '';
+    document.getElementById('photoUploadArea').style.background = '';
   };
 
   async function uploadPhoto(file, restaurantName) {
