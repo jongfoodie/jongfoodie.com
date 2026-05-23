@@ -43,6 +43,17 @@
   .pub-meta { font-size: 12px; color: var(--muted); }
   .btn-delete { background: none; border: 1px solid #e0ccc8; color: #D4521A; padding: 4px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
   .back-link { color: var(--accent); text-decoration: none; font-size: 13px; }
+  .photo-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--cream); position: relative; }
+  .photo-upload-area:hover { border-color: var(--accent); background: #FFF8F5; }
+  .photo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .photo-upload-area .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .photo-upload-area p { font-size: 13px; color: var(--muted); }
+  .photo-upload-area strong { font-size: 14px; color: var(--ink); display: block; margin-bottom: 4px; }
+  .photo-preview { margin-top: 1rem; border-radius: 12px; overflow: hidden; display: none; }
+  .photo-preview img { width: 100%; max-height: 280px; object-fit: cover; border-radius: 12px; display: block; }
+  .photo-preview .photo-name { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .upload-progress { display: none; margin-top: 0.75rem; background: #eee; border-radius: 100px; height: 6px; overflow: hidden; }
+  .upload-progress-bar { height: 100%; background: var(--accent); border-radius: 100px; width: 0%; transition: width 0.3s; }
 
   .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
   @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
@@ -155,6 +166,26 @@
   </div>
 
   <div class="form-card">
+    <h3>📸 Photo</h3>
+    <div class="form-group">
+      <label class="form-label">Restaurant Photo</label>
+      <div class="photo-upload-area" id="photoUploadArea">
+        <input type="file" id="rPhoto" accept="image/*" onchange="handlePhotoSelect(this)">
+        <div class="upload-icon">📷</div>
+        <strong>Klik om een foto te uploaden</strong>
+        <p>JPG, PNG of WebP · max 10MB</p>
+      </div>
+      <div class="photo-preview" id="photoPreview">
+        <img id="photoPreviewImg" src="" alt="Preview">
+        <p class="photo-name" id="photoPreviewName"></p>
+      </div>
+      <div class="upload-progress" id="uploadProgress">
+        <div class="upload-progress-bar" id="uploadProgressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
     <h3>⭐ Rating & Review</h3>
     <div class="form-group">
       <label class="form-label">Star Rating *</label>
@@ -243,6 +274,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -255,6 +287,43 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // Photo preview
+  window.handlePhotoSelect = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const preview = document.getElementById('photoPreview');
+    const img = document.getElementById('photoPreviewImg');
+    const name = document.getElementById('photoPreviewName');
+    img.src = URL.createObjectURL(file);
+    name.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+    preview.style.display = 'block';
+    document.getElementById('photoUploadArea').style.borderColor = 'var(--accent)';
+  };
+
+  async function uploadPhoto(file, restaurantName) {
+    return new Promise((resolve, reject) => {
+      const ext = file.name.split('.').pop();
+      const fileName = `reviews/${Date.now()}_${restaurantName.replace(/\s+/g, '_')}.${ext}`;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      document.getElementById('uploadProgress').style.display = 'block';
+
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          document.getElementById('uploadProgressBar').style.width = pct + '%';
+        },
+        (error) => reject(error),
+        async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(url);
+        }
+      );
+    });
+  }
 
   // Admin password - change this to whatever you want!
   const ADMIN_PASSWORD = "jongfoodie2025";
@@ -302,10 +371,21 @@
       const lat = parseFloat(document.getElementById('rLat').value);
       const lng = parseFloat(document.getElementById('rLng').value);
 
+      // Upload photo if selected
+      let photoUrl = '';
+      const photoFile = document.getElementById('rPhoto').files[0];
+      if (photoFile) {
+        btn.textContent = 'Uploading photo...';
+        photoUrl = await uploadPhoto(photoFile, name);
+        document.getElementById('uploadProgress').style.display = 'none';
+        document.getElementById('uploadProgressBar').style.width = '0%';
+      }
+
       await addDoc(collection(db, 'reviews'), {
         name, city, type, price, date, hours, review,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         emoji, rating: adminRating, lat, lng,
+        photoUrl,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
@@ -332,6 +412,9 @@
       document.getElementById('rEmoji').value = '🍽️';
       document.getElementById('rLat').value = '';
       document.getElementById('rLng').value = '';
+      document.getElementById('rPhoto').value = '';
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('photoUploadArea').style.borderColor = '';
       adminRating = 0;
       document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
       loadPublished();
@@ -355,10 +438,14 @@
       list.innerHTML = snap.docs.map(d => {
         const r = d.data();
         const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const thumb = r.photoUrl ? `<img src="${r.photoUrl}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;margin-right:12px;flex-shrink:0;">` : `<div style="width:48px;height:48px;background:var(--cream);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-right:12px;flex-shrink:0;">${r.emoji}</div>`;
         return `<div class="pub-item">
-          <div>
-            <p class="pub-name">${r.emoji} ${r.name}</p>
-            <p class="pub-meta">${r.city} · ${r.type} · ${stars} · ${r.date || 'No date'}</p>
+          <div style="display:flex;align-items:center;">
+            ${thumb}
+            <div>
+              <p class="pub-name">${r.emoji} ${r.name}</p>
+              <p class="pub-meta">${r.city} · ${r.type} · ${stars} · ${r.date || 'No date'}</p>
+            </div>
           </div>
           <button class="btn-delete" onclick="deleteReview('${d.id}')">🗑 Delete</button>
         </div>`;

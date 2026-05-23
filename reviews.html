@@ -917,11 +917,19 @@
         const card = document.createElement('div');
         card.className = 'review-card new-review';
         card.style.cssText = 'animation: fadeIn 0.4s ease both; border: 2px solid rgba(212,82,26,0.2);';
+
+        const imageHtml = r.photoUrl
+          ? `<div style="position:relative;min-height:160px;overflow:hidden;">
+               <img src="${r.photoUrl}" alt="${r.name}" style="width:100%;height:100%;object-fit:cover;display:block;min-height:160px;">
+               <span style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.08em;">NEW</span>
+             </div>`
+          : `<div class="review-img ${color}" style="position:relative;display:flex;align-items:center;justify-content:center;font-size:60px;">
+               ${r.emoji || '🍽️'}
+               <span style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.08em;">NEW</span>
+             </div>`;
+
         card.innerHTML = `
-          <div class="review-img ${color}" style="position:relative;display:flex;align-items:center;justify-content:center;font-size:60px;">
-            ${r.emoji || '🍽️'}
-            <span style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.08em;">NEW</span>
-          </div>
+          ${imageHtml}
           <div class="review-body">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
               ${r.hours ? `<span class="hours-badge" style="font-size:10px;">🕐 ${r.hours}</span>` : '<span></span>'}
