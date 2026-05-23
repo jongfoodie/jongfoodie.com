@@ -391,7 +391,16 @@
       const photoFile = document.getElementById('rPhoto').files[0];
       if (photoFile) {
         btn.textContent = 'Uploading photo...';
-        photoUrl = await uploadPhoto(photoFile, name);
+        try {
+          photoUrl = await uploadPhoto(photoFile, name);
+          console.log('✅ Photo uploaded, URL:', photoUrl);
+        } catch(uploadErr) {
+          console.error('❌ Upload failed:', uploadErr);
+          showToast('Foto upload mislukt: ' + uploadErr.message);
+          btn.disabled = false;
+          btn.textContent = '🚀 Publish Review';
+          return;
+        }
         document.getElementById('uploadProgress').style.display = 'none';
         document.getElementById('uploadProgressBar').style.width = '0%';
       }
