@@ -567,8 +567,8 @@
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'picks'))
       ]);
-      document.getElementById('cntFood').textContent  = foodSnap.size;
-      document.getElementById('cntHotel').textContent = hotelSnap.size;
+      document.getElementById('cntFood').textContent  = foodSnap.size + 51;
+      document.getElementById('cntHotel').textContent = hotelSnap.size + 6;
       document.getElementById('cntUsers').textContent = usersSnap.size;
       document.getElementById('cntPicks').textContent = picksSnap.size;
       const now = new Date();
