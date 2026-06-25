@@ -8,7 +8,10 @@ const URLS_TO_CACHE = [
   '/map.html',
   '/community.html',
   '/hotel.html',
-  '/friends.html'
+  '/friends.html',
+  '/about.html',
+  '/404.html',
+  '/privacy.html'
 ];
 
 self.addEventListener('install', event => {

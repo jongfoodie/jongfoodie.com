@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ik ben Merdan Koc, de man achter Jong Foodie. Van Rotterdam tot Amsterdam, van streetfood tot fine dining — ik eet het allemaal en vertel je eerlijk wat ik ervan vind.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jong Foodie">
+<meta property="og:title" content="About me — Jong Foodie">
+<meta property="og:description" content="Ik ben Merdan Koc, de man achter Jong Foodie. Eerlijke restaurantreviews van Amsterdam tot de wereld.">
+<meta property="og:url" content="https://www.jongfoodie.com/about.html">
+<meta property="og:image" content="https://www.jongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://www.jongfoodie.com/about.html">
+<title>About me — Jong Foodie | Merdan Koc</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+  .hero { background: var(--ink); color: #fff; padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,82,26,0.25) 0%, transparent 70%); }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; font-weight: 500; position: relative; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; position: relative; margin-bottom: 1rem; }
+  .hero h1 em { font-style: italic; color: #F5C896; }
+  .hero p { color: rgba(255,255,255,0.6); font-size: 16px; max-width: 480px; margin: 0 auto; position: relative; }
+
+  .wrapper { max-width: 860px; margin: 0 auto; padding: 4rem 2rem; }
+
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .intro-block { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; align-items: start; margin-bottom: 4rem; }
+  .avatar-box { text-align: center; }
+  .avatar-circle { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(135deg, #D4521A, #8B2E0A); display: flex; align-items: center; justify-content: center; font-size: 64px; margin: 0 auto 1rem; }
+  .avatar-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 0.25rem; }
+  .avatar-title { font-size: 13px; color: var(--muted); }
+  .social-links { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+  .social-link { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; transition: color 0.2s; }
+  .social-link:hover { color: var(--accent); }
+
+  .intro-text h2 { font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.2; margin-bottom: 1.25rem; }
+  .intro-text h2 em { font-style: italic; color: var(--accent); }
+  .intro-text p { color: var(--ink-soft); line-height: 1.8; margin-bottom: 1rem; font-size: 15px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 4rem; }
+  .stat-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; text-align: center; }
+  .stat-number { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  .mission-block { background: var(--ink); color: #fff; border-radius: 20px; padding: 3rem; margin-bottom: 4rem; }
+  .mission-block h2 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 1rem; }
+  .mission-block h2 em { font-style: italic; color: #F5C896; }
+  .mission-block p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 15px; }
+
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 4rem; }
+  .value-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .value-icon { font-size: 32px; margin-bottom: 0.75rem; }
+  .value-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 0.5rem; }
+  .value-text { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+  .contact-block { background: var(--accent-pale); border: 1px solid rgba(212,82,26,0.2); border-radius: 20px; padding: 2.5rem; text-align: center; margin-bottom: 2rem; }
+  .contact-block h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 0.75rem; }
+  .contact-block p { color: var(--ink-soft); font-size: 14px; margin-bottom: 1.5rem; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .btn-accent { background: var(--accent); color: #fff; border: none; padding: 12px 28px; border-radius: 20px; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s; }
+  .btn-accent:hover { background: #b8401a; }
+
+  @media (max-width: 700px) {
+    .intro-block { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .social-links { align-items: center; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .values-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="about.html" style="color:#D4521A;font-weight:600;">👤 About me</a>
+  <a href="hotel.html">🏨 Jong Hotel</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="about.html" class="active">About me</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="hero">
+  <p class="hero-eyebrow">Jong Foodie · About me</p>
+  <h1>Hi, I'm <em>Merdan</em></h1>
+  <p>The man behind Jong Foodie. I eat everything, tell everything — honestly and without filter.</p>
+</div>
+
+<div class="wrapper">
+
+  <p class="section-label">Who I am</p>
+  <div class="intro-block">
+    <div class="avatar-box">
+      <div class="avatar-circle">🍜</div>
+      <p class="avatar-name">Merdan Koc</p>
+      <p class="avatar-title">Food reviewer & creator</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/jongfoodie/" target="_blank" class="social-link">📸 @jongfoodie</a>
+        <a href="https://www.youtube.com/@Jongfoodie" target="_blank" class="social-link">▶ YouTube</a>
+        <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" class="social-link">💼 LinkedIn</a>
+      </div>
+    </div>
+    <div class="intro-text">
+      <h2>From Rotterdam to the <em>world</em></h2>
+      <p>I'm Merdan Koc, born and raised in the Netherlands, but my heart belongs to food. For as long as I can remember I've been fascinated by restaurants — not just the food, but the atmosphere, the story behind a dish, the people who make it.</p>
+      <p>Jong Foodie started as a personal project: I wanted to keep track of which places are truly worth visiting and which aren't. No fake reviews, no sponsored content. Just honest opinions.</p>
+      <p>I've now visited over 100 restaurants — from a simple sandwich at an Amsterdam market to five-star hotels in Bangkok and Las Vegas. Every place tells a story, and I share that with you.</p>
+    </div>
+  </div>
+
+  <p class="section-label">By the numbers</p>
+  <div class="stats-row">
+    <div class="stat-card">
+      <p class="stat-number">100+</p>
+      <p class="stat-label">Restaurants visited</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number">15+</p>
+      <p class="stat-label">Cities explored</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number">6</p>
+      <p class="stat-label">Hotels reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number">0</p>
+      <p class="stat-label">Sponsored reviews</p>
+    </div>
+  </div>
+
+  <p class="section-label">My mission</p>
+  <div class="mission-block">
+    <h2>Honest food, <em>honest reviews</em></h2>
+    <p>The food world is full of sponsored content and fake reviews. Restaurants pay for good scores, influencers get free meals in exchange for positive posts. That's not how I work.</p>
+    <p style="margin-top:1rem;">I always pay for my own food. I visit restaurants anonymously. And I tell you exactly what I think — even when it disappoints. Because you deserve honest information before spending your evening (and money) somewhere.</p>
+  </div>
+
+  <p class="section-label">Values</p>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🎯</div>
+      <p class="value-title">Honesty</p>
+      <p class="value-text">No sponsored content. No paid reviews. I say what I think, even when it's negative.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🍽️</div>
+      <p class="value-title">Passion for food</p>
+      <p class="value-text">Food is culture, connection, adventure. I don't eat to eat — I eat to discover.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🌍</div>
+      <p class="value-title">From local to worldwide</p>
+      <p class="value-text">From a croquette on the corner to a fine dining restaurant in Dubai — everything is worth it when it's good.</p>
+    </div>
+  </div>
+
+  <p class="section-label">Work together</p>
+  <div class="contact-block">
+    <h2>Want your restaurant on Jong Foodie?</h2>
+    <p>Do you have a restaurant or hotel that's truly worth visiting? Send me a message. I'll come by, taste it myself, and if it's good, I'll write an honest review.</p>
+    <a href="mailto:info@jongfoodie.com" class="btn-accent">Send a message</a>
+  </div>
+
+</div>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:2rem;">
+  <div style="max-width:860px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Jong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Jong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc — Jong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+    <button onclick="declineCookies()" style="background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Decline</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('jf_cookie_consent');if(!c){document.getElementById('cookieBanner').style.display='flex';}})();
+function acceptCookies(){localStorage.setItem('jf_cookie_consent','accepted');document.getElementById('cookieBanner').style.display='none';}
+function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');document.getElementById('cookieBanner').style.display='none';}
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js'); });
+  }
+</script>
+</body>
+</html>

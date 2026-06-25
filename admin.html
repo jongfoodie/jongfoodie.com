@@ -103,6 +103,33 @@
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="admin-panel" style="display:none;">
+
+  <!-- LIVE COUNTER DASHBOARD -->
+  <div id="liveDashboard" style="margin-bottom:2rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍽️ Food Reviews</p>
+        <p id="cntFood" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🏨 Hotel Reviews</p>
+        <p id="cntHotel" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A3A5C;line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">👥 Members</p>
+        <p id="cntUsers" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">📌 Community Picks</p>
+        <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">—</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:0.75rem 1.25rem;border:1px solid var(--border);">
+      <span id="lastRefresh" style="font-size:12px;color:var(--muted);">Last updated: loading...</span>
+      <button onclick="loadLiveStats()" style="background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">↻ Refresh</button>
+    </div>
+  </div>
+
   <h2>Add New Review</h2>
   <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
 
@@ -348,6 +375,7 @@
     if (pw === ADMIN_PASSWORD) {
       document.getElementById('loginBox').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
+    window.loadLiveStats();
       loadPublished();
     } else {
       showToast('Wrong password! Try again.');
@@ -530,6 +558,34 @@
       document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
     } catch(e) { showToast('Error: ' + e.message); }
   };
+  // ── LIVE COUNTER ─────────────────────────────────────────────────────────
+  window.loadLiveStats = async function() {
+    try {
+      const [foodSnap, hotelSnap, usersSnap, picksSnap] = await Promise.all([
+        getDocs(collection(db, 'reviews')),
+        getDocs(collection(db, 'hotelreviews')),
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'picks'))
+      ]);
+      document.getElementById('cntFood').textContent  = foodSnap.size;
+      document.getElementById('cntHotel').textContent = hotelSnap.size;
+      document.getElementById('cntUsers').textContent = usersSnap.size;
+      document.getElementById('cntPicks').textContent = picksSnap.size;
+      const now = new Date();
+      document.getElementById('lastRefresh').textContent =
+        'Last updated: ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    } catch(e) {
+      document.getElementById('lastRefresh').textContent = 'Could not load — check Firebase connection';
+    }
+  };
+  // Auto-refresh every 30 seconds when admin panel is visible
+  setInterval(() => {
+    if (document.getElementById('adminPanel').style.display !== 'none') {
+      window.loadLiveStats();
+    }
+  }, 30000);
+  // ─────────────────────────────────────────────────────────────────────────
+
 </script>
 <script>
   if ('serviceWorker' in navigator) {
