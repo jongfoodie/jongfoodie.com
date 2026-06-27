@@ -1171,7 +1171,7 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">52</div>
+          <div class="user-stat-num" id="statReviews">53</div>
           <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
         </div>
         <div class="user-stat">
@@ -1640,8 +1640,8 @@
         getDocs(collection(db, 'hotelreviews')),
         getDocs(collection(db, 'users'))
       ]);
-      const totalReviews = reviewsSnap.size + hotelSnap.size + 52;
-      const totalRestaurants = reviewsSnap.size + 51;
+      const totalReviews = reviewsSnap.size + hotelSnap.size + 51;
+      const totalRestaurants = reviewsSnap.size + 50;
       const totalMembers = usersSnap.size;
 
       if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
