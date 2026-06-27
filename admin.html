@@ -617,28 +617,29 @@
   function openMailchimp() {
     if (!lastPublishedReview) return;
     const r = lastPublishedReview;
-    const subject = encodeURIComponent('New Review: ' + r.name + ' ' + (r.emoji || ''));
-    const body = encodeURIComponent(
-      'Hi there!\n\n' +
-      'A new Jong Foodie review is live!\n\n' +
-      (r.emoji || '🍽️') + ' ' + r.name + '\n' +
-      '📍 ' + (r.city || '') + '\n' +
-      '⭐ Rating: ' + ('★'.repeat(Math.round(r.rating || 5))) + '\n' +
-      (r.price ? '💰 ' + r.price + '\n' : '') +
-      '\n' + (r.review || '') + '\n\n' +
-      '👉 Read the full review: https://www.jongfoodie.com/reviews.html\n\n' +
-      '— Merdan, Jong Foodie'
-    );
-    // Open Mailchimp campaign creation
-    window.open('https://us21.admin.mailchimp.com/campaigns/wizard/neapolitan', '_blank');
-    // Also copy subject + body to clipboard for easy paste
-    const text = 'SUBJECT: New Review: ' + r.name + '\n\nBODY:\n' + decodeURIComponent(body);
+    const text = "ONDERWERP: Nieuwe review: " + r.name + " " + (r.emoji || "") + "\n\n" +
+      "Hoi!\n\n" +
+      "Er staat een nieuwe Jong Foodie review online!\n\n" +
+      (r.emoji || "🍽️") + " " + r.name + "\n" +
+      "📍 " + (r.city || "") + "\n" +
+      "⭐ " + ("★".repeat(Math.round(r.rating || 5))) + "\n" +
+      (r.price ? "💰 " + r.price + "\n" : "") +
+      "\n" + (r.review || "") + "\n\n" +
+      "👉 https://www.jongfoodie.com/reviews.html\n\n" +
+      "— Merdan, Jong Foodie";
     navigator.clipboard.writeText(text).then(() => {
-      showToast('Campaign text copied to clipboard! Paste it in Mailchimp.');
+      showToast("✅ Tekst gekopieerd! Open Mailchimp en plak de tekst.");
     }).catch(() => {
-      showToast('Mailchimp opened! Subject: New Review: ' + r.name);
+      window.prompt("Kopieer deze tekst:", text);
     });
-    document.getElementById('newsletterBanner').style.display = 'none';
+    const a = document.createElement("a");
+    a.href = "https://mailchimp.com/create/campaign/";
+    a.target = "_blank";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    document.getElementById("newsletterBanner").style.display = "none";
   }
   // ─────────────────────────────────────────────────────────────────────────
 
