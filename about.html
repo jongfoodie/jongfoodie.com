@@ -158,22 +158,22 @@
       <h2>From Rotterdam to the <em>world</em></h2>
       <p>I'm Merdan Koc, born and raised in the Netherlands, but my heart belongs to food. For as long as I can remember I've been fascinated by restaurants — not just the food, but the atmosphere, the story behind a dish, the people who make it.</p>
       <p>Jong Foodie started as a personal project: I wanted to keep track of which places are truly worth visiting and which aren't. No fake reviews, no sponsored content. Just honest opinions.</p>
-      <p>I've now visited over 52 restaurants across 6 countries — from the Netherlands to Turkey, the USA, Thailand, the UAE and Aruba. Every place tells a story, and I share that with you.</p>
+      <p>I've now visited over <span id="introFood">52</span> restaurants across 6 countries — from the Netherlands to Turkey, the USA, Thailand, the UAE and Aruba. Every place tells a story, and I share that with you.</p>
     </div>
   </div>
 
   <p class="section-label">By the numbers</p>
   <div class="stats-row">
     <div class="stat-card">
-      <p class="stat-number">51</p>
+      <p class="stat-number" id="statFood">—</p>
       <p class="stat-label">Restaurants visited</p>
     </div>
     <div class="stat-card">
-      <p class="stat-number">6</p>
+      <p class="stat-number" id="statCountries">6</p>
       <p class="stat-label">Countries visited</p>
     </div>
     <div class="stat-card">
-      <p class="stat-number">6</p>
+      <p class="stat-number" id="statHotels">—</p>
       <p class="stat-label">Hotels reviewed</p>
     </div>
     <div class="stat-card">
@@ -268,5 +268,62 @@ function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');d
     window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js'); });
   }
 </script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Offsets for hardcoded reviews not in Firebase
+  const FOOD_OFFSET = 52;
+  const HOTEL_OFFSET = 6;
+
+  try {
+    const [foodSnap, hotelSnap] = await Promise.all([
+      getDocs(collection(db, 'reviews')),
+      getDocs(collection(db, 'hotelreviews'))
+    ]);
+
+    const foodTotal = foodSnap.size + FOOD_OFFSET;
+    const hotelTotal = hotelSnap.size + HOTEL_OFFSET;
+
+    document.getElementById('statFood').textContent = foodTotal;
+    document.getElementById('statHotels').textContent = hotelTotal;
+    document.getElementById('introFood').textContent = foodTotal;
+
+    // Animate the numbers counting up
+    function countUp(el, target, duration=1200) {
+      const start = 0;
+      const step = target / (duration / 16);
+      let current = start;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { el.textContent = target; clearInterval(timer); return; }
+        el.textContent = Math.floor(current);
+      }, 16);
+    }
+
+    countUp(document.getElementById('statFood'), foodTotal);
+    countUp(document.getElementById('statHotels'), hotelTotal);
+
+  } catch(e) {
+    // Fallback to static numbers if Firebase fails
+    document.getElementById('statFood').textContent = '52';
+    document.getElementById('statHotels').textContent = '6';
+    document.getElementById('introFood').textContent = '52';
+  }
+</script>
+
 </body>
 </html>

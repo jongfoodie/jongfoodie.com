@@ -65,6 +65,15 @@
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--accent); }
 
+
+  .newsletter-banner { display:none; background: linear-gradient(135deg, #1A1208, #2D1F0E); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(212,82,26,0.3); }
+  .newsletter-banner h3 { font-family: 'Playfair Display', serif; color: #fff; font-size: 18px; margin-bottom: 0.4rem; }
+  .newsletter-banner p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 1rem; }
+  .newsletter-banner .review-preview { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+  .btn-newsletter { background: #D4521A; color: #fff; border: none; padding: 11px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-right: 0.5rem; }
+  .btn-newsletter:hover { background: #b8401a; }
+  .btn-dismiss { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 11px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
 </style>
 <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
 <link rel="manifest" href="/manifest.json">
@@ -103,6 +112,16 @@
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="admin-panel" style="display:none;">
+
+
+  <!-- NEWSLETTER BANNER — shown after publishing a review -->
+  <div id="newsletterBanner" class="newsletter-banner">
+    <h3>📧 Send Newsletter?</h3>
+    <p>A new review was just published. Let your subscribers know!</p>
+    <div class="review-preview" id="newsletterPreview">—</div>
+    <button class="btn-newsletter" onclick="openMailchimp()">Open Mailchimp → Send Campaign</button>
+    <button class="btn-dismiss" onclick="dismissNewsletter()">Dismiss</button>
+  </div>
 
   <!-- LIVE COUNTER DASHBOARD -->
   <div id="liveDashboard" style="margin-bottom:2rem;">
@@ -452,6 +471,16 @@
       }
 
       showToast('Review published! 🎉');
+      // Show newsletter banner
+      showNewsletterBanner({
+        name: document.getElementById('rName').value,
+        emoji: document.getElementById('rEmoji').value,
+        city: document.getElementById('rCity').value,
+        type: document.getElementById('rType').value,
+        price: document.getElementById('rPrice').value,
+        rating: adminRating,
+        review: document.getElementById('rReview').value,
+      });
       // Clear form
       document.getElementById('rName').value = '';
       document.getElementById('rCity').value = '';
@@ -558,6 +587,54 @@
       document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
     } catch(e) { showToast('Error: ' + e.message); }
   };
+
+  // ── NEWSLETTER BANNER ────────────────────────────────────────────────────
+  var lastPublishedReview = null;
+
+  function showNewsletterBanner(reviewData) {
+    lastPublishedReview = reviewData;
+    const preview = document.getElementById('newsletterPreview');
+    preview.innerHTML = `
+      <strong>${reviewData.emoji || '🍽️'} ${reviewData.name}</strong><br>
+      📍 ${reviewData.city || ''} · ${reviewData.type || ''} · ${reviewData.price || ''}<br>
+      ${reviewData.rating ? '★'.repeat(Math.round(reviewData.rating)) + ' ' : ''}${reviewData.review ? '"' + reviewData.review.substring(0,120) + (reviewData.review.length > 120 ? '…' : '') + '"' : ''}
+    `;
+    document.getElementById('newsletterBanner').style.display = 'block';
+    document.getElementById('newsletterBanner').scrollIntoView({behavior:'smooth'});
+  }
+
+  function dismissNewsletter() {
+    document.getElementById('newsletterBanner').style.display = 'none';
+  }
+
+  function openMailchimp() {
+    if (!lastPublishedReview) return;
+    const r = lastPublishedReview;
+    const subject = encodeURIComponent('New Review: ' + r.name + ' ' + (r.emoji || ''));
+    const body = encodeURIComponent(
+      'Hi there!\n\n' +
+      'A new Jong Foodie review is live!\n\n' +
+      (r.emoji || '🍽️') + ' ' + r.name + '\n' +
+      '📍 ' + (r.city || '') + '\n' +
+      '⭐ Rating: ' + ('★'.repeat(Math.round(r.rating || 5))) + '\n' +
+      (r.price ? '💰 ' + r.price + '\n' : '') +
+      '\n' + (r.review || '') + '\n\n' +
+      '👉 Read the full review: https://www.jongfoodie.com/reviews.html\n\n' +
+      '— Merdan, Jong Foodie'
+    );
+    // Open Mailchimp campaign creation
+    window.open('https://us21.admin.mailchimp.com/campaigns/wizard/neapolitan', '_blank');
+    // Also copy subject + body to clipboard for easy paste
+    const text = 'SUBJECT: New Review: ' + r.name + '\n\nBODY:\n' + decodeURIComponent(body);
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Campaign text copied to clipboard! Paste it in Mailchimp.');
+    }).catch(() => {
+      showToast('Mailchimp opened! Subject: New Review: ' + r.name);
+    });
+    document.getElementById('newsletterBanner').style.display = 'none';
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   // ── LIVE COUNTER ─────────────────────────────────────────────────────────
   window.loadLiveStats = async function() {
     try {
