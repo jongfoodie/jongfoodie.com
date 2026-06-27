@@ -1640,12 +1640,12 @@
         getDocs(collection(db, 'hotelreviews')),
         getDocs(collection(db, 'users'))
       ]);
-      const totalReviews = reviewsSnap.size + hotelSnap.size;
-      const totalRestaurants = reviewsSnap.size;
+      const totalReviews = reviewsSnap.size + hotelSnap.size + 52;
+      const totalRestaurants = reviewsSnap.size + 51;
       const totalMembers = usersSnap.size;
 
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
+      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = totalRestaurants;
       if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
     } catch(e) {
       console.log('Hero stats error:', e);
@@ -1655,6 +1655,56 @@
     }
   }
   loadHeroStats();
+
+  // Load latest review from Firebase as featured card
+  async function loadFeaturedReview() {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+      const r = snap.docs[0].data();
+      const card = document.querySelector('.featured-card');
+      if (!card) return;
+      const stars = Math.round(r.rating || 5);
+      const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+      const tags = (r.tags || []).slice(0, 3).map(t => `<span class="card-tag">${t}</span>`).join('');
+      const imgHtml = r.photoUrl
+        ? `<div class="featured-img" style="background:url('${r.photoUrl}') center/cover no-repeat;"></div>`
+        : `<div class="featured-img bg-cafe" style="font-size:72px;">${r.emoji || '🍽️'}</div>`;
+      card.innerHTML = `
+        ${imgHtml}
+        <div class="featured-body">
+          <div>
+            <div class="rating">
+              <span class="stars">${starsStr}</span>
+              <span class="rating-num">${(r.rating || 5).toFixed(1)}</span>
+            </div>
+            <h2 class="card-title">${r.name}</h2>
+            <div class="card-meta">
+              <span>${r.city || ''}</span>
+              <span class="dot"></span>
+              <span>${r.type || ''}</span>
+              ${r.price ? `<span class="dot"></span><span>${r.price}</span>` : ''}
+            </div>
+            <p class="card-excerpt">${r.review ? r.review.substring(0, 120) + (r.review.length > 120 ? '…' : '') : ''}</p>
+            <div class="card-tags">${tags}</div>
+          </div>
+          <div class="card-footer">
+            <div class="author">
+              <div class="avatar">JF</div>
+              <span class="author-name">Jong Foodie</span>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
+              <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
+            </div>
+          </div>
+        </div>`;
+    } catch(e) {
+      console.log('Featured review error:', e);
+    }
+  }
+  loadFeaturedReview();
 
   // Load all picks from Firestore on page load
   async function loadPicks() {
