@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Jong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --cream: #FAF7F2; --ink: #1A1208; --accent: #D4521A; --border: rgba(26,18,8,0.1); --muted: #8A7A66; --green: #2D5A3D; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+  .admin-nav { background: var(--ink); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .admin-nav h1 { font-family: 'Playfair Display', serif; color: #fff; font-size: 20px; }
+  .admin-nav span { color: var(--accent); font-size: 12px; font-weight: 500; }
+  .login-box { max-width: 400px; margin: 6rem auto; background: #fff; border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .login-box h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 0.5rem; }
+  .login-box p { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
+  .admin-panel { max-width: 700px; margin: 3rem auto; padding: 0 1rem; }
+  .admin-panel h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 0.5rem; }
+  .admin-panel p { color: var(--muted); font-size: 14px; margin-bottom: 2rem; }
+  .form-card { background: #fff; border-radius: 16px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
+  .form-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 1rem; }
+  .form-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .form-input { border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--cream); outline: none; transition: border-color 0.2s; width: 100%; }
+  .form-input:focus { border-color: var(--accent); }
+  select.form-input { cursor: pointer; }
+  textarea.form-input { resize: vertical; min-height: 100px; }
+  .star-select { display: flex; gap: 8px; font-size: 28px; cursor: pointer; }
+  .star-select span { color: #D4C4A8; transition: color 0.15s; }
+  .star-select span.lit { color: #C8901A; }
+  .btn-publish { background: var(--accent); color: #fff; border: none; padding: 14px 32px; border-radius: 12px; font-size: 15px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; width: 100%; transition: background 0.2s; }
+  .btn-publish:hover { background: #b8401a; }
+  .btn-publish:disabled { background: #ccc; cursor: not-allowed; }
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 999; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .published-list { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border); }
+  .published-list h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .pub-item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+  .pub-item:last-child { border-bottom: none; }
+  .pub-name { font-weight: 500; font-size: 14px; }
+  .pub-meta { font-size: 12px; color: var(--muted); }
+  .btn-delete { background: none; border: 1px solid #e0ccc8; color: #D4521A; padding: 4px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .back-link { color: var(--accent); text-decoration: none; font-size: 13px; }
+  .photo-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--cream); position: relative; }
+  .photo-upload-area:hover { border-color: var(--accent); background: #FFF8F5; }
+  .photo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .photo-upload-area .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .photo-upload-area p { font-size: 13px; color: var(--muted); }
+  .photo-upload-area strong { font-size: 14px; color: var(--ink); display: block; margin-bottom: 4px; }
+  .photo-preview { margin-top: 1rem; border-radius: 12px; overflow: hidden; display: none; border: 2px solid var(--accent); position: relative; }
+  .photo-preview img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px; display: block; }
+  .photo-preview .photo-name { font-size: 12px; color: var(--muted); margin-top: 6px; padding: 0 4px 6px; }
+  .photo-preview .photo-badge { position: absolute; top: 10px; right: 10px; background: rgba(26,18,8,0.7); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px); }
+  .photo-preview .btn-remove-photo { position: absolute; top: 10px; left: 10px; background: rgba(212,82,26,0.9); color: #fff; border: none; border-radius: 20px; font-size: 11px; padding: 4px 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .upload-progress { display: none; margin-top: 0.75rem; background: #eee; border-radius: 100px; height: 6px; overflow: hidden; }
+  .upload-progress-bar { height: 100%; background: var(--accent); border-radius: 100px; width: 0%; transition: width 0.3s; }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+
+  .newsletter-banner { display:none; background: linear-gradient(135deg, #1A1208, #2D1F0E); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(212,82,26,0.3); }
+  .newsletter-banner h3 { font-family: 'Playfair Display', serif; color: #fff; font-size: 18px; margin-bottom: 0.4rem; }
+  .newsletter-banner p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 1rem; }
+  .newsletter-banner .review-preview { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; }
+  .btn-newsletter { background: #D4521A; color: #fff; border: none; padding: 11px 24px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-right: 0.5rem; }
+  .btn-newsletter:hover { background: #b8401a; }
+  .btn-dismiss { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 11px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+</style>
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Jong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+</div>
+
+<div class="admin-nav">
+  <h1>Jong Foodie <span>ADMIN</span></h1>
+  <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
+</div>
+
+<!-- LOGIN -->
+<div id="loginBox" class="login-box">
+  <h2>Admin Access</h2>
+  <p>This page is only for Jong Foodie. Enter the admin password to continue.</p>
+  <div class="form-group">
+    <label class="form-label">Password</label>
+    <input class="form-input" type="password" id="adminPassword" placeholder="Enter admin password..." onkeydown="if(event.key==='Enter')checkPassword()">
+  </div>
+  <button class="btn-publish" onclick="checkPassword()">Enter Admin Panel</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="admin-panel" style="display:none;">
+
+
+  <!-- NEWSLETTER BANNER — shown after publishing a review -->
+  <div id="newsletterBanner" class="newsletter-banner">
+    <h3>📧 Send Newsletter?</h3>
+    <p>A new review was just published. Let your subscribers know!</p>
+    <div class="review-preview" id="newsletterPreview">—</div>
+    <button class="btn-newsletter" onclick="openMailchimp()">Open Mailchimp → Send Campaign</button>
+    <button class="btn-dismiss" onclick="dismissNewsletter()">Dismiss</button>
+  </div>
+
+  <!-- LIVE COUNTER DASHBOARD -->
+  <div id="liveDashboard" style="margin-bottom:2rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍽️ Food Reviews</p>
+        <p id="cntFood" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🏨 Hotel Reviews</p>
+        <p id="cntHotel" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A3A5C;line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">👥 Members</p>
+        <p id="cntUsers" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">📌 Community Picks</p>
+        <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">—</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:0.75rem 1.25rem;border:1px solid var(--border);">
+      <span id="lastRefresh" style="font-size:12px;color:var(--muted);">Last updated: loading...</span>
+      <button onclick="loadLiveStats()" style="background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">↻ Refresh</button>
+    </div>
+  </div>
+
+  <h2>Add New Review</h2>
+  <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
+
+  <div class="form-card">
+    <h3>📍 Restaurant Details</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Restaurant Name *</label>
+        <input class="form-input" type="text" id="rName" placeholder="e.g. Izakaya Amsterdam">
+      </div>
+      <div class="form-group">
+        <label class="form-label">City / Location *</label>
+        <input class="form-input" type="text" id="rCity" placeholder="e.g. Amsterdam">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Food Type *</label>
+        <select class="form-input" id="rType">
+          <option value="">Select type...</option>
+          <option>Sushi / Japanese</option>
+          <option>Burgers</option>
+          <option>Cafe</option>
+          <option>Pastries</option>
+          <option>Sandwiches</option>
+          <option>Asian</option>
+          <option>Seafood</option>
+          <option>Steak</option>
+          <option>Street Food</option>
+          <option>Fine Dining</option>
+          <option>Fries</option>
+          <option>Vietnamese</option>
+          <option>Caribbean</option>
+          <option>Restaurant</option>
+          <option>Drinks</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (e.g. €15 or Luxury)</label>
+        <input class="form-input" type="text" id="rPrice" placeholder="e.g. €15 or Luxury">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Visit Date</label>
+        <input class="form-input" type="text" id="rDate" placeholder="e.g. Jan 2025">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Opening Hours</label>
+        <input class="form-input" type="text" id="rHours" placeholder="e.g. Daily 10:00–17:00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Latitude Y (from Google Maps) *</label>
+        <input class="form-input" type="text" id="rLat" placeholder="e.g. 52.3646">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Longitude X (from Google Maps) *</label>
+        <input class="form-input" type="text" id="rLng" placeholder="e.g. 4.8723">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>📸 Photo</h3>
+    <div class="form-group">
+      <label class="form-label">Restaurant Photo</label>
+      <div class="photo-upload-area" id="photoUploadArea">
+        <input type="file" id="rPhoto" accept="image/*" onchange="handlePhotoSelect(this)">
+        <div class="upload-icon">📷</div>
+        <strong>Klik om een foto te uploaden</strong>
+        <p>JPG, PNG of WebP · max 10MB</p>
+      </div>
+      <div class="photo-preview" id="photoPreview">
+        <button class="btn-remove-photo" onclick="removePhoto()">✕ Verwijder</button>
+        <img id="photoPreviewImg" src="" alt="Preview">
+        <span class="photo-badge" id="photoBadge">📷 Foto geselecteerd</span>
+        <p class="photo-name" id="photoPreviewName"></p>
+      </div>
+      <div class="upload-progress" id="uploadProgress">
+        <div class="upload-progress-bar" id="uploadProgressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>⭐ Rating & Review</h3>
+    <div class="form-group">
+      <label class="form-label">Star Rating *</label>
+      <div class="star-select" id="adminStars">
+        <span onclick="setAdminRating(1)">★</span>
+        <span onclick="setAdminRating(2)">★</span>
+        <span onclick="setAdminRating(3)">★</span>
+        <span onclick="setAdminRating(4)">★</span>
+        <span onclick="setAdminRating(5)">★</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Review Text *</label>
+      <textarea class="form-input" id="rReview" placeholder="Write your honest review here..." rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags (comma separated)</label>
+      <input class="form-input" type="text" id="rTags" placeholder="e.g. Must Try, Best Sushi, Luxury">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji Icon</label>
+      <input class="form-input" type="text" id="rEmoji" placeholder="e.g. 🍣 🍔 ☕ 🥐 🍜" value="🍽️">
+    </div>
+  </div>
+
+  <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
+
+  <!-- HOTEL REVIEW SECTION -->
+  <div style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A3A5C;">🏨 Add Hotel Review</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Hotel Name *</label>
+        <input class="form-input" type="text" id="hName" placeholder="e.g. Aman Tokyo" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">City / Country *</label>
+        <input class="form-input" type="text" id="hCity" placeholder="e.g. Tokyo, Japan" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="hPrice" placeholder="e.g. €200/night or Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="hDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Star Rating *</label>
+      <div id="hotelStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setHotelRating(1)">★</span>
+        <span onclick="setHotelRating(2)">★</span>
+        <span onclick="setHotelRating(3)">★</span>
+        <span onclick="setHotelRating(4)">★</span>
+        <span onclick="setHotelRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="hReview" rows="4" placeholder="Write your hotel review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="hTags" placeholder="e.g. Must Visit, Rooftop, Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="hEmoji" placeholder="🏨" value="🏨" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
+  </div>
+
+  <div style="margin-top:2rem;" id="publishedSection">
+    <div class="published-list">
+      <h3>📋 Published Reviews (from admin)</h3>
+      <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+
+  // Photo preview
+  window.handlePhotoSelect = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const preview = document.getElementById('photoPreview');
+    const img = document.getElementById('photoPreviewImg');
+    const name = document.getElementById('photoPreviewName');
+    const badge = document.getElementById('photoBadge');
+    img.src = URL.createObjectURL(file);
+    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    name.textContent = file.name + ' · ' + sizeMB + ' MB';
+    badge.textContent = '📷 ' + sizeMB + ' MB klaar om te uploaden';
+    preview.style.display = 'block';
+    document.getElementById('photoUploadArea').style.borderColor = 'var(--accent)';
+    document.getElementById('photoUploadArea').style.background = '#FFF8F5';
+  };
+
+  window.removePhoto = function() {
+    document.getElementById('rPhoto').value = '';
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoUploadArea').style.borderColor = '';
+    document.getElementById('photoUploadArea').style.background = '';
+  };
+
+  async function uploadPhoto(file, restaurantName) {
+    return new Promise((resolve, reject) => {
+      document.getElementById('uploadProgress').style.display = 'block';
+      document.getElementById('uploadProgressBar').style.width = '50%';
+
+      // Resize + convert to base64
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX = 1200;
+          let w = img.width, h = img.height;
+          if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+          if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const base64 = canvas.toDataURL('image/jpeg', 0.82);
+          document.getElementById('uploadProgressBar').style.width = '100%';
+          resolve(base64);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Admin password - change this to whatever you want!
+  const ADMIN_PASSWORD = "jongfoodie2025";
+
+  window.checkPassword = function() {
+    const pw = document.getElementById('adminPassword').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+    window.loadLiveStats();
+      loadPublished();
+    } else {
+      showToast('Wrong password! Try again.');
+      document.getElementById('adminPassword').value = '';
+    }
+  };
+
+  let adminRating = 0;
+  window.setAdminRating = function(n) {
+    adminRating = n;
+    document.querySelectorAll('#adminStars span').forEach((s, i) => s.classList.toggle('lit', i < n));
+  };
+
+  window.publishReview = async function() {
+    const name = document.getElementById('rName').value.trim();
+    const city = document.getElementById('rCity').value.trim();
+    const type = document.getElementById('rType').value;
+    const price = document.getElementById('rPrice').value.trim();
+    const date = document.getElementById('rDate').value.trim();
+    const hours = document.getElementById('rHours').value.trim();
+    const review = document.getElementById('rReview').value.trim();
+    const tags = document.getElementById('rTags').value.trim();
+    const emoji = document.getElementById('rEmoji').value.trim() || '🍽️';
+
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!city) { showToast('Please enter a city!'); return; }
+    if (!type) { showToast('Please select a food type!'); return; }
+    if (!adminRating) { showToast('Please select a star rating!'); return; }
+    if (!review) { showToast('Please write a review!'); return; }
+
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    btn.textContent = 'Publishing...';
+
+    try {
+      const lat = parseFloat(document.getElementById('rLat').value);
+      const lng = parseFloat(document.getElementById('rLng').value);
+
+      // Upload photo if selected
+      let photoUrl = '';
+      const photoFile = document.getElementById('rPhoto').files[0];
+      if (photoFile) {
+        btn.textContent = 'Uploading photo...';
+        try {
+          photoUrl = await uploadPhoto(photoFile, name);
+          console.log('✅ Photo uploaded, URL:', photoUrl);
+        } catch(uploadErr) {
+          console.error('❌ Upload failed:', uploadErr);
+          showToast('Foto upload mislukt: ' + uploadErr.message);
+          btn.disabled = false;
+          btn.textContent = '🚀 Publish Review';
+          return;
+        }
+        document.getElementById('uploadProgress').style.display = 'none';
+        document.getElementById('uploadProgressBar').style.width = '0%';
+      }
+
+      await addDoc(collection(db, 'reviews'), {
+        name, city, type, price, date, hours, review,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        emoji, rating: adminRating, lat, lng,
+        photoUrl,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+
+      // Also save to map spots
+      if (lat && lng) {
+        await addDoc(collection(db, 'mapspots'), {
+          name, address: city, hours, emoji, rating: adminRating,
+          lat, lng, type,
+          createdAt: serverTimestamp()
+        });
+      }
+
+      showToast('Review published! 🎉');
+      // Show newsletter banner
+      showNewsletterBanner({
+        name: document.getElementById('rName').value,
+        emoji: document.getElementById('rEmoji').value,
+        city: document.getElementById('rCity').value,
+        type: document.getElementById('rType').value,
+        price: document.getElementById('rPrice').value,
+        rating: adminRating,
+        review: document.getElementById('rReview').value,
+      });
+      // Clear form
+      document.getElementById('rName').value = '';
+      document.getElementById('rCity').value = '';
+      document.getElementById('rType').value = '';
+      document.getElementById('rPrice').value = '';
+      document.getElementById('rDate').value = '';
+      document.getElementById('rHours').value = '';
+      document.getElementById('rReview').value = '';
+      document.getElementById('rTags').value = '';
+      document.getElementById('rEmoji').value = '🍽️';
+      document.getElementById('rLat').value = '';
+      document.getElementById('rLng').value = '';
+      document.getElementById('rPhoto').value = '';
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('photoUploadArea').style.borderColor = '';
+      adminRating = 0;
+      document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
+      loadPublished();
+    } catch(e) {
+      showToast('Error publishing: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🚀 Publish Review';
+  };
+
+  async function loadPublished() {
+    const list = document.getElementById('publishedList');
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        list.innerHTML = '<p style="font-size:13px;color:var(--muted);">No reviews published yet.</p>';
+        return;
+      }
+      list.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const thumb = r.photoUrl ? `<img src="${r.photoUrl}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;margin-right:12px;flex-shrink:0;">` : `<div style="width:48px;height:48px;background:var(--cream);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-right:12px;flex-shrink:0;">${r.emoji}</div>`;
+        return `<div class="pub-item">
+          <div style="display:flex;align-items:center;">
+            ${thumb}
+            <div>
+              <p class="pub-name">${r.emoji} ${r.name}</p>
+              <p class="pub-meta">${r.city} · ${r.type} · ${stars} · ${r.date || 'No date'}</p>
+            </div>
+          </div>
+          <button class="btn-delete" onclick="deleteReview('${d.id}')">🗑 Delete</button>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      list.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load reviews.</p>';
+    }
+  }
+
+  window.deleteReview = async function(id) {
+    if (!confirm('Delete this review?')) return;
+    await deleteDoc(doc(db, 'reviews', id));
+    showToast('Review deleted!');
+    loadPublished();
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  let hotelRating = 0;
+  window.setHotelRating = function(n) {
+    hotelRating = n;
+    document.querySelectorAll('#hotelStarRating span').forEach((s,i) => {
+      s.style.color = i < n ? '#C8901A' : '#ddd';
+    });
+  };
+
+  window.publishHotelReview = async function() {
+    const name = document.getElementById('hName').value.trim();
+    const city = document.getElementById('hCity').value.trim();
+    const price = document.getElementById('hPrice').value.trim();
+    const date = document.getElementById('hDate').value.trim();
+    const review = document.getElementById('hReview').value.trim();
+    const tags = document.getElementById('hTags').value;
+    const emoji = document.getElementById('hEmoji').value || '🏨';
+    if (!name || !city || !review || !hotelRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'hotelreviews'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: hotelRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Hotel review published! 🏨');
+      document.getElementById('hName').value = '';
+      document.getElementById('hCity').value = '';
+      document.getElementById('hPrice').value = '';
+      document.getElementById('hDate').value = '';
+      document.getElementById('hReview').value = '';
+      document.getElementById('hTags').value = '';
+      document.getElementById('hEmoji').value = '🏨';
+      hotelRating = 0;
+      document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
+
+  // ── NEWSLETTER BANNER ────────────────────────────────────────────────────
+  var lastPublishedReview = null;
+
+  function showNewsletterBanner(reviewData) {
+    lastPublishedReview = reviewData;
+    const preview = document.getElementById('newsletterPreview');
+    preview.innerHTML = `
+      <strong>${reviewData.emoji || '🍽️'} ${reviewData.name}</strong><br>
+      📍 ${reviewData.city || ''} · ${reviewData.type || ''} · ${reviewData.price || ''}<br>
+      ${reviewData.rating ? '★'.repeat(Math.round(reviewData.rating)) + ' ' : ''}${reviewData.review ? '"' + reviewData.review.substring(0,120) + (reviewData.review.length > 120 ? '…' : '') + '"' : ''}
+    `;
+    document.getElementById('newsletterBanner').style.display = 'block';
+    document.getElementById('newsletterBanner').scrollIntoView({behavior:'smooth'});
+  }
+
+  function dismissNewsletter() {
+    document.getElementById('newsletterBanner').style.display = 'none';
+  }
+
+  function openMailchimp() {
+    if (!lastPublishedReview) return;
+    const r = lastPublishedReview;
+    const text = "ONDERWERP: Nieuwe review: " + r.name + " " + (r.emoji || "") + "\n\n" +
+      "Hoi!\n\n" +
+      "Er staat een nieuwe Jong Foodie review online!\n\n" +
+      (r.emoji || "🍽️") + " " + r.name + "\n" +
+      "📍 " + (r.city || "") + "\n" +
+      "⭐ " + ("★".repeat(Math.round(r.rating || 5))) + "\n" +
+      (r.price ? "💰 " + r.price + "\n" : "") +
+      "\n" + (r.review || "") + "\n\n" +
+      "👉 https://www.jongfoodie.com/reviews.html\n\n" +
+      "— Merdan, Jong Foodie";
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("✅ Tekst gekopieerd! Open Mailchimp en plak de tekst.");
+    }).catch(() => {
+      window.prompt("Kopieer deze tekst:", text);
+    });
+    const a = document.createElement("a");
+    a.href = "https://us21.admin.mailchimp.com/campaigns/#";
+    a.target = "_blank";
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    document.getElementById("newsletterBanner").style.display = "none";
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // ── LIVE COUNTER ─────────────────────────────────────────────────────────
+  window.loadLiveStats = async function() {
+    try {
+      const [foodSnap, hotelSnap, usersSnap, picksSnap] = await Promise.all([
+        getDocs(collection(db, 'reviews')),
+        getDocs(collection(db, 'hotelreviews')),
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'picks'))
+      ]);
+      document.getElementById('cntFood').textContent  = foodSnap.size + 52;
+      document.getElementById('cntHotel').textContent = hotelSnap.size + 6;
+      document.getElementById('cntUsers').textContent = usersSnap.size;
+      document.getElementById('cntPicks').textContent = picksSnap.size;
+      const now = new Date();
+      document.getElementById('lastRefresh').textContent =
+        'Last updated: ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    } catch(e) {
+      document.getElementById('lastRefresh').textContent = 'Could not load — check Firebase connection';
+    }
+  };
+  // Auto-refresh every 30 seconds when admin panel is visible
+  setInterval(() => {
+    if (document.getElementById('adminPanel').style.display !== 'none') {
+      window.loadLiveStats();
+    }
+  }, 30000);
+  // ─────────────────────────────────────────────────────────────────────────
+
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+</body>
+</html>
