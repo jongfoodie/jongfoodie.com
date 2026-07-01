@@ -524,7 +524,7 @@
     return filename;
   }
 
-  async function generateAllPages() {
+  window.generateAllPages = async function() {
     const btn = document.getElementById('generateAllBtn');
     const progress = document.getElementById('generateProgress');
     btn.disabled = true;
