@@ -322,6 +322,14 @@
   <div style="margin-top:2rem;" id="publishedSection">
     <div class="published-list">
       <h3>📋 Published Reviews (from admin)</h3>
+      <div style="margin-bottom:1rem;">
+        <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button onclick="setupGitHubToken()" style="background:#1A1208;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">⚙️ GitHub Token instellen</button>
+          <span id="tokenStatus" style="font-size:12px;color:var(--muted);"></span>
+        </div>
+        <button onclick="generateAllPages()" id="generateAllBtn" style="background:#2D5A3D;color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">🌐 Maak pagina's voor alle reviews</button>
+        <div id="generateProgress" style="display:none;margin-top:0.75rem;font-size:13px;color:var(--muted);"></div>
+      </div>
       <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
     </div>
   </div>
@@ -423,6 +431,125 @@
     document.querySelectorAll('#adminStars span').forEach((s, i) => s.classList.toggle('lit', i < n));
   };
 
+
+  // GitHub Page Generator
+  async function createGitHubPage(r) {
+    const GITHUB_TOKEN = localStorage.getItem('jf_github_token');
+    if (!GITHUB_TOKEN) throw new Error('Geen GitHub token ingesteld. Klik op "⚙️ GitHub Token instellen".');
+    const REPO = 'jongfoodie/jongfoodie.com';
+    const BRANCH = 'main';
+
+    const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const city = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const filename = `reviews/${slug}-${city}.html`;
+    const starsStr = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
+    const tagsHtml = (r.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+    const photoHtml = r.photoUrl ? `<div class="review-photo"><img src="${r.photoUrl}" alt="${r.name}" style="width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;"></div>` : '';
+
+    const pageHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${r.name} Review — Jong Foodie</title>
+<meta name="description" content="${r.review.substring(0, 155)}">
+<meta property="og:title" content="${r.name} — Jong Foodie Review">
+<meta property="og:description" content="${r.review.substring(0, 155)}">
+<meta property="og:image" content="${r.photoUrl || 'https://www.jongfoodie.com/icon-512.png'}">
+<meta property="og:url" content="https://www.jongfoodie.com/${filename}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.jongfoodie.com/${filename}">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Review",
+  "name": "${r.name}",
+  "reviewBody": "${r.review.replace(/"/g, '\"')}",
+  "reviewRating": { "@type": "Rating", "ratingValue": "${r.rating}", "bestRating": "5" },
+  "author": { "@type": "Person", "name": "Merdan Koc" },
+  "itemReviewed": { "@type": "Restaurant", "name": "${r.name}", "address": "${r.city}" }
+}
+</script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEEXFGGPNH');</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{--cream:#FAF7F2;--ink:#1A1208;--ink-soft:#3D2F1A;--muted:#8A7A66;--border:rgba(26,18,8,0.1);--accent:#D4521A;--warm-white:#FFFDF9;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.7;}
+  nav{position:sticky;top:0;z-index:100;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);text-decoration:none;}
+  .nav-logo span{color:var(--accent);}
+  .wrapper{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:2rem;}
+  .back:hover{color:var(--accent);}
+  .rating{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;}
+  .stars{color:#C8901A;font-size:22px;}
+  .rating-num{font-size:16px;font-weight:600;color:var(--ink);}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);margin-bottom:0.5rem;}
+  .meta{color:var(--muted);font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}
+  .review-text{font-size:16px;line-height:1.8;color:var(--ink-soft);margin-bottom:2rem;}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}
+  .tag{background:#F0EBE3;color:var(--ink-soft);font-size:12px;padding:4px 12px;border-radius:20px;}
+  .hours{background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:var(--ink-soft);}
+  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;margin-top:1rem;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/index.html">Jong <span>Foodie</span></a>
+  <a href="/reviews.html" style="font-size:13px;color:var(--muted);text-decoration:none;">All Reviews</a>
+</nav>
+<div class="wrapper">
+  <a href="/reviews.html" class="back">← All Reviews</a>
+  ${photoHtml}
+  <div class="rating"><span class="stars">${starsStr}</span><span class="rating-num">${r.rating}.0</span></div>
+  <h1>${r.emoji} ${r.name}</h1>
+  <div class="meta">
+    <span>📍 ${r.city}</span>
+    <span>🍽️ ${r.type}</span>
+    ${r.price ? `<span>💰 ${r.price}</span>` : ''}
+    ${r.date ? `<span>📅 ${r.date}</span>` : ''}
+  </div>
+  <p class="review-text">${r.review}</p>
+  <div class="tags">${tagsHtml}</div>
+  ${r.hours ? `<div class="hours">🕐 ${r.hours}</div>` : ''}
+  <a href="/reviews.html" class="btn">← Meer reviews</a>
+</div>
+<footer style="background:#1A1208;color:#fff;padding:2rem;text-align:center;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.5);">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none;">Jong Foodie</a></p>
+</footer>
+</body>
+</html>`;
+
+    const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
+
+    // Check if file exists to get SHA
+    let sha = undefined;
+    try {
+      const check = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      if (check.ok) { const d = await check.json(); sha = d.sha; }
+    } catch(e) {}
+
+    const body = { message: `Add review: ${r.name}`, content: encoded, branch: BRANCH };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'GitHub API error');
+    }
+    return filename;
+  }
+
   window.publishReview = async function() {
     const name = document.getElementById('rName').value.trim();
     const city = document.getElementById('rCity').value.trim();
@@ -485,7 +612,15 @@
         });
       }
 
-      showToast('Review published! 🎉');
+      // Generate SEO page on GitHub
+      btn.textContent = 'Creating page...';
+      try {
+        const ghFile = await createGitHubPage({ name, city, type, price, date, hours, review, tags: tags.split(',').map(t=>t.trim()).filter(Boolean), emoji, rating: adminRating, photoUrl });
+        showToast('Review gepubliceerd + pagina live! 🎉');
+      } catch(ghErr) {
+        console.error('GitHub page error:', ghErr);
+        showToast('Review gepubliceerd! (pagina: ' + ghErr.message + ')');
+      }
       // Show newsletter banner
       showNewsletterBanner({
         name: document.getElementById('rName').value,
@@ -521,6 +656,85 @@
     btn.disabled = false;
     btn.textContent = '🚀 Publish Review';
   };
+
+
+
+  function setupGitHubToken() {
+    const current = localStorage.getItem('jf_github_token');
+    const token = prompt('Voer je GitHub token in (ghp_...):', current || '');
+    if (token && token.startsWith('ghp_')) {
+      localStorage.setItem('jf_github_token', token);
+      document.getElementById('tokenStatus').textContent = '✅ Token opgeslagen';
+      document.getElementById('tokenStatus').style.color = '#2D5A3D';
+    } else if (token !== null) {
+      alert('Ongeldige token. Moet beginnen met ghp_');
+    }
+  }
+
+  // Check token on load
+  window.addEventListener('load', () => {
+    const t = localStorage.getItem('jf_github_token');
+    const status = document.getElementById('tokenStatus');
+    if (status) {
+      if (t) { status.textContent = '✅ Token actief'; status.style.color = '#2D5A3D'; }
+      else { status.textContent = '⚠️ Geen token'; status.style.color = '#D4521A'; }
+    }
+  });
+
+  async function generateAllPages() {
+    const btn = document.getElementById('generateAllBtn');
+    const progress = document.getElementById('generateProgress');
+    btn.disabled = true;
+    btn.textContent = 'Bezig...';
+    progress.style.display = 'block';
+
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const total = snap.docs.length;
+      let done = 0;
+      let failed = 0;
+
+      progress.textContent = `0 / ${total} paginas aangemaakt...`;
+
+      for (const docSnap of snap.docs) {
+        const r = docSnap.data();
+        try {
+          await createGitHubPage({
+            name: r.name || '',
+            city: r.city || '',
+            type: r.type || '',
+            price: r.price || '',
+            date: r.date || '',
+            hours: r.hours || '',
+            review: r.review || '',
+            tags: r.tags || [],
+            emoji: r.emoji || '🍽️',
+            rating: r.rating || 5,
+            photoUrl: r.photoUrl || ''
+          });
+          done++;
+          progress.textContent = `✅ ${done} / ${total} paginas aangemaakt...`;
+          // Small delay to avoid GitHub rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch(e) {
+          failed++;
+          console.error('Failed for', r.name, e);
+          progress.textContent = `⚠️ ${done} / ${total} klaar, ${failed} mislukt... (${r.name})`;
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      progress.textContent = `🎉 Klaar! ${done} paginas live op jongfoodie.com/reviews/`;
+      showToast(`${done} paginas aangemaakt! 🎉`);
+    } catch(e) {
+      progress.textContent = '❌ Fout: ' + e.message;
+      showToast('Fout: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🌐 Maak paginas voor alle reviews';
+  }
 
   async function loadPublished() {
     const list = document.getElementById('publishedList');
