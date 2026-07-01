@@ -956,12 +956,39 @@
   <main>
     <!-- FEATURED -->
     <p class="section-label">Featured Review</p>
-    <div class="featured-card" id="featuredCard">
-      <div class="featured-img bg-cafe" style="font-size:72px;">⏳</div>
+    <div class="featured-card">
+      <div class="featured-img bg-cafe" style="font-size:72px;">☕</div>
       <div class="featured-body">
         <div>
-          <div class="rating"><span class="stars" style="color:#ccc;">★★★★★</span></div>
-          <h2 class="card-title" style="color:#ccc;">Laden...</h2>
+          <div class="rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-num">5.0</span>
+          </div>
+          <h2 class="card-title">The Coffee</h2>
+          <div class="card-meta">
+            <span>Amsterdam</span>
+            <span class="dot"></span>
+            <span>Drinks</span>
+            <span class="dot"></span>
+            <span>€</span>
+          </div>
+          <p class="card-excerpt">Must-try in Amsterdam: strawberry matcha + a fresh cookie.</p>
+          <div class="card-tags">
+            <span class="card-tag">Must Try</span>
+            <span class="card-tag">Coffee</span>
+            <span class="card-tag">Amsterdam</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="author">
+            <div class="avatar">JF</div>
+            <span class="author-name">Jong Foodie</span>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
+            <button class="icon-btn" title="Save" onclick="toggleSave(this, 'The Coffee')">🔖</button>
+            <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1152,7 +1179,7 @@
       <div class="user-bio">Food explorer · KL based</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">—</div>
+          <div class="user-stat-num" id="statReviews">52</div>
           <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
         </div>
         <div class="user-stat">
@@ -1613,60 +1640,29 @@
   let currentUser = null;
 
   // Load live hero stats
-  // Show fallback stats immediately
-  if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '53';
-  if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '52';
-  if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
-
   async function loadHeroStats() {
     try {
-      const usersSnap = await getDocs(collection(db, 'users'));
+      // Reviews = food reviews + hotel reviews
+      const [reviewsSnap, hotelSnap, usersSnap] = await Promise.all([
+        getDocs(collection(db, 'reviews')),
+        getDocs(collection(db, 'hotelreviews')),
+        getDocs(collection(db, 'users'))
+      ]);
+      const totalReviews = reviewsSnap.size + hotelSnap.size;
+      const totalRestaurants = reviewsSnap.size;
       const totalMembers = usersSnap.size;
+
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
+      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
       if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
     } catch(e) {
       console.log('Hero stats error:', e);
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '58';
+      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '51';
+      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
     }
   }
   loadHeroStats();
-
-  // Load featured review (newest from Firebase)
-  async function loadFeaturedReview() {
-    try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      if (snap.empty) return;
-      const r = snap.docs[0].data();
-      const card = document.getElementById('featuredCard') || document.querySelector('.featured-card');
-      if (!card) return;
-      const stars = Math.round(r.rating || 5);
-      const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
-      const tags = (r.tags || []).slice(0, 3).map(t => '<span class="card-tag">' + t + '</span>').join('');
-      const imgHtml = r.photoUrl
-        ? '<div class="featured-img" style="background:url(' + JSON.stringify(r.photoUrl) + ') center/cover no-repeat;"></div>'
-        : '<div class="featured-img bg-cafe" style="font-size:72px;">' + (r.emoji || '🍽️') + '</div>';
-      card.innerHTML = imgHtml + '<div class="featured-body"><div><div class="rating"><span class="stars">' + starsStr + '</span><span class="rating-num">' + (r.rating||5).toFixed(1) + '</span></div><h2 class="card-title">' + (r.name||'') + '</h2><div class="card-meta"><span>' + (r.city||'') + '</span><span class="dot"></span><span>' + (r.type||'') + '</span>' + (r.price ? '<span class="dot"></span><span>' + r.price + '</span>' : '') + '</div><p class="card-excerpt">' + (r.review||'').substring(0,120) + '</p><div class="card-tags">' + tags + '</div></div><div class="card-footer"><div class="author"><div class="avatar">JF</div><span class="author-name">Jong Foodie</span></div><div class="card-actions"><button class="icon-btn" onclick="toggleLike(this)">♡</button><button class="icon-btn" onclick="showToast('Link copied!')">↗</button></div></div></div>';
-    } catch(e) { console.log('Featured error:', e); }
-  }
-  loadFeaturedReview();
-
-  // Load trending from Firebase
-  async function loadTrending() {
-    try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      if (snap.empty) return;
-      const list = document.querySelector('.trending-list');
-      if (!list) return;
-      const items = snap.docs.slice(0, 3);
-      const nums = ['01','02','03'];
-      list.innerHTML = items.map((doc, i) => {
-        const r = doc.data();
-        const stars = '★'.repeat(Math.round(r.rating||5));
-        return '<div class="trending-item"><span class="trending-num">' + nums[i] + '</span><span class="trending-emoji">' + (r.emoji||'🍽️') + '</span><div class="trending-info"><p class="trending-title">' + (r.name||'') + '</p><p class="trending-sub">' + stars + ' ' + (r.rating||5).toFixed(1) + ' · ' + (r.city||'') + '</p></div></div>';
-      }).join('');
-    } catch(e) { console.log('Trending error:', e); }
-  }
-  loadTrending();
 
   // Load all picks from Firestore on page load
   async function loadPicks() {
