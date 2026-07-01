@@ -440,88 +440,80 @@
     const BRANCH = 'main';
 
     const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const city = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const starsStr = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
-    const tagsHtml = (r.tags || []).map(t => '<span class="tag">' + t + '</span>').join('');
-    const photoHtml = r.photoUrl ? '<div class="review-photo"><img src="' + r.photoUrl + '" alt="' + r.name + '" style="width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;"></div>' : '';
-    const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     const citySlug = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const filename = 'reviews/' + slug + '-' + citySlug + '.html';
-    const reviewShort = r.review.substring(0, 155);
-    const priceHtml = r.price ? '<span>💰 ' + r.price + '</span>' : '';
-    const dateHtml = r.date ? '<span>📅 ' + r.date + '</span>' : '';
-    const hoursHtml = r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '';
+    const starsHtml = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
+    const tagsHtml = (r.tags || []).map(function(t) { return '<span class=\"tag\">' + t + '</span>'; }).join('');
+    const photoHtml = r.photoUrl ? '<img src=\"' + r.photoUrl + '\" style=\"width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;\">' : '';
+    const reviewShort = (r.review || '').substring(0, 155).replace(/"/g, '');
+    const nameSafe = (r.name || '').replace(/"/g, '');
 
-    const pageHtml = '<!DOCTYPE html>\n'
-      + '<html lang="en">\n<head>\n'
-      + '<meta charset="UTF-8">\n'
-      + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-      + '<title>' + r.name + ' Review — Jong Foodie</title>\n'
-      + '<meta name="description" content="' + reviewShort + '">\n'
-      + '<meta property="og:title" content="' + r.name + ' — Jong Foodie Review">\n'
-      + '<meta property="og:description" content="' + reviewShort + '">\n'
-      + '<meta property="og:image" content="' + (r.photoUrl || 'https://www.jongfoodie.com/icon-512.png') + '">\n'
-      + '<meta property="og:url" content="https://www.jongfoodie.com/' + filename + '">\n'
-      + '<meta name="twitter:card" content="summary_large_image">\n'
-      + '<link rel="canonical" href="https://www.jongfoodie.com/' + filename + '">\n'
-      + '<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>\n'
-      + '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</script>\n'
-      + '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">\n'
-      + '<style>\n'
-      + '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}\n'
-      + ':root{--cream:#FAF7F2;--ink:#1A1208;--ink-soft:#3D2F1A;--muted:#8A7A66;--border:rgba(26,18,8,0.1);--accent:#D4521A;--warm-white:#FFFDF9;}\n'
-      + 'body{font-family:"DM Sans",sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.7;}\n'
-      + 'nav{position:sticky;top:0;z-index:100;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}\n'
-      + '.nav-logo{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--ink);text-decoration:none;}\n'
-      + '.nav-logo span{color:var(--accent);}\n'
-      + '.wrapper{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}\n'
-      + '.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:2rem;}\n'
-      + '.back:hover{color:var(--accent);}\n'
-      + '.rating{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;}\n'
-      + '.stars{color:#C8901A;font-size:22px;}\n'
-      + '.rating-num{font-size:16px;font-weight:600;color:var(--ink);}\n'
-      + 'h1{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);margin-bottom:0.5rem;}\n'
-      + '.meta{color:var(--muted);font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}\n'
-      + '.review-text{font-size:16px;line-height:1.8;color:var(--ink-soft);margin-bottom:2rem;}\n'
-      + '.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}\n'
-      + '.tag{background:#F0EBE3;color:var(--ink-soft);font-size:12px;padding:4px 12px;border-radius:20px;}\n'
-      + '.hours{background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:var(--ink-soft);}\n'
-      + '.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;margin-top:1rem;}\n'
-      + '</style>\n</head>\n<body>\n'
-      + '<nav><a class="nav-logo" href="/index.html">Jong <span>Foodie</span></a>'
-      + '<a href="/reviews.html" style="font-size:13px;color:var(--muted);text-decoration:none;">All Reviews</a></nav>\n'
-      + '<div class="wrapper">\n'
-      + '<a href="/reviews.html" class="back">← All Reviews</a>\n'
-      + photoHtml
-      + '<div class="rating"><span class="stars">' + starsStr + '</span><span class="rating-num">' + r.rating + '.0</span></div>\n'
-      + '<h1>' + r.emoji + ' ' + r.name + '</h1>\n'
-      + '<div class="meta"><span>📍 ' + r.city + '</span><span>🍽️ ' + r.type + '</span>' + priceHtml + dateHtml + '</div>\n'
-      + '<p class="review-text">' + r.review + '</p>\n'
-      + '<div class="tags">' + tagsHtml + '</div>\n'
-      + hoursHtml
-      + '<a href="/reviews.html" class="btn">← Meer reviews</a>\n'
-      + '</div>\n'
-      + '<footer style="background:#1A1208;color:#fff;padding:2rem;text-align:center;">'
-      + '<p style="font-size:13px;color:rgba(255,255,255,0.5);">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none;">Jong Foodie</a></p>'
-      + '</footer>\n</body>\n</html>';
+    const lines = [
+      '<!DOCTYPE html>',
+      '<html lang="en"><head>',
+      '<meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '<title>' + nameSafe + ' Review — Jong Foodie</title>',
+      '<meta name="description" content="' + reviewShort + '">',
+      '<meta property="og:title" content="' + nameSafe + ' — Jong Foodie">',
+      '<meta property="og:image" content="' + (r.photoUrl || 'https://www.jongfoodie.com/icon-512.png') + '">',
+      '<meta property="og:url" content="https://www.jongfoodie.com/' + filename + '">',
+      '<link rel="canonical" href="https://www.jongfoodie.com/' + filename + '">',
+      '<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>',
+      '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</script>',
+      '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">',
+      '<style>',
+      '*{box-sizing:border-box;margin:0;padding:0;}',
+      'body{font-family:DM Sans,sans-serif;background:#FAF7F2;color:#1A1208;font-size:15px;line-height:1.7;}',
+      'nav{position:sticky;top:0;z-index:100;background:#FFFDF9;border-bottom:1px solid rgba(26,18,8,0.1);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}',
+      '.logo{font-family:Playfair Display,serif;font-size:22px;font-weight:700;color:#1A1208;text-decoration:none;}',
+      '.logo span{color:#D4521A;}',
+      '.wrap{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}',
+      '.back{display:inline-flex;align-items:center;gap:6px;color:#8A7A66;text-decoration:none;font-size:13px;margin-bottom:2rem;}',
+      '.stars{color:#C8901A;font-size:22px;}',
+      'h1{font-family:Playfair Display,serif;font-size:2.5rem;margin-bottom:0.5rem;}',
+      '.meta{color:#8A7A66;font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}',
+      '.review-text{font-size:16px;line-height:1.8;color:#3D2F1A;margin-bottom:2rem;}',
+      '.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}',
+      '.tag{background:#F0EBE3;color:#3D2F1A;font-size:12px;padding:4px 12px;border-radius:20px;}',
+      '.hours{background:#FFFDF9;border:1px solid rgba(26,18,8,0.1);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:#3D2F1A;}',
+      '.btn{display:inline-block;background:#D4521A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;}',
+      'footer{background:#1A1208;color:#fff;padding:2rem;text-align:center;}',
+      '</style></head><body>',
+      '<nav><a class="logo" href="/index.html">Jong <span>Foodie</span></a><a href="/reviews.html" style="font-size:13px;color:#8A7A66;text-decoration:none;">All Reviews</a></nav>',
+      '<div class="wrap">',
+      '<a href="/reviews.html" class="back">← All Reviews</a>',
+      photoHtml,
+      '<div style="margin-bottom:0.75rem"><span class="stars">' + starsHtml + '</span> <strong>' + r.rating + '</strong></div>',
+      '<h1>' + (r.emoji || '') + ' ' + (r.name || '') + '</h1>',
+      '<div class="meta"><span>📍 ' + (r.city || '') + '</span><span>🍽️ ' + (r.type || '') + '</span>' + (r.price ? '<span>💰 ' + r.price + '</span>' : '') + (r.date ? '<span>📅 ' + r.date + '</span>' : '') + '</div>',
+      '<p class="review-text">' + (r.review || '') + '</p>',
+      '<div class="tags">' + tagsHtml + '</div>',
+      r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '',
+      '<a href="/reviews.html" class="btn">← Meer reviews</a>',
+      '</div>',
+      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none">Jong Foodie</a></p></footer>',
+      '</body></html>'
+    ];
 
-        const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
+    const pageHtml = lines.join('\n');
+    const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
 
     // Check if file exists to get SHA
     let sha = undefined;
     try {
-      const check = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
-        headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+      const check = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
+        headers: { Authorization: 'token ' + GITHUB_TOKEN, Accept: 'application/vnd.github.v3+json' }
       });
       if (check.ok) { const d = await check.json(); sha = d.sha; }
     } catch(e) {}
 
-    const body = { message: `Add review: ${r.name}`, content: encoded, branch: BRANCH };
+    const body = { message: 'Add review: ' + r.name, content: encoded, branch: BRANCH };
     if (sha) body.sha = sha;
 
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filename}`, {
+    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
       method: 'PUT',
-      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      headers: { Authorization: 'token ' + GITHUB_TOKEN, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
 
@@ -531,137 +523,6 @@
     }
     return filename;
   }
-
-  window.publishReview = async function() {
-    const name = document.getElementById('rName').value.trim();
-    const city = document.getElementById('rCity').value.trim();
-    const type = document.getElementById('rType').value;
-    const price = document.getElementById('rPrice').value.trim();
-    const date = document.getElementById('rDate').value.trim();
-    const hours = document.getElementById('rHours').value.trim();
-    const review = document.getElementById('rReview').value.trim();
-    const tags = document.getElementById('rTags').value.trim();
-    const emoji = document.getElementById('rEmoji').value.trim() || '🍽️';
-
-    if (!name) { showToast('Please enter a restaurant name!'); return; }
-    if (!city) { showToast('Please enter a city!'); return; }
-    if (!type) { showToast('Please select a food type!'); return; }
-    if (!adminRating) { showToast('Please select a star rating!'); return; }
-    if (!review) { showToast('Please write a review!'); return; }
-
-    const btn = document.getElementById('publishBtn');
-    btn.disabled = true;
-    btn.textContent = 'Publishing...';
-
-    try {
-      const lat = parseFloat(document.getElementById('rLat').value);
-      const lng = parseFloat(document.getElementById('rLng').value);
-
-      // Upload photo if selected
-      let photoUrl = '';
-      const photoFile = document.getElementById('rPhoto').files[0];
-      if (photoFile) {
-        btn.textContent = 'Uploading photo...';
-        try {
-          photoUrl = await uploadPhoto(photoFile, name);
-          console.log('✅ Photo uploaded, URL:', photoUrl);
-        } catch(uploadErr) {
-          console.error('❌ Upload failed:', uploadErr);
-          showToast('Foto upload mislukt: ' + uploadErr.message);
-          btn.disabled = false;
-          btn.textContent = '🚀 Publish Review';
-          return;
-        }
-        document.getElementById('uploadProgress').style.display = 'none';
-        document.getElementById('uploadProgressBar').style.width = '0%';
-      }
-
-      await addDoc(collection(db, 'reviews'), {
-        name, city, type, price, date, hours, review,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-        emoji, rating: adminRating, lat, lng,
-        photoUrl,
-        createdAt: serverTimestamp(),
-        author: 'Jong Foodie'
-      });
-
-      // Also save to map spots
-      if (lat && lng) {
-        await addDoc(collection(db, 'mapspots'), {
-          name, address: city, hours, emoji, rating: adminRating,
-          lat, lng, type,
-          createdAt: serverTimestamp()
-        });
-      }
-
-      // Generate SEO page on GitHub
-      btn.textContent = 'Creating page...';
-      try {
-        const ghFile = await createGitHubPage({ name, city, type, price, date, hours, review, tags: tags.split(',').map(t=>t.trim()).filter(Boolean), emoji, rating: adminRating, photoUrl });
-        showToast('Review gepubliceerd + pagina live! 🎉');
-      } catch(ghErr) {
-        console.error('GitHub page error:', ghErr);
-        showToast('Review gepubliceerd! (pagina: ' + ghErr.message + ')');
-      }
-      // Show newsletter banner
-      showNewsletterBanner({
-        name: document.getElementById('rName').value,
-        emoji: document.getElementById('rEmoji').value,
-        city: document.getElementById('rCity').value,
-        type: document.getElementById('rType').value,
-        price: document.getElementById('rPrice').value,
-        rating: adminRating,
-        review: document.getElementById('rReview').value,
-      });
-      // Clear form
-      document.getElementById('rName').value = '';
-      document.getElementById('rCity').value = '';
-      document.getElementById('rType').value = '';
-      document.getElementById('rPrice').value = '';
-      document.getElementById('rDate').value = '';
-      document.getElementById('rHours').value = '';
-      document.getElementById('rReview').value = '';
-      document.getElementById('rTags').value = '';
-      document.getElementById('rEmoji').value = '🍽️';
-      document.getElementById('rLat').value = '';
-      document.getElementById('rLng').value = '';
-      document.getElementById('rPhoto').value = '';
-      document.getElementById('photoPreview').style.display = 'none';
-      document.getElementById('photoUploadArea').style.borderColor = '';
-      adminRating = 0;
-      document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
-      loadPublished();
-    } catch(e) {
-      showToast('Error publishing: ' + e.message);
-    }
-
-    btn.disabled = false;
-    btn.textContent = '🚀 Publish Review';
-  };
-
-
-
-  function setupGitHubToken() {
-    const current = localStorage.getItem('jf_github_token');
-    const token = prompt('Voer je GitHub token in (ghp_...):', current || '');
-    if (token && token.startsWith('ghp_')) {
-      localStorage.setItem('jf_github_token', token);
-      document.getElementById('tokenStatus').textContent = '✅ Token opgeslagen';
-      document.getElementById('tokenStatus').style.color = '#2D5A3D';
-    } else if (token !== null) {
-      alert('Ongeldige token. Moet beginnen met ghp_');
-    }
-  }
-
-  // Check token on load
-  window.addEventListener('load', () => {
-    const t = localStorage.getItem('jf_github_token');
-    const status = document.getElementById('tokenStatus');
-    if (status) {
-      if (t) { status.textContent = '✅ Token actief'; status.style.color = '#2D5A3D'; }
-      else { status.textContent = '⚠️ Geen token'; status.style.color = '#D4521A'; }
-    }
-  });
 
   async function generateAllPages() {
     const btn = document.getElementById('generateAllBtn');
