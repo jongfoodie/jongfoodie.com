@@ -1613,20 +1613,15 @@
   let currentUser = null;
 
   // Load live hero stats
+  // Show fallback stats immediately
+  if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '53';
+  if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '52';
+  if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
+
   async function loadHeroStats() {
     try {
-      // Reviews = food reviews + hotel reviews
-      const [reviewsSnap, hotelSnap, usersSnap] = await Promise.all([
-        getDocs(collection(db, 'reviews')),
-        getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'users'))
-      ]);
-      const totalReviews = reviewsSnap.size + hotelSnap.size;
-      const totalRestaurants = reviewsSnap.size;
+      const usersSnap = await getDocs(collection(db, 'users'));
       const totalMembers = usersSnap.size;
-
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = totalRestaurants;
       if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
     } catch(e) {
       console.log('Hero stats error:', e);
