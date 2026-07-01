@@ -441,89 +441,71 @@
 
     const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     const city = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const filename = `reviews/${slug}-${city}.html`;
     const starsStr = '★'.repeat(Math.round(r.rating)) + '☆'.repeat(5 - Math.round(r.rating));
-    const tagsHtml = (r.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-    const photoHtml = r.photoUrl ? `<div class="review-photo"><img src="${r.photoUrl}" alt="${r.name}" style="width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;"></div>` : '';
+    const tagsHtml = (r.tags || []).map(t => '<span class="tag">' + t + '</span>').join('');
+    const photoHtml = r.photoUrl ? '<div class="review-photo"><img src="' + r.photoUrl + '" alt="' + r.name + '" style="width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;"></div>' : '';
+    const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const citySlug = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const filename = 'reviews/' + slug + '-' + citySlug + '.html';
+    const reviewShort = r.review.substring(0, 155);
+    const priceHtml = r.price ? '<span>💰 ' + r.price + '</span>' : '';
+    const dateHtml = r.date ? '<span>📅 ' + r.date + '</span>' : '';
+    const hoursHtml = r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '';
 
-    const pageHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${r.name} Review — Jong Foodie</title>
-<meta name="description" content="${r.review.substring(0, 155)}">
-<meta property="og:title" content="${r.name} — Jong Foodie Review">
-<meta property="og:description" content="${r.review.substring(0, 155)}">
-<meta property="og:image" content="${r.photoUrl || 'https://www.jongfoodie.com/icon-512.png'}">
-<meta property="og:url" content="https://www.jongfoodie.com/${filename}">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://www.jongfoodie.com/${filename}">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Review",
-  "name": "${r.name}",
-  "reviewBody": "${r.review.replace(/"/g, '\"')}",
-  "reviewRating": { "@type": "Rating", "ratingValue": "${r.rating}", "bestRating": "5" },
-  "author": { "@type": "Person", "name": "Merdan Koc" },
-  "itemReviewed": { "@type": "Restaurant", "name": "${r.name}", "address": "${r.city}" }
-}
-</script>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PEEXFGGPNH');</script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  :root{--cream:#FAF7F2;--ink:#1A1208;--ink-soft:#3D2F1A;--muted:#8A7A66;--border:rgba(26,18,8,0.1);--accent:#D4521A;--warm-white:#FFFDF9;}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.7;}
-  nav{position:sticky;top:0;z-index:100;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}
-  .nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);text-decoration:none;}
-  .nav-logo span{color:var(--accent);}
-  .wrapper{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}
-  .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:2rem;}
-  .back:hover{color:var(--accent);}
-  .rating{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;}
-  .stars{color:#C8901A;font-size:22px;}
-  .rating-num{font-size:16px;font-weight:600;color:var(--ink);}
-  h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);margin-bottom:0.5rem;}
-  .meta{color:var(--muted);font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}
-  .review-text{font-size:16px;line-height:1.8;color:var(--ink-soft);margin-bottom:2rem;}
-  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}
-  .tag{background:#F0EBE3;color:var(--ink-soft);font-size:12px;padding:4px 12px;border-radius:20px;}
-  .hours{background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:var(--ink-soft);}
-  .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;margin-top:1rem;}
-</style>
-</head>
-<body>
-<nav>
-  <a class="nav-logo" href="/index.html">Jong <span>Foodie</span></a>
-  <a href="/reviews.html" style="font-size:13px;color:var(--muted);text-decoration:none;">All Reviews</a>
-</nav>
-<div class="wrapper">
-  <a href="/reviews.html" class="back">← All Reviews</a>
-  ${photoHtml}
-  <div class="rating"><span class="stars">${starsStr}</span><span class="rating-num">${r.rating}.0</span></div>
-  <h1>${r.emoji} ${r.name}</h1>
-  <div class="meta">
-    <span>📍 ${r.city}</span>
-    <span>🍽️ ${r.type}</span>
-    ${r.price ? `<span>💰 ${r.price}</span>` : ''}
-    ${r.date ? `<span>📅 ${r.date}</span>` : ''}
-  </div>
-  <p class="review-text">${r.review}</p>
-  <div class="tags">${tagsHtml}</div>
-  ${r.hours ? `<div class="hours">🕐 ${r.hours}</div>` : ''}
-  <a href="/reviews.html" class="btn">← Meer reviews</a>
-</div>
-<footer style="background:#1A1208;color:#fff;padding:2rem;text-align:center;">
-  <p style="font-size:13px;color:rgba(255,255,255,0.5);">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none;">Jong Foodie</a></p>
-</footer>
-</body>
-</html>`;
+    const pageHtml = '<!DOCTYPE html>\n'
+      + '<html lang="en">\n<head>\n'
+      + '<meta charset="UTF-8">\n'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+      + '<title>' + r.name + ' Review — Jong Foodie</title>\n'
+      + '<meta name="description" content="' + reviewShort + '">\n'
+      + '<meta property="og:title" content="' + r.name + ' — Jong Foodie Review">\n'
+      + '<meta property="og:description" content="' + reviewShort + '">\n'
+      + '<meta property="og:image" content="' + (r.photoUrl || 'https://www.jongfoodie.com/icon-512.png') + '">\n'
+      + '<meta property="og:url" content="https://www.jongfoodie.com/' + filename + '">\n'
+      + '<meta name="twitter:card" content="summary_large_image">\n'
+      + '<link rel="canonical" href="https://www.jongfoodie.com/' + filename + '">\n'
+      + '<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>\n'
+      + '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</script>\n'
+      + '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">\n'
+      + '<style>\n'
+      + '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}\n'
+      + ':root{--cream:#FAF7F2;--ink:#1A1208;--ink-soft:#3D2F1A;--muted:#8A7A66;--border:rgba(26,18,8,0.1);--accent:#D4521A;--warm-white:#FFFDF9;}\n'
+      + 'body{font-family:"DM Sans",sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.7;}\n'
+      + 'nav{position:sticky;top:0;z-index:100;background:var(--warm-white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}\n'
+      + '.nav-logo{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--ink);text-decoration:none;}\n'
+      + '.nav-logo span{color:var(--accent);}\n'
+      + '.wrapper{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}\n'
+      + '.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;margin-bottom:2rem;}\n'
+      + '.back:hover{color:var(--accent);}\n'
+      + '.rating{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;}\n'
+      + '.stars{color:#C8901A;font-size:22px;}\n'
+      + '.rating-num{font-size:16px;font-weight:600;color:var(--ink);}\n'
+      + 'h1{font-family:"Playfair Display",serif;font-size:clamp(2rem,5vw,3rem);margin-bottom:0.5rem;}\n'
+      + '.meta{color:var(--muted);font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}\n'
+      + '.review-text{font-size:16px;line-height:1.8;color:var(--ink-soft);margin-bottom:2rem;}\n'
+      + '.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}\n'
+      + '.tag{background:#F0EBE3;color:var(--ink-soft);font-size:12px;padding:4px 12px;border-radius:20px;}\n'
+      + '.hours{background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:var(--ink-soft);}\n'
+      + '.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;margin-top:1rem;}\n'
+      + '</style>\n</head>\n<body>\n'
+      + '<nav><a class="nav-logo" href="/index.html">Jong <span>Foodie</span></a>'
+      + '<a href="/reviews.html" style="font-size:13px;color:var(--muted);text-decoration:none;">All Reviews</a></nav>\n'
+      + '<div class="wrapper">\n'
+      + '<a href="/reviews.html" class="back">← All Reviews</a>\n'
+      + photoHtml
+      + '<div class="rating"><span class="stars">' + starsStr + '</span><span class="rating-num">' + r.rating + '.0</span></div>\n'
+      + '<h1>' + r.emoji + ' ' + r.name + '</h1>\n'
+      + '<div class="meta"><span>📍 ' + r.city + '</span><span>🍽️ ' + r.type + '</span>' + priceHtml + dateHtml + '</div>\n'
+      + '<p class="review-text">' + r.review + '</p>\n'
+      + '<div class="tags">' + tagsHtml + '</div>\n'
+      + hoursHtml
+      + '<a href="/reviews.html" class="btn">← Meer reviews</a>\n'
+      + '</div>\n'
+      + '<footer style="background:#1A1208;color:#fff;padding:2rem;text-align:center;">'
+      + '<p style="font-size:13px;color:rgba(255,255,255,0.5);">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none;">Jong Foodie</a></p>'
+      + '</footer>\n</body>\n</html>';
 
-    const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
+        const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
 
     // Check if file exists to get SHA
     let sha = undefined;
