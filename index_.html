@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Real eats, honest reviews. Jong Foodie covers the best restaurants, hotels and hidden gems — from Amsterdam to the world.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jong Foodie">
+  <meta property="og:title" content="Jong Foodie — Honest Restaurant & Hotel Reviews">
+  <meta property="og:description" content="Real eats, honest reviews. Discover the best restaurants and hotels from Amsterdam to the world.">
+  <meta property="og:url" content="https://www.jongfoodie.com/">
+  <meta property="og:image" content="https://www.jongfoodie.com/icon-512.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jong Foodie — Honest Restaurant & Hotel Reviews">
+  <meta name="twitter:description" content="Real eats, honest reviews. Discover the best restaurants and hotels from Amsterdam to the world.">
+  <link rel="canonical" href="https://www.jongfoodie.com/">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Jong Foodie",
+  "url": "https://www.jongfoodie.com",
+  "description": "Real eats, honest reviews. Jong Foodie covers the best restaurants, hotels and hidden gems — from Amsterdam to the world.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.jongfoodie.com/reviews.html?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<title>Jong Foodie — Honest Restaurant & Hotel Reviews Worldwide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1208;
+    --ink-soft: #3D2F1A;
+    --muted: #8A7A66;
+    --border: rgba(26,18,8,0.1);
+    --accent: #D4521A;
+    --accent-light: #F5E8E0;
+    --accent-pale: #FBF3EF;
+    --gold: #C8901A;
+    --green: #2D5A3D;
+    --green-light: #E8F2EC;
+    --tag-bg: #F0EBE3;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  .btn-fill {
+    background: var(--accent);
+    border: none;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .btn-fill:hover { background: #b8401a; }
+
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    color: #fff;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,82,26,0.3) 0%, transparent 70%);
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: #F5C896;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.6);
+    font-size: 16px;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    position: relative;
+  }
+  .hero-search {
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 40px;
+    overflow: hidden;
+    padding: 6px 6px 6px 20px;
+    position: relative;
+  }
+  .hero-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: transparent;
+  }
+  .hero-search button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+    position: relative;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
+
+  /* TAGS BAR */
+  .tags-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tags-bar::-webkit-scrollbar { display: none; }
+  .tag-pill {
+    background: var(--tag-bg);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .tag-pill:hover, .tag-pill.active {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  /* LAYOUT */
+  .site-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 3rem;
+  }
+
+  /* FEATURED */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    display: inline-block;
+  }
+
+  .featured-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 2.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .featured-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(26,18,8,0.1);
+  }
+  .featured-img {
+    height: 320px;
+    background: linear-gradient(135deg, #C8520A 0%, #8B3A1A 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .featured-img::after {
+    content: 'FEATURED';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .featured-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+  }
+  .stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+  .rating-num { font-weight: 500; font-size: 14px; }
+  .rating-count { color: var(--muted); font-size: 13px; }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+  }
+  .card-meta {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); display: inline-block; }
+  .card-excerpt {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+  .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .card-tag {
+    background: var(--accent-pale);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .author-name { font-size: 13px; font-weight: 500; }
+  .card-actions { display: flex; gap: 0.5rem; align-items: center; }
+  .icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-pale); }
+  .icon-btn.saved { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* GRID CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  .mini-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26,18,8,0.08);
+  }
+  .mini-img {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+  }
+  .mini-body { padding: 1rem; }
+  .mini-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+  .mini-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .mini-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-save {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+    padding: 0;
+  }
+  .mini-save:hover { color: var(--accent); }
+  .mini-save.saved { color: var(--accent); }
+
+  /* LOAD MORE */
+  .load-more {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 10px 28px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .sidebar-widget {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+  .widget-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    margin-bottom: 1rem;
+  }
+
+  /* USER PANEL */
+  .user-panel {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .user-panel .widget-title { color: #fff; }
+  .user-avatar-lg {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+  .user-name { font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; }
+  .user-bio { font-size: 12px; color: rgba(255,255,255,0.55); margin: 4px 0 1rem; }
+  .user-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .user-stat {
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 4px;
+  }
+  .user-stat-num { font-size: 18px; font-weight: 700; color: #fff; }
+  .user-stat-lbl { font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 0.05em; }
+
+  .user-actions { display: flex; gap: 0.5rem; }
+  .btn-white {
+    background: #fff;
+    color: var(--ink);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+    transition: background 0.2s;
+  }
+  .btn-white:hover { background: #f0ece6; }
+  .btn-ghost-white {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: #fff;
+    transition: border-color 0.2s;
+  }
+  .btn-ghost-white:hover { border-color: rgba(255,255,255,0.6); }
+
+  /* TRENDING */
+  .trending-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .trending-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .trending-item:last-child { border-bottom: none; }
+  .trending-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-light);
+    min-width: 28px;
+  }
+  .trending-emoji { font-size: 28px; line-height: 1; }
+  .trending-info { flex: 1; }
+  .trending-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .trending-sub { font-size: 11px; color: var(--muted); }
+
+  /* RATING WIDGET */
+  .rate-form { display: flex; flex-direction: column; gap: 0.75rem; }
+  .rate-stars-input { display: flex; gap: 4px; font-size: 24px; cursor: pointer; }
+  .rate-star { color: #D4C4A8; transition: color 0.15s; }
+  .rate-star.lit { color: var(--gold); }
+  .rate-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--cream);
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .rate-input:focus { border-color: var(--accent); }
+  .btn-accent {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    align-self: flex-start;
+    transition: background 0.2s;
+  }
+  .btn-accent:hover { background: #b8401a; }
+
+  /* NEWSLETTER */
+  .newsletter-widget {
+    background: var(--green-light);
+    border: 1px solid rgba(45,90,61,0.15);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .newsletter-widget .widget-title { color: var(--green); }
+  .newsletter-widget p { font-size: 13px; color: var(--green); opacity: 0.8; margin-bottom: 1rem; }
+  .nl-input-row { display: flex; gap: 0.5rem; }
+  .nl-input {
+    flex: 1;
+    border: 1px solid rgba(45,90,61,0.3);
+    background: #fff;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    color: var(--ink);
+  }
+  .btn-green {
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  /* SAVED POSTS */
+  .saved-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .saved-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .saved-item:hover { background: var(--cream); }
+  .saved-emoji { font-size: 22px; }
+  .saved-title { font-size: 13px; font-weight: 500; line-height: 1.3; flex: 1; }
+  .saved-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  .saved-remove:hover { color: var(--accent); }
+
+  /* SETTINGS */
+  #settingsBg { position: fixed; inset: 0; background: rgba(26,18,8,0.5); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  #settingsBg.open { opacity: 1; pointer-events: all; }
+
+  /* TOAST NOTIFICATION */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* MODAL */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,0.5);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-bg.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    transform: scale(0.95);
+    transition: transform 0.25s;
+  }
+  .modal-bg.open .modal { transform: scale(1); }
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 0.25rem;
+  }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .modal-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .modal-tab {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 500;
+  }
+  .modal-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .modal-field { margin-bottom: 1rem; }
+  .modal-label { font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-bottom: 4px; display: block; }
+  .modal-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--muted);
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+  .modal { position: relative; }
+
+  /* FOOD EMOJI COLOR BACKGROUNDS */
+  .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
+  .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
+  .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
+  .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-sushi { background: linear-gradient(135deg, #C83030, #8B1A1A); }
+  .bg-tacos { background: linear-gradient(135deg, #60871A, #3D5A0A); }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .featured-card, .mini-card { animation: fadeIn 0.4s ease both; }
+  .mini-card:nth-child(2) { animation-delay: 0.05s; }
+  .mini-card:nth-child(3) { animation-delay: 0.1s; }
+  .mini-card:nth-child(4) { animation-delay: 0.15s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .site-wrapper { grid-template-columns: 1fr; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; }
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-img { height: 200px; }
+  }
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 6px;
+    font-size: 22px;
+    color: var(--ink);
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none !important; }
+    .hamburger { display: flex !important; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .sidebar { grid-template-columns: 1fr; }
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .site-wrapper { padding: 2rem 1rem; }
+  }
+
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    gap: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+</style>
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.defer=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Jong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-PEEXFGGPNH");
+</script>
+</head>
+<body>
+
+<!-- MOBILE NAV MENU -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Jong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Jong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="guides.html">Guides</a></li>
+    <li><a href="videos.html">Videos</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button id="navLogin" class="btn-ghost" onclick="openModal('login')">Log in</button>
+    <button id="navSignup" class="btn-fill" onclick="openModal('signup')">Join free</button>
+    <button id="navLogout" class="btn-ghost" onclick="doLogout()" style="display:none;">Log out</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Real eats. Honest reviews.</p>
+  <h1>Discover your next<br><em>favourite bite</em></h1>
+  <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks — all in one place.</p>
+  <div class="hero-search">
+    <input type="text" id="heroSearchInput" placeholder="Search cafes, burgers, pastries…" onkeydown="if(event.key==='Enter')doHeroSearch()" />
+    <button onclick="doHeroSearch()">Search</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num" id="heroReviews">59</div>
+      <div class="stat-label">Reviews</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="heroRestaurants">53</div>
+      <div class="stat-label">Restaurants</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="heroMembers">1</div>
+      <div class="stat-label">Members</div>
+    </div>
+  </div>
+</section>
+
+<!-- TAGS BAR -->
+<div class="tags-bar">
+  <button class="tag-pill active" onclick="setTag(this)">All</button>
+  <button class="tag-pill" onclick="setTag(this)">☕ Cafes</button>
+  <button class="tag-pill" onclick="setTag(this)">🍔 Burgers</button>
+  <button class="tag-pill" onclick="setTag(this)">🥐 Pastries</button>
+  <button class="tag-pill" onclick="setTag(this)">🥪 Sandwiches</button>
+  <button class="tag-pill" onclick="setTag(this)">🍣 Sushi</button>
+  <button class="tag-pill" onclick="setTag(this)">🌮 Street Food</button>
+  <button class="tag-pill" onclick="setTag(this)">🍰 Desserts</button>
+  <button class="tag-pill" onclick="setTag(this)">💰 Budget</button>
+  <button class="tag-pill" onclick="setTag(this)">✨ Fine Dining</button>
+</div>
+
+<!-- MAIN -->
+<div class="site-wrapper">
+  <main>
+    <!-- FEATURED -->
+    <p class="section-label">Featured Review</p>
+    <div class="featured-card" id="featuredCard">
+      <div class="featured-img bg-cafe" style="font-size:72px;">🍔</div>
+      <div class="featured-body">
+        <div>
+          <div class="rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-num">4.0</span>
+          </div>
+          <h2 class="card-title">BUNS</h2>
+          <div class="card-meta">
+            <span>Amsterdam</span>
+            <span class="dot"></span>
+            <span>Restaurant</span>
+            <span class="dot"></span>
+            <span>€13,50</span>
+          </div>
+          <p class="card-excerpt">The fried chicken burger is a winner — super crispy, well-seasoned and packed into a soft bun. Great late-night spot, friendly service.</p>
+          <div class="card-tags">
+            <span class="card-tag">Great value</span>
+            <span class="card-tag">Must try</span>
+            <span class="card-tag">Fried chicken burger</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="author">
+            <div class="avatar">JF</div>
+            <span class="author-name">Jong Foodie</span>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
+            <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <p class="section-label">Latest Reviews</p>
+    <div class="cards-grid">
+      <div class="mini-card">
+        <div class="mini-img bg-cafe">☕</div>
+        <div class="mini-body">
+          <p class="mini-meta">The Coffee · Drinks · Amsterdam</p>
+          <h3 class="mini-title">The Coffee</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Must-try in Amsterdam: strawberry matcha + a fresh cookie.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★★ 5.0</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <a href="reviews.html" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'The Coffee')">🔖</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-ramen">🌿</div>
+        <div class="mini-body">
+          <p class="mini-meta">Secret Garden · Restaurant · Amsterdam</p>
+          <h3 class="mini-title">SECRET GARDEN</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Must-tries: the Tuna Tartare, Beef Tenderloin and Rib-Eye (400g).</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★☆ 4.0</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <a href="reviews.html" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Secret Garden')">🔖</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-sushi">🍣</div>
+        <div class="mini-body">
+          <p class="mini-meta">Izakaya Amsterdam · Sushi / Japanese · Luxury</p>
+          <h3 class="mini-title">Izakaya Amsterdam</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">The best sushi in the Netherlands. The food is ridiculously fresh, the rolls are next-level creative.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★★ 5.0</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <a href="reviews.html" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Izakaya Amsterdam')">🔖</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <div class="mini-img bg-burger">🍽️</div>
+        <div class="mini-body">
+          <p class="mini-meta">Mondi Amsterdam · Restaurant · €74</p>
+          <h3 class="mini-title">Mondi Amsterdam Nieuw-West</h3>
+          <p style="font-size:13px;color:var(--ink-soft);">Super cozy and inviting, top-notch service, and everything was absolutely delicious.</p>
+          <div class="mini-footer">
+            <span class="mini-rating">★★★★★ 5.0</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <a href="reviews.html" class="mini-read">Read review →</a>
+              <button class="mini-save" onclick="toggleMiniSave(this, 'Mondi Amsterdam')">🔖</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more">
+      <button class="btn-outline" onclick="loadMoreReviews()">Load more reviews</button>
+    </div>
+
+    <!-- JONG HOTEL BANNER -->
+    <div style="background:linear-gradient(135deg,#1A3A5C,#2D6A9F);border-radius:16px;padding:2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#A8C4E0;margin-bottom:0.5rem;">New</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:0.5rem;">Jong <em style="color:#F5C896;">Hotel</em> is here!</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.7);">Hotel reviews + share your favourite stays around the world.</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="text" id="hotelSearchHome" placeholder="Search hotels..." onkeydown="if(event.key==='Enter')doHotelSearch()" style="border:none;border-radius:20px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:200px;">
+        <button onclick="doHotelSearch()" style="background:#F5C896;color:#1A3A5C;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Search Hotels →</button>
+      </div>
+    </div>
+
+    <!-- COMMUNITY QUICK RATE -->
+    <p class="section-label">Rate a Place</p>
+
+    <!-- NOT LOGGED IN -->
+    <div id="rateLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 2rem; text-align:center;">
+      <div style="font-size:40px;margin-bottom:0.75rem;">⭐</div>
+      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Visited somewhere recently?</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to share a review with the community!</p>
+      <button class="btn-fill" onclick="openModal('login')">Log in to review</button>
+      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
+      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
+    </div>
+
+    <!-- LOGGED IN FORM -->
+    <div id="rateForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; display:none;">
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Have you visited one of Jong Foodie's reviewed restaurants? Share your own rating!</p>
+      <div class="rate-form">
+        <select id="rateRestaurant" class="rate-input" style="height:40px;cursor:pointer;">
+          <option value="">Select a restaurant from Jong Foodie's reviews…</option>
+          <option>Izakaya Amsterdam</option>
+          <option>Mondi Amsterdam Nieuw-West</option>
+          <option>Maijard Smashburgers</option>
+          <option>BISOUS Amsterdam</option>
+          <option>Fort Negen Sandwich Bar</option>
+          <option>Leauf Amsterdam</option>
+          <option>et CLAIRE</option>
+          <option>Cafe Nobuya</option>
+          <option>Brioche Amsterdam</option>
+          <option>Le Smash Amsterdam</option>
+          <option>Fabel Friet — Oude Hoogstraat</option>
+          <option>Fabel Friet — Nieuwendijk</option>
+          <option>Fabel Friet — Damrak</option>
+          <option>Fabel Friet — Runstraat</option>
+          <option>Fabel Friet — Leidsestraat</option>
+          <option>Sjefietshé</option>
+          <option>Bonnie Amsterdam</option>
+          <option>Banh Mi Deli Amsterdam</option>
+          <option>Chun Cafe Amsterdam</option>
+          <option>Zorlu Center Istanbul</option>
+          <option>360 Istanbul</option>
+        </select>
+        <div class="rate-stars-input" id="starRating">
+          <span class="rate-star" onclick="setRating(1)">★</span>
+          <span class="rate-star" onclick="setRating(2)">★</span>
+          <span class="rate-star" onclick="setRating(3)">★</span>
+          <span class="rate-star" onclick="setRating(4)">★</span>
+          <span class="rate-star" onclick="setRating(5)">★</span>
+        </div>
+        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think? Did you agree with Jong Foodie's review?…"></textarea>
+        <button class="btn-accent" onclick="submitReview()">Submit My Rating</button>
+      </div>
+    </div>
+
+    <!-- COMMUNITY PICKS -->
+    <p class="section-label">Community Picks</p>
+
+    <!-- NOT LOGGED IN -->
+    <div id="picksLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; text-align:center;">
+      <div style="font-size:40px;margin-bottom:0.75rem;">🍴</div>
+      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Know a great place?</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to recommend a restaurant to the community!</p>
+      <button class="btn-fill" onclick="openModal('login')">Log in to recommend</button>
+      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
+      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
+    </div>
+
+    <!-- LOGGED IN FORM -->
+    <div id="picksForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; display:none;">
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1.25rem;">Know a great place that hasn't been reviewed yet? Share it with the community!</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <input id="pickName" class="rate-input" type="text" placeholder="Restaurant name..." style="height:40px;resize:none;margin:0;">
+          <input id="pickLocation" class="rate-input" type="text" placeholder="Location / City..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <select id="pickType" class="rate-input" style="height:40px;margin:0;cursor:pointer;">
+            <option value="">Food type...</option>
+            <option>Burgers</option><option>Cafe</option><option>Asian</option>
+            <option>Pastries</option><option>Sushi</option><option>Street Food</option>
+            <option>Desserts</option><option>Restaurant</option><option>Sandwiches</option>
+            <option>Fine Dining</option>
+            <option>Drinks</option>
+          </select>
+          <input id="pickPrice" class="rate-input" type="text" placeholder="Price range e.g. 10-15..." style="height:40px;resize:none;margin:0;">
+        </div>
+        <textarea id="pickWhy" class="rate-input" rows="2" placeholder="Why do you recommend it?..." style="margin:0;"></textarea>
+        <button class="btn-accent" onclick="submitPick()" style="align-self:flex-start;">Recommend this Place</button>
+      </div>
+    </div>
+    <div id="picksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;"></div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <!-- USER PANEL -->
+    <div class="user-panel">
+      <div class="user-avatar-lg">JF</div>
+      <div class="user-name">Jong Foodie</div>
+      <div class="user-bio">Food explorer · Amsterdam</div>
+      <div class="user-stats-row">
+        <div class="user-stat">
+          <div class="user-stat-num" id="statReviews">53</div>
+          <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-num" id="statSaved">6</div>
+          <div class="user-stat-lbl" id="statSavedLbl">Hotels</div>
+        </div>
+        <div class="user-stat">
+          <div class="user-stat-num" id="statFollowers">3</div>
+          <div class="user-stat-lbl" id="statFollowersLbl">Followers</div>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="btn-white" onclick="openMyProfile()">My Profile</button>
+        <button class="btn-ghost-white" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin settings are locked!');}else{openSettings();}">⚙ Settings</button>
+      </div>
+    </div>
+
+    <!-- SAVED LIST -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Saved Places</p>
+      <div class="saved-list" id="savedList">
+        <div class="saved-item"><span class="saved-emoji">🍜</span><span class="saved-title">Cafe Nobuya</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+        <div class="saved-item"><span class="saved-emoji">🥐</span><span class="saved-title">Pistachio Cube — Maison</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+        <div class="saved-item"><span class="saved-emoji">🍔</span><span class="saved-title">Le Smash Burgers</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
+      </div>
+    </div>
+
+    <!-- TRENDING -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Trending This Week</p>
+      <div class="trending-list">
+        <div class="trending-item">
+          <span class="trending-num">01</span>
+          <span class="trending-emoji">🍜</span>
+          <div class="trending-info">
+            <p class="trending-title">Cafe Nobuya</p>
+            <p class="trending-sub">248 views · ★ 4.9</p>
+          </div>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">02</span>
+          <span class="trending-emoji">🍔</span>
+          <div class="trending-info">
+            <p class="trending-title">Le Smash</p>
+            <p class="trending-sub">180 views · ★ 4.2</p>
+          </div>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">03</span>
+          <span class="trending-emoji">🥐</span>
+          <div class="trending-info">
+            <p class="trending-title">Pistachio Cube</p>
+            <p class="trending-sub">132 views · ★ 3.8</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter-widget">
+      <p class="widget-title">Weekly Bites</p>
+      <p>Get the best new reviews delivered to your inbox every Friday.</p>
+      <div class="nl-input-row">
+        <input class="nl-input" type="email" placeholder="your@email.com">
+        <button class="btn-green" onclick="showToast('Subscribed! See you Friday 🎉')">Subscribe</button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MY PROFILE MODAL -->
+<div class="modal-bg" id="myProfileBg" onclick="if(event.target===this)this.classList.remove('open')" style="z-index:250;">
+  <div class="modal" style="max-width:500px;">
+    <button class="modal-close" onclick="document.getElementById('myProfileBg').classList.remove('open')">✕</button>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+      <div id="myProfileAvatar" style="width:60px;height:60px;border-radius:50%;background:var(--accent);color:#fff;font-size:22px;font-weight:600;display:flex;align-items:center;justify-content:center;"></div>
+      <div>
+        <h2 id="myProfileName" style="font-family:'Playfair Display',serif;font-size:20px;"></h2>
+        <p id="myProfileSub" style="font-size:13px;color:var(--muted);">Food explorer · Amsterdam</p>
+      </div>
+    </div>
+    <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:500;">My Recommendations</p>
+    <div id="myProfilePicksList" style="max-height:300px;overflow-y:auto;"></div>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;">
+      <button class="btn-fill" style="flex:1;" onclick="if(currentUser&&currentUser.email==='jongfoodie@gmail.com'){showToast('Admin name is locked!');}else{document.getElementById('myProfileBg').classList.remove('open');openSettings();}">⚙ Change Display Name</button>
+      <button class="btn-ghost" style="flex:1;" onclick="window.location.href='community.html'">Go to Community →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-bg" id="settingsBg" onclick="closeSettings(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('settingsBg').classList.remove('open')">✕</button>
+    <h2>Profile Settings</h2>
+    <p class="modal-sub">Change your display name to stay private.</p>
+    <div class="modal-field">
+      <label class="modal-label">Display Name</label>
+      <input class="modal-input" id="displayNameInput" type="text" placeholder="Enter your display name...">
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:1rem;">This name is shown instead of your email. Others won't see your real name or email.</p>
+    <button class="btn-fill" style="width:100%;padding:11px;" onclick="saveDisplayName()">Save Display Name</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Welcome back</h2>
+    <p class="modal-sub">Join the foodie community or log in to your account.</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab(this,'login')">Log in</button>
+      <button class="modal-tab" onclick="switchTab(this,'signup')">Sign up</button>
+    </div>
+    <div id="loginForm">
+      <div class="modal-field">
+        <label class="modal-label">Email</label>
+        <input class="modal-input" type="email" placeholder="you@email.com">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Password</label>
+        <input class="modal-input" type="password" placeholder="••••••••">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-fill" style="width:100%;padding:11px;" onclick="doLogin()">Log in</button>
+      </div>
+    </div>
+    <div id="signupForm" style="display:none;">
+      <div class="modal-field">
+        <label class="modal-label">Name</label>
+        <input class="modal-input" type="text" placeholder="Your name">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Email</label>
+        <input class="modal-input" type="email" placeholder="you@email.com">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Password</label>
+        <input class="modal-input" type="password" placeholder="Create a password">
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:0.75rem;text-align:center;">📧 Check your spam/junk folder if you don't receive our email!</p>
+      <div class="modal-footer">
+        <button class="btn-fill" style="width:100%;padding:11px;" onclick="doSignup()">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function doHotelSearch() {
+    const q = document.getElementById('hotelSearchHome').value.trim();
+    if (!q) { window.location.href = 'hotel.html'; return; }
+    window.location.href = 'hotel.html?search=' + encodeURIComponent(q);
+  }
+
+  function doHeroSearch() {
+    const q = document.getElementById('heroSearchInput').value.trim();
+    if (!q) return;
+    const ql = q.toLowerCase(); if (ql.includes("hotel")) { window.location.href = "hotel.html?search=" + encodeURIComponent(q); } else { window.location.href = "reviews.html?search=" + encodeURIComponent(q); }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function toggleLike(btn) {
+    btn.classList.toggle('saved');
+    btn.textContent = btn.classList.contains('saved') ? '♥' : '♡';
+    showToast(btn.classList.contains('saved') ? 'Added to likes!' : 'Removed from likes');
+  }
+
+  function toggleSave(btn, name) {
+    btn.classList.toggle('saved');
+    if (btn.classList.contains('saved')) {
+      addToSavedList(name, '🍜');
+      showToast(`"${name}" saved!`);
+    } else {
+      showToast(`"${name}" removed from saves`);
+    }
+  }
+
+  function toggleMiniSave(btn, name) {
+    btn.classList.toggle('saved');
+    if (btn.classList.contains('saved')) {
+      const emoji = btn.closest('.mini-card').querySelector('.mini-img').textContent.trim();
+      addToSavedList(name, emoji);
+      showToast(`"${name}" saved!`);
+    } else {
+      showToast('Removed from saves');
+    }
+  }
+
+  function addToSavedList(name, emoji) {
+    const list = document.getElementById('savedList');
+    const item = document.createElement('div');
+    item.className = 'saved-item';
+    item.innerHTML = `<span class="saved-emoji">${emoji}</span><span class="saved-title">${name}</span><button class="saved-remove" onclick="removeSaved(this)">✕</button>`;
+    list.appendChild(item);
+  }
+
+  function removeSaved(btn) {
+    btn.closest('.saved-item').remove();
+    showToast('Removed from saved places');
+  }
+
+  function setTag(el) {
+    document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const tag = el.textContent.trim().toLowerCase().replace(/^[^\w]+/, '').trim();
+    const cards = document.querySelectorAll('.mini-card');
+    cards.forEach(card => {
+      const meta = card.querySelector('.mini-meta');
+      const title = card.querySelector('.mini-title');
+      const text = ((meta ? meta.textContent : '') + ' ' + (title ? title.textContent : '')).toLowerCase();
+      if (tag === 'all') { card.style.display = ''; }
+      else if (tag === 'cafes') { card.style.display = text.includes('the coffee') || text.includes('et claire') || text.includes('claire') || text.includes('cafe nobuya') || text.includes('nobuya') || text.includes('brioche') || text.includes('chun') || text.includes('pluk') || text.includes('salvo') || text.includes('met her at a bar') || text.includes('a.o.c') || text.includes('aoc') || text.includes('mauro') ? '' : 'none'; }
+      else if (tag === 'burgers') { card.style.display = text.includes('maijard') || text.includes('le smash') || text.includes('chun') || text.includes('bonnie') || text.includes('kid') || text.includes('beef chief') || text.includes('the goat') || text.includes('goat') || text.includes('in-n-out') || text.includes('innout') || text.includes('local store') || text.includes('blt') || text.includes('burger') || text.includes('smash') ? '' : 'none'; }
+      else if (tag === 'pastries') { card.style.display = text.includes('pastry') || text.includes('pastries') || text.includes('croissant') || text.includes('claire') || text.includes('brioche') || text.includes('salvo') ? '' : 'none'; }
+      else if (tag === 'sandwiches') { card.style.display = text.includes('sandwich') || text.includes('banh mi') || text.includes('bonnie') || text.includes('fort negen') || text.includes('croque') ? '' : 'none'; }
+      else if (tag === 'sushi') { card.style.display = text.includes('sushi') || text.includes('izakaya') || text.includes('japanese') ? '' : 'none'; }
+      else if (tag === 'street food') { card.style.display = text.includes('street') || text.includes('fries') || text.includes('friet') || text.includes('sjefietsh') || text.includes('fabel') ? '' : 'none'; }
+      else if (tag === 'desserts') { card.style.display = text.includes('dessert') || text.includes('donut') || text.includes('mochi') || text.includes('pistachio') || text.includes('bisous') ? '' : 'none'; }
+      else if (tag === 'budget') { card.style.display = text.includes('€15') || text.includes('€10') || text.includes('€12') || text.includes('$') && !text.includes('$$$') ? '' : 'none'; }
+      else if (tag === 'fine dining') { card.style.display = text.includes('luxury') || text.includes('$$$') || text.includes('mondi') || text.includes('izakaya') || text.includes('secret garden') || text.includes('cecconi') || text.includes('republic') || text.includes('a.o.c') ? '' : 'none'; }
+      else { card.style.display = text.includes(tag) ? '' : 'none'; }
+    });
+  }
+
+
+  let currentRating = 0;
+  function setRating(n) {
+    currentRating = n;
+    document.querySelectorAll('.rate-star').forEach((s, i) => s.classList.toggle('lit', i < n));
+  }
+
+  async function submitReview() {
+    const name = document.getElementById('rateRestaurant').value;
+    const review = document.getElementById('rateReview').value.trim();
+    if (!name) { showToast('Please select a restaurant!'); return; }
+    if (!currentRating) { showToast('Please select a star rating!'); return; }
+    if (!review) { showToast('Please write a short review!'); return; }
+    if (!currentUser) { showToast('Please log in first!'); return; }
+
+    const userName = currentUser.displayName || currentUser.email.split('@')[0];
+    const stars = '★'.repeat(currentRating) + '☆'.repeat(5-currentRating);
+
+    try {
+      // Save to Firestore as a community post
+      const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      await addDoc(collection(db, 'posts'), {
+        restaurant: name,
+        text: review,
+        rating: currentRating,
+        stars: stars,
+        userName: userName,
+        type: 'rating',
+        likes: 0,
+        createdAt: serverTimestamp()
+      });
+
+      document.getElementById('rateRestaurant').value = '';
+      document.getElementById('rateReview').value = '';
+      currentRating = 0;
+      document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
+      showToast('Review posted to Community! 🎉');
+    } catch(e) {
+      showToast('Could not save review. Try again!');
+      console.error(e);
+    }
+  }
+
+  function submitPick() {
+    const name = document.getElementById('pickName').value.trim();
+    const location = document.getElementById('pickLocation').value.trim();
+    const type = document.getElementById('pickType').value.trim();
+    const price = document.getElementById('pickPrice').value.trim();
+    const why = document.getElementById('pickWhy').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!why) { showToast('Please tell us why you recommend it!'); return; }
+    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
+    const emoji = typeEmojis[type] || '🍽️';
+    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    const card = document.createElement('div');
+    card.className = 'mini-card';
+    card.style.animation = 'fadeIn 0.4s ease both';
+    card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p><h3 class="mini-title">${name}</h3><p style="font-size:12px;color:var(--muted);">${location ? '📍 '+location : ''} ${type ? '· '+type : ''} ${price ? '· '+price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by you</span><button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button></div></div>`;
+    const grid = document.getElementById('picksGrid');
+    grid.insertBefore(card, grid.firstChild);
+    document.getElementById('pickName').value = '';
+    document.getElementById('pickLocation').value = '';
+    document.getElementById('pickType').value = '';
+    document.getElementById('pickPrice').value = '';
+    document.getElementById('pickWhy').value = '';
+    showToast('Thanks for the recommendation! 🎉');
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  
+  function openModal(tab) {
+    document.getElementById('modalBg').classList.add('open');
+    if (tab === 'signup') {
+      document.querySelectorAll('.modal-tab')[1].click();
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target === document.getElementById('modalBg')) closeModal();
+  }
+
+
+  const extraReviews = [
+    { emoji: '🍔', color: 'bg-burger', title: 'Maijard — Chicken Smash Burger', meta: 'Burgers · $$ · Oct 2024', text: 'Fresh veg, juicy patty, solid bun. The smash technique gives it that perfect crispy edge. Just needs a better sauce to reach the absolute top tier.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🍟', color: 'bg-burger', title: 'Fabel Friet — Parmesan Truffle Fries', meta: 'Fries · $ · Dec 2024 · 5 locaties', text: 'Perfectly crispy Dutch fries with freshly grated parmesan and homemade truffle mayo. Simple, fresh, and absolutely worth the queue. Open daily 11:00–21:00 at Oude Hoogstraat, Nieuwendijk, Damrak, Runstraat & Leidsestraat.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🐙', color: 'bg-ramen', title: 'Sjefietshé — Hotdoctopus', meta: 'Seafood · $$ · Nov 2024', text: 'The hotdoctopus dish is unlike anything else in Amsterdam. Creative, bold, and delicious. A hidden gem in De Pijp that deserves way more attention.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥗', color: 'bg-cafe', title: 'Leauf Amsterdam — Leauf du Chef', meta: 'Sandwiches · $$ · Dec 2024', text: 'Paris meets Jordaan. Michelin-star precision in a sandwich shop. The freshest ingredients, crispiest bread, and the most creative flavor combinations in Amsterdam.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🥐', color: 'bg-pastry', title: 'et CLAIRE — Pistachio Cube Croissant', meta: 'Pastries · $$ · Oct 2024', text: 'Beautiful cube shape and gorgeous pistachio cream. Eye-catching and Instagram-worthy but the price left me wanting more flavor for my money.', stars: '★★★☆☆', rating: '3.0' },
+    { emoji: '🍜', color: 'bg-ramen', title: 'Cafe Nobuya — Mochi Donuts', meta: 'Japanese Fusion · $$ · Nov 2024', text: 'The chewiest, most creative mochi donuts in Amsterdam. The gyudon beef sandwich hits every note — sweet, savoury, spicy, crunchy. An absolute must-visit.', stars: '★★★★★', rating: '5.0' },
+    { emoji: '🧀', color: 'bg-cafe', title: 'Brioche Amsterdam — Grilled Cheese', meta: 'Cafe · $$ · Sep 2024', text: 'High hopes, flat results. The grilled cheese lacked flavor and I could not even finish it. For this price they really need to step it up significantly.', stars: '★☆☆☆☆', rating: '1.0' },
+    { emoji: '🍔', color: 'bg-burger', title: 'Le Smash — Le Special with Extra Bacon', meta: 'Burgers · $$ · Oct 2024', text: 'Extra bacon, smash patty, secret sauce — this burger delivers on almost every front. One of the best smashburgers in De Pijp. Reasonably priced and always consistent.', stars: '★★★★½', rating: '4.8' },
+    { emoji: '🥩', color: 'bg-sushi', title: 'Zorlu Center — Steak Tater', meta: 'Steak · Istanbul · Aug 2024', text: 'Discovered this gem while in Istanbul. The steak tater with garlic sauce is phenomenal. Incredible quality at a fraction of Amsterdam prices.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥩', color: 'bg-ramen', title: '360 Istanbul — Steak & Live Music', meta: 'Steak · Istanbul · Aug 2024', text: 'Rooftop dining with a stunning view of Istanbul. The steak was excellent and the live music on Saturdays makes it a complete evening. Unforgettable experience.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🍽️', color: 'bg-pastry', title: 'Sjefietshé — Hotdoctopus', meta: 'Seafood · $$ · Sep 2024', text: 'Bold, creative, and unlike anything else in the city. The hotdoctopus is their signature dish for a reason. Small portions but huge flavors.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🫔', color: 'bg-pastry', title: 'Bonnie — Kimchi Croque', meta: 'Cafe · $$ · Nov 2024', text: 'The kimchi croque is addictive. The combination of melted cheese and spicy kimchi is genius. Open late — perfect for a night out snack in Amsterdam.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🥪', color: 'bg-cafe', title: 'Banh Mi Deli Amsterdam', meta: 'Vietnamese · $ · Oct 2024', text: 'Family-run gem on the Prinsengracht. The beef banh mi is fresh, flaky and absolutely delicious. Chef Vinh combines French culinary training with Vietnamese roots perfectly.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '🍔', color: 'bg-burger', title: 'Maijard Smashburgers — The Original', meta: 'Burgers · $$ · Jun 2024', text: 'Crowned Best Burger in the Netherlands by Burger Dudes for a reason. Locally sourced, double smashed, and served with their unique garlic mashed potatoes. A true Amsterdam icon.', stars: '★★★★½', rating: '4.5' },
+    { emoji: '🫔', color: 'bg-burger', title: 'Bonnie — Best Steak Sandwich', meta: 'Cafe · $$ · Dec 2024', text: 'The steak sandwich at Bonnie is genuinely one of the best in Amsterdam. Tender meat, perfect seasoning, and great value. A must on Amstelveenseweg.', stars: '★★★★☆', rating: '4.0' },
+    { emoji: '☕', color: 'bg-cafe', title: 'Chun Cafe — Bacon Egg & Cheese Toast', meta: 'Cafe · $$ · Jan 2025', text: 'Japanese-Korean minimalist cafe that nails the toast game. The matcha latte is the best in Amsterdam. Always a queue but always worth it. Daily staple material.', stars: '★★★★★', rating: '5.0' },
+  ];
+  let reviewsLoaded = 0;
+
+  function loadMoreReviews() {
+    const grid = document.querySelector('.cards-grid');
+    const toLoad = extraReviews.slice(reviewsLoaded, reviewsLoaded + 2);
+    if (toLoad.length === 0) { showToast('No more reviews to load!'); return; }
+    toLoad.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'mini-card';
+      card.style.animation = 'fadeIn 0.4s ease both';
+      card.innerHTML = `<div class="mini-img ${r.color}">${r.emoji}</div><div class="mini-body"><p class="mini-meta">${r.meta}</p><h3 class="mini-title">${r.title}</h3><p style="font-size:13px;color:var(--ink-soft);">${r.text}</p><div class="mini-footer"><span class="mini-rating">${r.stars} ${r.rating}</span><button class="mini-save" onclick="toggleMiniSave(this,'${r.title}')">🔖</button></div></div>`;
+      grid.appendChild(card);
+    });
+    reviewsLoaded += toLoad.length;
+    if (reviewsLoaded >= extraReviews.length) {
+      document.querySelector('.btn-outline').textContent = 'All reviews loaded!';
+      document.querySelector('.btn-outline').disabled = true;
+    }
+    showToast('Loaded more reviews! 🎉');
+  }
+
+  function openMyProfile() {
+    const name = document.querySelector('.user-name').textContent;
+    const initials = name.substring(0,2).toUpperCase();
+    document.getElementById('myProfileAvatar').textContent = initials;
+    document.getElementById('myProfileName').textContent = name;
+    document.getElementById('myProfileBg').classList.add('open');
+
+    const picksList = document.getElementById('myProfilePicksList');
+
+    // For Jong Foodie admin - show all website reviews and hotels
+    if (currentUser && currentUser.email === 'jongfoodie@gmail.com') {
+      const allReviews = [
+        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
+        { emoji: '🍣', name: 'Izakaya Amsterdam', meta: 'Amsterdam · Sushi / Japanese · Luxury', type: 'Review' },
+        { emoji: '🍽️', name: 'Mondi Amsterdam Nieuw-West', meta: 'Amsterdam · Caribbean · €74', type: 'Review' },
+        { emoji: '🍔', name: 'Maijard Smashburgers', meta: 'Amsterdam · Burgers', type: 'Review' },
+        { emoji: '🍗', name: 'BISOUS Amsterdam', meta: 'Amsterdam · Chicken', type: 'Review' },
+        { emoji: '🥪', name: 'Fort Negen Sandwich Bar', meta: 'Amsterdam · Sandwiches', type: 'Review' },
+        { emoji: '🥗', name: 'Leauf Amsterdam', meta: 'Amsterdam · Sandwiches', type: 'Review' },
+        { emoji: '🥐', name: 'et CLAIRE', meta: 'Amsterdam · Pastries', type: 'Review' },
+        { emoji: '🍜', name: 'Cafe Nobuya', meta: 'Amsterdam · Japanese Fusion', type: 'Review' },
+        { emoji: '🧀', name: 'Brioche Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🍔', name: 'Le Smash Amsterdam', meta: 'Amsterdam · Burgers', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet — Oude Hoogstraat', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet — Nieuwendijk', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet — Damrak', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet — Runstraat', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🍟', name: 'Fabel Friet — Leidsestraat', meta: 'Amsterdam · Fries', type: 'Review' },
+        { emoji: '🐙', name: 'Sjefietshé', meta: 'Amsterdam · Seafood', type: 'Review' },
+        { emoji: '🫔', name: 'Bonnie Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🥪', name: 'Banh Mi Deli Amsterdam', meta: 'Amsterdam · Vietnamese', type: 'Review' },
+        { emoji: '☕', name: 'Chun Cafe Amsterdam', meta: 'Amsterdam · Cafe', type: 'Review' },
+        { emoji: '🥩', name: 'Zorlu Center', meta: 'Istanbul · Steak', type: 'Review' },
+        { emoji: '🥩', name: '360 Istanbul', meta: 'Istanbul · Steak', type: 'Review' },
+        { emoji: '☕', name: 'The Coffee', meta: 'Amsterdam · Drinks', type: 'Review' },
+        { emoji: '🏛️', name: 'Hotel The Craftsmen', meta: 'Amsterdam · Boutique', type: 'Hotel' },
+        { emoji: '🌴', name: 'Kimpton De Witt', meta: 'Amsterdam · Luxury', type: 'Hotel' },
+        { emoji: '🏨', name: 'Hotel V Nesplein', meta: 'Amsterdam · Boutique', type: 'Hotel' },
+        { emoji: '🏰', name: 'Conservatorium Hotel', meta: 'Amsterdam · Luxury', type: 'Hotel' },
+      ];
+      picksList.innerHTML = allReviews.map(r => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="width:36px;height:36px;background:${r.type==='Hotel'?'#1A3A5C':'#5A3A0A'};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${r.emoji}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">${r.name}</div>
+            <div style="font-size:11px;color:var(--muted);">${r.meta}</div>
+          </div>
+          <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${r.type==='Hotel'?'#E8F0F8':'var(--accent-pale)'};color:${r.type==='Hotel'?'#1A3A5C':'var(--accent)'};">${r.type}</span>
+        </div>`).join('');
+      return;
+    }
+
+    // For regular users - load their picks from Firestore
+    picksList.innerHTML = '<p style="font-size:13px;color:var(--muted);">Loading your picks...</p>';
+    if (window.loadMyPicks) window.loadMyPicks(name, picksList);
+  }
+
+  function openSettings() {
+    const input = document.getElementById('displayNameInput');
+    input.value = document.querySelector('.user-name').textContent;
+    document.getElementById('settingsBg').classList.add('open');
+  }
+
+  function closeSettings(e) {
+    if (e.target === document.getElementById('settingsBg')) {
+      document.getElementById('settingsBg').classList.remove('open');
+    }
+  }
+
+  function switchTab(btn, tab) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    document.querySelector('.modal h2').textContent = tab === 'login' ? 'Welcome back' : 'Create an account';
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+
+  // Load live hero stats
+  // Show stats immediately
+  if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '59';
+  if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '53';
+  if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
+  if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '53';
+
+  async function loadHeroStats() {
+    try {
+      const [foodSnap, hotelSnap, usersSnap] = await Promise.all([
+        getDocs(collection(db, 'reviews')),
+        getDocs(collection(db, 'hotelreviews')),
+        getDocs(collection(db, 'users'))
+      ]);
+      const totalFood = foodSnap.size + 52;
+      const totalHotel = hotelSnap.size + 6;
+      const totalReviews = totalFood + totalHotel;
+      const totalMembers = usersSnap.size;
+      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
+      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = totalFood;
+      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
+      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = totalFood;
+    } catch(e) { console.log('Hero stats error:', e); }
+  }
+  loadHeroStats();
+
+  // Load newest review as featured
+  async function loadFeaturedReview() {
+    try {
+      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+      const r = snap.docs[0].data();
+      const card = document.querySelector('.featured-card');
+      if (!card) return;
+      const stars = Math.round(r.rating || 5);
+      const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+      const tags = (r.tags || []).slice(0, 3).map(t => '<span class="card-tag">' + t + '</span>').join('');
+      const imgHtml = r.photoUrl
+        ? '<div class="featured-img" style="background:url(' + JSON.stringify(r.photoUrl) + ') center/cover no-repeat;"></div>'
+        : '<div class="featured-img bg-cafe" style="font-size:72px;">' + (r.emoji || '🍽️') + '</div>';
+      card.innerHTML = imgHtml +
+        '<div class="featured-body"><div>' +
+        '<div class="rating"><span class="stars">' + starsStr + '</span><span class="rating-num">' + (r.rating||5).toFixed(1) + '</span></div>' +
+        '<h2 class="card-title">' + (r.name||'') + '</h2>' +
+        '<div class="card-meta"><span>' + (r.city||'') + '</span><span class="dot"></span><span>' + (r.type||'') + '</span>' + (r.price ? '<span class="dot"></span><span>' + r.price + '</span>' : '') + '</div>' +
+        '<p class="card-excerpt">' + (r.review||'').substring(0,120) + (r.review && r.review.length > 120 ? '…' : '') + '</p>' +
+        '<div class="card-tags">' + tags + '</div>' +
+        '</div><div class="card-footer"><div class="author"><div class="avatar">JF</div><span class="author-name">Jong Foodie</span></div>' +
+        '<div class="card-actions"><button class="icon-btn" onclick="toggleLike(this)">♡</button><button class="icon-btn" onclick="showToast('Link copied!')">↗</button></div></div></div>';
+    } catch(e) { console.log('Featured error:', e); }
+  }
+  loadFeaturedReview();
+
+  // Load all picks from Firestore on page load
+  async function loadPicks() {
+    const picksGrid = document.getElementById('picksGrid');
+    picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem;">Loading community picks...</p>';
+    try {
+      const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      picksGrid.innerHTML = '';
+      if (snapshot.empty) {
+        picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No picks yet — be the first to add one!</p>';
+        return;
+      }
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
+        const emoji = typeEmojis[p.type] || '🍽️';
+        const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        const card = document.createElement('div');
+        card.className = 'mini-card';
+        card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p><h3 class="mini-title">${p.name}</h3><p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by ${p.userName}</span></div></div>`;
+        picksGrid.appendChild(card);
+      });
+    } catch(e) {
+      picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
+    }
+  }
+
+  // Save pick to Firestore
+  window.submitPick = async function() {
+    const name = document.getElementById('pickName').value.trim();
+    const location = document.getElementById('pickLocation').value.trim();
+    const type = document.getElementById('pickType').value.trim();
+    const price = document.getElementById('pickPrice').value.trim();
+    const why = document.getElementById('pickWhy').value.trim();
+    if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!why) { showToast('Please tell us why you recommend it!'); return; }
+    try {
+      await addDoc(collection(db, 'picks'), {
+        name, location, type, price, why,
+        userName: currentUser.displayName || currentUser.email.split('@')[0],
+        userEmail: currentUser.email,
+        createdAt: serverTimestamp()
+      });
+      document.getElementById('pickName').value = '';
+      document.getElementById('pickLocation').value = '';
+      document.getElementById('pickType').value = '';
+      document.getElementById('pickPrice').value = '';
+      document.getElementById('pickWhy').value = '';
+      showToast('Thanks for the recommendation! 🎉');
+      loadPicks();
+    } catch(e) {
+      showToast('Could not save. Please try again!');
+    }
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      const initials = name.substring(0,2).toUpperCase();
+      // Sidebar
+      document.querySelector('.user-name').textContent = name;
+      document.querySelector('.user-avatar-lg').textContent = initials;
+      document.querySelector('.user-bio').textContent = 'Food explorer · Amsterdam';
+      // Featured card author
+      if (document.getElementById('featuredAvatar')) document.getElementById('featuredAvatar').textContent = initials;
+      if (document.getElementById('featuredName')) document.getElementById('featuredName').textContent = name;
+      // Nav
+      document.getElementById('navLogin').style.display = 'none';
+      document.getElementById('navSignup').style.display = 'none';
+      document.getElementById('navLogout').style.display = 'block';
+      // Load dynamic stats for any logged-in user
+      loadUserStats(user);
+
+      // Forms
+      document.getElementById('rateForm').style.display = 'block';
+      document.getElementById('rateLoginPrompt').style.display = 'none';
+      document.getElementById('picksForm').style.display = 'block';
+      document.getElementById('picksLoginPrompt').style.display = 'none';
+    } else {
+      const name = 'Jong Foodie';
+      const initials = 'JF';
+      document.querySelector('.user-name').textContent = name;
+      document.querySelector('.user-avatar-lg').textContent = initials;
+      document.querySelector('.user-bio').textContent = 'Food explorer · Amsterdam';
+      if (document.getElementById('featuredAvatar')) document.getElementById('featuredAvatar').textContent = initials;
+      if (document.getElementById('featuredName')) document.getElementById('featuredName').textContent = name;
+      document.getElementById('navLogin').style.display = 'block';
+      document.getElementById('navSignup').style.display = 'block';
+      document.getElementById('navLogout').style.display = 'none';
+      document.getElementById('rateForm').style.display = 'none';
+      document.getElementById('rateLoginPrompt').style.display = 'block';
+      document.getElementById('picksForm').style.display = 'none';
+      document.getElementById('picksLoginPrompt').style.display = 'block';
+    }
+    loadPicks();
+  });
+
+  async function loadUserStats(user) {
+    try {
+      let foodReviews, hotelReviews, friends;
+
+      if (user.email === 'jongfoodie@gmail.com') {
+        // Admin: count from Firestore collections
+        const reviewsSnap = await getDocs(collection(db, 'reviews'));
+        foodReviews = reviewsSnap.size;
+
+        const hotelSnap = await getDocs(collection(db, 'hotelreviews'));
+        hotelReviews = hotelSnap.size;
+
+        friends = 3; // fixed for admin
+      } else {
+        // Regular user: count their own picks and ratings
+        const reviewsSnap = await getDocs(query(collection(db, 'picks'), where('userEmail', '==', user.email)));
+        foodReviews = reviewsSnap.size;
+
+        const hotelSnap = await getDocs(query(collection(db, 'hotelRatings'), where('userEmail', '==', user.email)));
+        hotelReviews = hotelSnap.size;
+
+        const friendsSnap = await getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid)));
+        friends = friendsSnap.size;
+      }
+
+      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = foodReviews;
+      if (document.getElementById('statSaved')) document.getElementById('statSaved').textContent = hotelReviews;
+      if (document.getElementById('statFollowers')) document.getElementById('statFollowers').textContent = friends;
+      if (document.getElementById('statReviewsLbl')) document.getElementById('statReviewsLbl').textContent = 'Reviews';
+      if (document.getElementById('statSavedLbl')) document.getElementById('statSavedLbl').textContent = 'Hotels';
+      if (document.getElementById('statFollowersLbl')) document.getElementById('statFollowersLbl').textContent = 'Followers';
+    } catch(e) {
+      console.log('Stats load error:', e);
+    }
+  }
+
+  window.doLogin = async function() {
+    const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
+    const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
+    if (!email || !password) { showToast('Please fill in all fields!'); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      closeModal();
+      showToast('Welcome back! 👋');
+    } catch(e) {
+      if (e.code === 'auth/invalid-credential') showToast('Wrong email or password!');
+      else showToast('Login failed. Please try again!');
+    }
+  };
+
+  window.doSignup = async function() {
+    const name = document.querySelector('#signupForm .modal-input[type="text"]').value.trim();
+    const email = document.querySelector('#signupForm .modal-input[type="email"]').value.trim();
+    const password = document.querySelector('#signupForm .modal-input[type="password"]').value;
+    if (!name || !email || !password) { showToast('Please fill in all fields!'); return; }
+    if (password.length < 6) { showToast('Password must be at least 6 characters!'); return; }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      // Save user profile to Firestore
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        displayName: name,
+        email: email,
+        createdAt: new Date().toISOString()
+      });
+      closeModal();
+      showToast('Welcome, ' + name + '! 🎉');
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') showToast('This email is already registered!');
+      else showToast('Signup failed. Please try again!');
+    }
+  };
+
+  window.doLogout = async function() {
+    await signOut(auth);
+    showToast('Logged out! See you soon 👋');
+  };
+
+  window.loadMyPicks = async function(name, container) {
+    try {
+      const { getDocs, collection, query, where } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const q = query(collection(db, 'picks'), where('userName', '==', name));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        container.innerHTML = `<p style="font-size:13px;color:var(--muted);text-align:center;padding:1.5rem;">You haven't added any picks yet!<br><a href="index.html" style="color:var(--accent);">Add your first recommendation →</a></p>`;
+        return;
+      }
+      const typeEmojis = {"Burgers":"🍔","Cafe":"☕","Asian":"🍜","Pastries":"🥐","Sushi":"🍣","Street Food":"🌮","Desserts":"🍰","Restaurant":"🍽️","Sandwiches":"🥪","Fine Dining":"🥂"};
+      container.innerHTML = snap.docs.map(d => {
+        const p = d.data();
+        const emoji = typeEmojis[p.type] || "🍽️";
+        return `<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:0.75rem;margin-bottom:0.5rem;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">${emoji}</span>
+            <div>
+              <p style="font-weight:600;font-size:13px;">${p.name}</p>
+              <p style="font-size:11px;color:var(--muted);">${p.location ? "📍 "+p.location : ""} ${p.type ? "· "+p.type : ""}</p>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--ink-soft);">${p.why}</p>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
+    }
+  };
+
+  window.saveDisplayName = async function() {
+    const newName = document.getElementById('displayNameInput').value.trim();
+    if (!newName) { showToast('Please enter a display name!'); return; }
+    if (newName.length < 2) { showToast('Name must be at least 2 characters!'); return; }
+    try {
+      const { updateProfile } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      await updateProfile(auth.currentUser, { displayName: newName });
+      document.querySelector('.user-name').textContent = newName;
+      document.querySelector('.user-avatar-lg').textContent = newName.substring(0,2).toUpperCase();
+      document.getElementById('settingsBg').classList.remove('open');
+      showToast('Display name updated to "' + newName + '"! 🎉');
+    } catch(e) {
+      showToast('Could not update name. Please try again!');
+    }
+  };
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+    <button onclick="declineCookies()" style="background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Decline</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('jf_cookie_consent');if(!c){document.getElementById('cookieBanner').style.display='flex';}})();
+function acceptCookies(){localStorage.setItem('jf_cookie_consent','accepted');document.getElementById('cookieBanner').style.display='none';}
+function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');document.getElementById('cookieBanner').style.display='none';}
+</script>
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Jong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Jong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc — Jong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+    <button onclick="declineCookies()" style="background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Decline</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('jf_cookie_consent');if(!c){document.getElementById('cookieBanner').style.display='flex';}})();
+function acceptCookies(){localStorage.setItem('jf_cookie_consent','accepted');document.getElementById('cookieBanner').style.display='none';}
+function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');document.getElementById('cookieBanner').style.display='none';}
+</script>
+</body>
+</html>
