@@ -1300,11 +1300,11 @@
     <div id="loginForm">
       <div class="modal-field">
         <label class="modal-label">Email</label>
-        <input class="modal-input" type="email" placeholder="you@email.com">
+        <input class="modal-input" id="loginEmail" type="email" placeholder="you@email.com">
       </div>
       <div class="modal-field">
         <label class="modal-label">Password</label>
-        <input class="modal-input" type="password" placeholder="••••••••">
+        <input class="modal-input" id="loginPassword" type="password" placeholder="••••••••">
       </div>
       <div class="modal-footer">
         <button class="btn-fill" style="width:100%;padding:11px;" onclick="doLogin()">Log in</button>
@@ -1317,7 +1317,7 @@
       </div>
       <div class="modal-field">
         <label class="modal-label">Email</label>
-        <input class="modal-input" type="email" placeholder="you@email.com">
+        <input class="modal-input" id="loginEmail" type="email" placeholder="you@email.com">
       </div>
       <div class="modal-field">
         <label class="modal-label">Password</label>
@@ -1828,8 +1828,8 @@
   }
 
   window.doLogin = async function() {
-    const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
-    const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
     if (!email || !password) { showToast('Please fill in all fields!'); return; }
     try {
       await signInWithEmailAndPassword(auth, email, password);
