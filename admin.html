@@ -361,6 +361,14 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="dDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Latitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="dLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Longitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="dLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
+      </div>
     </div>
     <div style="margin-top:1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Star Rating *</label>
@@ -408,6 +416,14 @@
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="sDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Latitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="sLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Longitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="sLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
@@ -457,6 +473,14 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="cDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Latitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="cLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Longitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="cLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
+      </div>
     </div>
     <div style="margin-top:1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Star Rating *</label>
@@ -504,6 +528,14 @@
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="hlDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Latitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="hlLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Longitude (from Google Maps)</label>
+        <input class="form-input" type="text" id="hlLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
@@ -986,6 +1018,8 @@
     const city = document.getElementById('dCity').value.trim();
     const price = document.getElementById('dPrice').value.trim();
     const date = document.getElementById('dDate').value.trim();
+    const lat = document.getElementById('dLat').value.trim();
+    const lng = document.getElementById('dLng').value.trim();
     const review = document.getElementById('dReview').value.trim();
     const tags = document.getElementById('dTags').value;
     const emoji = document.getElementById('dEmoji').value || '🍸';
@@ -993,13 +1027,15 @@
     try {
       await addDoc(collection(db, 'drinkspots'), {
         name, city, price, date, review, emoji,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: drinkRating,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
       showToast('Drink spot published! 🍸');
-      ['dName','dCity','dPrice','dDate','dReview','dTags'].forEach(id => document.getElementById(id).value = '');
+      ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('dEmoji').value = '🍸';
       drinkRating = 0;
       document.querySelectorAll('#drinkStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1011,6 +1047,8 @@
     const city = document.getElementById('sCity').value.trim();
     const price = document.getElementById('sPrice').value.trim();
     const date = document.getElementById('sDate').value.trim();
+    const lat = document.getElementById('sLat').value.trim();
+    const lng = document.getElementById('sLng').value.trim();
     const review = document.getElementById('sReview').value.trim();
     const tags = document.getElementById('sTags').value;
     const emoji = document.getElementById('sEmoji').value || '🛍️';
@@ -1018,13 +1056,15 @@
     try {
       await addDoc(collection(db, 'shopspots'), {
         name, city, price, date, review, emoji,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: shopRating,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
       showToast('Shop spot published! 🛍️');
-      ['sName','sCity','sPrice','sDate','sReview','sTags'].forEach(id => document.getElementById(id).value = '');
+      ['sName','sCity','sPrice','sDate','sLat','sLng','sReview','sTags'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('sEmoji').value = '🛍️';
       shopRating = 0;
       document.querySelectorAll('#shopStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1036,6 +1076,8 @@
     const city = document.getElementById('cCity').value.trim();
     const price = document.getElementById('cPrice').value.trim();
     const date = document.getElementById('cDate').value.trim();
+    const lat = document.getElementById('cLat').value.trim();
+    const lng = document.getElementById('cLng').value.trim();
     const review = document.getElementById('cReview').value.trim();
     const tags = document.getElementById('cTags').value;
     const emoji = document.getElementById('cEmoji').value || '🎭';
@@ -1043,13 +1085,15 @@
     try {
       await addDoc(collection(db, 'culturespots'), {
         name, city, price, date, review, emoji,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: cultureRating,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
       showToast('Culture spot published! 🎭');
-      ['cName','cCity','cPrice','cDate','cReview','cTags'].forEach(id => document.getElementById(id).value = '');
+      ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('cEmoji').value = '🎭';
       cultureRating = 0;
       document.querySelectorAll('#cultureStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1061,6 +1105,8 @@
     const city = document.getElementById('hlCity').value.trim();
     const price = document.getElementById('hlPrice').value.trim();
     const date = document.getElementById('hlDate').value.trim();
+    const lat = document.getElementById('hlLat').value.trim();
+    const lng = document.getElementById('hlLng').value.trim();
     const review = document.getElementById('hlReview').value.trim();
     const tags = document.getElementById('hlTags').value;
     const emoji = document.getElementById('hlEmoji').value || '💪';
@@ -1068,13 +1114,15 @@
     try {
       await addDoc(collection(db, 'healthspots'), {
         name, city, price, date, review, emoji,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: healthRating,
         createdAt: serverTimestamp(),
         author: 'Jong Foodie'
       });
       showToast('Health spot published! 💪');
-      ['hlName','hlCity','hlPrice','hlDate','hlReview','hlTags'].forEach(id => document.getElementById(id).value = '');
+      ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('hlEmoji').value = '💪';
       healthRating = 0;
       document.querySelectorAll('#healthStarRating span').forEach(s => s.style.color = '#ddd');

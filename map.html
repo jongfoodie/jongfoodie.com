@@ -88,24 +88,30 @@
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html">🏠 Home</a>
   <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="friends.html">🤝 Friends</a>
   <a href="about.html">👤 About me</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
 <nav>
   <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
-    <li><a href="guides.html">Guides</a></li>
-    <li><a href="videos.html">Videos</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="culture.html">Culture</a></li>
+    <li><a href="health.html">Health</a></li>
     <li><a href="map.html" class="active">Map</a></li>
     <li><a href="community.html">Community</a></li>
-    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Stay</a></li>
   </ul>
   <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
@@ -119,6 +125,14 @@
   <button onclick="filterByCountry('usa')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇺🇸 USA</button>
   <button onclick="filterByCountry('aruba')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇦🇼 Aruba</button>
   <button onclick="filterByCountry('turkey')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇹🇷 Turkey</button>
+</div>
+<div class="category-filters" id="categoryFilters" style="background:var(--cream);border-bottom:1px solid var(--border);padding:0.5rem 1rem;display:flex;gap:0.5rem;overflow-x:auto;">
+  <button onclick="filterByCategory('all')" data-cat="all" class="cat-btn cat-active" style="background:#1A1208;color:#fff;border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">✨ All Categories</button>
+  <button onclick="filterByCategory('eat')" data-cat="eat" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🍽️ Eat</button>
+  <button onclick="filterByCategory('drink')" data-cat="drink" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🍸 Drink</button>
+  <button onclick="filterByCategory('shop')" data-cat="shop" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🛍️ Shop</button>
+  <button onclick="filterByCategory('culture')" data-cat="culture" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🎭 Culture</button>
+  <button onclick="filterByCategory('health')" data-cat="health" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">💪 Health</button>
 </div>
 <div class="map-layout" style="position:relative;">
   <div id="loadingBar" class="loading-bar">📍 Loading restaurant locations...</div>
@@ -207,6 +221,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const markers = [];
 let loaded = 0;
+let currentCountry = 'all';
+let currentCategory = 'all';
 
 
 
@@ -238,7 +254,7 @@ function loadAllSpots() {
   };
 
   // Add country to existing spots without it
-  spots.forEach(s => { if (!s.country) s.country = 'netherlands'; });
+  spots.forEach(s => { if (!s.country) s.country = 'netherlands'; if (!s.category) s.category = 'eat'; });
 
   spots.forEach(s => {
     const c = coords[s.name];
@@ -294,9 +310,24 @@ function buildList(filtered) {
 }
 
 
-function filterByCountry(country) {
-  const filtered = country === 'all' ? spots : spots.filter(s => s.country === country);
+function applyFilters() {
+  let filtered = spots;
+  if (currentCountry !== 'all') filtered = filtered.filter(s => s.country === currentCountry);
+  if (currentCategory !== 'all') filtered = filtered.filter(s => s.category === currentCategory);
+  const searchVal = document.querySelector('.search-input').value.toLowerCase();
+  if (searchVal) filtered = filtered.filter(s => s.name.toLowerCase().includes(searchVal) || s.address.toLowerCase().includes(searchVal));
   buildList(filtered);
+}
+
+function filterByCountry(country) {
+  currentCountry = country;
+  document.querySelectorAll('.country-filters button').forEach(b => {
+    const isActive = b.getAttribute('onclick') === `filterByCountry('${country}')`;
+    b.style.background = isActive ? '#1A1208' : 'var(--cream)';
+    b.style.color = isActive ? '#fff' : 'var(--ink)';
+    b.style.border = isActive ? 'none' : '1px solid var(--border)';
+  });
+  applyFilters();
   // Center map on country
   if (country === 'usa') map.setView([34.05, -118.35], 9);
   else if (country === 'aruba') map.setView([12.52, -70.03], 13);
@@ -304,9 +335,19 @@ function filterByCountry(country) {
   else map.setView([52.37, 4.89], 12);
 }
 
+function filterByCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    const isActive = b.getAttribute('data-cat') === cat;
+    b.style.background = isActive ? '#1A1208' : 'var(--warm-white)';
+    b.style.color = isActive ? '#fff' : 'var(--ink)';
+    b.style.border = isActive ? 'none' : '1px solid var(--border)';
+  });
+  applyFilters();
+}
+
 function filterSpots(val) {
-  const v = val.toLowerCase();
-  buildList(spots.filter(s => s.name.toLowerCase().includes(v) || s.address.toLowerCase().includes(v)));
+  applyFilters();
 }
 
 // Load spots
@@ -379,6 +420,7 @@ loadAllSpots();
           lat: r.lat,
           lng: r.lng,
           country: 'firebase',
+          category: 'eat',
           photoUrl: r.photoUrl || '',
           isNew: true
         };
@@ -395,9 +437,71 @@ loadAllSpots();
     }
   }
 
+  async function loadCategorySpots(collectionName, category, color, defaultEmoji) {
+    try {
+      const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+
+      snap.docs.forEach(d => {
+        const r = d.data();
+        if (!r.lat || !r.lng) return;
+
+        const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
+
+        const photoHtml = r.photoUrl
+          ? `<img src="${r.photoUrl}" alt="${r.name}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
+          : '';
+
+        const icon = L.divIcon({
+          className: '',
+          html: `<div style="background:${color};color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${r.emoji || defaultEmoji}</div>`,
+          iconSize: [38,38], iconAnchor: [19,19], popupAnchor: [0,-24]
+        });
+
+        const marker = L.marker([r.lat, r.lng], { icon }).addTo(window._leafletMap || map);
+        marker.bindPopup(`
+          <div style="width:200px;">
+            ${photoHtml}
+            <b style="font-size:13px;">${r.name}</b>
+            <span style="display:inline-block;margin-left:4px;background:${color};color:#fff;font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;">${category.toUpperCase()}</span><br>
+            <span style="font-size:11px;color:#8A7A66;">📍 ${r.city}</span><br>
+            ${r.price ? `<span style="font-size:11px;color:#8A7A66;">💰 ${r.price}</span><br>` : ''}
+            <span style="font-size:12px;color:#C8901A;">${stars}</span>
+          </div>
+        `);
+
+        const spotData = {
+          name: r.name,
+          address: r.city,
+          hours: '',
+          rating: stars,
+          emoji: r.emoji || defaultEmoji,
+          lat: r.lat,
+          lng: r.lng,
+          country: 'firebase',
+          category: category,
+          photoUrl: r.photoUrl || '',
+          isNew: true
+        };
+        spots.unshift(spotData);
+        markers.unshift({ spot: spotData, marker });
+      });
+
+      applyFilters();
+    } catch(e) {
+      console.error('Could not load ' + collectionName + ' on map:', e);
+    }
+  }
+
   // Make map accessible to module
   window._leafletMap = map;
-  loadFirebaseReviews();
+  loadFirebaseReviews().then(() => {
+    loadCategorySpots('drinkspots', 'drink', '#6B2A5C', '🍸');
+    loadCategorySpots('shopspots', 'shop', '#A32323', '🛍️');
+    loadCategorySpots('culturespots', 'culture', '#8A6A0A', '🎭');
+    loadCategorySpots('healthspots', 'health', '#1A5C2E', '💪');
+  });
 </script>
 
 <footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
@@ -412,9 +516,13 @@ loadAllSpots();
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
           <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
           <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
           <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
-          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Jong Hotel</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>
