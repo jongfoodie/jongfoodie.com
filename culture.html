@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jong Culture — Honest Reviews | Jong Foodie</title>
+<meta name="description" content="Honest museum and culture spot reviews from Jong Foodie.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --gold: #C8901A; --navy: #1B3A5C; --navy-dark: #122840; --cat: #8A6A0A;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .hero { background: var(--navy-dark); color: #fff; padding: 4rem 2rem 3.5rem; text-align: center; }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 1rem; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700; line-height: 1.1; }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p { color: rgba(255,255,255,0.55); font-size: 15px; margin-top: 0.75rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+  .search-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: center; gap: 0.75rem; }
+  .search-bar input { width: 100%; max-width: 540px; border: 1px solid var(--border); border-radius: 30px; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--cream); outline: none; }
+  .search-bar button { background: var(--navy); color: #fff; border: none; border-radius: 30px; padding: 10px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+  .main { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; background: var(--warm-white); border-radius: 16px; border: 1px dashed var(--border); }
+  .empty-state .icon { font-size: 42px; margin-bottom: 1rem; opacity: 0.6; }
+  .empty-state p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .empty-state a { color: var(--accent); font-weight: 500; text-decoration: none; }
+  .empty-state a:hover { text-decoration: underline; }
+
+  .spot-card { display: flex; background: var(--warm-white); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; border: 1px solid var(--border); transition: box-shadow 0.2s; }
+  .spot-card:hover { box-shadow: 0 8px 32px rgba(26,18,8,0.08); }
+  .spot-img { width: 200px; min-width: 200px; background: linear-gradient(135deg, var(--cat) 0%, var(--ink) 100%); display: flex; align-items: center; justify-content: center; font-size: 56px; }
+  .spot-body { padding: 1.75rem 2rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+  .spot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .spot-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+  .spot-stars { color: var(--gold); font-size: 1rem; white-space: nowrap; }
+  .spot-meta { display: flex; gap: 1rem; align-items: center; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .spot-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .spot-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem; }
+  .spot-tag { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--ink-soft); background: var(--cream); }
+
+  .community-section { margin-top: 3rem; }
+  .community-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .community-cta { background: var(--navy); color: #fff; border-radius: 16px; padding: 2.5rem; text-align: center; }
+  .community-cta h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .community-cta p { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 1.5rem; }
+  .cta-btn { background: var(--gold); color: #fff; border: none; border-radius: 30px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+  .newsletter { position: fixed; bottom: 1.5rem; left: 1.5rem; background: var(--ink); color: #fff; border-radius: 10px; padding: 12px 16px; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; cursor: pointer; z-index: 999; }
+  .newsletter-close { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 16px; margin-right: 4px; }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+  @media (max-width: 700px) {
+    .spot-card { flex-direction: column; }
+    .spot-img { width: 100%; min-width: unset; height: 160px; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.5rem; }
+  }
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-PEEXFGGPNH");
+</script>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html" style="color:#D4521A;font-weight:600;">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">Jong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="culture.html" class="active" style="color:var(--accent);font-weight:600;">🎭 Culture</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="hero">
+  <p class="hero-eyebrow">Jong Foodie · Culture Edition</p>
+  <h1>Jong <em>Culture</em></h1>
+  <p>Museums, galleries and places with a story — for when you want to see a bit of the city between meals.</p>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search museums, galleries, cities..." oninput="filterSpots(this.value)">
+  <button onclick="filterSpots(document.getElementById('searchInput').value)">Search</button>
+</div>
+
+<div class="main">
+  <p class="section-label">Jong Foodie Culture Reviews</p>
+  <div id="spotList">
+    <div class="empty-state">
+      <div class="icon">🎭</div>
+      <p>Loading culture spots...</p>
+    </div>
+  </div>
+
+  <div class="community-section">
+    <p class="community-label">Community Culture Picks</p>
+    <div class="community-cta">
+      <h3>Share Your Favourite Spot</h3>
+      <p>Found something worth sharing? Tell the Jong Foodie community about it.</p>
+      <button class="cta-btn" onclick="window.location.href='community.html'">Submit a Spot</button>
+    </div>
+  </div>
+</div>
+
+<div class="newsletter" id="newsletter">
+  <button class="newsletter-close" onclick="document.getElementById('newsletter').style.display='none'">✕</button>
+  KEEP ME UPDATED
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let allSpots = [];
+
+  function renderStars(n) {
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
+  }
+
+  function renderSpots(list) {
+    const container = document.getElementById('spotList');
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🎭</div>
+          <p>No culture spots added yet.<br>Add the first one in the <a href="admin.html">admin panel</a>.</p>
+        </div>`;
+      return;
+    }
+    container.innerHTML = list.map(s => `
+      <div class="spot-card">
+        <div class="spot-img">${s.emoji || '🎭'}</div>
+        <div class="spot-body">
+          <div class="spot-top">
+            <p class="spot-name">${s.name}</p>
+            <span class="spot-stars">${renderStars(s.rating || 0)}</span>
+          </div>
+          <div class="spot-meta">
+            <span>📍 ${s.city || ''}</span>
+            ${s.price ? '<span>💰 ' + s.price + '</span>' : ''}
+            ${s.date ? '<span>📅 ' + s.date + '</span>' : ''}
+          </div>
+          <p class="spot-desc">${s.review || ''}</p>
+          <div class="spot-tags">
+            ${(s.tags || []).map(t => '<span class="spot-tag">' + t + '</span>').join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.filterSpots = function(val) {
+    const v = val.toLowerCase();
+    renderSpots(allSpots.filter(s =>
+      (s.name || '').toLowerCase().includes(v) ||
+      (s.city || '').toLowerCase().includes(v) ||
+      (s.tags || []).some(t => t.toLowerCase().includes(v))
+    ));
+  };
+
+  async function loadSpots() {
+    try {
+      const q = query(collection(db, 'culturespots'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      allSpots = snap.docs.map(d => d.data());
+      renderSpots(allSpots);
+    } catch (e) {
+      document.getElementById('spotList').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🎭</div>
+          <p>No culture spots added yet.<br>Add the first one in the <a href="admin.html">admin panel</a>.</p>
+        </div>`;
+    }
+  }
+
+  loadSpots();
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Jong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc — Jong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+    <button onclick="declineCookies()" style="background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Decline</button>
+  </div>
+</div>
+<script>
+(function(){var c=localStorage.getItem('jf_cookie_consent');if(!c){document.getElementById('cookieBanner').style.display='flex';}})();
+function acceptCookies(){localStorage.setItem('jf_cookie_consent','accepted');document.getElementById('cookieBanner').style.display='none';}
+function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');document.getElementById('cookieBanner').style.display='none';}
+</script>
+</body>
+</html>

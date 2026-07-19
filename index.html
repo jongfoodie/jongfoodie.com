@@ -876,12 +876,16 @@
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html">🏠 Home</a>
   <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
 
 <!-- NAV -->
@@ -899,11 +903,13 @@
   <ul class="nav-links">
     <li><a href="index.html" class="active">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
-    <li><a href="guides.html">Guides</a></li>
-    <li><a href="videos.html">Videos</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="culture.html">Culture</a></li>
+    <li><a href="health.html">Health</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
-    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
+    <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Stay</a></li>
   </ul>
   <div class="nav-actions">
     <button id="navLogin" class="btn-ghost" onclick="openModal('login')">Log in</button>
@@ -1300,11 +1306,11 @@
     <div id="loginForm">
       <div class="modal-field">
         <label class="modal-label">Email</label>
-        <input class="modal-input" id="loginEmail" type="email" placeholder="you@email.com">
+        <input class="modal-input" type="email" placeholder="you@email.com">
       </div>
       <div class="modal-field">
         <label class="modal-label">Password</label>
-        <input class="modal-input" id="loginPassword" type="password" placeholder="••••••••">
+        <input class="modal-input" type="password" placeholder="••••••••">
       </div>
       <div class="modal-footer">
         <button class="btn-fill" style="width:100%;padding:11px;" onclick="doLogin()">Log in</button>
@@ -1317,7 +1323,7 @@
       </div>
       <div class="modal-field">
         <label class="modal-label">Email</label>
-        <input class="modal-input" id="loginEmail" type="email" placeholder="you@email.com">
+        <input class="modal-input" type="email" placeholder="you@email.com">
       </div>
       <div class="modal-field">
         <label class="modal-label">Password</label>
@@ -1828,8 +1834,8 @@
   }
 
   window.doLogin = async function() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
+    const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
+    const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
     if (!email || !password) { showToast('Please fill in all fields!'); return; }
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -1945,9 +1951,13 @@ function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');d
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
           <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
           <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
           <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
-          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Jong Hotel</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>

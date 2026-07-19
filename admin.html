@@ -94,12 +94,16 @@
 <body>
 <div class="mobile-nav" id="mobileNav">
   <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="friends.html">🤝 Friends</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
 
 <div class="admin-nav">
@@ -149,6 +153,24 @@
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">📌 Community Picks</p>
         <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">—</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍸 Drink Spots</p>
+        <p id="cntDrink" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#6B2A5C;line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🛍️ Shop Spots</p>
+        <p id="cntShop" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#A32323;line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🎭 Culture Spots</p>
+        <p id="cntCulture" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8A6A0A;line-height:1;">—</p>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
+        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">💪 Health Spots</p>
+        <p id="cntHealth" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A5C2E;line-height:1;">—</p>
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:0.75rem 1.25rem;border:1px solid var(--border);">
@@ -319,6 +341,198 @@
     <button onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
   </div>
 
+  <!-- DRINK SECTION -->
+  <div style="background:#F3E8F0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#6B2A5C;">🍸 Add Drink Spot</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Name *</label>
+        <input class="form-input" type="text" id="dName" placeholder="e.g. Bar Botanique" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">City / Location *</label>
+        <input class="form-input" type="text" id="dCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="dPrice" placeholder="e.g. €12 or Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="dDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Star Rating *</label>
+      <div id="drinkStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setDrinkRating(1)">★</span>
+        <span onclick="setDrinkRating(2)">★</span>
+        <span onclick="setDrinkRating(3)">★</span>
+        <span onclick="setDrinkRating(4)">★</span>
+        <span onclick="setDrinkRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="dReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="dTags" placeholder="e.g. Cocktails, Rooftop, Must Try" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="dEmoji" placeholder="🍸" value="🍸" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
+  </div>
+
+  <!-- SHOP SECTION -->
+  <div style="background:#F8E8E8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#A32323;">🛍️ Add Shop Spot</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Name *</label>
+        <input class="form-input" type="text" id="sName" placeholder="e.g. De Kaaskamer" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">City / Location *</label>
+        <input class="form-input" type="text" id="sCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="sPrice" placeholder="e.g. €€ or Luxury" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="sDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Star Rating *</label>
+      <div id="shopStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setShopRating(1)">★</span>
+        <span onclick="setShopRating(2)">★</span>
+        <span onclick="setShopRating(3)">★</span>
+        <span onclick="setShopRating(4)">★</span>
+        <span onclick="setShopRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="sReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="sTags" placeholder="e.g. Concept Store, Gifts" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="sEmoji" placeholder="🛍️" value="🛍️" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
+  </div>
+
+  <!-- CULTURE SECTION -->
+  <div style="background:#FBF3E0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#8A6A0A;">🎭 Add Culture Spot</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Name *</label>
+        <input class="form-input" type="text" id="cName" placeholder="e.g. Stedelijk Museum" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">City / Location *</label>
+        <input class="form-input" type="text" id="cCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="cPrice" placeholder="e.g. €20 or Free" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="cDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Star Rating *</label>
+      <div id="cultureStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setCultureRating(1)">★</span>
+        <span onclick="setCultureRating(2)">★</span>
+        <span onclick="setCultureRating(3)">★</span>
+        <span onclick="setCultureRating(4)">★</span>
+        <span onclick="setCultureRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="cReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="cTags" placeholder="e.g. Museum, Must Visit" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="cEmoji" placeholder="🎭" value="🎭" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
+  </div>
+
+  <!-- HEALTH SECTION -->
+  <div style="background:#E8F5EC;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A5C2E;">💪 Add Health Spot</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Name *</label>
+        <input class="form-input" type="text" id="hlName" placeholder="e.g. Basefit Zuidas" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">City / Location *</label>
+        <input class="form-input" type="text" id="hlCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Price</label>
+        <input class="form-input" type="text" id="hlPrice" placeholder="e.g. €30/month" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Visit Date</label>
+        <input class="form-input" type="text" id="hlDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Star Rating *</label>
+      <div id="healthStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
+        <span onclick="setHealthRating(1)">★</span>
+        <span onclick="setHealthRating(2)">★</span>
+        <span onclick="setHealthRating(3)">★</span>
+        <span onclick="setHealthRating(4)">★</span>
+        <span onclick="setHealthRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Review Text *</label>
+      <textarea class="form-input" id="hlReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Tags (comma separated)</label>
+        <input class="form-input" type="text" id="hlTags" placeholder="e.g. Gym, Spa, Wellness" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Emoji Icon</label>
+        <input class="form-input" type="text" id="hlEmoji" placeholder="💪" value="💪" style="margin-top:6px;">
+      </div>
+    </div>
+    <button onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
+  </div>
+
   <div style="margin-top:2rem;" id="publishedSection">
     <div class="published-list">
       <h3>📋 Published Reviews (from admin)</h3>
@@ -431,6 +645,93 @@
     document.querySelectorAll('#adminStars span').forEach((s, i) => s.classList.toggle('lit', i < n));
   };
 
+  // ── PUBLISH RESTAURANT REVIEW (was missing — button called this but it didn't exist) ──
+  window.publishReview = async function() {
+    const btn = document.getElementById('publishBtn');
+    const name = document.getElementById('rName').value.trim();
+    const city = document.getElementById('rCity').value.trim();
+    const type = document.getElementById('rType').value;
+    const price = document.getElementById('rPrice').value.trim();
+    const date = document.getElementById('rDate').value.trim();
+    const hours = document.getElementById('rHours').value.trim();
+    const lat = document.getElementById('rLat').value.trim();
+    const lng = document.getElementById('rLng').value.trim();
+    const review = document.getElementById('rReview').value.trim();
+    const tags = document.getElementById('rTags').value;
+    const emoji = document.getElementById('rEmoji').value || '🍽️';
+    const photoFile = document.getElementById('rPhoto').files[0];
+
+    if (!name || !city || !type || !review || !adminRating) {
+      showToast('Please fill in all required fields and set a rating!');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Publishing...';
+
+    try {
+      let photoUrl = '';
+      if (photoFile) {
+        photoUrl = await uploadPhoto(photoFile, name);
+      }
+
+      await addDoc(collection(db, 'reviews'), {
+        name, city, type, price, date, hours, review, emoji,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: adminRating,
+        photoUrl,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+
+      showToast('Review published! 🍽️');
+
+      // Clear form
+      ['rName','rCity','rPrice','rDate','rHours','rLat','rLng','rReview','rTags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('rType').value = '';
+      document.getElementById('rEmoji').value = '🍽️';
+      removePhoto();
+      adminRating = 0;
+      document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
+
+      loadPublished();
+    } catch(e) {
+      showToast('Error: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🚀 Publish Review';
+  };
+
+  // ── GITHUB TOKEN SETUP (was missing — button called this but it didn't exist) ──
+  window.setupGitHubToken = function() {
+    const existing = localStorage.getItem('jf_github_token');
+    const token = window.prompt(
+      existing
+        ? 'GitHub token is al ingesteld. Voer een nieuw token in om te wijzigen, of laat leeg om te annuleren:'
+        : 'Voer je GitHub Personal Access Token in (met "repo" rechten):',
+      ''
+    );
+    if (token) {
+      localStorage.setItem('jf_github_token', token.trim());
+      document.getElementById('tokenStatus').textContent = '✅ Token ingesteld';
+      showToast('GitHub token opgeslagen!');
+    } else if (token === '') {
+      // user submitted empty on purpose — do nothing
+    }
+    updateTokenStatus();
+  };
+
+  function updateTokenStatus() {
+    const el = document.getElementById('tokenStatus');
+    const t = localStorage.getItem('jf_github_token');
+    el.textContent = t ? '✅ Token ingesteld' : '⚠️ Nog geen token ingesteld';
+  }
+  document.addEventListener('DOMContentLoaded', updateTokenStatus);
+  updateTokenStatus();
+  // ─────────────────────────────────────────────────────────────────────────
 
   // GitHub Page Generator
   async function createGitHubPage(r) {
@@ -660,6 +961,127 @@
     } catch(e) { showToast('Error: ' + e.message); }
   };
 
+  // ── DRINK / SHOP / CULTURE / HEALTH ──────────────────────────────────────
+  let drinkRating = 0, shopRating = 0, cultureRating = 0, healthRating = 0;
+
+  window.setDrinkRating = function(n) {
+    drinkRating = n;
+    document.querySelectorAll('#drinkStarRating span').forEach((s,i) => { s.style.color = i < n ? '#6B2A5C' : '#ddd'; });
+  };
+  window.setShopRating = function(n) {
+    shopRating = n;
+    document.querySelectorAll('#shopStarRating span').forEach((s,i) => { s.style.color = i < n ? '#A32323' : '#ddd'; });
+  };
+  window.setCultureRating = function(n) {
+    cultureRating = n;
+    document.querySelectorAll('#cultureStarRating span').forEach((s,i) => { s.style.color = i < n ? '#8A6A0A' : '#ddd'; });
+  };
+  window.setHealthRating = function(n) {
+    healthRating = n;
+    document.querySelectorAll('#healthStarRating span').forEach((s,i) => { s.style.color = i < n ? '#1A5C2E' : '#ddd'; });
+  };
+
+  window.publishDrinkSpot = async function() {
+    const name = document.getElementById('dName').value.trim();
+    const city = document.getElementById('dCity').value.trim();
+    const price = document.getElementById('dPrice').value.trim();
+    const date = document.getElementById('dDate').value.trim();
+    const review = document.getElementById('dReview').value.trim();
+    const tags = document.getElementById('dTags').value;
+    const emoji = document.getElementById('dEmoji').value || '🍸';
+    if (!name || !city || !review || !drinkRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'drinkspots'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: drinkRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Drink spot published! 🍸');
+      ['dName','dCity','dPrice','dDate','dReview','dTags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('dEmoji').value = '🍸';
+      drinkRating = 0;
+      document.querySelectorAll('#drinkStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
+
+  window.publishShopSpot = async function() {
+    const name = document.getElementById('sName').value.trim();
+    const city = document.getElementById('sCity').value.trim();
+    const price = document.getElementById('sPrice').value.trim();
+    const date = document.getElementById('sDate').value.trim();
+    const review = document.getElementById('sReview').value.trim();
+    const tags = document.getElementById('sTags').value;
+    const emoji = document.getElementById('sEmoji').value || '🛍️';
+    if (!name || !city || !review || !shopRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'shopspots'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: shopRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Shop spot published! 🛍️');
+      ['sName','sCity','sPrice','sDate','sReview','sTags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('sEmoji').value = '🛍️';
+      shopRating = 0;
+      document.querySelectorAll('#shopStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
+
+  window.publishCultureSpot = async function() {
+    const name = document.getElementById('cName').value.trim();
+    const city = document.getElementById('cCity').value.trim();
+    const price = document.getElementById('cPrice').value.trim();
+    const date = document.getElementById('cDate').value.trim();
+    const review = document.getElementById('cReview').value.trim();
+    const tags = document.getElementById('cTags').value;
+    const emoji = document.getElementById('cEmoji').value || '🎭';
+    if (!name || !city || !review || !cultureRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'culturespots'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: cultureRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Culture spot published! 🎭');
+      ['cName','cCity','cPrice','cDate','cReview','cTags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cEmoji').value = '🎭';
+      cultureRating = 0;
+      document.querySelectorAll('#cultureStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
+
+  window.publishHealthSpot = async function() {
+    const name = document.getElementById('hlName').value.trim();
+    const city = document.getElementById('hlCity').value.trim();
+    const price = document.getElementById('hlPrice').value.trim();
+    const date = document.getElementById('hlDate').value.trim();
+    const review = document.getElementById('hlReview').value.trim();
+    const tags = document.getElementById('hlTags').value;
+    const emoji = document.getElementById('hlEmoji').value || '💪';
+    if (!name || !city || !review || !healthRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    try {
+      await addDoc(collection(db, 'healthspots'), {
+        name, city, price, date, review, emoji,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        rating: healthRating,
+        createdAt: serverTimestamp(),
+        author: 'Jong Foodie'
+      });
+      showToast('Health spot published! 💪');
+      ['hlName','hlCity','hlPrice','hlDate','hlReview','hlTags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('hlEmoji').value = '💪';
+      healthRating = 0;
+      document.querySelectorAll('#healthStarRating span').forEach(s => s.style.color = '#ddd');
+    } catch(e) { showToast('Error: ' + e.message); }
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   // ── NEWSLETTER BANNER ────────────────────────────────────────────────────
   var lastPublishedReview = null;
 
@@ -711,16 +1133,24 @@
   // ── LIVE COUNTER ─────────────────────────────────────────────────────────
   window.loadLiveStats = async function() {
     try {
-      const [foodSnap, hotelSnap, usersSnap, picksSnap] = await Promise.all([
+      const [foodSnap, hotelSnap, usersSnap, picksSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
         getDocs(collection(db, 'reviews')),
         getDocs(collection(db, 'hotelreviews')),
         getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'picks'))
+        getDocs(collection(db, 'picks')),
+        getDocs(collection(db, 'drinkspots')),
+        getDocs(collection(db, 'shopspots')),
+        getDocs(collection(db, 'culturespots')),
+        getDocs(collection(db, 'healthspots'))
       ]);
       document.getElementById('cntFood').textContent  = foodSnap.size + 52;
       document.getElementById('cntHotel').textContent = hotelSnap.size + 6;
       document.getElementById('cntUsers').textContent = usersSnap.size;
       document.getElementById('cntPicks').textContent = picksSnap.size;
+      document.getElementById('cntDrink').textContent = drinkSnap.size;
+      document.getElementById('cntShop').textContent = shopSnap.size;
+      document.getElementById('cntCulture').textContent = cultureSnap.size;
+      document.getElementById('cntHealth').textContent = healthSnap.size;
       const now = new Date();
       document.getElementById('lastRefresh').textContent =
         'Last updated: ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
