@@ -379,9 +379,14 @@ loadAllSpots();
 
       const newSpots = [];
 
+      const now = new Date();
       snap.docs.forEach(d => {
         const r = d.data();
         if (!r.lat || !r.lng) return;
+        if (r.publishAt) {
+          const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
+          if (pubDate > now) return;
+        }
 
         const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
 
@@ -443,9 +448,14 @@ loadAllSpots();
       const snap = await getDocs(q);
       if (snap.empty) return;
 
+      const now = new Date();
       snap.docs.forEach(d => {
         const r = d.data();
         if (!r.lat || !r.lng) return;
+        if (r.publishAt) {
+          const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
+          if (pubDate > now) return;
+        }
 
         const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
 

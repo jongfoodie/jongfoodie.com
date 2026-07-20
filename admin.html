@@ -291,7 +291,14 @@
     </div>
   </div>
 
-  <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
+  <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#D4521A;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="rSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+    </div>
+    <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
 
   <!-- HOTEL REVIEW SECTION -->
   <div style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
@@ -337,6 +344,13 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Emoji Icon</label>
         <input class="form-input" type="text" id="hEmoji" placeholder="🏨" value="🏨" style="margin-top:6px;">
       </div>
+    </div>
+    <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="hSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <button onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
   </div>
@@ -394,6 +408,13 @@
         <input class="form-input" type="text" id="dEmoji" placeholder="🍸" value="🍸" style="margin-top:6px;">
       </div>
     </div>
+    <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="dSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+    </div>
     <button onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
   </div>
 
@@ -449,6 +470,13 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Emoji Icon</label>
         <input class="form-input" type="text" id="sEmoji" placeholder="🛍️" value="🛍️" style="margin-top:6px;">
       </div>
+    </div>
+    <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="sSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <button onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
   </div>
@@ -506,6 +534,13 @@
         <input class="form-input" type="text" id="cEmoji" placeholder="🎭" value="🎭" style="margin-top:6px;">
       </div>
     </div>
+    <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="cSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+    </div>
     <button onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
   </div>
 
@@ -561,6 +596,13 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Emoji Icon</label>
         <input class="form-input" type="text" id="hlEmoji" placeholder="💪" value="💪" style="margin-top:6px;">
       </div>
+    </div>
+    <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;display:flex;align-items:center;gap:6px;">
+        📅 Schedule for later (optional)
+      </label>
+      <input class="form-input" type="datetime-local" id="hlSchedule" style="margin-top:6px;">
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <button onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
   </div>
@@ -701,6 +743,8 @@
     btn.disabled = true;
     btn.textContent = 'Publishing...';
 
+    const rScheduleVal = document.getElementById('rSchedule').value;
+    const rPublishAt = rScheduleVal ? new Date(rScheduleVal) : new Date();
     try {
       let photoUrl = '';
       if (photoFile) {
@@ -715,13 +759,15 @@
         rating: adminRating,
         photoUrl,
         createdAt: serverTimestamp(),
+        publishAt: rPublishAt,
+        status: rScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
 
       showToast('Review published! 🍽️');
 
       // Clear form
-      ['rName','rCity','rPrice','rDate','rHours','rLat','rLng','rReview','rTags'].forEach(id => document.getElementById(id).value = '');
+      ['rName','rCity','rPrice','rDate','rHours','rLat','rLng','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';
       removePhoto();
@@ -972,12 +1018,16 @@
     const tags = document.getElementById('hTags').value;
     const emoji = document.getElementById('hEmoji').value || '🏨';
     if (!name || !city || !review || !hotelRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const hScheduleVal = document.getElementById('hSchedule').value;
+    const hPublishAt = hScheduleVal ? new Date(hScheduleVal) : new Date();
     try {
       await addDoc(collection(db, 'hotelreviews'), {
         name, city, price, date, review, emoji,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: hotelRating,
         createdAt: serverTimestamp(),
+        publishAt: hPublishAt,
+        status: hScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
       showToast('Hotel review published! 🏨');
@@ -987,6 +1037,7 @@
       document.getElementById('hDate').value = '';
       document.getElementById('hReview').value = '';
       document.getElementById('hTags').value = '';
+      document.getElementById('hSchedule').value = '';
       document.getElementById('hEmoji').value = '🏨';
       hotelRating = 0;
       document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1024,6 +1075,8 @@
     const tags = document.getElementById('dTags').value;
     const emoji = document.getElementById('dEmoji').value || '🍸';
     if (!name || !city || !review || !drinkRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const dScheduleVal = document.getElementById('dSchedule').value;
+    const dPublishAt = dScheduleVal ? new Date(dScheduleVal) : new Date();
     try {
       await addDoc(collection(db, 'drinkspots'), {
         name, city, price, date, review, emoji,
@@ -1032,10 +1085,12 @@
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: drinkRating,
         createdAt: serverTimestamp(),
+        publishAt: dPublishAt,
+        status: dScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
       showToast('Drink spot published! 🍸');
-      ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags'].forEach(id => document.getElementById(id).value = '');
+      ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('dEmoji').value = '🍸';
       drinkRating = 0;
       document.querySelectorAll('#drinkStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1053,6 +1108,8 @@
     const tags = document.getElementById('sTags').value;
     const emoji = document.getElementById('sEmoji').value || '🛍️';
     if (!name || !city || !review || !shopRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const sScheduleVal = document.getElementById('sSchedule').value;
+    const sPublishAt = sScheduleVal ? new Date(sScheduleVal) : new Date();
     try {
       await addDoc(collection(db, 'shopspots'), {
         name, city, price, date, review, emoji,
@@ -1061,10 +1118,12 @@
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: shopRating,
         createdAt: serverTimestamp(),
+        publishAt: sPublishAt,
+        status: sScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
       showToast('Shop spot published! 🛍️');
-      ['sName','sCity','sPrice','sDate','sLat','sLng','sReview','sTags'].forEach(id => document.getElementById(id).value = '');
+      ['sName','sCity','sPrice','sDate','sLat','sLng','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('sEmoji').value = '🛍️';
       shopRating = 0;
       document.querySelectorAll('#shopStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1082,6 +1141,8 @@
     const tags = document.getElementById('cTags').value;
     const emoji = document.getElementById('cEmoji').value || '🎭';
     if (!name || !city || !review || !cultureRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const cScheduleVal = document.getElementById('cSchedule').value;
+    const cPublishAt = cScheduleVal ? new Date(cScheduleVal) : new Date();
     try {
       await addDoc(collection(db, 'culturespots'), {
         name, city, price, date, review, emoji,
@@ -1090,10 +1151,12 @@
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: cultureRating,
         createdAt: serverTimestamp(),
+        publishAt: cPublishAt,
+        status: cScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
       showToast('Culture spot published! 🎭');
-      ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags'].forEach(id => document.getElementById(id).value = '');
+      ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('cEmoji').value = '🎭';
       cultureRating = 0;
       document.querySelectorAll('#cultureStarRating span').forEach(s => s.style.color = '#ddd');
@@ -1111,6 +1174,8 @@
     const tags = document.getElementById('hlTags').value;
     const emoji = document.getElementById('hlEmoji').value || '💪';
     if (!name || !city || !review || !healthRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const hlScheduleVal = document.getElementById('hlSchedule').value;
+    const hlPublishAt = hlScheduleVal ? new Date(hlScheduleVal) : new Date();
     try {
       await addDoc(collection(db, 'healthspots'), {
         name, city, price, date, review, emoji,
@@ -1119,10 +1184,12 @@
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: healthRating,
         createdAt: serverTimestamp(),
+        publishAt: hlPublishAt,
+        status: hlScheduleVal ? 'scheduled' : 'published',
         author: 'Jong Foodie'
       });
       showToast('Health spot published! 💪');
-      ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags'].forEach(id => document.getElementById(id).value = '');
+      ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('hlEmoji').value = '💪';
       healthRating = 0;
       document.querySelectorAll('#healthStarRating span').forEach(s => s.style.color = '#ddd');

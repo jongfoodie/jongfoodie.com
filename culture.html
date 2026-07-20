@@ -220,7 +220,12 @@
     try {
       const q = query(collection(db, 'culturespots'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      allSpots = snap.docs.map(d => d.data());
+      const now = new Date();
+      allSpots = snap.docs.map(d => d.data()).filter(s => {
+        if (!s.publishAt) return true; // no schedule = always visible
+        const pubDate = s.publishAt.toDate ? s.publishAt.toDate() : new Date(s.publishAt);
+        return pubDate <= now;
+      });
       renderSpots(allSpots);
     } catch (e) {
       document.getElementById('spotList').innerHTML = `
