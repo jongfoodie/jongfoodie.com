@@ -112,13 +112,17 @@
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html">🏠 Home</a>
   <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="friends.html">🤝 Friends</a>
   <a href="about.html">👤 About me</a>
-  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Jong Hotel</a>
+  <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
 
 <nav>
@@ -126,11 +130,13 @@
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
-    <li><a href="guides.html">Guides</a></li>
-    <li><a href="videos.html">Videos</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="culture.html">Culture</a></li>
+    <li><a href="health.html">Health</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
-    <li><a href="hotel.html" class="active" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
+    <li><a href="hotel.html" class="active" style="color:var(--accent);font-weight:600;">🏨 Stay</a></li>
   </ul>
   <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
@@ -274,6 +280,60 @@ function filterHotels(val) {
 renderHotels(hotels);
 </script>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadFirebaseHotels() {
+    try {
+      const q = query(collection(db, 'hotelreviews'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) return;
+
+      const now = new Date();
+      const visible = snap.docs
+        .map(d => d.data())
+        .filter(r => {
+          if (!r.publishAt) return true; // no schedule = always visible
+          const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
+          return pubDate <= now;
+        });
+
+      // Map Firebase fields onto the same shape renderHotels() expects
+      const mapped = visible.map(r => ({
+        name: r.name,
+        address: r.city || '',
+        type: r.price || '',
+        stars: r.rating || 0,
+        emoji: r.emoji || '🏨',
+        desc: r.review || '',
+        tags: r.tags || [],
+        location: r.city || ''
+      }));
+
+      // Add newest live entries to the top of the existing hardcoded list
+      hotels.unshift(...mapped);
+      renderHotels(hotels);
+    } catch(e) {
+      console.error('Could not load hotel reviews from Firebase:', e);
+    }
+  }
+
+  loadFirebaseHotels();
+</script>
+
 <footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
   <div style="max-width:1000px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
@@ -286,9 +346,13 @@ renderHotels(hotels);
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
           <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
           <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
           <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
-          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Jong Hotel</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>

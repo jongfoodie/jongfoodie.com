@@ -954,8 +954,15 @@
       if (!grid) return;
 
       const bgColors = ['bg-sushi','bg-burger','bg-ramen','bg-pastry','bg-cafe','bg-seafood'];
+      const now = new Date();
+      const visibleDocs = snap.docs.filter(d => {
+        const r = d.data();
+        if (!r.publishAt) return true; // no schedule = always visible
+        const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
+        return pubDate <= now;
+      });
 
-      snap.docs.forEach((d, i) => {
+      visibleDocs.forEach((d, i) => {
         const r = d.data();
         console.log('📖 Review loaded:', r.name, '| photoUrl:', r.photoUrl || '(geen foto)');
         const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
@@ -1002,7 +1009,7 @@
       const countEl = document.querySelector('.reviews-count');
       if (countEl) {
         const existing = parseInt(countEl.textContent) || 20;
-        countEl.textContent = existing + snap.docs.length;
+        countEl.textContent = existing + visibleDocs.length;
       }
     } catch(e) {
       console.error('Could not load new reviews:', e);
