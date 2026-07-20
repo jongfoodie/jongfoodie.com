@@ -218,6 +218,118 @@
     </div>
     <div id="hotelPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"></div>
 
+    <!-- RATE A DRINK SPOT -->
+    <p class="section-label">Rate a Drink Spot</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <div style="margin-bottom:1rem;">
+        <input id="drinkSelect" type="text" placeholder="Name of the bar/café..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+        <div id="drinkStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
+          <span onclick="setDrinkRating(1)">☆</span>
+          <span onclick="setDrinkRating(2)">☆</span>
+          <span onclick="setDrinkRating(3)">☆</span>
+          <span onclick="setDrinkRating(4)">☆</span>
+          <span onclick="setDrinkRating(5)">☆</span>
+        </div>
+        <textarea id="drinkReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
+        <button class="btn-accent" onclick="submitDrinkRating()" style="width:100%;">Submit Drink Rating</button>
+      </div>
+    </div>
+
+    <!-- DRINK PICKS -->
+    <p class="section-label">Drink Picks</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great bar or café that's not on Jong Drink yet? Share it!</p>
+      <input id="drinkPickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <input id="drinkPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <textarea id="drinkPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
+      <button class="btn-accent" onclick="submitDrinkPick()" style="width:100%;">Recommend this Spot</button>
+    </div>
+    <div id="drinkPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"></div>
+
+    <!-- RATE A SHOP -->
+    <p class="section-label">Rate a Shop</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <div style="margin-bottom:1rem;">
+        <input id="shopSelect" type="text" placeholder="Name of the shop/market..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+        <div id="shopStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
+          <span onclick="setShopRating(1)">☆</span>
+          <span onclick="setShopRating(2)">☆</span>
+          <span onclick="setShopRating(3)">☆</span>
+          <span onclick="setShopRating(4)">☆</span>
+          <span onclick="setShopRating(5)">☆</span>
+        </div>
+        <textarea id="shopReviewText" class="post-input" rows="3" placeholder="What did you think of this shop? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
+        <button class="btn-accent" onclick="submitShopRating()" style="width:100%;">Submit Shop Rating</button>
+      </div>
+    </div>
+
+    <!-- SHOP PICKS -->
+    <p class="section-label">Shop Picks</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great shop that's not on Jong Shop yet? Share it!</p>
+      <input id="shopPickName" type="text" placeholder="Shop name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <input id="shopPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <textarea id="shopPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
+      <button class="btn-accent" onclick="submitShopPick()" style="width:100%;">Recommend this Shop</button>
+    </div>
+    <div id="shopPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"></div>
+
+    <!-- RATE A CULTURE SPOT -->
+    <p class="section-label">Rate a Culture Spot</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <div style="margin-bottom:1rem;">
+        <input id="cultureSelect" type="text" placeholder="Name of the museum/gallery..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+        <div id="cultureStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
+          <span onclick="setCultureRating(1)">☆</span>
+          <span onclick="setCultureRating(2)">☆</span>
+          <span onclick="setCultureRating(3)">☆</span>
+          <span onclick="setCultureRating(4)">☆</span>
+          <span onclick="setCultureRating(5)">☆</span>
+        </div>
+        <textarea id="cultureReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
+        <button class="btn-accent" onclick="submitCultureRating()" style="width:100%;">Submit Culture Rating</button>
+      </div>
+    </div>
+
+    <!-- CULTURE PICKS -->
+    <p class="section-label">Culture Picks</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great museum or gallery that's not on Jong Culture yet? Share it!</p>
+      <input id="culturePickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <input id="culturePickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <textarea id="culturePickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
+      <button class="btn-accent" onclick="submitCulturePick()" style="width:100%;">Recommend this Spot</button>
+    </div>
+    <div id="culturePicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"></div>
+
+    <!-- RATE A HEALTH SPOT -->
+    <p class="section-label">Rate a Health Spot</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <div style="margin-bottom:1rem;">
+        <input id="healthSelect" type="text" placeholder="Name of the gym/spa..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+        <div id="healthStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
+          <span onclick="setHealthRating(1)">☆</span>
+          <span onclick="setHealthRating(2)">☆</span>
+          <span onclick="setHealthRating(3)">☆</span>
+          <span onclick="setHealthRating(4)">☆</span>
+          <span onclick="setHealthRating(5)">☆</span>
+        </div>
+        <textarea id="healthReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
+        <button class="btn-accent" onclick="submitHealthRating()" style="width:100%;">Submit Health Rating</button>
+      </div>
+    </div>
+
+    <!-- HEALTH PICKS -->
+    <p class="section-label">Health Picks</p>
+    <div class="post-form" style="margin-bottom:2rem;">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great gym or spa that's not on Jong Health yet? Share it!</p>
+      <input id="healthPickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <input id="healthPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
+      <textarea id="healthPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
+      <button class="btn-accent" onclick="submitHealthPick()" style="width:100%;">Recommend this Spot</button>
+    </div>
+    <div id="healthPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"></div>
+
     <p class="section-label">Community Posts</p>
     <div class="posts-list">
 
@@ -469,6 +581,206 @@
       <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
           <span style="font-size:20px;">🏨</span>
+          <p style="font-weight:600;font-size:14px;">${p.name}</p>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">📍 ${p.location}</p>
+        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+      </div>`).join('');
+  }
+
+  // Drink Spot rating
+  let drinkRating = 0;
+  function setDrinkRating(n) {
+    drinkRating = n;
+    const stars = document.querySelectorAll('#drinkStars span');
+    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
+    document.querySelectorAll('#drinkStars span').forEach((s, i) => {
+      s.style.color = i < n ? '#C8901A' : '#ccc';
+    });
+  }
+  function submitDrinkRating() {
+    const name = document.getElementById('drinkSelect').value.trim();
+    const text = document.getElementById('drinkReviewText').value.trim();
+    if (!name) { showToast('Please enter a name first!'); return; }
+    if (!drinkRating) { showToast('Please give a star rating!'); return; }
+    if (!text) { showToast('Please write something about your visit!'); return; }
+    showToast('Drink Spot rating submitted! 🍸');
+    document.getElementById('drinkSelect').value = '';
+    document.getElementById('drinkReviewText').value = '';
+    setDrinkRating(0);
+  }
+
+  // Drink Spot picks
+  const drinkPicks = [];
+  function submitDrinkPick() {
+    const name = document.getElementById('drinkPickName').value.trim();
+    const location = document.getElementById('drinkPickLocation').value.trim();
+    const why = document.getElementById('drinkPickWhy').value.trim();
+    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
+    drinkPicks.unshift({ name, location, why });
+    renderDrinkPicks();
+    document.getElementById('drinkPickName').value = '';
+    document.getElementById('drinkPickLocation').value = '';
+    document.getElementById('drinkPickWhy').value = '';
+    showToast('Drink Spot pick added! 🍸');
+  }
+  function renderDrinkPicks() {
+    const list = document.getElementById('drinkPicksList');
+    if (!drinkPicks.length) { list.innerHTML = ''; return; }
+    list.innerHTML = drinkPicks.map(p => `
+      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:20px;">🍸</span>
+          <p style="font-weight:600;font-size:14px;">${p.name}</p>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">📍 ${p.location}</p>
+        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+      </div>`).join('');
+  }
+
+  // Shop rating
+  let shopRating = 0;
+  function setShopRating(n) {
+    shopRating = n;
+    const stars = document.querySelectorAll('#shopStars span');
+    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
+    document.querySelectorAll('#shopStars span').forEach((s, i) => {
+      s.style.color = i < n ? '#C8901A' : '#ccc';
+    });
+  }
+  function submitShopRating() {
+    const name = document.getElementById('shopSelect').value.trim();
+    const text = document.getElementById('shopReviewText').value.trim();
+    if (!name) { showToast('Please enter a name first!'); return; }
+    if (!shopRating) { showToast('Please give a star rating!'); return; }
+    if (!text) { showToast('Please write something about your visit!'); return; }
+    showToast('Shop rating submitted! 🛍️');
+    document.getElementById('shopSelect').value = '';
+    document.getElementById('shopReviewText').value = '';
+    setShopRating(0);
+  }
+
+  // Shop picks
+  const shopPicks = [];
+  function submitShopPick() {
+    const name = document.getElementById('shopPickName').value.trim();
+    const location = document.getElementById('shopPickLocation').value.trim();
+    const why = document.getElementById('shopPickWhy').value.trim();
+    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
+    shopPicks.unshift({ name, location, why });
+    renderShopPicks();
+    document.getElementById('shopPickName').value = '';
+    document.getElementById('shopPickLocation').value = '';
+    document.getElementById('shopPickWhy').value = '';
+    showToast('Shop pick added! 🛍️');
+  }
+  function renderShopPicks() {
+    const list = document.getElementById('shopPicksList');
+    if (!shopPicks.length) { list.innerHTML = ''; return; }
+    list.innerHTML = shopPicks.map(p => `
+      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:20px;">🛍️</span>
+          <p style="font-weight:600;font-size:14px;">${p.name}</p>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">📍 ${p.location}</p>
+        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+      </div>`).join('');
+  }
+
+  // Culture Spot rating
+  let cultureRating = 0;
+  function setCultureRating(n) {
+    cultureRating = n;
+    const stars = document.querySelectorAll('#cultureStars span');
+    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
+    document.querySelectorAll('#cultureStars span').forEach((s, i) => {
+      s.style.color = i < n ? '#C8901A' : '#ccc';
+    });
+  }
+  function submitCultureRating() {
+    const name = document.getElementById('cultureSelect').value.trim();
+    const text = document.getElementById('cultureReviewText').value.trim();
+    if (!name) { showToast('Please enter a name first!'); return; }
+    if (!cultureRating) { showToast('Please give a star rating!'); return; }
+    if (!text) { showToast('Please write something about your visit!'); return; }
+    showToast('Culture Spot rating submitted! 🎭');
+    document.getElementById('cultureSelect').value = '';
+    document.getElementById('cultureReviewText').value = '';
+    setCultureRating(0);
+  }
+
+  // Culture Spot picks
+  const culturePicks = [];
+  function submitCulturePick() {
+    const name = document.getElementById('culturePickName').value.trim();
+    const location = document.getElementById('culturePickLocation').value.trim();
+    const why = document.getElementById('culturePickWhy').value.trim();
+    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
+    culturePicks.unshift({ name, location, why });
+    renderCulturePicks();
+    document.getElementById('culturePickName').value = '';
+    document.getElementById('culturePickLocation').value = '';
+    document.getElementById('culturePickWhy').value = '';
+    showToast('Culture Spot pick added! 🎭');
+  }
+  function renderCulturePicks() {
+    const list = document.getElementById('culturePicksList');
+    if (!culturePicks.length) { list.innerHTML = ''; return; }
+    list.innerHTML = culturePicks.map(p => `
+      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:20px;">🎭</span>
+          <p style="font-weight:600;font-size:14px;">${p.name}</p>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">📍 ${p.location}</p>
+        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+      </div>`).join('');
+  }
+
+  // Health Spot rating
+  let healthRating = 0;
+  function setHealthRating(n) {
+    healthRating = n;
+    const stars = document.querySelectorAll('#healthStars span');
+    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
+    document.querySelectorAll('#healthStars span').forEach((s, i) => {
+      s.style.color = i < n ? '#C8901A' : '#ccc';
+    });
+  }
+  function submitHealthRating() {
+    const name = document.getElementById('healthSelect').value.trim();
+    const text = document.getElementById('healthReviewText').value.trim();
+    if (!name) { showToast('Please enter a name first!'); return; }
+    if (!healthRating) { showToast('Please give a star rating!'); return; }
+    if (!text) { showToast('Please write something about your visit!'); return; }
+    showToast('Health Spot rating submitted! 💪');
+    document.getElementById('healthSelect').value = '';
+    document.getElementById('healthReviewText').value = '';
+    setHealthRating(0);
+  }
+
+  // Health Spot picks
+  const healthPicks = [];
+  function submitHealthPick() {
+    const name = document.getElementById('healthPickName').value.trim();
+    const location = document.getElementById('healthPickLocation').value.trim();
+    const why = document.getElementById('healthPickWhy').value.trim();
+    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
+    healthPicks.unshift({ name, location, why });
+    renderHealthPicks();
+    document.getElementById('healthPickName').value = '';
+    document.getElementById('healthPickLocation').value = '';
+    document.getElementById('healthPickWhy').value = '';
+    showToast('Health Spot pick added! 💪');
+  }
+  function renderHealthPicks() {
+    const list = document.getElementById('healthPicksList');
+    if (!healthPicks.length) { list.innerHTML = ''; return; }
+    list.innerHTML = healthPicks.map(p => `
+      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:20px;">💪</span>
           <p style="font-weight:600;font-size:14px;">${p.name}</p>
         </div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">📍 ${p.location}</p>
