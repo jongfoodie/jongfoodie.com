@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1693,7 +1694,7 @@
         '<p class="card-excerpt">' + (r.review||'').substring(0,120) + (r.review && r.review.length > 120 ? '…' : '') + '</p>' +
         '<div class="card-tags">' + tags + '</div>' +
         '</div><div class="card-footer"><div class="author"><div class="avatar">JF</div><span class="author-name">Jong Foodie</span></div>' +
-        '<div class="card-actions"><button class="icon-btn" onclick="toggleLike(this)">♡</button><button class="icon-btn" onclick="showToast('Link copied!')">↗</button></div></div></div>';
+        '<div class="card-actions"><button class="icon-btn" onclick="toggleLike(this)">♡</button><button class="icon-btn" onclick="showToast(&quot;Link copied!&quot;)">↗</button></div></div></div>';
     } catch(e) { console.log('Featured error:', e); }
   }
   loadFeaturedReview();
@@ -1927,18 +1928,6 @@
   }
 </script>
 
-<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
-  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
-  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
-    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
-    <button onclick="declineCookies()" style="background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Decline</button>
-  </div>
-</div>
-<script>
-(function(){var c=localStorage.getItem('jf_cookie_consent');if(!c){document.getElementById('cookieBanner').style.display='flex';}})();
-function acceptCookies(){localStorage.setItem('jf_cookie_consent','accepted');document.getElementById('cookieBanner').style.display='none';}
-function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');document.getElementById('cookieBanner').style.display='none';}
-</script>
 <footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
   <div style="max-width:960px;margin:0 auto;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
@@ -1976,6 +1965,7 @@ function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');d
     </div>
   </div>
 </footer>
+
 <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
   <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. By continuing you agree to our <a href="privacy.html" style="color:#D4521A;">cookie policy</a>.</p>
   <div style="display:flex;gap:0.75rem;flex-shrink:0;">
