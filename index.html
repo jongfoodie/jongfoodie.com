@@ -1628,7 +1628,7 @@
       const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
       const tags = (r.tags || []).slice(0, 3).map(t => '<span class="card-tag">' + t + '</span>').join('');
       const imgHtml = r.photoUrl
-        ? '<div class="featured-img" style="background-color:#3D2F1A;background-image:url(' + JSON.stringify(r.photoUrl) + ');background-size:cover;background-position:center;"></div>'
+        ? '<div class="featured-img" style="background-color:#3D2F1A;background-image:url(\'' + r.photoUrl.replace(/'/g, "\\'") + '\');background-size:cover;background-position:center;"></div>'
         : '<div class="featured-img bg-cafe" style="font-size:72px;">' + (r.emoji || '🍽️') + '</div>';
       card.innerHTML = imgHtml +
         '<div class="featured-body"><div>' +
@@ -1690,7 +1690,7 @@
         const src = item._src;
         const stars = item.rating ? '★'.repeat(Math.round(item.rating)) + '☆'.repeat(5 - Math.round(item.rating)) : '';
         const imgStyle = item.photoUrl
-          ? `background-color:#3D2F1A;background-image:url(${JSON.stringify(item.photoUrl)});background-size:cover;background-position:center;`
+          ? `background-color:#3D2F1A;background-image:url('${item.photoUrl.replace(/'/g, "\\'")}');background-size:cover;background-position:center;`
           : '';
         const imgClass = item.photoUrl ? '' : src.bg;
         const imgContent = item.photoUrl ? '' : (item.emoji || src.emoji);
