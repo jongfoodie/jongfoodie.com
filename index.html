@@ -1001,68 +1001,12 @@
 
     <!-- GRID -->
     <p class="section-label">Latest Reviews</p>
-    <div class="cards-grid">
+    <div class="cards-grid" id="cardsGrid">
       <div class="mini-card">
-        <div class="mini-img bg-cafe">☕</div>
+        <div class="mini-img bg-cafe">⏳</div>
         <div class="mini-body">
-          <p class="mini-meta">The Coffee · Drinks · Amsterdam</p>
-          <h3 class="mini-title">The Coffee</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Must-try in Amsterdam: strawberry matcha + a fresh cookie.</p>
-          <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'The Coffee')">🔖</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mini-card">
-        <div class="mini-img bg-ramen">🌿</div>
-        <div class="mini-body">
-          <p class="mini-meta">Secret Garden · Restaurant · Amsterdam</p>
-          <h3 class="mini-title">SECRET GARDEN</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Must-tries: the Tuna Tartare, Beef Tenderloin and Rib-Eye (400g).</p>
-          <div class="mini-footer">
-            <span class="mini-rating">★★★★☆ 4.0</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Secret Garden')">🔖</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mini-card">
-        <div class="mini-img bg-sushi">🍣</div>
-        <div class="mini-body">
-          <p class="mini-meta">Izakaya Amsterdam · Sushi / Japanese · Luxury</p>
-          <h3 class="mini-title">Izakaya Amsterdam</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">The best sushi in the Netherlands. The food is ridiculously fresh, the rolls are next-level creative.</p>
-          <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Izakaya Amsterdam')">🔖</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mini-card">
-        <div class="mini-img bg-burger">🍽️</div>
-        <div class="mini-body">
-          <p class="mini-meta">Mondi Amsterdam · Restaurant · €74</p>
-          <h3 class="mini-title">Mondi Amsterdam Nieuw-West</h3>
-          <p style="font-size:13px;color:var(--ink-soft);">Super cozy and inviting, top-notch service, and everything was absolutely delicious.</p>
-          <div class="mini-footer">
-            <span class="mini-rating">★★★★★ 5.0</span>
-            <div style="display:flex;gap:6px;align-items:center;">
-              <a href="reviews.html" class="mini-read">Read review →</a>
-              <button class="mini-save" onclick="toggleMiniSave(this, 'Mondi Amsterdam')">🔖</button>
-            </div>
-          </div>
+          <p class="mini-meta">Loading...</p>
+          <h3 class="mini-title">Loading latest content...</h3>
         </div>
       </div>
     </div>
@@ -1684,7 +1628,7 @@
       const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
       const tags = (r.tags || []).slice(0, 3).map(t => '<span class="card-tag">' + t + '</span>').join('');
       const imgHtml = r.photoUrl
-        ? '<div class="featured-img" style="background:url(' + JSON.stringify(r.photoUrl) + ') center/cover no-repeat;"></div>'
+        ? '<div class="featured-img" style="background-color:#3D2F1A;background-image:url(' + JSON.stringify(r.photoUrl) + ');background-size:cover;background-position:center;"></div>'
         : '<div class="featured-img bg-cafe" style="font-size:72px;">' + (r.emoji || '🍽️') + '</div>';
       card.innerHTML = imgHtml +
         '<div class="featured-body"><div>' +
@@ -1698,6 +1642,83 @@
     } catch(e) { console.log('Featured error:', e); }
   }
   loadFeaturedReview();
+
+  // ── LATEST FROM ALL CATEGORIES (Eat, Drink, Shop, Culture, Health, Stay) ──
+  const CATEGORY_SOURCES = [
+    { coll: 'reviews',      page: 'reviews.html', label: 'Eat',     bg: 'bg-cafe',   emoji: '🍽️' },
+    { coll: 'drinkspots',   page: 'drink.html',   label: 'Drink',   bg: 'bg-ramen',  emoji: '🍸' },
+    { coll: 'shopspots',    page: 'shop.html',    label: 'Shop',    bg: 'bg-burger', emoji: '🛍️' },
+    { coll: 'culturespots', page: 'culture.html', label: 'Culture', bg: 'bg-pastry', emoji: '🎭' },
+    { coll: 'healthspots',  page: 'health.html',  label: 'Health',  bg: 'bg-sushi',  emoji: '💪' },
+    { coll: 'hotelreviews', page: 'hotel.html',   label: 'Stay',    bg: 'bg-tacos',  emoji: '🏨' },
+  ];
+
+  function toMillis(ts) {
+    if (!ts) return 0;
+    if (ts.toDate) return ts.toDate().getTime();
+    if (ts.seconds) return ts.seconds * 1000;
+    return new Date(ts).getTime() || 0;
+  }
+
+  function isVisibleNow(item) {
+    if (!item.publishAt) return true;
+    const pubDate = item.publishAt.toDate ? item.publishAt.toDate() : new Date(item.publishAt);
+    return pubDate <= new Date();
+  }
+
+  async function loadLatestFromAllCategories() {
+    const grid = document.getElementById('cardsGrid');
+    try {
+      const results = await Promise.all(
+        CATEGORY_SOURCES.map(src =>
+          getDocs(query(collection(db, src.coll), orderBy('createdAt', 'desc')))
+            .then(snap => snap.docs.map(d => ({ ...d.data(), _src: src })))
+            .catch(() => [])
+        )
+      );
+
+      let allItems = results.flat().filter(isVisibleNow);
+      allItems.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+      allItems = allItems.slice(0, 8);
+
+      if (allItems.length === 0) {
+        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No content published yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = allItems.map(item => {
+        const src = item._src;
+        const stars = item.rating ? '★'.repeat(Math.round(item.rating)) + '☆'.repeat(5 - Math.round(item.rating)) : '';
+        const imgStyle = item.photoUrl
+          ? `background-color:#3D2F1A;background-image:url(${JSON.stringify(item.photoUrl)});background-size:cover;background-position:center;`
+          : '';
+        const imgClass = item.photoUrl ? '' : src.bg;
+        const imgContent = item.photoUrl ? '' : (item.emoji || src.emoji);
+        return `<div class="mini-card">
+          <div class="mini-img ${imgClass}" style="${imgStyle}">${imgContent}</div>
+          <div class="mini-body">
+            <p class="mini-meta" style="display:flex;align-items:center;gap:6px;">
+              <span style="background:var(--accent-pale);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;letter-spacing:0.05em;text-transform:uppercase;">${src.label}</span>
+              ${item.city || ''}
+            </p>
+            <h3 class="mini-title">${item.name || ''}</h3>
+            <p style="font-size:13px;color:var(--ink-soft);">${(item.review || '').substring(0, 90)}${item.review && item.review.length > 90 ? '…' : ''}</p>
+            <div class="mini-footer">
+              <span class="mini-rating">${stars}</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <a href="${src.page}" class="mini-read">Read more →</a>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      console.log('Latest-from-all error:', e);
+      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load latest content.</p>';
+    }
+  }
+  loadLatestFromAllCategories();
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Load all picks from Firestore on page load
   async function loadPicks() {
