@@ -1867,14 +1867,18 @@
       let foodReviews, hotelReviews, friends;
 
       if (user.email === 'jongfoodie@gmail.com') {
-        // Admin: count from Firestore collections
+        // Admin: count from Firestore collections, using the same
+        // pre-Firestore legacy offsets as the hero stats above, so both
+        // numbers always agree with each other.
         const reviewsSnap = await getDocs(collection(db, 'reviews'));
-        foodReviews = reviewsSnap.size;
+        foodReviews = reviewsSnap.size + 52;
 
         const hotelSnap = await getDocs(collection(db, 'hotelreviews'));
-        hotelReviews = hotelSnap.size;
+        hotelReviews = hotelSnap.size + 6;
 
-        friends = 3; // fixed for admin
+        // Live follower count: anyone who follows the "Jong Foodie" account
+        const followsSnap = await getDocs(query(collection(db, 'follows'), where('following', '==', 'Jong Foodie')));
+        friends = followsSnap.size;
       } else {
         // Regular user: count their own picks and ratings
         const reviewsSnap = await getDocs(query(collection(db, 'picks'), where('userEmail', '==', user.email)));
@@ -1903,8 +1907,18 @@
     const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
     const stayLoggedIn = document.getElementById('stayLoggedIn') ? document.getElementById('stayLoggedIn').checked : true;
     if (!email || !password) { showToast('Please fill in all fields!'); return; }
+
+    // Best-effort: some browsers (notably Safari with strict privacy/tracking
+    // protection) can reject this persistence call. That should never block
+    // or be confused with an actual login failure, so it gets its own
+    // try/catch and just falls back to Firebase's default persistence.
     try {
       await setPersistence(auth, stayLoggedIn ? browserLocalPersistence : browserSessionPersistence);
+    } catch(persistErr) {
+      console.error('Persistence error (continuing with sign-in anyway):', persistErr.code, persistErr.message);
+    }
+
+    try {
       await signInWithEmailAndPassword(auth, email, password);
       closeModal();
       showToast('Welcome back! 👋');
