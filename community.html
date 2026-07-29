@@ -200,6 +200,7 @@
         <button class="btn-accent" onclick="submitRestaurantRating()" style="width:100%;">Submit Restaurant Rating</button>
       </div>
     </div>
+    <div id="restaurantRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading restaurant ratings...</p></div>
 
     <!-- RESTAURANT PICKS -->
     <p class="section-label">Restaurant Picks</p>
@@ -238,6 +239,7 @@
         <button class="btn-accent" onclick="submitHotelRating()" style="width:100%;">Submit Hotel Rating</button>
       </div>
     </div>
+    <div id="hotelRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading hotel ratings...</p></div>
 
     <!-- HOTEL PICKS -->
     <p class="section-label">Hotel Picks</p>
@@ -276,6 +278,7 @@
         <button class="btn-accent" onclick="submitDrinkRating()" style="width:100%;">Submit Drink Rating</button>
       </div>
     </div>
+    <div id="drinkRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading drink ratings...</p></div>
 
     <!-- DRINK PICKS -->
     <p class="section-label">Drink Picks</p>
@@ -314,6 +317,7 @@
         <button class="btn-accent" onclick="submitShopRating()" style="width:100%;">Submit Shop Rating</button>
       </div>
     </div>
+    <div id="shopRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading shop ratings...</p></div>
 
     <!-- SHOP PICKS -->
     <p class="section-label">Shop Picks</p>
@@ -352,6 +356,7 @@
         <button class="btn-accent" onclick="submitCultureRating()" style="width:100%;">Submit Culture Rating</button>
       </div>
     </div>
+    <div id="cultureRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading culture ratings...</p></div>
 
     <!-- CULTURE PICKS -->
     <p class="section-label">Culture Picks</p>
@@ -390,6 +395,7 @@
         <button class="btn-accent" onclick="submitHealthRating()" style="width:100%;">Submit Health Rating</button>
       </div>
     </div>
+    <div id="healthRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading health ratings...</p></div>
 
     <!-- HEALTH PICKS -->
     <p class="section-label">Health Picks</p>
@@ -618,137 +624,68 @@
     btn.style.color = isLiked ? '' : 'var(--accent)';
   }
 
-  // Hotel rating
-  let hotelRating = 0;
+  // Rating star widgets — values stored on window so the Firestore
+  // submit logic in the module script below can read the chosen value
+  window.hotelRatingVal = 0;
   function setHotelRating(n) {
-    hotelRating = n;
+    window.hotelRatingVal = n;
     const stars = document.querySelectorAll('#hotelStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#hotelStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitHotelRating() {
-    const hotel = document.getElementById('hotelSelect').value;
-    const text = document.getElementById('hotelReviewText').value.trim();
-    if (!hotel) { showToast('Please select a hotel first!'); return; }
-    if (!hotelRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your stay!'); return; }
-    showToast('Hotel rating submitted! 🏨');
-    document.getElementById('hotelSelect').value = '';
-    document.getElementById('hotelReviewText').value = '';
-    setHotelRating(0);
-  }
 
-  // Drink Spot rating
-  let drinkRating = 0;
+  window.drinkRatingVal = 0;
   function setDrinkRating(n) {
-    drinkRating = n;
+    window.drinkRatingVal = n;
     const stars = document.querySelectorAll('#drinkStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#drinkStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitDrinkRating() {
-    const name = document.getElementById('drinkSelect').value.trim();
-    const text = document.getElementById('drinkReviewText').value.trim();
-    if (!name) { showToast('Please enter a name first!'); return; }
-    if (!drinkRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your visit!'); return; }
-    showToast('Drink Spot rating submitted! 🍸');
-    document.getElementById('drinkSelect').value = '';
-    document.getElementById('drinkReviewText').value = '';
-    setDrinkRating(0);
-  }
 
-  // Shop rating
-  let shopRating = 0;
+  window.shopRatingVal = 0;
   function setShopRating(n) {
-    shopRating = n;
+    window.shopRatingVal = n;
     const stars = document.querySelectorAll('#shopStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#shopStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitShopRating() {
-    const name = document.getElementById('shopSelect').value.trim();
-    const text = document.getElementById('shopReviewText').value.trim();
-    if (!name) { showToast('Please enter a name first!'); return; }
-    if (!shopRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your visit!'); return; }
-    showToast('Shop rating submitted! 🛍️');
-    document.getElementById('shopSelect').value = '';
-    document.getElementById('shopReviewText').value = '';
-    setShopRating(0);
-  }
 
-  // Culture Spot rating
-  let cultureRating = 0;
+  window.cultureRatingVal = 0;
   function setCultureRating(n) {
-    cultureRating = n;
+    window.cultureRatingVal = n;
     const stars = document.querySelectorAll('#cultureStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#cultureStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitCultureRating() {
-    const name = document.getElementById('cultureSelect').value.trim();
-    const text = document.getElementById('cultureReviewText').value.trim();
-    if (!name) { showToast('Please enter a name first!'); return; }
-    if (!cultureRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your visit!'); return; }
-    showToast('Culture Spot rating submitted! 🎭');
-    document.getElementById('cultureSelect').value = '';
-    document.getElementById('cultureReviewText').value = '';
-    setCultureRating(0);
-  }
 
-  // Health Spot rating
-  let healthRating = 0;
+  window.healthRatingVal = 0;
   function setHealthRating(n) {
-    healthRating = n;
+    window.healthRatingVal = n;
     const stars = document.querySelectorAll('#healthStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#healthStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitHealthRating() {
-    const name = document.getElementById('healthSelect').value.trim();
-    const text = document.getElementById('healthReviewText').value.trim();
-    if (!name) { showToast('Please enter a name first!'); return; }
-    if (!healthRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your visit!'); return; }
-    showToast('Health Spot rating submitted! 💪');
-    document.getElementById('healthSelect').value = '';
-    document.getElementById('healthReviewText').value = '';
-    setHealthRating(0);
-  }
 
-  // Restaurant rating
-  let restaurantRating = 0;
+  window.restaurantRatingVal = 0;
   function setRestaurantRating(n) {
-    restaurantRating = n;
+    window.restaurantRatingVal = n;
     const stars = document.querySelectorAll('#restaurantStars span');
     stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
     document.querySelectorAll('#restaurantStars span').forEach((s, i) => {
       s.style.color = i < n ? '#C8901A' : '#ccc';
     });
   }
-  function submitRestaurantRating() {
-    const name = document.getElementById('restaurantSelect').value;
-    const text = document.getElementById('restaurantReviewText').value.trim();
-    if (!name) { showToast('Please select a restaurant first!'); return; }
-    if (!restaurantRating) { showToast('Please give a star rating!'); return; }
-    if (!text) { showToast('Please write something about your visit!'); return; }
-    showToast('Restaurant rating submitted! 🍽️');
-    document.getElementById('restaurantSelect').value = '';
-    document.getElementById('restaurantReviewText').value = '';
-    setRestaurantRating(0);
-  }
+
 
 
   // Category-picks star rating widgets (stored on window so the Firestore
@@ -972,6 +909,97 @@
   window.submitHealthPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'health'));
 
   setTimeout(() => { CATEGORY_PICKS.forEach(loadCategoryPicks); }, 500);
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // ── "RATE A ___" SUBMISSIONS (Restaurant / Hotel / Drink / Shop / Culture / Health) ──
+  // Everyone's star rating + written review for an already-published place,
+  // saved live to a shared "ratings" Firestore collection so other visitors
+  // can actually see them (previously these forms didn't save anything).
+  const RATE_CONFIGS = [
+    { category: 'restaurant', emoji: '🍽️', selectId: 'restaurantSelect', textId: 'restaurantReviewText', listId: 'restaurantRatingsList', ratingKey: 'restaurantRatingVal', setter: 'setRestaurantRating', label: 'restaurant' },
+    { category: 'hotel',      emoji: '🏨', selectId: 'hotelSelect',      textId: 'hotelReviewText',      listId: 'hotelRatingsList',      ratingKey: 'hotelRatingVal',      setter: 'setHotelRating',      label: 'hotel' },
+    { category: 'drink',      emoji: '🍸', selectId: 'drinkSelect',      textId: 'drinkReviewText',      listId: 'drinkRatingsList',      ratingKey: 'drinkRatingVal',      setter: 'setDrinkRating',      label: 'drink spot' },
+    { category: 'shop',       emoji: '🛍️', selectId: 'shopSelect',       textId: 'shopReviewText',       listId: 'shopRatingsList',       ratingKey: 'shopRatingVal',       setter: 'setShopRating',       label: 'shop' },
+    { category: 'culture',    emoji: '🎭', selectId: 'cultureSelect',    textId: 'cultureReviewText',    listId: 'cultureRatingsList',    ratingKey: 'cultureRatingVal',    setter: 'setCultureRating',    label: 'culture spot' },
+    { category: 'health',     emoji: '💪', selectId: 'healthSelect',     textId: 'healthReviewText',     listId: 'healthRatingsList',     ratingKey: 'healthRatingVal',     setter: 'setHealthRating',     label: 'health spot' },
+  ];
+
+  async function loadRatings(cfg) {
+    const list = document.getElementById(cfg.listId);
+    if (!list) return;
+    try {
+      const snap = await getDocs(collection(db, 'ratings'));
+      const docs = snap.docs
+        .filter(d => d.data().category === cfg.category)
+        .sort((a, b) => toMillisLocal(b.data().createdAt) - toMillisLocal(a.data().createdAt));
+      if (docs.length === 0) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = docs.map(d => {
+        const r = d.data();
+        const isOwner = currentUser && r.userEmail === currentUser.email;
+        return `<div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+            <span style="font-weight:600;font-size:14px;">${r.place}</span>
+            ${starsHtml(r.rating)}
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">by ${r.userName || 'Anonymous'}</p>
+          <p style="font-size:13px;color:var(--ink-soft);">${r.review}</p>
+          ${isOwner ? `<button onclick="deleteRating('${d.id}', '${cfg.category}')" style="margin-top:6px;background:none;border:1px solid #e0d0c8;padding:3px 10px;border-radius:8px;font-size:11px;color:#D4521A;cursor:pointer;">🗑 Delete</button>` : ''}
+        </div>`;
+      }).join('');
+    } catch(e) {
+      console.error('loadRatings error (' + cfg.category + '):', e);
+      list.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load ' + cfg.category + ' ratings.</p>';
+    }
+  }
+
+  window.deleteRating = async function(id, category) {
+    try {
+      await deleteDoc(doc(db, 'ratings', id));
+      const cfg = RATE_CONFIGS.find(c => c.category === category);
+      if (cfg) loadRatings(cfg);
+      showToast('Rating deleted.');
+    } catch(e) {
+      showToast('Could not delete: ' + e.message);
+    }
+  };
+
+  async function submitRating(cfg) {
+    if (!currentUser) { showToast('Please log in to rate a ' + cfg.label + '!'); return; }
+    const place = document.getElementById(cfg.selectId).value;
+    const review = document.getElementById(cfg.textId).value.trim();
+    const rating = window[cfg.ratingKey] || 0;
+    if (!place) { showToast('Please select a ' + cfg.label + ' first!'); return; }
+    if (!rating) { showToast('Please give a star rating!'); return; }
+    if (!review) { showToast('Please write something about your visit!'); return; }
+    try {
+      await addDoc(collection(db, 'ratings'), {
+        category: cfg.category,
+        place, rating, review,
+        userName: currentUser.displayName || currentUser.email.split('@')[0],
+        userEmail: currentUser.email,
+        createdAt: serverTimestamp()
+      });
+      document.getElementById(cfg.selectId).value = '';
+      document.getElementById(cfg.textId).value = '';
+      window[cfg.setter](0);
+      showToast(cfg.emoji + ' Rating submitted!');
+      loadRatings(cfg);
+    } catch(e) {
+      showToast('Could not save. Please try again!');
+    }
+  }
+
+  window.submitRestaurantRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'restaurant'));
+  window.submitHotelRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'hotel'));
+  window.submitDrinkRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'drink'));
+  window.submitShopRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'shop'));
+  window.submitCultureRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'culture'));
+  window.submitHealthRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'health'));
+
+  setTimeout(() => { RATE_CONFIGS.forEach(loadRatings); }, 500);
   // ─────────────────────────────────────────────────────────────────────────
 
   // ── LIVE COMMUNITY STATS ──────────────────────────────────────────────────
