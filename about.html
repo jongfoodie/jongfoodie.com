@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Ik ben Merdan Koc, de man achter Jong Foodie. Van Rotterdam tot Amsterdam, van streetfood tot fine dining — ik eet het allemaal en vertel je eerlijk wat ik ervan vind.">
+<meta name="description" content="I'm Merdan Koc, the man behind Jong Foodie. From Rotterdam to Amsterdam, from street food to fine dining — I eat it all and tell you honestly what I think.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jong Foodie">
 <meta property="og:title" content="About me — Jong Foodie">
-<meta property="og:description" content="Ik ben Merdan Koc, de man achter Jong Foodie. Eerlijke restaurantreviews van Amsterdam tot de wereld.">
+<meta property="og:description" content="I'm Merdan Koc, the man behind Jong Foodie. Honest restaurant reviews from Amsterdam to the world.">
 <meta property="og:url" content="https://www.jongfoodie.com/about.html">
 <meta property="og:image" content="https://www.jongfoodie.com/icon-512.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="About me — Jong Foodie">
-<meta name="twitter:description" content="Ik ben Merdan Koc, de man achter Jong Foodie. Eerlijke restaurantreviews van Amsterdam tot de wereld.">
+<meta name="twitter:description" content="I'm Merdan Koc, the man behind Jong Foodie. Honest restaurant reviews from Amsterdam to the world.">
 <link rel="canonical" href="https://www.jongfoodie.com/about.html">
 <script type="application/ld+json">
 {
@@ -22,7 +22,7 @@
     "@type": "Person",
     "name": "Merdan Koc",
     "url": "https://www.jongfoodie.com/about.html",
-    "description": "Ik ben Merdan Koc, de man achter Jong Foodie. Van Rotterdam tot Amsterdam, van streetfood tot fine dining — ik eet het allemaal en vertel je eerlijk wat ik ervan vind.",
+    "description": "I'm Merdan Koc, the man behind Jong Foodie. From Rotterdam to Amsterdam, from street food to fine dining — I eat it all and tell you honestly what I think.",
     "sameAs": [
       "https://www.instagram.com/jongfoodie/",
       "https://www.youtube.com/@Jongfoodie",
@@ -193,6 +193,7 @@
       <p>I'm Merdan Koc, born and raised in the Netherlands, but my heart belongs to food. For as long as I can remember I've been fascinated by restaurants — not just the food, but the atmosphere, the story behind a dish, the people who make it.</p>
       <p>Jong Foodie started as a personal project: I wanted to keep track of which places are truly worth visiting and which aren't. No fake reviews, no sponsored content. Just honest opinions.</p>
       <p>I've now visited over <span id="introFood">53</span> restaurants across 6 countries — from the Netherlands to Turkey, the USA, Thailand, the UAE and Aruba. Every place tells a story, and I share that with you.</p>
+      <p>Along the way, Jong Foodie grew beyond just restaurants. I now also review hotels to stay in, bars and cafés for a good drink, shops worth browsing, museums and culture spots, and gyms and spas to stay in shape — all with the same honest, no-nonsense approach.</p>
     </div>
   </div>
 
@@ -203,12 +204,28 @@
       <p class="stat-label">Restaurants visited</p>
     </div>
     <div class="stat-card">
-      <p class="stat-number" id="statCountries">6</p>
-      <p class="stat-label">Countries visited</p>
-    </div>
-    <div class="stat-card">
       <p class="stat-number" id="statHotels">—</p>
       <p class="stat-label">Hotels reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number" id="statDrink">—</p>
+      <p class="stat-label">Drink spots reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number" id="statShop">—</p>
+      <p class="stat-label">Shops reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number" id="statCulture">—</p>
+      <p class="stat-label">Culture spots reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number" id="statHealth">—</p>
+      <p class="stat-label">Health spots reviewed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-number" id="statCountries">6</p>
+      <p class="stat-label">Countries visited</p>
     </div>
     <div class="stat-card">
       <p class="stat-number">0</p>
@@ -328,16 +345,28 @@ function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');d
   const HOTEL_OFFSET = 6;
 
   try {
-    const [foodSnap, hotelSnap] = await Promise.all([
+    const [foodSnap, hotelSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
       getDocs(collection(db, 'reviews')),
-      getDocs(collection(db, 'hotelreviews'))
+      getDocs(collection(db, 'hotelreviews')),
+      getDocs(collection(db, 'drinkspots')),
+      getDocs(collection(db, 'shopspots')),
+      getDocs(collection(db, 'culturespots')),
+      getDocs(collection(db, 'healthspots'))
     ]);
 
     const foodTotal = foodSnap.size + FOOD_OFFSET;
     const hotelTotal = hotelSnap.size + HOTEL_OFFSET;
+    const drinkTotal = drinkSnap.size;
+    const shopTotal = shopSnap.size;
+    const cultureTotal = cultureSnap.size;
+    const healthTotal = healthSnap.size;
 
     document.getElementById('statFood').textContent = foodTotal;
     document.getElementById('statHotels').textContent = hotelTotal;
+    document.getElementById('statDrink').textContent = drinkTotal;
+    document.getElementById('statShop').textContent = shopTotal;
+    document.getElementById('statCulture').textContent = cultureTotal;
+    document.getElementById('statHealth').textContent = healthTotal;
     document.getElementById('introFood').textContent = foodTotal;
 
     // Animate the numbers counting up
@@ -354,11 +383,19 @@ function declineCookies(){localStorage.setItem('jf_cookie_consent','declined');d
 
     countUp(document.getElementById('statFood'), foodTotal);
     countUp(document.getElementById('statHotels'), hotelTotal);
+    countUp(document.getElementById('statDrink'), drinkTotal);
+    countUp(document.getElementById('statShop'), shopTotal);
+    countUp(document.getElementById('statCulture'), cultureTotal);
+    countUp(document.getElementById('statHealth'), healthTotal);
 
   } catch(e) {
     // Fallback to static numbers if Firebase fails
     document.getElementById('statFood').textContent = '53';
     document.getElementById('statHotels').textContent = '6';
+    document.getElementById('statDrink').textContent = '0';
+    document.getElementById('statShop').textContent = '0';
+    document.getElementById('statCulture').textContent = '0';
+    document.getElementById('statHealth').textContent = '0';
     document.getElementById('introFood').textContent = '53';
   }
 </script>

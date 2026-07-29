@@ -250,7 +250,7 @@
       <div class="photo-upload-area" id="photoUploadArea">
         <input type="file" id="rPhoto" accept="image/*" onchange="handlePhotoSelect(this)">
         <div class="upload-icon">📷</div>
-        <strong>Klik om een foto te uploaden</strong>
+        <strong>Click to upload a photo</strong>
         <p>JPG, PNG of WebP · max 10MB</p>
       </div>
       <div class="photo-preview" id="photoPreview">
@@ -683,27 +683,27 @@
 
   <!-- SOCIAL MEDIA SETTINGS -->
   <div style="background:#F3E8FB;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:0.5rem;color:#5C2A8A;">📲 Social Instellingen</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Verbind je accounts met één klik. Werkt pas zodra je Meta/TikTok App is goedgekeurd (Deel A van de handleiding).</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:0.5rem;color:#5C2A8A;">📲 Social Settings</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Connect your accounts with one click. Only works once your Meta/TikTok App has been approved (Part A of the guide).</p>
 
     <div style="margin-bottom:1.25rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Jouw admin-sleutel</label>
-      <input class="form-input" type="password" id="adminSocialSecret" placeholder="Dezelfde sleutel als bij firebase functions:config:set" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Your admin key</label>
+      <input class="form-input" type="password" id="adminSocialSecret" placeholder="Same key as in firebase functions:config:set" style="margin-top:6px;">
     </div>
 
     <!-- ONE-CLICK CONNECT -->
     <div style="background:#fff;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
-      <p style="font-size:12px;font-weight:700;color:#5C2A8A;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">🔗 Eén klik verbinden</p>
+      <p style="font-size:12px;font-weight:700;color:#5C2A8A;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">🔗 One-click connect</p>
 
       <div style="margin-bottom:0.75rem;">
-        <label style="font-size:11px;color:var(--muted);">Facebook App ID (publiek, uit je Meta Developer app)</label>
-        <input class="form-input" type="text" id="fbAppId" placeholder="bv. 1234567890123456" style="margin-top:4px;">
+        <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app)</label>
+        <input class="form-input" type="text" id="fbAppId" placeholder="e.g. 1234567890123456" style="margin-top:4px;">
       </div>
       <button onclick="connectInstagram()" style="width:100%;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.25rem;">📸 Connect Instagram</button>
 
       <div style="margin-bottom:0.75rem;">
-        <label style="font-size:11px;color:var(--muted);">TikTok Client Key (publiek, uit je TikTok Developer app)</label>
-        <input class="form-input" type="text" id="ttClientKey" placeholder="bv. aw1a2b3c4d5e6f" style="margin-top:4px;">
+        <label style="font-size:11px;color:var(--muted);">TikTok Client Key (public, from your TikTok Developer app)</label>
+        <input class="form-input" type="text" id="ttClientKey" placeholder="e.g. aw1a2b3c4d5e6f" style="margin-top:4px;">
       </div>
       <button onclick="connectTikTok()" style="width:100%;background:#000;color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎵 Connect TikTok</button>
 
@@ -711,12 +711,12 @@
     </div>
 
     <details style="margin-bottom:0;">
-      <summary style="font-size:12px;color:#5C2A8A;cursor:pointer;font-weight:600;">Handmatig invoeren (geavanceerd / back-up)</summary>
+      <summary style="font-size:12px;color:#5C2A8A;cursor:pointer;font-weight:600;">Manual entry (advanced / backup)</summary>
       <div style="margin-top:1rem;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Instagram Business Account ID</label>
-        <input class="form-input" type="text" id="igBusinessAccountId" placeholder="bv. 178414..." style="margin-top:6px;">
+        <input class="form-input" type="text" id="igBusinessAccountId" placeholder="e.g. 178414..." style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Instagram Access Token</label>
@@ -735,7 +735,7 @@
       </div>
     </div>
 
-    <button onclick="saveSocialTokens()" style="width:100%;background:#5C2A8A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💾 Social gegevens opslaan</button>
+    <button onclick="saveSocialTokens()" style="width:100%;background:#5C2A8A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💾 Save social details</button>
     <p id="socialSaveStatus" style="font-size:12px;color:var(--muted);margin-top:0.75rem;"></p>
       </div>
     </details>
@@ -746,10 +746,10 @@
       <h3>📋 Published Reviews (from admin)</h3>
       <div style="margin-bottom:1rem;">
         <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <button onclick="setupGitHubToken()" style="background:#1A1208;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">⚙️ GitHub Token instellen</button>
+          <button onclick="setupGitHubToken()" style="background:#1A1208;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">⚙️ Set GitHub Token</button>
           <span id="tokenStatus" style="font-size:12px;color:var(--muted);"></span>
         </div>
-        <button onclick="generateAllPages()" id="generateAllBtn" style="background:#2D5A3D;color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">🌐 Maak pagina's voor alle reviews</button>
+        <button onclick="generateAllPages()" id="generateAllBtn" style="background:#2D5A3D;color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">🌐 Generate pages for all reviews</button>
         <div id="generateProgress" style="display:none;margin-top:0.75rem;font-size:13px;color:var(--muted);"></div>
       </div>
       <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
@@ -908,7 +908,7 @@
           const caption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #${city.replace(/\s+/g,'').toLowerCase()}`;
           shareToInstagram(photoUrl, caption);
         } else {
-          showToast('Geen foto geüpload — kan niet naar Instagram delen zonder foto.');
+          showToast('No photo uploaded — cannot share to Instagram without a photo.');
         }
       }
 
@@ -935,14 +935,14 @@
     const existing = localStorage.getItem('jf_github_token');
     const token = window.prompt(
       existing
-        ? 'GitHub token is al ingesteld. Voer een nieuw token in om te wijzigen, of laat leeg om te annuleren:'
-        : 'Voer je GitHub Personal Access Token in (met "repo" rechten):',
+        ? 'A GitHub token is already set. Enter a new token to change it, or leave blank to cancel:'
+        : 'Enter your GitHub Personal Access Token (with "repo" permissions):',
       ''
     );
     if (token) {
       localStorage.setItem('jf_github_token', token.trim());
-      document.getElementById('tokenStatus').textContent = '✅ Token ingesteld';
-      showToast('GitHub token opgeslagen!');
+      document.getElementById('tokenStatus').textContent = '✅ Token set';
+      showToast('GitHub token saved!');
     } else if (token === '') {
       // user submitted empty on purpose — do nothing
     }
@@ -952,7 +952,7 @@
   function updateTokenStatus() {
     const el = document.getElementById('tokenStatus');
     const t = localStorage.getItem('jf_github_token');
-    el.textContent = t ? '✅ Token ingesteld' : '⚠️ Nog geen token ingesteld';
+    el.textContent = t ? '✅ Token set' : '⚠️ No token set yet';
   }
   document.addEventListener('DOMContentLoaded', updateTokenStatus);
   updateTokenStatus();
@@ -965,8 +965,8 @@
   window.connectInstagram = function() {
     const appId = document.getElementById('fbAppId').value.trim();
     const adminSecret = document.getElementById('adminSocialSecret').value.trim();
-    if (!appId) { showToast('Vul eerst je Facebook App ID in!'); return; }
-    if (!adminSecret) { showToast('Vul eerst je admin-sleutel in!'); return; }
+    if (!appId) { showToast('Please enter your Facebook App ID first!'); return; }
+    if (!adminSecret) { showToast('Please enter your admin key first!'); return; }
     // Save these locally so we still have them after the redirect comes back
     localStorage.setItem('jf_fb_app_id', appId);
     localStorage.setItem('jf_admin_secret', adminSecret);
@@ -978,8 +978,8 @@
   window.connectTikTok = function() {
     const clientKey = document.getElementById('ttClientKey').value.trim();
     const adminSecret = document.getElementById('adminSocialSecret').value.trim();
-    if (!clientKey) { showToast('Vul eerst je TikTok Client Key in!'); return; }
-    if (!adminSecret) { showToast('Vul eerst je admin-sleutel in!'); return; }
+    if (!clientKey) { showToast('Please enter your TikTok Client Key first!'); return; }
+    if (!adminSecret) { showToast('Please enter your admin key first!'); return; }
     localStorage.setItem('jf_tt_client_key', clientKey);
     localStorage.setItem('jf_admin_secret', adminSecret);
     const state = 'tiktok_' + Math.random().toString(36).slice(2);
@@ -1046,9 +1046,9 @@
         igBusinessAccountId, igAccessToken, tiktokOpenId, tiktokAccessToken,
         updatedAt: serverTimestamp()
       });
-      status.textContent = '✅ Opgeslagen. Let op: bewaar je admin-sleutel zelf, die staat niet in Firestore.';
+      status.textContent = '✅ Saved. Note: keep your admin key safe yourself, it is not stored in Firestore.';
       status.style.color = '#1A5C2E';
-      showToast('Social gegevens opgeslagen!');
+      showToast('Social details saved!');
     } catch(e) {
       status.textContent = '❌ Opslaan mislukt: ' + e.message;
       status.style.color = '#A32323';
@@ -1057,14 +1057,14 @@
 
   function getAdminSocialSecret() {
     const val = document.getElementById('adminSocialSecret').value.trim();
-    if (!val) { showToast('Vul eerst je admin-sleutel in bij Social Instellingen!'); }
+    if (!val) { showToast('Please enter your admin key first, in Social Settings!'); }
     return val;
   }
 
   window.shareToInstagram = async function(imageUrl, caption) {
     const adminSecret = getAdminSocialSecret();
     if (!adminSecret || !imageUrl) { showToast('Foto-URL of admin-sleutel ontbreekt.'); return; }
-    showToast('Bezig met posten naar Instagram...');
+    showToast('Posting to Instagram...');
     try {
       const postToInstagram = httpsCallable(functionsInstance, 'postToInstagram');
       const result = await postToInstagram({ imageUrl, caption, adminSecret });
@@ -1079,7 +1079,7 @@
   window.shareToTikTok = async function(videoUrl, caption) {
     const adminSecret = getAdminSocialSecret();
     if (!adminSecret || !videoUrl) { showToast('Video-URL of admin-sleutel ontbreekt.'); return; }
-    showToast('Bezig met posten naar TikTok...');
+    showToast('Posting to TikTok...');
     try {
       const postToTikTok = httpsCallable(functionsInstance, 'postToTikTok');
       const result = await postToTikTok({ videoUrl, caption, adminSecret });
@@ -1159,7 +1159,7 @@
   // GitHub Page Generator
   async function createGitHubPage(r) {
     const GITHUB_TOKEN = localStorage.getItem('jf_github_token');
-    if (!GITHUB_TOKEN) throw new Error('Geen GitHub token ingesteld. Klik op "⚙️ GitHub Token instellen".');
+    if (!GITHUB_TOKEN) throw new Error('No GitHub token set. Click "⚙️ Set GitHub Token".');
     const REPO = 'jongfoodie/jongfoodie.com';
     const BRANCH = 'main';
 
@@ -1252,7 +1252,7 @@
     const btn = document.getElementById('generateAllBtn');
     const progress = document.getElementById('generateProgress');
     btn.disabled = true;
-    btn.textContent = 'Bezig...';
+    btn.textContent = 'Working...';
     progress.style.display = 'block';
 
     try {
@@ -1394,7 +1394,7 @@
         if (hPhotoUrl) {
           shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #stay #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('Geen foto-URL ingevuld — kan niet naar Instagram delen.');
+          showToast('No photo URL entered — cannot share to Instagram.');
         }
       }
 
@@ -1466,7 +1466,7 @@
         if (dPhotoUrl) {
           shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #drink #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('Geen foto-URL ingevuld — kan niet naar Instagram delen.');
+          showToast('No photo URL entered — cannot share to Instagram.');
         }
       }
 
@@ -1512,7 +1512,7 @@
         if (sPhotoUrl) {
           shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('Geen foto-URL ingevuld — kan niet naar Instagram delen.');
+          showToast('No photo URL entered — cannot share to Instagram.');
         }
       }
 
@@ -1558,7 +1558,7 @@
         if (cPhotoUrl) {
           shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #culture #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('Geen foto-URL ingevuld — kan niet naar Instagram delen.');
+          showToast('No photo URL entered — cannot share to Instagram.');
         }
       }
 
@@ -1604,7 +1604,7 @@
         if (hlPhotoUrl) {
           shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #health #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('Geen foto-URL ingevuld — kan niet naar Instagram delen.');
+          showToast('No photo URL entered — cannot share to Instagram.');
         }
       }
 
@@ -1640,9 +1640,9 @@
   function openMailchimp() {
     if (!lastPublishedReview) return;
     const r = lastPublishedReview;
-    const text = "ONDERWERP: Nieuwe review: " + r.name + " " + (r.emoji || "") + "\n\n" +
-      "Hoi!\n\n" +
-      "Er staat een nieuwe Jong Foodie review online!\n\n" +
+    const text = "SUBJECT: New review: " + r.name + " " + (r.emoji || "") + "\n\n" +
+      "Hi!\n\n" +
+      "There's a new Jong Foodie review online!\n\n" +
       (r.emoji || "🍽️") + " " + r.name + "\n" +
       "📍 " + (r.city || "") + "\n" +
       "⭐ " + ("★".repeat(Math.round(r.rating || 5))) + "\n" +
@@ -1651,9 +1651,9 @@
       "👉 https://www.jongfoodie.com/reviews.html\n\n" +
       "— Merdan, Jong Foodie";
     navigator.clipboard.writeText(text).then(() => {
-      showToast("✅ Tekst gekopieerd! Open Mailchimp en plak de tekst.");
+      showToast("✅ Text copied! Open Mailchimp and paste the text.");
     }).catch(() => {
-      window.prompt("Kopieer deze tekst:", text);
+      window.prompt("Copy this text:", text);
     });
     const a = document.createElement("a");
     a.href = "https://us21.admin.mailchimp.com/campaigns/#";

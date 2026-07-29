@@ -1113,6 +1113,16 @@
           </select>
           <input id="pickPrice" class="rate-input" type="text" placeholder="Price range e.g. 10-15..." style="height:40px;resize:none;margin:0;">
         </div>
+        <div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
+          <div id="pickStars" style="font-size:26px;cursor:pointer;letter-spacing:4px;">
+            <span onclick="setPickRating(1)">☆</span>
+            <span onclick="setPickRating(2)">☆</span>
+            <span onclick="setPickRating(3)">☆</span>
+            <span onclick="setPickRating(4)">☆</span>
+            <span onclick="setPickRating(5)">☆</span>
+          </div>
+        </div>
         <textarea id="pickWhy" class="rate-input" rows="2" placeholder="Why do you recommend it?..." style="margin:0;"></textarea>
         <button class="btn-accent" onclick="submitPick()" style="align-self:flex-start;">Recommend this Place</button>
       </div>
@@ -1256,6 +1266,10 @@
       <div class="modal-field">
         <label class="modal-label">Password</label>
         <input class="modal-input" type="password" placeholder="••••••••">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+        <input type="checkbox" id="stayLoggedIn" checked style="width:16px;height:16px;cursor:pointer;">
+        <label for="stayLoggedIn" style="font-size:13px;color:var(--ink-soft);cursor:pointer;">Stay logged in</label>
       </div>
       <div class="modal-footer">
         <button class="btn-fill" style="width:100%;padding:11px;" onclick="doLogin()">Log in</button>
@@ -1571,7 +1585,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -1586,6 +1600,9 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  // Keep people logged in across visits/browser restarts by default
+  setPersistence(auth, browserLocalPersistence).catch(e => console.error('Persistence error:', e));
 
   let currentUser = null;
 
@@ -1720,6 +1737,21 @@
   loadLatestFromAllCategories();
   // ─────────────────────────────────────────────────────────────────────────
 
+  // Star rating for the restaurant pick form
+  window.pickRatingVal = 0;
+  window.setPickRating = function(n) {
+    window.pickRatingVal = n;
+    document.querySelectorAll('#pickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
+  };
+
+  function pickStarsHtml(rating) {
+    if (!rating) return '';
+    const n = Math.round(rating);
+    return `<span style="color:#C8901A;">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</span>`;
+  }
+
+  const OTHER_PICK_CATEGORIES = ['hotel', 'drink', 'shop', 'culture', 'health'];
+
   // Load all picks from Firestore on page load
   async function loadPicks() {
     const picksGrid = document.getElementById('picksGrid');
@@ -1728,11 +1760,18 @@
       const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
       picksGrid.innerHTML = '';
-      if (snapshot.empty) {
+      // Restaurant/eat picks = everything that isn't tagged as one of the
+      // other categories (covers legacy docs with no "category" field, and
+      // is safe even if "restaurant" is spelled/cased differently somewhere)
+      const restaurantDocs = snapshot.docs.filter(d => {
+        const c = d.data().category;
+        return !c || !OTHER_PICK_CATEGORIES.includes(c);
+      });
+      if (restaurantDocs.length === 0) {
         picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No picks yet — be the first to add one!</p>';
         return;
       }
-      snapshot.forEach(doc => {
+      restaurantDocs.forEach(doc => {
         const p = doc.data();
         const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
         const emoji = typeEmojis[p.type] || '🍽️';
@@ -1740,7 +1779,7 @@
         const color = colors[Math.floor(Math.random()*colors.length)];
         const card = document.createElement('div');
         card.className = 'mini-card';
-        card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p><h3 class="mini-title">${p.name}</h3><p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by ${p.userName}</span></div></div>`;
+        card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p><h3 class="mini-title">${p.name} ${pickStarsHtml(p.rating)}</h3><p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by ${p.userName}</span></div></div>`;
         picksGrid.appendChild(card);
       });
     } catch(e) {
@@ -1755,11 +1794,14 @@
     const type = document.getElementById('pickType').value.trim();
     const price = document.getElementById('pickPrice').value.trim();
     const why = document.getElementById('pickWhy').value.trim();
+    const rating = window.pickRatingVal || 0;
     if (!name) { showToast('Please enter a restaurant name!'); return; }
+    if (!rating) { showToast('Please give a star rating!'); return; }
     if (!why) { showToast('Please tell us why you recommend it!'); return; }
     try {
       await addDoc(collection(db, 'picks'), {
-        name, location, type, price, why,
+        category: 'restaurant',
+        name, location, type, price, why, rating,
         userName: currentUser.displayName || currentUser.email.split('@')[0],
         userEmail: currentUser.email,
         createdAt: serverTimestamp()
@@ -1769,6 +1811,7 @@
       document.getElementById('pickType').value = '';
       document.getElementById('pickPrice').value = '';
       document.getElementById('pickWhy').value = '';
+      window.setPickRating(0);
       showToast('Thanks for the recommendation! 🎉');
       loadPicks();
     } catch(e) {
@@ -1858,14 +1901,30 @@
   window.doLogin = async function() {
     const email = document.querySelector('#loginForm .modal-input[type="email"]').value.trim();
     const password = document.querySelector('#loginForm .modal-input[type="password"]').value;
+    const stayLoggedIn = document.getElementById('stayLoggedIn') ? document.getElementById('stayLoggedIn').checked : true;
     if (!email || !password) { showToast('Please fill in all fields!'); return; }
     try {
+      await setPersistence(auth, stayLoggedIn ? browserLocalPersistence : browserSessionPersistence);
       await signInWithEmailAndPassword(auth, email, password);
       closeModal();
       showToast('Welcome back! 👋');
     } catch(e) {
-      if (e.code === 'auth/invalid-credential') showToast('Wrong email or password!');
-      else showToast('Login failed. Please try again!');
+      console.error('Login error:', e.code, e.message);
+      if (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') {
+        showToast('Wrong email or password!');
+      } else if (e.code === 'auth/invalid-email') {
+        showToast('That email address doesn\'t look valid.');
+      } else if (e.code === 'auth/user-disabled') {
+        showToast('This account has been disabled.');
+      } else if (e.code === 'auth/too-many-requests') {
+        showToast('Too many attempts. Please wait a moment and try again.');
+      } else if (e.code === 'auth/network-request-failed') {
+        showToast('Network error — check your connection and try again.');
+      } else if (e.code === 'auth/operation-not-allowed') {
+        showToast('Email/password login isn\'t enabled for this app yet.');
+      } else {
+        showToast('Login failed: ' + (e.code || e.message || 'unknown error'));
+      }
     }
   };
 
@@ -1886,8 +1945,20 @@
       closeModal();
       showToast('Welcome, ' + name + '! 🎉');
     } catch(e) {
-      if (e.code === 'auth/email-already-in-use') showToast('This email is already registered!');
-      else showToast('Signup failed. Please try again!');
+      console.error('Signup error:', e.code, e.message);
+      if (e.code === 'auth/email-already-in-use') {
+        showToast('This email is already registered!');
+      } else if (e.code === 'auth/invalid-email') {
+        showToast('That email address doesn\'t look valid.');
+      } else if (e.code === 'auth/weak-password') {
+        showToast('Password is too weak — use at least 6 characters.');
+      } else if (e.code === 'auth/network-request-failed') {
+        showToast('Network error — check your connection and try again.');
+      } else if (e.code === 'auth/operation-not-allowed') {
+        showToast('Email/password signup isn\'t enabled for this app yet.');
+      } else {
+        showToast('Signup failed: ' + (e.code || e.message || 'unknown error'));
+      }
     }
   };
 
