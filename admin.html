@@ -190,12 +190,6 @@
         <input class="form-input" type="text" id="rName" placeholder="e.g. Izakaya Amsterdam">
       </div>
       <div class="form-group">
-        <label class="form-label">City / Location *</label>
-        <input class="form-input" type="text" id="rCity" placeholder="e.g. Amsterdam">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
         <label class="form-label">Food Type *</label>
         <select class="form-input" id="rType">
           <option value="">Select type...</option>
@@ -216,30 +210,35 @@
           <option>Drinks</option>
         </select>
       </div>
+    </div>
+    <div class="form-row">
       <div class="form-group">
         <label class="form-label">Price (e.g. €15 or Luxury)</label>
         <input class="form-input" type="text" id="rPrice" placeholder="e.g. €15 or Luxury">
       </div>
-    </div>
-    <div class="form-row">
       <div class="form-group">
         <label class="form-label">Visit Date</label>
         <input class="form-input" type="text" id="rDate" placeholder="e.g. Jan 2025">
       </div>
+    </div>
+    <div class="form-row">
       <div class="form-group">
         <label class="form-label">Opening Hours</label>
         <input class="form-input" type="text" id="rHours" placeholder="e.g. Daily 10:00–17:00">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Latitude Y (from Google Maps) *</label>
-        <input class="form-input" type="text" id="rLat" placeholder="e.g. 52.3646">
+    <div class="form-group" style="margin-top:0.5rem;">
+      <label class="form-label">Location(s) — City + Coordinates *</label>
+      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
+      <div id="rLocations">
+        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+          <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
+          <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
+          <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Longitude X (from Google Maps) *</label>
-        <input class="form-input" type="text" id="rLng" placeholder="e.g. 4.8723">
-      </div>
+      <button type="button" onclick="addLocationRow('rLocations')" style="margin-top:2px;background:none;border:1px dashed #D4521A;color:#D4521A;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Add another location</button>
     </div>
   </div>
 
@@ -471,10 +470,6 @@
         <input class="form-input" type="text" id="sName" placeholder="e.g. De Kaaskamer" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">City / Location *</label>
-        <input class="form-input" type="text" id="sCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
-      </div>
-      <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Price</label>
         <input class="form-input" type="text" id="sPrice" placeholder="e.g. €€ or Luxury" style="margin-top:6px;">
       </div>
@@ -482,14 +477,19 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="sDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
-      <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Latitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="sLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+    </div>
+    <div style="margin-top:1rem;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Location(s) — City + Coordinates *</label>
+      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze winkel meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
+      <div id="sLocations">
+        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+          <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
+          <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
+          <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
+        </div>
       </div>
-      <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Longitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="sLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
-      </div>
+      <button type="button" onclick="addLocationRow('sLocations')" style="margin-top:2px;background:none;border:1px dashed #A32323;color:#A32323;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Add another location</button>
     </div>
     <div style="margin-top:1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Star Rating *</label>
@@ -887,6 +887,63 @@
     }
   };
 
+  // ── MULTI-LOCATION HELPERS (used by Eat & Shop forms) ──
+  function locationRowTemplate() {
+    return `
+        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+          <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
+          <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
+          <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
+        </div>`;
+  }
+
+  function updateRemoveButtons(container) {
+    const rows = container.querySelectorAll('.location-row');
+    rows.forEach(row => {
+      const btn = row.querySelector('.btn-remove-location');
+      if (btn) btn.style.display = rows.length > 1 ? 'block' : 'none';
+    });
+  }
+
+  window.addLocationRow = function(containerId) {
+    const container = document.getElementById(containerId);
+    container.insertAdjacentHTML('beforeend', locationRowTemplate());
+    updateRemoveButtons(container);
+  };
+
+  window.removeLocationRow = function(btn) {
+    const row = btn.closest('.location-row');
+    const container = row.parentElement;
+    row.remove();
+    updateRemoveButtons(container);
+  };
+
+  function collectLocations(containerId) {
+    const container = document.getElementById(containerId);
+    const rows = container.querySelectorAll('.location-row');
+    const locations = [];
+    rows.forEach(row => {
+      const city = row.querySelector('.loc-city').value.trim();
+      const latVal = row.querySelector('.loc-lat').value.trim();
+      const lngVal = row.querySelector('.loc-lng').value.trim();
+      if (city || latVal || lngVal) {
+        locations.push({
+          city,
+          lat: latVal ? parseFloat(latVal) : null,
+          lng: lngVal ? parseFloat(lngVal) : null
+        });
+      }
+    });
+    return locations;
+  }
+
+  function resetLocations(containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = locationRowTemplate();
+    container.querySelector('.btn-remove-location').style.display = 'none';
+  }
+
   let adminRating = 0;
   window.setAdminRating = function(n) {
     adminRating = n;
@@ -897,22 +954,23 @@
   window.publishReview = async function() {
     const btn = document.getElementById('publishBtn');
     const name = document.getElementById('rName').value.trim();
-    const city = document.getElementById('rCity').value.trim();
+    const locations = collectLocations('rLocations');
     const type = document.getElementById('rType').value;
     const price = document.getElementById('rPrice').value.trim();
     const date = document.getElementById('rDate').value.trim();
     const hours = document.getElementById('rHours').value.trim();
-    const lat = document.getElementById('rLat').value.trim();
-    const lng = document.getElementById('rLng').value.trim();
     const review = document.getElementById('rReview').value.trim();
     const tags = document.getElementById('rTags').value;
     const emoji = document.getElementById('rEmoji').value || '🍽️';
     const photoFile = document.getElementById('rPhoto').files[0];
 
-    if (!name || !city || !type || !review || !adminRating) {
-      showToast('Please fill in all required fields and set a rating!');
+    if (!name || !locations.length || !locations[0].city || !type || !review || !adminRating) {
+      showToast('Please fill in all required fields, at least one location (city) and set a rating!');
       return;
     }
+    const city = locations[0].city;
+    const lat = locations[0].lat;
+    const lng = locations[0].lng;
 
     btn.disabled = true;
     btn.textContent = 'Publishing...';
@@ -927,8 +985,8 @@
 
       await addDoc(collection(db, 'reviews'), {
         name, city, type, price, date, hours, review, emoji,
-        lat: lat ? parseFloat(lat) : null,
-        lng: lng ? parseFloat(lng) : null,
+        lat, lng,
+        locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: adminRating,
         photoUrl,
@@ -955,7 +1013,8 @@
       }
 
       // Clear form
-      ['rName','rCity','rPrice','rDate','rHours','rLat','rLng','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['rName','rPrice','rDate','rHours','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
+      resetLocations('rLocations');
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';
       document.getElementById('rShareInstagram').checked = false;
@@ -1571,15 +1630,16 @@
 
   window.publishShopSpot = async function() {
     const name = document.getElementById('sName').value.trim();
-    const city = document.getElementById('sCity').value.trim();
+    const locations = collectLocations('sLocations');
     const price = document.getElementById('sPrice').value.trim();
     const date = document.getElementById('sDate').value.trim();
-    const lat = document.getElementById('sLat').value.trim();
-    const lng = document.getElementById('sLng').value.trim();
     const review = document.getElementById('sReview').value.trim();
     const tags = document.getElementById('sTags').value;
     const emoji = document.getElementById('sEmoji').value || '🛍️';
-    if (!name || !city || !review || !shopRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    if (!name || !locations.length || !locations[0].city || !review || !shopRating) { showToast('Please fill in all required fields, at least one location (city) and set a rating!'); return; }
+    const city = locations[0].city;
+    const lat = locations[0].lat;
+    const lng = locations[0].lng;
     const sScheduleVal = document.getElementById('sSchedule').value;
     const sPublishAt = sScheduleVal ? new Date(sScheduleVal) : new Date();
     try {
@@ -1587,8 +1647,8 @@
       await addDoc(collection(db, 'shopspots'), {
         name, city, price, date, review, emoji,
         photoUrl: sPhotoUrl || '',
-        lat: lat ? parseFloat(lat) : null,
-        lng: lng ? parseFloat(lng) : null,
+        lat, lng,
+        locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: shopRating,
         createdAt: serverTimestamp(),
@@ -1609,7 +1669,8 @@
         shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`, sPhotoUrl || null);
       }
 
-      ['sName','sCity','sPrice','sDate','sLat','sLng','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
+      resetLocations('sLocations');
       document.getElementById('sPhotoUrl').value = '';
       document.getElementById('sShareInstagram').checked = false;
       document.getElementById('sEmoji').value = '🛍️';
