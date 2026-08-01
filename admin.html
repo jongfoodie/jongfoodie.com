@@ -720,10 +720,15 @@
       <p style="font-size:12px;font-weight:700;color:#5C2A8A;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em;">🔗 One-click connect</p>
 
       <div style="margin-bottom:0.75rem;">
-        <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app)</label>
-        <input class="form-input" type="text" id="fbAppId" placeholder="e.g. 1234567890123456" style="margin-top:4px;">
+        <label style="font-size:11px;color:var(--muted);">Instagram App ID (from App Dashboard → Instagram API → API setup with Instagram login)</label>
+        <input class="form-input" type="text" id="igAppId" placeholder="e.g. 1580184236779823" style="margin-top:4px;">
       </div>
       <button onclick="connectInstagram()" style="width:100%;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.25rem;">📸 Connect Instagram</button>
+
+      <div style="margin-bottom:0.75rem;">
+        <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app — used for Threads and Facebook Page management)</label>
+        <input class="form-input" type="text" id="fbAppId" placeholder="e.g. 1234567890123456" style="margin-top:4px;">
+      </div>
 
       <div style="margin-bottom:0.75rem;">
         <label style="font-size:11px;color:var(--muted);">TikTok Client Key (public, from your TikTok Developer app)</label>
@@ -1064,17 +1069,19 @@
   const REDIRECT_URI = 'https://www.jongfoodie.com/admin.html';
 
   window.connectInstagram = function() {
-    const appId = document.getElementById('fbAppId').value.trim();
+    const appId = document.getElementById('igAppId').value.trim();
     const adminSecret = document.getElementById('adminSocialSecret').value.trim();
-    if (!appId) { showToast('Please enter your Facebook App ID first!'); return; }
+    if (!appId) { showToast('Please enter your Instagram App ID first!'); return; }
     if (!adminSecret) { showToast('Please enter your admin key first!'); return; }
     // Save these locally so we still have them after the redirect comes back
-    localStorage.setItem('jf_fb_app_id', appId);
+    localStorage.setItem('jf_ig_app_id', appId);
     localStorage.setItem('jf_admin_secret', adminSecret);
     // Meta retired the old instagram_basic/instagram_content_publish scopes
     // in Jan 2025. New apps use the "Instagram API with Instagram Login"
-    // flow instead: instagram.com's own login dialog, new scope names.
-    const scope = 'instagram_business_basic,instagram_business_content_publish';
+    // flow instead: instagram.com's own login dialog, new scope names,
+    // and its own distinct Instagram App ID (different from the main
+    // Facebook App ID).
+    const scope = 'instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments,instagram_business_manage_messages';
     const url = `https://www.instagram.com/oauth/authorize?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(scope)}&response_type=code&state=instagram`;
     window.location.href = url;
   };
@@ -1118,7 +1125,7 @@
 
     try {
       if (state === 'instagram') {
-        const appId = localStorage.getItem('jf_fb_app_id') || '';
+        const appId = localStorage.getItem('jf_ig_app_id') || '';
         if (statusEl) statusEl.textContent = '⏳ Instagram koppelen...';
         const exchangeInstagramCode = httpsCallable(functionsInstance, 'exchangeInstagramCode');
         await exchangeInstagramCode({ code, appId, redirectUri: REDIRECT_URI, adminSecret });
@@ -1152,9 +1159,11 @@
   // Restore previously entered App ID / Client Key fields for convenience
   window.addEventListener('DOMContentLoaded', () => {
     const savedAppId = localStorage.getItem('jf_fb_app_id');
+    const savedIgAppId = localStorage.getItem('jf_ig_app_id');
     const savedClientKey = localStorage.getItem('jf_tt_client_key');
     const savedSecret = localStorage.getItem('jf_admin_secret');
     if (savedAppId && document.getElementById('fbAppId')) document.getElementById('fbAppId').value = savedAppId;
+    if (savedIgAppId && document.getElementById('igAppId')) document.getElementById('igAppId').value = savedIgAppId;
     if (savedClientKey && document.getElementById('ttClientKey')) document.getElementById('ttClientKey').value = savedClientKey;
     if (savedSecret && document.getElementById('adminSocialSecret')) document.getElementById('adminSocialSecret').value = savedSecret;
   });
