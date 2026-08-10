@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Jong Foodie</title>
+<title>Admin — Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,7 +80,7 @@
 <meta name="theme-color" content="#D4521A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Jong Foodie">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
@@ -107,14 +107,14 @@
 </div>
 
 <div class="admin-nav">
-  <h1>Jong Foodie <span>ADMIN</span></h1>
+  <h1>Strong Foodie <span>ADMIN</span></h1>
   <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
 </div>
 
 <!-- LOGIN -->
 <div id="loginBox" class="login-box">
   <h2>Admin Access</h2>
-  <p>This page is only for Jong Foodie. Enter the admin password to continue.</p>
+  <p>This page is only for Strong Foodie. Enter the admin password to continue.</p>
   <div class="form-group">
     <label class="form-label">Password</label>
     <input class="form-input" type="password" id="adminPassword" placeholder="Enter admin password..." onkeydown="if(event.key==='Enter')checkPassword()">
@@ -998,7 +998,7 @@
         createdAt: serverTimestamp(),
         publishAt: rPublishAt,
         status: rScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
 
       showToast('Review published! 🍽️');
@@ -1066,7 +1066,7 @@
 
   // ── SOCIAL MEDIA AUTO-POST ───────────────────────────────────────────────
   // ── ONE-CLICK CONNECT (Instagram / TikTok) ───────────────────────────────
-  const REDIRECT_URI = 'https://www.jongfoodie.com/admin.html';
+  const REDIRECT_URI = 'https://www.strongfoodie.com/admin.html';
 
   window.connectInstagram = function() {
     const appId = document.getElementById('igAppId').value.trim();
@@ -1329,12 +1329,12 @@
       '<html lang="en"><head>',
       '<meta charset="UTF-8">',
       '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '<title>' + nameSafe + ' Review — Jong Foodie</title>',
+      '<title>' + nameSafe + ' Review — Strong Foodie</title>',
       '<meta name="description" content="' + reviewShort + '">',
-      '<meta property="og:title" content="' + nameSafe + ' — Jong Foodie">',
-      '<meta property="og:image" content="' + (r.photoUrl || 'https://www.jongfoodie.com/icon-512.png') + '">',
-      '<meta property="og:url" content="https://www.jongfoodie.com/' + filename + '">',
-      '<link rel="canonical" href="https://www.jongfoodie.com/' + filename + '">',
+      '<meta property="og:title" content="' + nameSafe + ' — Strong Foodie">',
+      '<meta property="og:image" content="' + (r.photoUrl || 'https://www.strongfoodie.com/icon-512.png') + '">',
+      '<meta property="og:url" content="https://www.strongfoodie.com/' + filename + '">',
+      '<link rel="canonical" href="https://www.strongfoodie.com/' + filename + '">',
       '<scr'+'ipt async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></scr'+'ipt>',
       '<scr'+'ipt>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</scr'+'ipt>',
       '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">',
@@ -1356,7 +1356,7 @@
       '.btn{display:inline-block;background:#D4521A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;}',
       'footer{background:#1A1208;color:#fff;padding:2rem;text-align:center;}',
       '</style></head><body>',
-      '<nav><a class="logo" href="/index.html">Jong <span>Foodie</span></a><a href="/reviews.html" style="font-size:13px;color:#8A7A66;text-decoration:none;">All Reviews</a></nav>',
+      '<nav><a class="logo" href="/index.html">Strong <span>Foodie</span></a><a href="/reviews.html" style="font-size:13px;color:#8A7A66;text-decoration:none;">All Reviews</a></nav>',
       '<div class="wrap">',
       '<a href="/reviews.html" class="back">← All Reviews</a>',
       photoHtml,
@@ -1368,7 +1368,7 @@
       r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '',
       '<a href="/reviews.html" class="btn">← Meer reviews</a>',
       '</div>',
-      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none">Jong Foodie</a></p></footer>',
+      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none">Strong Foodie</a></p></footer>',
       '</body></html>'
     ];
 
@@ -1444,7 +1444,7 @@
         }
       }
 
-      progress.textContent = `🎉 Klaar! ${done} paginas live op jongfoodie.com/reviews/`;
+      progress.textContent = `🎉 Klaar! ${done} paginas live op strongfoodie.com/reviews/`;
       showToast(`${done} paginas aangemaakt! 🎉`);
     } catch(e) {
       progress.textContent = '❌ Fout: ' + e.message;
@@ -1538,7 +1538,7 @@
         createdAt: serverTimestamp(),
         publishAt: hPublishAt,
         status: hScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
       showToast('Hotel review published! 🏨');
 
@@ -1613,7 +1613,7 @@
         createdAt: serverTimestamp(),
         publishAt: dPublishAt,
         status: dScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
       showToast('Drink spot published! 🍸');
 
@@ -1663,7 +1663,7 @@
         createdAt: serverTimestamp(),
         publishAt: sPublishAt,
         status: sScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
       showToast('Shop spot published! 🛍️');
 
@@ -1713,7 +1713,7 @@
         createdAt: serverTimestamp(),
         publishAt: cPublishAt,
         status: cScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
       showToast('Culture spot published! 🎭');
 
@@ -1762,7 +1762,7 @@
         createdAt: serverTimestamp(),
         publishAt: hlPublishAt,
         status: hlScheduleVal ? 'scheduled' : 'published',
-        author: 'Jong Foodie'
+        author: 'Strong Foodie'
       });
       showToast('Health spot published! 💪');
 
@@ -1811,14 +1811,14 @@
     const r = lastPublishedReview;
     const text = "SUBJECT: New review: " + r.name + " " + (r.emoji || "") + "\n\n" +
       "Hi!\n\n" +
-      "There's a new Jong Foodie review online!\n\n" +
+      "There's a new Strong Foodie review online!\n\n" +
       (r.emoji || "🍽️") + " " + r.name + "\n" +
       "📍 " + (r.city || "") + "\n" +
       "⭐ " + ("★".repeat(Math.round(r.rating || 5))) + "\n" +
       (r.price ? "💰 " + r.price + "\n" : "") +
       "\n" + (r.review || "") + "\n\n" +
-      "👉 https://www.jongfoodie.com/reviews.html\n\n" +
-      "— Merdan, Jong Foodie";
+      "👉 https://www.strongfoodie.com/reviews.html\n\n" +
+      "— Merdan, Strong Foodie";
     navigator.clipboard.writeText(text).then(() => {
       showToast("✅ Text copied! Open Mailchimp and paste the text.");
     }).catch(() => {
