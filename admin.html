@@ -221,20 +221,15 @@
         <input class="form-input" type="text" id="rDate" placeholder="e.g. Jan 2025">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Opening Hours</label>
-        <input class="form-input" type="text" id="rHours" placeholder="e.g. Daily 10:00–17:00">
-      </div>
-    </div>
     <div class="form-group" style="margin-top:0.5rem;">
-      <label class="form-label">Location(s) — City + Coordinates *</label>
-      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
+      <label class="form-label">Location(s) — City + Coordinates + Opening Hours *</label>
+      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe — elke locatie heeft eigen openingstijden.</p>
       <div id="rLocations">
-        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+        <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
           <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
           <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
           <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00">
           <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
         </div>
       </div>
@@ -482,10 +477,11 @@
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Location(s) — City + Coordinates *</label>
       <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze winkel meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
       <div id="sLocations">
-        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+        <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
           <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
           <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
           <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00">
           <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
         </div>
       </div>
@@ -895,10 +891,11 @@
   // ── MULTI-LOCATION HELPERS (used by Eat & Shop forms) ──
   function locationRowTemplate() {
     return `
-        <div class="location-row" style="display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+        <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
           <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
           <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
           <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
+          <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00">
           <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
         </div>`;
   }
@@ -932,11 +929,14 @@
       const city = row.querySelector('.loc-city').value.trim();
       const latVal = row.querySelector('.loc-lat').value.trim();
       const lngVal = row.querySelector('.loc-lng').value.trim();
-      if (city || latVal || lngVal) {
+      const hoursEl = row.querySelector('.loc-hours');
+      const hoursVal = hoursEl ? hoursEl.value.trim() : '';
+      if (city || latVal || lngVal || hoursVal) {
         locations.push({
           city,
           lat: latVal ? parseFloat(latVal) : null,
-          lng: lngVal ? parseFloat(lngVal) : null
+          lng: lngVal ? parseFloat(lngVal) : null,
+          hours: hoursVal
         });
       }
     });
@@ -963,7 +963,6 @@
     const type = document.getElementById('rType').value;
     const price = document.getElementById('rPrice').value.trim();
     const date = document.getElementById('rDate').value.trim();
-    const hours = document.getElementById('rHours').value.trim();
     const review = document.getElementById('rReview').value.trim();
     const tags = document.getElementById('rTags').value;
     const emoji = document.getElementById('rEmoji').value || '🍽️';
@@ -976,6 +975,7 @@
     const city = locations[0].city;
     const lat = locations[0].lat;
     const lng = locations[0].lng;
+    const hours = locations[0].hours || '';
 
     btn.disabled = true;
     btn.textContent = 'Publishing...';
@@ -1018,7 +1018,7 @@
       }
 
       // Clear form
-      ['rName','rPrice','rDate','rHours','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['rName','rPrice','rDate','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
       resetLocations('rLocations');
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';
