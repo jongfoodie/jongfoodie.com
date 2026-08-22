@@ -103,6 +103,21 @@
     .nav-links { display: none; }
     .hero h1 { font-size: 2.5rem; }
   }
+  /* Photo gallery lightbox */
+  .gallery-overlay { display: none; position: fixed; inset: 0; background: rgba(15,10,4,0.92); z-index: 10001; align-items: center; justify-content: center; }
+  .gallery-overlay.open { display: flex; }
+  .gallery-content { position: relative; max-width: 92vw; max-height: 88vh; }
+  .gallery-content img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 8px; display: block; }
+  .gallery-close { position: absolute; top: -44px; right: 0; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; line-height: 1; }
+  .gallery-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .gallery-arrow:hover { background: rgba(255,255,255,0.3); }
+  .gallery-prev { left: -56px; }
+  .gallery-next { right: -56px; }
+  @media (max-width: 700px) { .gallery-prev { left: 6px; } .gallery-next { right: 6px; } }
+  .gallery-dots { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+  .gallery-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; }
+  .gallery-dots span.active { background: #fff; }
+  .spot-img-clickable { cursor: zoom-in; }
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
@@ -114,6 +129,16 @@
 </script>
 </head>
 <body>
+
+<div class="gallery-overlay" id="galleryOverlay" onclick="if(event.target===this) closeGallery()">
+  <div class="gallery-content">
+    <button class="gallery-close" onclick="closeGallery()">✕</button>
+    <img id="galleryImg" src="" alt="Foto">
+    <button class="gallery-arrow gallery-prev" id="galleryPrev" onclick="galleryStep(-1)">‹</button>
+    <button class="gallery-arrow gallery-next" id="galleryNext" onclick="galleryStep(1)">›</button>
+    <div class="gallery-dots" id="galleryDots"></div>
+  </div>
+</div>
 
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html">🏠 Home</a>
@@ -195,6 +220,72 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
+  // ── Photo gallery lightbox ──
+  window.__galleryStore = {};
+  window.__galleryPhotos = [];
+  window.__galleryIndex = 0;
+
+  function renderGalleryDots() {
+    const dots = document.getElementById('galleryDots');
+    const photos = window.__galleryPhotos;
+    if (photos.length <= 1) { dots.innerHTML = ''; return; }
+    dots.innerHTML = photos.map((_, i) =>
+      `<span class="${i === window.__galleryIndex ? 'active' : ''}" onclick="galleryGoTo(${i})"></span>`
+    ).join('');
+  }
+
+  function updateGalleryImg() {
+    document.getElementById('galleryImg').src = window.__galleryPhotos[window.__galleryIndex];
+    const multi = window.__galleryPhotos.length > 1;
+    document.getElementById('galleryPrev').style.display = multi ? 'flex' : 'none';
+    document.getElementById('galleryNext').style.display = multi ? 'flex' : 'none';
+    renderGalleryDots();
+  }
+
+  window.openGallery = function(photosJsonId, startIndex) {
+    const photos = window.__galleryStore[photosJsonId];
+    if (!photos || !photos.length) return;
+    window.__galleryPhotos = photos;
+    window.__galleryIndex = startIndex || 0;
+    updateGalleryImg();
+    document.getElementById('galleryOverlay').classList.add('open');
+  };
+
+  window.closeGallery = function() {
+    document.getElementById('galleryOverlay').classList.remove('open');
+  };
+
+  window.galleryStep = function(dir) {
+    const len = window.__galleryPhotos.length;
+    window.__galleryIndex = (window.__galleryIndex + dir + len) % len;
+    updateGalleryImg();
+  };
+
+  window.galleryGoTo = function(i) {
+    window.__galleryIndex = i;
+    updateGalleryImg();
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('galleryOverlay').classList.contains('open')) return;
+    if (e.key === 'Escape') closeGallery();
+    if (e.key === 'ArrowLeft') galleryStep(-1);
+    if (e.key === 'ArrowRight') galleryStep(1);
+  });
+
+  (function() {
+    let touchStartX = null;
+    const content = document.querySelector('.gallery-content');
+    if (!content) return;
+    content.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    content.addEventListener('touchend', (e) => {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) galleryStep(dx > 0 ? -1 : 1);
+      touchStartX = null;
+    });
+  })();
+
   let allSpots = [];
 
   function renderStars(n) {
@@ -211,9 +302,22 @@
         </div>`;
       return;
     }
-    container.innerHTML = list.map(s => `
+    container.innerHTML = list.map((s, i) => {
+      const photos = (s.photos && s.photos.length) ? s.photos : (s.photoUrl ? [s.photoUrl] : []);
+      const galleryId = 'gd' + i;
+      if (photos.length) window.__galleryStore[galleryId] = photos;
+      const photoCountBadge = photos.length > 1
+        ? `<span style="position:absolute;bottom:8px;right:8px;background:rgba(26,18,8,0.7);color:#fff;font-size:9px;padding:2px 7px;border-radius:20px;backdrop-filter:blur(4px);">📷 ${photos.length}</span>`
+        : '';
+      const imgHtml = photos.length
+        ? `<div class="spot-img spot-img-clickable" style="position:relative;padding:0;overflow:hidden;" onclick="openGallery('${galleryId}', 0)">
+             <img src="${photos[0]}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+             ${photoCountBadge}
+           </div>`
+        : `<div class="spot-img">${s.emoji || '🍸'}</div>`;
+      return `
       <div class="spot-card">
-        <div class="spot-img">${s.emoji || '🍸'}</div>
+        ${imgHtml}
         <div class="spot-body">
           <div class="spot-top">
             <p class="spot-name">${s.name}</p>
@@ -230,7 +334,8 @@
           </div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   window.filterSpots = function(val) {

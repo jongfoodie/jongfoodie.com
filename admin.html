@@ -56,6 +56,12 @@
   .photo-preview .btn-remove-photo { position: absolute; top: 10px; left: 10px; background: rgba(212,82,26,0.9); color: #fff; border: none; border-radius: 20px; font-size: 11px; padding: 4px 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
   .upload-progress { display: none; margin-top: 0.75rem; background: #eee; border-radius: 100px; height: 6px; overflow: hidden; }
   .upload-progress-bar { height: 100%; background: var(--accent); border-radius: 100px; width: 0%; transition: width 0.3s; }
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 1rem; }
+  .photo-grid-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1/1; border: 2px solid var(--accent); }
+  .photo-grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-grid-item .btn-remove-photo-item { position: absolute; top: 4px; right: 4px; background: rgba(26,18,8,0.75); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; line-height: 1; }
+  .photo-grid-item .cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(212,82,26,0.9); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 20px; }
+  .photo-count-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
   .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
   @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
@@ -238,21 +244,17 @@
   </div>
 
   <div class="form-card">
-    <h3>📸 Photo</h3>
+    <h3>📸 Photos</h3>
     <div class="form-group">
-      <label class="form-label">Restaurant Photo</label>
+      <label class="form-label">Restaurant Photos (up to 5)</label>
       <div class="photo-upload-area" id="photoUploadArea">
-        <input type="file" id="rPhoto" accept="image/*" onchange="handlePhotoSelect(this)">
+        <input type="file" id="rPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'r')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload a photo</strong>
-        <p>JPG, PNG of WebP · max 10MB</p>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
       </div>
-      <div class="photo-preview" id="photoPreview">
-        <button class="btn-remove-photo" onclick="removePhoto()">✕ Verwijder</button>
-        <img id="photoPreviewImg" src="" alt="Preview">
-        <span class="photo-badge" id="photoBadge">📷 Foto geselecteerd</span>
-        <p class="photo-name" id="photoPreviewName"></p>
-      </div>
+      <div class="photo-grid" id="rPhotoGrid"></div>
+      <p class="photo-count-label" id="rPhotoCountLabel"></p>
       <div class="upload-progress" id="uploadProgress">
         <div class="upload-progress-bar" id="uploadProgressBar"></div>
       </div>
@@ -436,8 +438,18 @@
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Photo URL (optional, needed to share to Instagram)</label>
-      <input class="form-input" type="text" id="dPhotoUrl" placeholder="https://... (link to an already-hosted photo)" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Photos (up to 5)</label>
+      <div class="photo-upload-area" id="dPhotoUploadArea" style="margin-top:6px;">
+        <input type="file" id="dPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'd')">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
+      </div>
+      <div class="photo-grid" id="dPhotoGrid"></div>
+      <p class="photo-count-label" id="dPhotoCountLabel"></p>
+      <div class="upload-progress" id="dUploadProgress">
+        <div class="upload-progress-bar" id="dUploadProgressBar"></div>
+      </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="dShareInstagram" style="width:16px;height:16px;">
@@ -818,36 +830,57 @@
   const functionsInstance = getFunctions(app);
 
 
-  // Photo preview
-  window.handlePhotoSelect = function(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const preview = document.getElementById('photoPreview');
-    const img = document.getElementById('photoPreviewImg');
-    const name = document.getElementById('photoPreviewName');
-    const badge = document.getElementById('photoBadge');
-    img.src = URL.createObjectURL(file);
-    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-    name.textContent = file.name + ' · ' + sizeMB + ' MB';
-    badge.textContent = '📷 ' + sizeMB + ' MB klaar om te uploaden';
-    preview.style.display = 'block';
-    document.getElementById('photoUploadArea').style.borderColor = 'var(--accent)';
-    document.getElementById('photoUploadArea').style.background = '#FFF8F5';
+  // Multi-photo state per form prefix (r = Eat, d = Drink, ...)
+  window.selectedPhotos = window.selectedPhotos || {};
+
+  function renderPhotoGrid(prefix) {
+    const grid = document.getElementById(prefix + 'PhotoGrid');
+    const label = document.getElementById(prefix + 'PhotoCountLabel');
+    const photos = window.selectedPhotos[prefix] || [];
+    if (!grid) return;
+    grid.innerHTML = photos.map((p, i) => `
+      <div class="photo-grid-item">
+        <img src="${p.previewUrl}" alt="Foto ${i+1}">
+        ${i === 0 ? '<span class="cover-badge">Hoofdfoto</span>' : ''}
+        <button type="button" class="btn-remove-photo-item" onclick="removePhotoAt('${prefix}', ${i})">✕</button>
+      </div>`).join('');
+    label.textContent = photos.length ? `${photos.length} van 5 foto's geselecteerd` : '';
+  }
+
+  // Photo select (multi)
+  window.handlePhotoSelect = function(input, prefix) {
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
+    window.selectedPhotos[prefix] = window.selectedPhotos[prefix] || [];
+    const current = window.selectedPhotos[prefix];
+    const room = 5 - current.length;
+    if (room <= 0) {
+      showToast('Je hebt al 5 foto\'s geselecteerd, dat is het maximum.');
+      input.value = '';
+      return;
+    }
+    files.slice(0, room).forEach(file => {
+      current.push({ file, previewUrl: URL.createObjectURL(file) });
+    });
+    if (files.length > room) {
+      showToast(`Alleen de eerste ${room} foto('s) toegevoegd — max 5 in totaal.`);
+    }
+    input.value = ''; // allow re-selecting same file later
+    renderPhotoGrid(prefix);
+  };
+
+  window.removePhotoAt = function(prefix, index) {
+    const photos = window.selectedPhotos[prefix] || [];
+    photos.splice(index, 1);
+    renderPhotoGrid(prefix);
   };
 
   window.removePhoto = function() {
-    document.getElementById('rPhoto').value = '';
-    document.getElementById('photoPreview').style.display = 'none';
-    document.getElementById('photoUploadArea').style.borderColor = '';
-    document.getElementById('photoUploadArea').style.background = '';
+    // legacy no-op kept for any old inline handlers
   };
 
-  async function uploadPhoto(file, restaurantName) {
+  async function uploadPhotoFile(file) {
     return new Promise((resolve, reject) => {
-      document.getElementById('uploadProgress').style.display = 'block';
-      document.getElementById('uploadProgressBar').style.width = '50%';
-
-      // Resize + convert to base64
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
@@ -860,9 +893,7 @@
           canvas.width = w;
           canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          const base64 = canvas.toDataURL('image/jpeg', 0.82);
-          document.getElementById('uploadProgressBar').style.width = '100%';
-          resolve(base64);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
         };
         img.onerror = reject;
         img.src = e.target.result;
@@ -870,6 +901,31 @@
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+
+  // Uploads all selected photos for a prefix, returns array of base64 strings.
+  // Shows progress on the given progress bar element ids.
+  async function uploadAllPhotos(prefix, progressWrapId, progressBarId) {
+    const photos = window.selectedPhotos[prefix] || [];
+    if (!photos.length) return [];
+    const wrap = document.getElementById(progressWrapId);
+    const bar = document.getElementById(progressBarId);
+    if (wrap) wrap.style.display = 'block';
+    const results = [];
+    for (let i = 0; i < photos.length; i++) {
+      const base64 = await uploadPhotoFile(photos[i].file);
+      results.push(base64);
+      if (bar) bar.style.width = Math.round(((i + 1) / photos.length) * 100) + '%';
+    }
+    return results;
+  }
+
+  function clearPhotos(prefix) {
+    window.selectedPhotos[prefix] = [];
+    const grid = document.getElementById(prefix + 'PhotoGrid');
+    const label = document.getElementById(prefix + 'PhotoCountLabel');
+    if (grid) grid.innerHTML = '';
+    if (label) label.textContent = '';
   }
 
   // Admin password - change this to whatever you want!
@@ -966,7 +1022,6 @@
     const review = document.getElementById('rReview').value.trim();
     const tags = document.getElementById('rTags').value;
     const emoji = document.getElementById('rEmoji').value || '🍽️';
-    const photoFile = document.getElementById('rPhoto').files[0];
 
     if (!name || !locations.length || !locations[0].city || !type || !review || !adminRating) {
       showToast('Please fill in all required fields, at least one location (city) and set a rating!');
@@ -983,10 +1038,8 @@
     const rScheduleVal = document.getElementById('rSchedule').value;
     const rPublishAt = rScheduleVal ? new Date(rScheduleVal) : new Date();
     try {
-      let photoUrl = '';
-      if (photoFile) {
-        photoUrl = await uploadPhoto(photoFile, name);
-      }
+      const photos = await uploadAllPhotos('r', 'uploadProgress', 'uploadProgressBar');
+      const photoUrl = photos[0] || ''; // backwards-compatible single-photo field
 
       await addDoc(collection(db, 'reviews'), {
         name, city, type, price, date, hours, review, emoji,
@@ -995,6 +1048,7 @@
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: adminRating,
         photoUrl,
+        photos,
         createdAt: serverTimestamp(),
         publishAt: rPublishAt,
         status: rScheduleVal ? 'scheduled' : 'published',
@@ -1023,7 +1077,7 @@
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';
       document.getElementById('rShareInstagram').checked = false;
-      removePhoto();
+      clearPhotos('r');
       adminRating = 0;
       document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
 
@@ -1602,10 +1656,12 @@
     const dScheduleVal = document.getElementById('dSchedule').value;
     const dPublishAt = dScheduleVal ? new Date(dScheduleVal) : new Date();
     try {
-      const dPhotoUrl = document.getElementById('dPhotoUrl').value.trim();
+      const dPhotos = await uploadAllPhotos('d', 'dUploadProgress', 'dUploadProgressBar');
+      const dPhotoUrl = dPhotos[0] || '';
       await addDoc(collection(db, 'drinkspots'), {
         name, city, price, date, review, emoji,
-        photoUrl: dPhotoUrl || '',
+        photoUrl: dPhotoUrl,
+        photos: dPhotos,
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -1621,7 +1677,7 @@
         if (dPhotoUrl) {
           shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #drink #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo URL entered — cannot share to Instagram.');
+          showToast('No photo uploaded — cannot share to Instagram.');
         }
       }
       if (document.getElementById('dShareThreads').checked) {
@@ -1629,7 +1685,7 @@
       }
 
       ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('dPhotoUrl').value = '';
+      clearPhotos('d');
       document.getElementById('dShareInstagram').checked = false;
       document.getElementById('dEmoji').value = '🍸';
       drinkRating = 0;
