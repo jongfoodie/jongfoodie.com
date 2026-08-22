@@ -357,8 +357,18 @@
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Photo URL (optional, needed to share to Instagram)</label>
-      <input class="form-input" type="text" id="hPhotoUrl" placeholder="https://... (link to an already-hosted photo)" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Photos (up to 5)</label>
+      <div class="photo-upload-area" id="hPhotoUploadArea" style="margin-top:6px;">
+        <input type="file" id="hPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'h')">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
+      </div>
+      <div class="photo-grid" id="hPhotoGrid"></div>
+      <p class="photo-count-label" id="hPhotoCountLabel"></p>
+      <div class="upload-progress" id="hUploadProgress">
+        <div class="upload-progress-bar" id="hUploadProgressBar"></div>
+      </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="hShareInstagram" style="width:16px;height:16px;">
@@ -1583,10 +1593,12 @@
     const hScheduleVal = document.getElementById('hSchedule').value;
     const hPublishAt = hScheduleVal ? new Date(hScheduleVal) : new Date();
     try {
-      const hPhotoUrl = document.getElementById('hPhotoUrl').value.trim();
+      const hPhotos = await uploadAllPhotos('h', 'hUploadProgress', 'hUploadProgressBar');
+      const hPhotoUrl = hPhotos[0] || '';
       await addDoc(collection(db, 'hotelreviews'), {
         name, city, price, date, review, emoji,
-        photoUrl: hPhotoUrl || '',
+        photoUrl: hPhotoUrl,
+        photos: hPhotos,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: hotelRating,
         createdAt: serverTimestamp(),
@@ -1600,7 +1612,7 @@
         if (hPhotoUrl) {
           shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #stay #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo URL entered — cannot share to Instagram.');
+          showToast('No photo uploaded — cannot share to Instagram.');
         }
       }
       if (document.getElementById('hShareThreads').checked) {
@@ -1614,7 +1626,7 @@
       document.getElementById('hReview').value = '';
       document.getElementById('hTags').value = '';
       document.getElementById('hSchedule').value = '';
-      document.getElementById('hPhotoUrl').value = '';
+      clearPhotos('h');
       document.getElementById('hShareInstagram').checked = false;
       document.getElementById('hEmoji').value = '🏨';
       hotelRating = 0;
