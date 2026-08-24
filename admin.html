@@ -185,7 +185,7 @@
     </div>
   </div>
 
-  <h2>Add New Review</h2>
+  <h2 id="eatSection">Add New Review</h2>
   <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
 
   <div class="form-card">
@@ -305,7 +305,7 @@
     <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
 
   <!-- HOTEL REVIEW SECTION -->
-  <div style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <div id="hotelSection" style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A3A5C;">🏨 Add Hotel Review</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
@@ -378,7 +378,7 @@
       <input type="checkbox" id="hShareThreads" style="width:16px;height:16px;">
       <label for="hShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
+    <button id="hPublishBtn" onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;margin-bottom:0.5rem;">📋 Hotel Reviews — Recent & Scheduled</p>
       <div id="hotelPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -388,7 +388,7 @@
   </div>
 
   <!-- DRINK SECTION -->
-  <div style="background:#F3E8F0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <div id="drinkSection" style="background:#F3E8F0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#6B2A5C;">🍸 Add Drink Spot</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
@@ -469,7 +469,7 @@
       <input type="checkbox" id="dShareThreads" style="width:16px;height:16px;">
       <label for="dShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
+    <button id="dPublishBtn" onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;margin-bottom:0.5rem;">📋 Drink Spots — Recent & Scheduled</p>
       <div id="drinkPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -479,7 +479,7 @@
   </div>
 
   <!-- SHOP SECTION -->
-  <div style="background:#F8E8E8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <div id="shopSection" style="background:#F8E8E8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#A32323;">🛍️ Add Shop Spot</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
@@ -552,7 +552,7 @@
       <input type="checkbox" id="sShareThreads" style="width:16px;height:16px;">
       <label for="sShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
+    <button id="sPublishBtn" onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;margin-bottom:0.5rem;">📋 Shop Spots — Recent & Scheduled</p>
       <div id="shopPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -562,7 +562,7 @@
   </div>
 
   <!-- CULTURE SECTION -->
-  <div style="background:#FBF3E0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <div id="cultureSection" style="background:#FBF3E0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#8A6A0A;">🎭 Add Culture Spot</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
@@ -633,7 +633,7 @@
       <input type="checkbox" id="cShareThreads" style="width:16px;height:16px;">
       <label for="cShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
+    <button id="cPublishBtn" onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;margin-bottom:0.5rem;">📋 Culture Spots — Recent & Scheduled</p>
       <div id="culturePublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -643,7 +643,7 @@
   </div>
 
   <!-- HEALTH SECTION -->
-  <div style="background:#E8F5EC;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <div id="healthSection" style="background:#E8F5EC;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A5C2E;">💪 Add Health Spot</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
@@ -714,7 +714,7 @@
       <input type="checkbox" id="hlShareThreads" style="width:16px;height:16px;">
       <label for="hlShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
+    <button id="hlPublishBtn" onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;margin-bottom:0.5rem;">📋 Health Spots — Recent & Scheduled</p>
       <div id="healthPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
@@ -822,7 +822,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, deleteDoc, doc, setDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
 
@@ -923,7 +923,8 @@
     if (wrap) wrap.style.display = 'block';
     const results = [];
     for (let i = 0; i < photos.length; i++) {
-      const base64 = await uploadPhotoFile(photos[i].file);
+      // Already-uploaded photos (loaded during Edit) don't need re-encoding
+      const base64 = photos[i].existingBase64 || await uploadPhotoFile(photos[i].file);
       results.push(base64);
       if (bar) bar.style.width = Math.round(((i + 1) / photos.length) * 100) + '%';
     }
@@ -936,6 +937,189 @@
     const label = document.getElementById(prefix + 'PhotoCountLabel');
     if (grid) grid.innerHTML = '';
     if (label) label.textContent = '';
+  }
+
+  // Loads photos already stored in Firebase into the photo grid, so editing
+  // a place shows its current photos without needing to re-upload them.
+  function loadExistingPhotos(prefix, photosArray) {
+    window.selectedPhotos[prefix] = (photosArray || []).map(base64 => ({
+      existingBase64: base64,
+      previewUrl: base64
+    }));
+    renderPhotoGrid(prefix);
+  }
+
+  // ── EDIT MODE ─────────────────────────────────────────────────────────
+  // Tracks which item (if any) is currently being edited, per form prefix.
+  window.editingId = {};
+
+  const EDIT_CONFIG = {
+    reviews: {
+      prefix: 'r', sectionId: 'eatSection',
+      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rReview: 'review', rTags: 'tags_join' },
+      emojiField: 'rEmoji', scheduleField: 'rSchedule',
+      publishBtnId: 'publishBtn', publishLabel: '🚀 Publish Review',
+      setRating: 'setAdminRating', hasPhotoWidget: true,
+      multiLocation: true, locationsContainer: 'rLocations'
+    },
+    hotelreviews: {
+      prefix: 'h', sectionId: 'hotelSection',
+      fields: { hName: 'name', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join' },
+      emojiField: 'hEmoji', scheduleField: 'hSchedule',
+      publishBtnId: 'hPublishBtn', publishLabel: '🏨 Publish Hotel Review',
+      setRating: 'setHotelRating', hasPhotoWidget: true
+    },
+    drinkspots: {
+      prefix: 'd', sectionId: 'drinkSection',
+      fields: { dName: 'name', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng' },
+      emojiField: 'dEmoji', scheduleField: 'dSchedule',
+      publishBtnId: 'dPublishBtn', publishLabel: '🍸 Publish Drink Spot',
+      setRating: 'setDrinkRating', hasPhotoWidget: true
+    },
+    shopspots: {
+      prefix: 's', sectionId: 'shopSection',
+      fields: { sName: 'name', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join' },
+      emojiField: 'sEmoji', scheduleField: 'sSchedule',
+      publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publish Shop Spot',
+      setRating: 'setShopRating', hasPhotoWidget: false, photoUrlField: 'sPhotoUrl',
+      multiLocation: true, locationsContainer: 'sLocations'
+    },
+    culturespots: {
+      prefix: 'c', sectionId: 'cultureSection',
+      fields: { cName: 'name', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng' },
+      emojiField: 'cEmoji', scheduleField: 'cSchedule',
+      publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publish Culture Spot',
+      setRating: 'setCultureRating', hasPhotoWidget: false, photoUrlField: 'cPhotoUrl'
+    },
+    healthspots: {
+      prefix: 'hl', sectionId: 'healthSection',
+      fields: { hlName: 'name', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng' },
+      emojiField: 'hlEmoji', scheduleField: 'hlSchedule',
+      publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publish Health Spot',
+      setRating: 'setHealthRating', hasPhotoWidget: false, photoUrlField: 'hlPhotoUrl'
+    }
+  };
+
+  function isoFromMaybeTimestamp(val) {
+    if (!val) return '';
+    const d = val.toDate ? val.toDate() : new Date(val);
+    if (isNaN(d.getTime())) return '';
+    // format for <input type="datetime-local">
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  window.editItem = async function(coll, id) {
+    const cfg = EDIT_CONFIG[coll];
+    if (!cfg) { showToast('Onbekende categorie: ' + coll); return; }
+    try {
+      const snap = await getDoc(doc(db, coll, id));
+      if (!snap.exists()) { showToast('Item niet gevonden — misschien al verwijderd?'); return; }
+      const r = snap.data();
+
+      // Simple text fields
+      Object.entries(cfg.fields).forEach(([fieldId, dataKey]) => {
+        const el = document.getElementById(fieldId);
+        if (!el) return;
+        if (dataKey === 'tags_join') {
+          el.value = (r.tags || []).join(', ');
+        } else {
+          el.value = r[dataKey] != null ? r[dataKey] : '';
+        }
+      });
+
+      if (cfg.emojiField) {
+        const el = document.getElementById(cfg.emojiField);
+        if (el) el.value = r.emoji || el.value;
+      }
+      if (cfg.scheduleField) {
+        const el = document.getElementById(cfg.scheduleField);
+        if (el) el.value = isoFromMaybeTimestamp(r.publishAt);
+      }
+
+      // Rating
+      if (cfg.setRating && window[cfg.setRating]) {
+        window[cfg.setRating](r.rating || 0);
+      }
+
+      // Locations (multi-location categories: Eat, Shop) vs single city (rest)
+      if (cfg.multiLocation && r.locations && r.locations.length) {
+        const container = document.getElementById(cfg.locationsContainer);
+        container.innerHTML = r.locations.map((loc, i) => `
+          <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+            <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam" value="${loc.city || ''}">
+            <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646" value="${loc.lat != null ? loc.lat : ''}">
+            <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723" value="${loc.lng != null ? loc.lng : ''}">
+            <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00" value="${loc.hours || ''}">
+            <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="${i === 0 ? 'display:none;' : ''}background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
+          </div>`).join('');
+      }
+
+      // Photos
+      if (cfg.hasPhotoWidget) {
+        loadExistingPhotos(cfg.prefix, r.photos && r.photos.length ? r.photos : (r.photoUrl ? [r.photoUrl] : []));
+      } else if (cfg.photoUrlField) {
+        const el = document.getElementById(cfg.photoUrlField);
+        if (el) el.value = r.photoUrl || '';
+      }
+
+      // Switch button into "update" mode
+      window.editingId[cfg.prefix] = { coll, id };
+      const btn = document.getElementById(cfg.publishBtnId);
+      if (btn) btn.textContent = '💾 Update (opslaan in ' + coll + ')';
+
+      showEditCancelBar(cfg);
+
+      const section = document.getElementById(cfg.sectionId);
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showToast('Bewerken: velden zijn ingevuld, pas aan en klik op de knop om op te slaan.');
+    } catch (e) {
+      showToast('Kon item niet laden: ' + e.message);
+    }
+  };
+
+  function showEditCancelBar(cfg) {
+    let bar = document.getElementById(cfg.prefix + 'EditCancelBar');
+    if (bar) { bar.style.display = 'block'; return; }
+    const btn = document.getElementById(cfg.publishBtnId);
+    if (!btn) return;
+    bar = document.createElement('div');
+    bar.id = cfg.prefix + 'EditCancelBar';
+    bar.style.cssText = 'margin-top:8px;font-size:12px;color:var(--muted);text-align:center;';
+    bar.innerHTML = `Je bewerkt een bestaand item. <a href="#" onclick="cancelEdit('${cfg.prefix}');return false;" style="color:var(--accent);font-weight:600;">Annuleer bewerken</a>`;
+    btn.insertAdjacentElement('afterend', bar);
+  }
+
+  window.cancelEdit = function(prefix) {
+    const coll = Object.keys(EDIT_CONFIG).find(c => EDIT_CONFIG[c].prefix === prefix);
+    const cfg = EDIT_CONFIG[coll];
+    delete window.editingId[prefix];
+    const btn = document.getElementById(cfg.publishBtnId);
+    if (btn) btn.textContent = cfg.publishLabel;
+    const bar = document.getElementById(prefix + 'EditCancelBar');
+    if (bar) bar.style.display = 'none';
+    clearPhotos(prefix);
+    showToast('Bewerken geannuleerd.');
+  };
+
+  // Saves a place: creates a new document normally, or — if this form is
+  // currently in Edit mode for this collection — updates the existing
+  // document instead (keeping its original createdAt/publish history).
+  async function saveDoc(coll, prefix, data) {
+    const editing = window.editingId[prefix];
+    if (editing && editing.coll === coll) {
+      await updateDoc(doc(db, coll, editing.id), data);
+      delete window.editingId[prefix];
+      const cfg = EDIT_CONFIG[coll];
+      const btn = document.getElementById(cfg.publishBtnId);
+      if (btn) btn.textContent = cfg.publishLabel;
+      const bar = document.getElementById(prefix + 'EditCancelBar');
+      if (bar) bar.style.display = 'none';
+      return { updated: true };
+    } else {
+      await addDoc(collection(db, coll), { ...data, createdAt: serverTimestamp() });
+      return { updated: false };
+    }
   }
 
   // Admin password - change this to whatever you want!
@@ -1051,7 +1235,7 @@
       const photos = await uploadAllPhotos('r', 'uploadProgress', 'uploadProgressBar');
       const photoUrl = photos[0] || ''; // backwards-compatible single-photo field
 
-      await addDoc(collection(db, 'reviews'), {
+      await saveDoc('reviews', 'r', {
         name, city, type, price, date, hours, review, emoji,
         lat, lng,
         locations,
@@ -1059,13 +1243,12 @@
         rating: adminRating,
         photoUrl,
         photos,
-        createdAt: serverTimestamp(),
         publishAt: rPublishAt,
         status: rScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
 
-      showToast('Review published! 🍽️');
+      showToast('Review saved! 🍽️');
 
       // Auto-share to Instagram if checked (only possible with a public photoUrl)
       if (document.getElementById('rShareInstagram').checked) {
@@ -1349,7 +1532,10 @@
               ${scheduleBadge}
             </div>
           </div>
-          <button onclick="deleteCategoryItem('${coll}','${containerId}','${d.id}')" style="background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">🗑</button>
+          <div style="display:flex;gap:6px;">
+            <button onclick="editItem('${coll}','${d.id}')" style="background:none;border:1px solid var(--border);color:var(--accent);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">✏️</button>
+            <button onclick="deleteCategoryItem('${coll}','${containerId}','${d.id}')" style="background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">🗑</button>
+          </div>
         </div>`;
       }).join('');
     } catch(e) {
@@ -1551,7 +1737,10 @@
               ${scheduleBadge}
             </div>
           </div>
-          <button class="btn-delete" onclick="deleteReview('${d.id}')">🗑 Delete</button>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-delete" onclick="editItem('reviews','${d.id}')" style="background:none;border:1px solid var(--border);color:var(--accent);">✏️ Edit</button>
+            <button class="btn-delete" onclick="deleteReview('${d.id}')">🗑 Delete</button>
+          </div>
         </div>`;
       }).join('');
     } catch(e) {
@@ -1595,18 +1784,17 @@
     try {
       const hPhotos = await uploadAllPhotos('h', 'hUploadProgress', 'hUploadProgressBar');
       const hPhotoUrl = hPhotos[0] || '';
-      await addDoc(collection(db, 'hotelreviews'), {
+      const result = await saveDoc('hotelreviews', 'h', {
         name, city, price, date, review, emoji,
         photoUrl: hPhotoUrl,
         photos: hPhotos,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: hotelRating,
-        createdAt: serverTimestamp(),
         publishAt: hPublishAt,
         status: hScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast('Hotel review published! 🏨');
+      showToast(result.updated ? 'Hotel review updated! 🏨' : 'Hotel review published! 🏨');
 
       if (document.getElementById('hShareInstagram').checked) {
         if (hPhotoUrl) {
@@ -1631,6 +1819,7 @@
       document.getElementById('hEmoji').value = '🏨';
       hotelRating = 0;
       document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
+      refreshAllCategoryLists();
     } catch(e) { showToast('Error: ' + e.message); }
   };
 
@@ -1670,7 +1859,7 @@
     try {
       const dPhotos = await uploadAllPhotos('d', 'dUploadProgress', 'dUploadProgressBar');
       const dPhotoUrl = dPhotos[0] || '';
-      await addDoc(collection(db, 'drinkspots'), {
+      const result = await saveDoc('drinkspots', 'd', {
         name, city, price, date, review, emoji,
         photoUrl: dPhotoUrl,
         photos: dPhotos,
@@ -1678,12 +1867,11 @@
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: drinkRating,
-        createdAt: serverTimestamp(),
         publishAt: dPublishAt,
         status: dScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast('Drink spot published! 🍸');
+      showToast(result.updated ? 'Drink spot updated! 🍸' : 'Drink spot published! 🍸');
 
       if (document.getElementById('dShareInstagram').checked) {
         if (dPhotoUrl) {
@@ -1702,6 +1890,7 @@
       document.getElementById('dEmoji').value = '🍸';
       drinkRating = 0;
       document.querySelectorAll('#drinkStarRating span').forEach(s => s.style.color = '#ddd');
+      refreshAllCategoryLists();
     } catch(e) { showToast('Error: ' + e.message); }
   };
 
@@ -1721,19 +1910,18 @@
     const sPublishAt = sScheduleVal ? new Date(sScheduleVal) : new Date();
     try {
       const sPhotoUrl = document.getElementById('sPhotoUrl').value.trim();
-      await addDoc(collection(db, 'shopspots'), {
+      const result = await saveDoc('shopspots', 's', {
         name, city, price, date, review, emoji,
         photoUrl: sPhotoUrl || '',
         lat, lng,
         locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: shopRating,
-        createdAt: serverTimestamp(),
         publishAt: sPublishAt,
         status: sScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast('Shop spot published! 🛍️');
+      showToast(result.updated ? 'Shop spot updated! 🛍️' : 'Shop spot published! 🛍️');
 
       if (document.getElementById('sShareInstagram').checked) {
         if (sPhotoUrl) {
@@ -1753,6 +1941,7 @@
       document.getElementById('sEmoji').value = '🛍️';
       shopRating = 0;
       document.querySelectorAll('#shopStarRating span').forEach(s => s.style.color = '#ddd');
+      refreshAllCategoryLists();
     } catch(e) { showToast('Error: ' + e.message); }
   };
 
@@ -1771,19 +1960,18 @@
     const cPublishAt = cScheduleVal ? new Date(cScheduleVal) : new Date();
     try {
       const cPhotoUrl = document.getElementById('cPhotoUrl').value.trim();
-      await addDoc(collection(db, 'culturespots'), {
+      const result = await saveDoc('culturespots', 'c', {
         name, city, price, date, review, emoji,
         photoUrl: cPhotoUrl || '',
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: cultureRating,
-        createdAt: serverTimestamp(),
         publishAt: cPublishAt,
         status: cScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast('Culture spot published! 🎭');
+      showToast(result.updated ? 'Culture spot updated! 🎭' : 'Culture spot published! 🎭');
 
       if (document.getElementById('cShareInstagram').checked) {
         if (cPhotoUrl) {
@@ -1802,6 +1990,7 @@
       document.getElementById('cEmoji').value = '🎭';
       cultureRating = 0;
       document.querySelectorAll('#cultureStarRating span').forEach(s => s.style.color = '#ddd');
+      refreshAllCategoryLists();
     } catch(e) { showToast('Error: ' + e.message); }
   };
 
@@ -1820,19 +2009,18 @@
     const hlPublishAt = hlScheduleVal ? new Date(hlScheduleVal) : new Date();
     try {
       const hlPhotoUrl = document.getElementById('hlPhotoUrl').value.trim();
-      await addDoc(collection(db, 'healthspots'), {
+      const result = await saveDoc('healthspots', 'hl', {
         name, city, price, date, review, emoji,
         photoUrl: hlPhotoUrl || '',
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         rating: healthRating,
-        createdAt: serverTimestamp(),
         publishAt: hlPublishAt,
         status: hlScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast('Health spot published! 💪');
+      showToast(result.updated ? 'Health spot updated! 💪' : 'Health spot published! 💪');
 
       if (document.getElementById('hlShareInstagram').checked) {
         if (hlPhotoUrl) {
@@ -1851,6 +2039,7 @@
       document.getElementById('hlEmoji').value = '💪';
       healthRating = 0;
       document.querySelectorAll('#healthStarRating span').forEach(s => s.style.color = '#ddd');
+      refreshAllCategoryLists();
     } catch(e) { showToast('Error: ' + e.message); }
   };
   // ─────────────────────────────────────────────────────────────────────────
