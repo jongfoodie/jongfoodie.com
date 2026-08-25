@@ -541,8 +541,18 @@
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Photo URL (optional, needed to share to Instagram)</label>
-      <input class="form-input" type="text" id="sPhotoUrl" placeholder="https://... (link to an already-hosted photo)" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Photos (up to 5)</label>
+      <div class="photo-upload-area" id="sPhotoUploadArea" style="margin-top:6px;">
+        <input type="file" id="sPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 's')">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
+      </div>
+      <div class="photo-grid" id="sPhotoGrid"></div>
+      <p class="photo-count-label" id="sPhotoCountLabel"></p>
+      <div class="upload-progress" id="sUploadProgress">
+        <div class="upload-progress-bar" id="sUploadProgressBar"></div>
+      </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="sShareInstagram" style="width:16px;height:16px;">
@@ -622,8 +632,18 @@
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Photo URL (optional, needed to share to Instagram)</label>
-      <input class="form-input" type="text" id="cPhotoUrl" placeholder="https://... (link to an already-hosted photo)" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Photos (up to 5)</label>
+      <div class="photo-upload-area" id="cPhotoUploadArea" style="margin-top:6px;">
+        <input type="file" id="cPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'c')">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
+      </div>
+      <div class="photo-grid" id="cPhotoGrid"></div>
+      <p class="photo-count-label" id="cPhotoCountLabel"></p>
+      <div class="upload-progress" id="cUploadProgress">
+        <div class="upload-progress-bar" id="cUploadProgressBar"></div>
+      </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="cShareInstagram" style="width:16px;height:16px;">
@@ -703,8 +723,18 @@
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Photo URL (optional, needed to share to Instagram)</label>
-      <input class="form-input" type="text" id="hlPhotoUrl" placeholder="https://... (link to an already-hosted photo)" style="margin-top:6px;">
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Photos (up to 5)</label>
+      <div class="photo-upload-area" id="hlPhotoUploadArea" style="margin-top:6px;">
+        <input type="file" id="hlPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'hl')">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload photos</strong>
+        <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
+      </div>
+      <div class="photo-grid" id="hlPhotoGrid"></div>
+      <p class="photo-count-label" id="hlPhotoCountLabel"></p>
+      <div class="upload-progress" id="hlUploadProgress">
+        <div class="upload-progress-bar" id="hlUploadProgressBar"></div>
+      </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="hlShareInstagram" style="width:16px;height:16px;">
@@ -981,7 +1011,7 @@
       fields: { sName: 'name', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join' },
       emojiField: 'sEmoji', scheduleField: 'sSchedule',
       publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publish Shop Spot',
-      setRating: 'setShopRating', hasPhotoWidget: false, photoUrlField: 'sPhotoUrl',
+      setRating: 'setShopRating', hasPhotoWidget: true,
       multiLocation: true, locationsContainer: 'sLocations'
     },
     culturespots: {
@@ -989,14 +1019,14 @@
       fields: { cName: 'name', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng' },
       emojiField: 'cEmoji', scheduleField: 'cSchedule',
       publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publish Culture Spot',
-      setRating: 'setCultureRating', hasPhotoWidget: false, photoUrlField: 'cPhotoUrl'
+      setRating: 'setCultureRating', hasPhotoWidget: true
     },
     healthspots: {
       prefix: 'hl', sectionId: 'healthSection',
       fields: { hlName: 'name', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng' },
       emojiField: 'hlEmoji', scheduleField: 'hlSchedule',
       publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publish Health Spot',
-      setRating: 'setHealthRating', hasPhotoWidget: false, photoUrlField: 'hlPhotoUrl'
+      setRating: 'setHealthRating', hasPhotoWidget: true
     }
   };
 
@@ -1909,10 +1939,12 @@
     const sScheduleVal = document.getElementById('sSchedule').value;
     const sPublishAt = sScheduleVal ? new Date(sScheduleVal) : new Date();
     try {
-      const sPhotoUrl = document.getElementById('sPhotoUrl').value.trim();
+      const sPhotos = await uploadAllPhotos('s', 'sUploadProgress', 'sUploadProgressBar');
+      const sPhotoUrl = sPhotos[0] || '';
       const result = await saveDoc('shopspots', 's', {
         name, city, price, date, review, emoji,
-        photoUrl: sPhotoUrl || '',
+        photoUrl: sPhotoUrl,
+        photos: sPhotos,
         lat, lng,
         locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -1927,7 +1959,7 @@
         if (sPhotoUrl) {
           shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo URL entered — cannot share to Instagram.');
+          showToast('No photo uploaded — cannot share to Instagram.');
         }
       }
       if (document.getElementById('sShareThreads').checked) {
@@ -1936,7 +1968,7 @@
 
       ['sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
       resetLocations('sLocations');
-      document.getElementById('sPhotoUrl').value = '';
+      clearPhotos('s');
       document.getElementById('sShareInstagram').checked = false;
       document.getElementById('sEmoji').value = '🛍️';
       shopRating = 0;
@@ -1959,10 +1991,12 @@
     const cScheduleVal = document.getElementById('cSchedule').value;
     const cPublishAt = cScheduleVal ? new Date(cScheduleVal) : new Date();
     try {
-      const cPhotoUrl = document.getElementById('cPhotoUrl').value.trim();
+      const cPhotos = await uploadAllPhotos('c', 'cUploadProgress', 'cUploadProgressBar');
+      const cPhotoUrl = cPhotos[0] || '';
       const result = await saveDoc('culturespots', 'c', {
         name, city, price, date, review, emoji,
-        photoUrl: cPhotoUrl || '',
+        photoUrl: cPhotoUrl,
+        photos: cPhotos,
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -1977,7 +2011,7 @@
         if (cPhotoUrl) {
           shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #culture #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo URL entered — cannot share to Instagram.');
+          showToast('No photo uploaded — cannot share to Instagram.');
         }
       }
       if (document.getElementById('cShareThreads').checked) {
@@ -1985,7 +2019,7 @@
       }
 
       ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('cPhotoUrl').value = '';
+      clearPhotos('c');
       document.getElementById('cShareInstagram').checked = false;
       document.getElementById('cEmoji').value = '🎭';
       cultureRating = 0;
@@ -2008,10 +2042,12 @@
     const hlScheduleVal = document.getElementById('hlSchedule').value;
     const hlPublishAt = hlScheduleVal ? new Date(hlScheduleVal) : new Date();
     try {
-      const hlPhotoUrl = document.getElementById('hlPhotoUrl').value.trim();
+      const hlPhotos = await uploadAllPhotos('hl', 'hlUploadProgress', 'hlUploadProgressBar');
+      const hlPhotoUrl = hlPhotos[0] || '';
       const result = await saveDoc('healthspots', 'hl', {
         name, city, price, date, review, emoji,
-        photoUrl: hlPhotoUrl || '',
+        photoUrl: hlPhotoUrl,
+        photos: hlPhotos,
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -2026,7 +2062,7 @@
         if (hlPhotoUrl) {
           shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #health #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo URL entered — cannot share to Instagram.');
+          showToast('No photo uploaded — cannot share to Instagram.');
         }
       }
       if (document.getElementById('hlShareThreads').checked) {
@@ -2034,7 +2070,7 @@
       }
 
       ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('hlPhotoUrl').value = '';
+      clearPhotos('hl');
       document.getElementById('hlShareInstagram').checked = false;
       document.getElementById('hlEmoji').value = '💪';
       healthRating = 0;
