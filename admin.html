@@ -294,6 +294,16 @@
       <input class="form-input" type="datetime-local" id="rSchedule" style="margin-top:6px;">
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
     </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="rSponsored" onchange="document.getElementById('rPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="rSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="rPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="rPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
     <div style="margin-top:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="rShareInstagram" style="width:16px;height:16px;">
       <label for="rShareInstagram" style="font-size:12px;color:var(--muted);">📲 Ook automatisch delen naar Instagram na publiceren</label>
@@ -368,6 +378,16 @@
       <p class="photo-count-label" id="hPhotoCountLabel"></p>
       <div class="upload-progress" id="hUploadProgress">
         <div class="upload-progress-bar" id="hUploadProgressBar"></div>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="hSponsored" onchange="document.getElementById('hPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="hSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="hPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="hPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -459,6 +479,16 @@
       <p class="photo-count-label" id="dPhotoCountLabel"></p>
       <div class="upload-progress" id="dUploadProgress">
         <div class="upload-progress-bar" id="dUploadProgressBar"></div>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="dSponsored" onchange="document.getElementById('dPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="dSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="dPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="dPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -554,6 +584,16 @@
         <div class="upload-progress-bar" id="sUploadProgressBar"></div>
       </div>
     </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="sSponsored" onchange="document.getElementById('sPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="sSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="sPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="sPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="sShareInstagram" style="width:16px;height:16px;">
       <label for="sShareInstagram" style="font-size:12px;color:var(--muted);">📲 Ook automatisch delen naar Instagram na publiceren</label>
@@ -645,6 +685,16 @@
         <div class="upload-progress-bar" id="cUploadProgressBar"></div>
       </div>
     </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="cSponsored" onchange="document.getElementById('cPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="cSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="cPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="cPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
       <input type="checkbox" id="cShareInstagram" style="width:16px;height:16px;">
       <label for="cShareInstagram" style="font-size:12px;color:var(--muted);">📲 Ook automatisch delen naar Instagram na publiceren</label>
@@ -734,6 +784,16 @@
       <p class="photo-count-label" id="hlPhotoCountLabel"></p>
       <div class="upload-progress" id="hlUploadProgress">
         <div class="upload-progress-bar" id="hlUploadProgressBar"></div>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="hlSponsored" onchange="document.getElementById('hlPartnerNameWrap').style.display=this.checked?'block':'none';" style="width:16px;height:16px;">
+        <label for="hlSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
+      </div>
+      <div id="hlPartnerNameWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="hlPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -986,7 +1046,7 @@
   const EDIT_CONFIG = {
     reviews: {
       prefix: 'r', sectionId: 'eatSection',
-      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rReview: 'review', rTags: 'tags_join' },
+      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
       emojiField: 'rEmoji', scheduleField: 'rSchedule',
       publishBtnId: 'publishBtn', publishLabel: '🚀 Publish Review',
       setRating: 'setAdminRating', hasPhotoWidget: true,
@@ -994,21 +1054,21 @@
     },
     hotelreviews: {
       prefix: 'h', sectionId: 'hotelSection',
-      fields: { hName: 'name', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join' },
+      fields: { hName: 'name', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join', hPartnerName: 'partnerName_raw' },
       emojiField: 'hEmoji', scheduleField: 'hSchedule',
       publishBtnId: 'hPublishBtn', publishLabel: '🏨 Publish Hotel Review',
       setRating: 'setHotelRating', hasPhotoWidget: true
     },
     drinkspots: {
       prefix: 'd', sectionId: 'drinkSection',
-      fields: { dName: 'name', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng' },
+      fields: { dName: 'name', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng', dPartnerName: 'partnerName_raw' },
       emojiField: 'dEmoji', scheduleField: 'dSchedule',
       publishBtnId: 'dPublishBtn', publishLabel: '🍸 Publish Drink Spot',
       setRating: 'setDrinkRating', hasPhotoWidget: true
     },
     shopspots: {
       prefix: 's', sectionId: 'shopSection',
-      fields: { sName: 'name', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join' },
+      fields: { sName: 'name', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join', sPartnerName: 'partnerName_raw' },
       emojiField: 'sEmoji', scheduleField: 'sSchedule',
       publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publish Shop Spot',
       setRating: 'setShopRating', hasPhotoWidget: true,
@@ -1016,14 +1076,14 @@
     },
     culturespots: {
       prefix: 'c', sectionId: 'cultureSection',
-      fields: { cName: 'name', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng' },
+      fields: { cName: 'name', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng', cPartnerName: 'partnerName_raw' },
       emojiField: 'cEmoji', scheduleField: 'cSchedule',
       publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publish Culture Spot',
       setRating: 'setCultureRating', hasPhotoWidget: true
     },
     healthspots: {
       prefix: 'hl', sectionId: 'healthSection',
-      fields: { hlName: 'name', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng' },
+      fields: { hlName: 'name', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng', hlPartnerName: 'partnerName_raw' },
       emojiField: 'hlEmoji', scheduleField: 'hlSchedule',
       publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publish Health Spot',
       setRating: 'setHealthRating', hasPhotoWidget: true
@@ -1053,10 +1113,20 @@
         if (!el) return;
         if (dataKey === 'tags_join') {
           el.value = (r.tags || []).join(', ');
+        } else if (dataKey === 'partnerName_raw') {
+          el.value = r.partnerName || '';
         } else {
           el.value = r[dataKey] != null ? r[dataKey] : '';
         }
       });
+
+      // Partner/sponsored checkbox + reveal the name field if applicable
+      const sponsoredEl = document.getElementById(cfg.prefix + 'Sponsored');
+      const partnerWrapEl = document.getElementById(cfg.prefix + 'PartnerNameWrap');
+      if (sponsoredEl) {
+        sponsoredEl.checked = !!r.sponsored;
+        if (partnerWrapEl) partnerWrapEl.style.display = r.sponsored ? 'block' : 'none';
+      }
 
       if (cfg.emojiField) {
         const el = document.getElementById(cfg.emojiField);
@@ -1265,7 +1335,11 @@
       const photos = await uploadAllPhotos('r', 'uploadProgress', 'uploadProgressBar');
       const photoUrl = photos[0] || ''; // backwards-compatible single-photo field
 
+      const rSponsored = document.getElementById('rSponsored').checked;
+      const rPartnerName = document.getElementById('rPartnerName').value.trim();
       await saveDoc('reviews', 'r', {
+        sponsored: rSponsored,
+        partnerName: rSponsored ? rPartnerName : '',
         name, city, type, price, date, hours, review, emoji,
         lat, lng,
         locations,
@@ -1300,6 +1374,9 @@
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';
       document.getElementById('rShareInstagram').checked = false;
+      document.getElementById('rSponsored').checked = false;
+      document.getElementById('rPartnerName').value = '';
+      document.getElementById('rPartnerNameWrap').style.display = 'none';
       clearPhotos('r');
       adminRating = 0;
       document.querySelectorAll('#adminStars span').forEach(s => s.classList.remove('lit'));
@@ -1814,7 +1891,11 @@
     try {
       const hPhotos = await uploadAllPhotos('h', 'hUploadProgress', 'hUploadProgressBar');
       const hPhotoUrl = hPhotos[0] || '';
+      const hSponsored = document.getElementById('hSponsored').checked;
+      const hPartnerName = document.getElementById('hPartnerName').value.trim();
       const result = await saveDoc('hotelreviews', 'h', {
+        sponsored: hSponsored,
+        partnerName: hSponsored ? hPartnerName : '',
         name, city, price, date, review, emoji,
         photoUrl: hPhotoUrl,
         photos: hPhotos,
@@ -1844,6 +1925,9 @@
       document.getElementById('hReview').value = '';
       document.getElementById('hTags').value = '';
       document.getElementById('hSchedule').value = '';
+      document.getElementById('hSponsored').checked = false;
+      document.getElementById('hPartnerName').value = '';
+      document.getElementById('hPartnerNameWrap').style.display = 'none';
       clearPhotos('h');
       document.getElementById('hShareInstagram').checked = false;
       document.getElementById('hEmoji').value = '🏨';
@@ -1889,7 +1973,11 @@
     try {
       const dPhotos = await uploadAllPhotos('d', 'dUploadProgress', 'dUploadProgressBar');
       const dPhotoUrl = dPhotos[0] || '';
+      const dSponsored = document.getElementById('dSponsored').checked;
+      const dPartnerName = document.getElementById('dPartnerName').value.trim();
       const result = await saveDoc('drinkspots', 'd', {
+        sponsored: dSponsored,
+        partnerName: dSponsored ? dPartnerName : '',
         name, city, price, date, review, emoji,
         photoUrl: dPhotoUrl,
         photos: dPhotos,
@@ -1915,6 +2003,9 @@
       }
 
       ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('dSponsored').checked = false;
+      document.getElementById('dPartnerName').value = '';
+      document.getElementById('dPartnerNameWrap').style.display = 'none';
       clearPhotos('d');
       document.getElementById('dShareInstagram').checked = false;
       document.getElementById('dEmoji').value = '🍸';
@@ -1941,7 +2032,11 @@
     try {
       const sPhotos = await uploadAllPhotos('s', 'sUploadProgress', 'sUploadProgressBar');
       const sPhotoUrl = sPhotos[0] || '';
+      const sSponsored = document.getElementById('sSponsored').checked;
+      const sPartnerName = document.getElementById('sPartnerName').value.trim();
       const result = await saveDoc('shopspots', 's', {
+        sponsored: sSponsored,
+        partnerName: sSponsored ? sPartnerName : '',
         name, city, price, date, review, emoji,
         photoUrl: sPhotoUrl,
         photos: sPhotos,
@@ -1968,6 +2063,9 @@
 
       ['sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
       resetLocations('sLocations');
+      document.getElementById('sSponsored').checked = false;
+      document.getElementById('sPartnerName').value = '';
+      document.getElementById('sPartnerNameWrap').style.display = 'none';
       clearPhotos('s');
       document.getElementById('sShareInstagram').checked = false;
       document.getElementById('sEmoji').value = '🛍️';
@@ -1993,7 +2091,11 @@
     try {
       const cPhotos = await uploadAllPhotos('c', 'cUploadProgress', 'cUploadProgressBar');
       const cPhotoUrl = cPhotos[0] || '';
+      const cSponsored = document.getElementById('cSponsored').checked;
+      const cPartnerName = document.getElementById('cPartnerName').value.trim();
       const result = await saveDoc('culturespots', 'c', {
+        sponsored: cSponsored,
+        partnerName: cSponsored ? cPartnerName : '',
         name, city, price, date, review, emoji,
         photoUrl: cPhotoUrl,
         photos: cPhotos,
@@ -2019,6 +2121,9 @@
       }
 
       ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cSponsored').checked = false;
+      document.getElementById('cPartnerName').value = '';
+      document.getElementById('cPartnerNameWrap').style.display = 'none';
       clearPhotos('c');
       document.getElementById('cShareInstagram').checked = false;
       document.getElementById('cEmoji').value = '🎭';
@@ -2044,7 +2149,11 @@
     try {
       const hlPhotos = await uploadAllPhotos('hl', 'hlUploadProgress', 'hlUploadProgressBar');
       const hlPhotoUrl = hlPhotos[0] || '';
+      const hlSponsored = document.getElementById('hlSponsored').checked;
+      const hlPartnerName = document.getElementById('hlPartnerName').value.trim();
       const result = await saveDoc('healthspots', 'hl', {
+        sponsored: hlSponsored,
+        partnerName: hlSponsored ? hlPartnerName : '',
         name, city, price, date, review, emoji,
         photoUrl: hlPhotoUrl,
         photos: hlPhotos,
@@ -2070,6 +2179,9 @@
       }
 
       ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('hlSponsored').checked = false;
+      document.getElementById('hlPartnerName').value = '';
+      document.getElementById('hlPartnerNameWrap').style.display = 'none';
       clearPhotos('hl');
       document.getElementById('hlShareInstagram').checked = false;
       document.getElementById('hlEmoji').value = '💪';
