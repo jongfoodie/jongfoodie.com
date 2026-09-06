@@ -132,11 +132,11 @@
 <div id="adminPanel" class="admin-panel" style="display:none;">
 
 
-  <!-- NEWSLETTER BANNER — shown after publishing a review -->
+  <!-- NEWSLETTER BANNER, shown after publishing a review -->
   <div id="newsletterBanner" class="newsletter-banner">
     <h3>📧 Send Newsletter?</h3>
     <p>A new review was just published. Let your subscribers know!</p>
-    <div class="review-preview" id="newsletterPreview">—</div>
+    <div class="review-preview" id="newsletterPreview">, </div>
     <button class="btn-newsletter" onclick="openMailchimp()">Open Mailchimp → Send Campaign</button>
     <button class="btn-dismiss" onclick="dismissNewsletter()">Dismiss</button>
   </div>
@@ -146,37 +146,37 @@
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍽️ Food Reviews</p>
-        <p id="cntFood" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;">—</p>
+        <p id="cntFood" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🏨 Hotel Reviews</p>
-        <p id="cntHotel" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A3A5C;line-height:1;">—</p>
+        <p id="cntHotel" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A3A5C;line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">👥 Members</p>
-        <p id="cntUsers" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;">—</p>
+        <p id="cntUsers" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">📌 Community Picks</p>
-        <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">—</p>
+        <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">, </p>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍸 Drink Spots</p>
-        <p id="cntDrink" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#6B2A5C;line-height:1;">—</p>
+        <p id="cntDrink" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#6B2A5C;line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🛍️ Shop Spots</p>
-        <p id="cntShop" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#A32323;line-height:1;">—</p>
+        <p id="cntShop" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#A32323;line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🎭 Culture Spots</p>
-        <p id="cntCulture" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8A6A0A;line-height:1;">—</p>
+        <p id="cntCulture" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8A6A0A;line-height:1;">, </p>
       </div>
       <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
         <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">💪 Health Spots</p>
-        <p id="cntHealth" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A5C2E;line-height:1;">—</p>
+        <p id="cntHealth" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A5C2E;line-height:1;">, </p>
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:0.75rem 1.25rem;border:1px solid var(--border);">
@@ -1278,8 +1278,8 @@
     showToast('Bewerken geannuleerd.');
   };
 
-  // Saves a place: creates a new document normally, or — if this form is
-  // currently in Edit mode for this collection — updates the existing
+  // Saves a place: creates a new document normally, or, if this form is
+  // currently in Edit mode for this collection, updates the existing
   // document instead (keeping its original createdAt/publish history).
   async function saveDoc(coll, prefix, data) {
     const editing = window.editingId[prefix];
@@ -1381,7 +1381,7 @@
     document.querySelectorAll('#adminStars span').forEach((s, i) => s.classList.toggle('lit', i < n));
   };
 
-  // ── PUBLISH RESTAURANT REVIEW (was missing — button called this but it didn't exist) ──
+  // ── PUBLISH RESTAURANT REVIEW (was missing, button called this but it didn't exist) ──
   window.publishReview = async function() {
     const btn = document.getElementById('publishBtn');
     const name = document.getElementById('rName').value.trim();
@@ -1470,7 +1470,7 @@
     btn.textContent = '🚀 Publish Review';
   };
 
-  // ── GITHUB TOKEN SETUP (was missing — button called this but it didn't exist) ──
+  // ── GITHUB TOKEN SETUP (was missing, button called this but it didn't exist) ──
   window.setupGitHubToken = function() {
     const existing = localStorage.getItem('jf_github_token');
     const token = window.prompt(
@@ -1484,7 +1484,7 @@
       document.getElementById('tokenStatus').textContent = '✅ Token set';
       showToast('GitHub token saved!');
     } else if (token === '') {
-      // user submitted empty on purpose — do nothing
+      // user submitted empty on purpose, do nothing
     }
     updateTokenStatus();
   };

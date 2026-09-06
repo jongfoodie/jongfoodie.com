@@ -7,12 +7,12 @@
 <meta name="description" content="Interactive food map with all Strong Foodie reviewed restaurants. Find the best spots in Amsterdam, USA, Aruba and Turkey.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Strong Foodie">
-  <meta property="og:title" content="Food Map — Strong Foodie">
+  <meta property="og:title" content="Food Map: Strong Foodie">
   <meta property="og:description" content="Interactive map of all Strong Foodie reviewed restaurants in Amsterdam and beyond.">
   <meta property="og:url" content="https://www.strongfoodie.com/map.html">
   <meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Food Map — Strong Foodie">
+  <meta name="twitter:title" content="Food Map: Strong Foodie">
   <meta name="twitter:description" content="Interactive map of all Strong Foodie reviewed restaurants in Amsterdam and beyond.">
   <link rel="canonical" href="https://www.strongfoodie.com/map.html">
   <script type="application/ld+json">
@@ -25,7 +25,7 @@
 }
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Food Map — Strong Foodie | Restaurant Locations Worldwide</title>
+<title>Food Map, Strong Foodie | Restaurant Locations Worldwide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -77,7 +77,7 @@
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--accent); }
 </style>
-<!-- Google Analytics — only loaded after cookie consent, see consent script near </body> -->
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -168,11 +168,11 @@ const spots = [
   { name: 'Cafe Nobuya', address: 'Herenstraat 28, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★★', emoji: '🍜', photoUrl: 'images/cafe-nobuya.jpg', },
   { name: 'Brioche Amsterdam', address: 'Bilderdijkstraat 164, Amsterdam', hours: 'Wed–Fri 08:00–17:30 · Sat–Sun 09:00–17:00 · Mon–Tue Closed', rating: '★☆☆☆☆', emoji: '🧀' },
   { name: 'Le Smash Amsterdam', address: 'Govert Flinckstraat 122, Amsterdam', hours: 'Daily 12:00–22:00', rating: '★★★★½', emoji: '🍔', photoUrl: 'images/le-smash.jpg', },
-  { name: 'Fabel Friet — Oude Hoogstraat', address: 'Oude Hoogstraat 21, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
-  { name: 'Fabel Friet — Nieuwendijk', address: 'Nieuwendijk 10A, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
-  { name: 'Fabel Friet — Damrak', address: 'Damrak 58, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
-  { name: 'Fabel Friet — Runstraat', address: 'Runstraat 1, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
-  { name: 'Fabel Friet — Leidsestraat', address: 'Leidsestraat 85, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
+  { name: 'Fabel Friet, Oude Hoogstraat', address: 'Oude Hoogstraat 21, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
+  { name: 'Fabel Friet, Nieuwendijk', address: 'Nieuwendijk 10A, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
+  { name: 'Fabel Friet, Damrak', address: 'Damrak 58, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
+  { name: 'Fabel Friet, Runstraat', address: 'Runstraat 1, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
+  { name: 'Fabel Friet, Leidsestraat', address: 'Leidsestraat 85, Amsterdam', hours: 'Daily 11:00–21:00', rating: '★★★★★', emoji: '🍟', photoUrl: 'images/fabel-friet.jpg', },
   { name: 'Sjefietshé', address: 'Van Ostadestraat 1, Amsterdam', hours: 'Tue–Thu 17:30–01:00 · Fri–Sun 17:00–01:00 · Mon Closed', rating: '★★★★☆', emoji: '🐙', photoUrl: 'images/sjefietshe.jpg', },
   { name: 'Bonnie Amsterdam', address: 'Amstelveenseweg 226, Amsterdam', hours: 'Mon–Wed 10:00–00:00 · Thu 10:00–01:00 · Fri–Sat 10:00–03:00 · Sun 10:00–00:00', rating: '★★★★☆', emoji: '🫔', photoUrl: 'images/bonnie-kimchi-croque.jpg', },
   { name: 'Banh Mi Deli Amsterdam', address: 'Prinsengracht 172, Amsterdam', hours: 'Check Google Maps for latest hours', rating: '★★★★☆', emoji: '🥪', photoUrl: 'images/banh-mi-deli.jpg', },
@@ -248,11 +248,11 @@ function loadAllSpots() {
     'Cafe Nobuya':                    [52.3773429, 4.8886939],
     'Brioche Amsterdam':              [52.3673541, 4.871753],
     'Le Smash Amsterdam':             [52.3545069, 4.8908168],
-    'Fabel Friet — Oude Hoogstraat':   [52.3716, 4.8997],
-    'Fabel Friet — Nieuwendijk':        [52.3764, 4.8936],
-    'Fabel Friet — Damrak':             [52.3748, 4.8961],
-    'Fabel Friet — Runstraat':          [52.3688273, 4.8840617],
-    'Fabel Friet — Leidsestraat':       [52.3640, 4.8827],
+    'Fabel Friet, Oude Hoogstraat':   [52.3716, 4.8997],
+    'Fabel Friet, Nieuwendijk':        [52.3764, 4.8936],
+    'Fabel Friet, Damrak':             [52.3748, 4.8961],
+    'Fabel Friet, Runstraat':          [52.3688273, 4.8840617],
+    'Fabel Friet, Leidsestraat':       [52.3640, 4.8827],
     'Sjefietshé':                     [52.3516313, 4.8870853],
     'Bonnie Amsterdam':               [52.3508957, 4.8565299],
     'Banh Mi Deli Amsterdam':         [52.3745504, 4.8827738],
@@ -556,14 +556,14 @@ loadAllSpots();
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc — Strong Foodie</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
       <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
     </div>
   </div>
 </footer>
 
 <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
-  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this — see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
   <div style="display:flex;gap:0.75rem;flex-shrink:0;">
     <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
     <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
