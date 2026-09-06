@@ -319,13 +319,25 @@
       const partnerBadge = s.sponsored
         ? `<span style="position:absolute;top:8px;right:8px;background:#D4521A;color:#fff;font-size:9px;padding:3px 8px;border-radius:4px;font-weight:700;letter-spacing:0.05em;">🤝 ${s.partnerName ? 'Partner met ' + s.partnerName : 'Partner'}</span>`
         : '';
+      const isClosed = s.closedStatus && s.closedStatus !== 'open';
+      const closedOverlay = isClosed
+        ? `<div style="position:absolute;inset:0;background:rgba(20,20,20,0.6);display:flex;align-items:center;justify-content:center;">
+             <span style="background:${s.closedStatus === 'perm' ? '#8A2323' : '#8A6A0A'};color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 12px;border-radius:4px;">
+               🚪 ${s.closedStatus === 'perm' ? 'DEFINITIEF GESLOTEN' : 'TIJDELIJK GESLOTEN'}
+             </span>
+           </div>`
+        : '';
+      const closedNoteHtml = (isClosed && s.closedNote)
+        ? `<p style="font-size:12px;color:#8A6A20;background:#FFF4E5;border-radius:6px;padding:6px 10px;margin-bottom:8px;">ℹ️ ${s.closedNote}</p>`
+        : '';
       const imgHtml = photos.length
         ? `<div class="spot-img spot-img-clickable" style="position:relative;padding:0;overflow:hidden;" onclick="openGallery('${galleryId}', 0)">
-             <img src="${photos[0]}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+             <img src="${photos[0]}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
              ${partnerBadge}
              ${photoCountBadge}
+             ${closedOverlay}
            </div>`
-        : `<div class="spot-img" style="position:relative;">${s.emoji || '🛍️'}${partnerBadge}</div>`;
+        : `<div class="spot-img" style="position:relative;">${s.emoji || '🛍️'}${partnerBadge}${closedOverlay}</div>`;
       return `
       <div class="spot-card">
         ${imgHtml}
@@ -339,6 +351,7 @@
             ${s.price ? '<span>💰 ' + s.price + '</span>' : ''}
             ${s.date ? '<span>📅 ' + s.date + '</span>' : ''}
           </div>
+          ${closedNoteHtml}
           <p class="spot-desc">${s.review || ''}</p>
           <div class="spot-tags">
             ${(s.tags || []).map(t => '<span class="spot-tag">' + t + '</span>').join('')}

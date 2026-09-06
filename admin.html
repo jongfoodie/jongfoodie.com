@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Strong Foodie</title>
+<title>Admin: Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -228,8 +228,8 @@
       </div>
     </div>
     <div class="form-group" style="margin-top:0.5rem;">
-      <label class="form-label">Location(s) — City + Coordinates + Opening Hours *</label>
-      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe — elke locatie heeft eigen openingstijden.</p>
+      <label class="form-label">Location(s): City + Coordinates + Opening Hours *</label>
+      <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe, elke locatie heeft eigen openingstijden.</p>
       <div id="rLocations">
         <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
           <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
@@ -300,8 +300,19 @@
         <label for="rSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="rPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="rPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="rPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="rClosedStatus" onchange="document.getElementById('rClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="rClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="rClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-top:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -386,8 +397,19 @@
         <label for="hSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="hPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="hPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="hPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="hClosedStatus" onchange="document.getElementById('hClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="hClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="hClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -400,7 +422,7 @@
     </div>
     <button id="hPublishBtn" onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
     <div style="margin-top:1.25rem;">
-      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;margin-bottom:0.5rem;">📋 Hotel Reviews — Recent & Scheduled</p>
+      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;margin-bottom:0.5rem;">📋 Hotel Reviews: Recent & Scheduled</p>
       <div id="hotelPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="font-size:12px;color:var(--muted);">Loading...</p>
       </div>
@@ -487,8 +509,19 @@
         <label for="dSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="dPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="dPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="dPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="dClosedStatus" onchange="document.getElementById('dClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="dClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="dClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -501,7 +534,7 @@
     </div>
     <button id="dPublishBtn" onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
     <div style="margin-top:1.25rem;">
-      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;margin-bottom:0.5rem;">📋 Drink Spots — Recent & Scheduled</p>
+      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;margin-bottom:0.5rem;">📋 Drink Spots: Recent & Scheduled</p>
       <div id="drinkPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="font-size:12px;color:var(--muted);">Loading...</p>
       </div>
@@ -526,7 +559,7 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Location(s) — City + Coordinates *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Location(s): City + Coordinates *</label>
       <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze winkel meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
       <div id="sLocations">
         <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
@@ -590,8 +623,19 @@
         <label for="sSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="sPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="sPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="sPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="sClosedStatus" onchange="document.getElementById('sClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="sClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="sClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -604,7 +648,7 @@
     </div>
     <button id="sPublishBtn" onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
     <div style="margin-top:1.25rem;">
-      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;margin-bottom:0.5rem;">📋 Shop Spots — Recent & Scheduled</p>
+      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;margin-bottom:0.5rem;">📋 Shop Spots: Recent & Scheduled</p>
       <div id="shopPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="font-size:12px;color:var(--muted);">Loading...</p>
       </div>
@@ -691,8 +735,19 @@
         <label for="cSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="cPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="cPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="cPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="cClosedStatus" onchange="document.getElementById('cClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="cClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="cClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -705,7 +760,7 @@
     </div>
     <button id="cPublishBtn" onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
     <div style="margin-top:1.25rem;">
-      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;margin-bottom:0.5rem;">📋 Culture Spots — Recent & Scheduled</p>
+      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;margin-bottom:0.5rem;">📋 Culture Spots: Recent & Scheduled</p>
       <div id="culturePublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="font-size:12px;color:var(--muted);">Loading...</p>
       </div>
@@ -792,8 +847,19 @@
         <label for="hlSponsored" style="font-size:12px;color:var(--ink);font-weight:600;">🤝 Dit is een betaalde samenwerking / partner content</label>
       </div>
       <div id="hlPartnerNameWrap" style="display:none;margin-top:8px;">
-        <input class="form-input" type="text" id="hlPartnerName" placeholder="Merknaam (optioneel — laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
-        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer" — verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+        <input class="form-input" type="text" id="hlPartnerName" placeholder="Merknaam (optioneel, laat leeg voor generiek 'Partner'-label)" style="font-size:13px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:4px;">Dit label wordt direct zichtbaar getoond op de kaart zelf, niet verstopt achter "lees meer", verplicht volgens de Reclame Code Commissie bij betaalde samenwerkingen.</p>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;background:rgba(90,90,90,0.06);border:1px solid rgba(90,90,90,0.25);border-radius:10px;padding:0.75rem;">
+      <label style="font-size:12px;color:var(--ink);font-weight:600;display:block;margin-bottom:6px;">🚪 Status van deze plek</label>
+      <select class="form-input" id="hlClosedStatus" onchange="document.getElementById('hlClosedNoteWrap').style.display=this.value==='open'?'none':'block';" style="font-size:13px;">
+        <option value="open">Open</option>
+        <option value="temp">Tijdelijk gesloten</option>
+        <option value="perm">Definitief gesloten</option>
+      </select>
+      <div id="hlClosedNoteWrap" style="display:none;margin-top:8px;">
+        <input class="form-input" type="text" id="hlClosedNote" placeholder="Reden of heropeningsdatum, bv. 'Heropent op 1 oktober'" style="font-size:13px;">
       </div>
     </div>
     <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;">
@@ -806,7 +872,7 @@
     </div>
     <button id="hlPublishBtn" onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
     <div style="margin-top:1.25rem;">
-      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;margin-bottom:0.5rem;">📋 Health Spots — Recent & Scheduled</p>
+      <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;margin-bottom:0.5rem;">📋 Health Spots: Recent & Scheduled</p>
       <div id="healthPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
         <p style="font-size:12px;color:var(--muted);">Loading...</p>
       </div>
@@ -834,7 +900,7 @@
       <button onclick="connectInstagram()" style="width:100%;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.25rem;">📸 Connect Instagram</button>
 
       <div style="margin-bottom:0.75rem;">
-        <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app — used for Threads and Facebook Page management)</label>
+        <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app, used for Threads and Facebook Page management)</label>
         <input class="form-input" type="text" id="fbAppId" placeholder="e.g. 1234567890123456" style="margin-top:4px;">
       </div>
 
@@ -963,7 +1029,7 @@
       current.push({ file, previewUrl: URL.createObjectURL(file) });
     });
     if (files.length > room) {
-      showToast(`Alleen de eerste ${room} foto('s) toegevoegd — max 5 in totaal.`);
+      showToast(`Alleen de eerste ${room} foto('s) toegevoegd, max 5 in totaal.`);
     }
     input.value = ''; // allow re-selecting same file later
     renderPhotoGrid(prefix);
@@ -1104,7 +1170,7 @@
     if (!cfg) { showToast('Onbekende categorie: ' + coll); return; }
     try {
       const snap = await getDoc(doc(db, coll, id));
-      if (!snap.exists()) { showToast('Item niet gevonden — misschien al verwijderd?'); return; }
+      if (!snap.exists()) { showToast('Item niet gevonden, misschien al verwijderd?'); return; }
       const r = snap.data();
 
       // Simple text fields
@@ -1126,6 +1192,16 @@
       if (sponsoredEl) {
         sponsoredEl.checked = !!r.sponsored;
         if (partnerWrapEl) partnerWrapEl.style.display = r.sponsored ? 'block' : 'none';
+      }
+
+      // Closed status + note
+      const closedStatusEl = document.getElementById(cfg.prefix + 'ClosedStatus');
+      const closedNoteWrapEl = document.getElementById(cfg.prefix + 'ClosedNoteWrap');
+      const closedNoteEl = document.getElementById(cfg.prefix + 'ClosedNote');
+      if (closedStatusEl) {
+        closedStatusEl.value = r.closedStatus || 'open';
+        if (closedNoteWrapEl) closedNoteWrapEl.style.display = (r.closedStatus && r.closedStatus !== 'open') ? 'block' : 'none';
+        if (closedNoteEl) closedNoteEl.value = r.closedNote || '';
       }
 
       if (cfg.emojiField) {
@@ -1337,9 +1413,13 @@
 
       const rSponsored = document.getElementById('rSponsored').checked;
       const rPartnerName = document.getElementById('rPartnerName').value.trim();
+      const rClosedStatus = document.getElementById('rClosedStatus').value;
+      const rClosedNote = document.getElementById('rClosedNote').value.trim();
       await saveDoc('reviews', 'r', {
         sponsored: rSponsored,
         partnerName: rSponsored ? rPartnerName : '',
+        closedStatus: rClosedStatus,
+        closedNote: rClosedStatus !== 'open' ? rClosedNote : '',
         name, city, type, price, date, hours, review, emoji,
         lat, lng,
         locations,
@@ -1360,7 +1440,7 @@
           const caption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #${city.replace(/\s+/g,'').toLowerCase()}`;
           shareToInstagram(photoUrl, caption);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram without a photo.');
+          showToast('No photo uploaded, cannot share to Instagram without a photo.');
         }
       }
       if (document.getElementById('rShareThreads').checked) {
@@ -1686,9 +1766,9 @@
       '<html lang="en"><head>',
       '<meta charset="UTF-8">',
       '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '<title>' + nameSafe + ' Review — Strong Foodie</title>',
+      '<title>' + nameSafe + ' Review: Strong Foodie</title>',
       '<meta name="description" content="' + reviewShort + '">',
-      '<meta property="og:title" content="' + nameSafe + ' — Strong Foodie">',
+      '<meta property="og:title" content="' + nameSafe + ': Strong Foodie">',
       '<meta property="og:image" content="' + (r.photoUrl || 'https://www.strongfoodie.com/icon-512.png') + '">',
       '<meta property="og:url" content="https://www.strongfoodie.com/' + filename + '">',
       '<link rel="canonical" href="https://www.strongfoodie.com/' + filename + '">',
@@ -1725,7 +1805,7 @@
       r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '',
       '<a href="/reviews.html" class="btn">← Meer reviews</a>',
       '</div>',
-      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc — <a href="/index.html" style="color:#D4521A;text-decoration:none">Strong Foodie</a></p></footer>',
+      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc, <a href="/index.html" style="color:#D4521A;text-decoration:none">Strong Foodie</a></p></footer>',
       '</body></html>'
     ];
 
@@ -1893,9 +1973,13 @@
       const hPhotoUrl = hPhotos[0] || '';
       const hSponsored = document.getElementById('hSponsored').checked;
       const hPartnerName = document.getElementById('hPartnerName').value.trim();
+      const hClosedStatus = document.getElementById('hClosedStatus').value;
+      const hClosedNote = document.getElementById('hClosedNote').value.trim();
       const result = await saveDoc('hotelreviews', 'h', {
         sponsored: hSponsored,
         partnerName: hSponsored ? hPartnerName : '',
+        closedStatus: hClosedStatus,
+        closedNote: hClosedStatus !== 'open' ? hClosedNote : '',
         name, city, price, date, review, emoji,
         photoUrl: hPhotoUrl,
         photos: hPhotos,
@@ -1911,7 +1995,7 @@
         if (hPhotoUrl) {
           shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #stay #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram.');
+          showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('hShareThreads').checked) {
@@ -1975,9 +2059,13 @@
       const dPhotoUrl = dPhotos[0] || '';
       const dSponsored = document.getElementById('dSponsored').checked;
       const dPartnerName = document.getElementById('dPartnerName').value.trim();
+      const dClosedStatus = document.getElementById('dClosedStatus').value;
+      const dClosedNote = document.getElementById('dClosedNote').value.trim();
       const result = await saveDoc('drinkspots', 'd', {
         sponsored: dSponsored,
         partnerName: dSponsored ? dPartnerName : '',
+        closedStatus: dClosedStatus,
+        closedNote: dClosedStatus !== 'open' ? dClosedNote : '',
         name, city, price, date, review, emoji,
         photoUrl: dPhotoUrl,
         photos: dPhotos,
@@ -1995,7 +2083,7 @@
         if (dPhotoUrl) {
           shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #drink #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram.');
+          showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('dShareThreads').checked) {
@@ -2034,9 +2122,13 @@
       const sPhotoUrl = sPhotos[0] || '';
       const sSponsored = document.getElementById('sSponsored').checked;
       const sPartnerName = document.getElementById('sPartnerName').value.trim();
+      const sClosedStatus = document.getElementById('sClosedStatus').value;
+      const sClosedNote = document.getElementById('sClosedNote').value.trim();
       const result = await saveDoc('shopspots', 's', {
         sponsored: sSponsored,
         partnerName: sSponsored ? sPartnerName : '',
+        closedStatus: sClosedStatus,
+        closedNote: sClosedStatus !== 'open' ? sClosedNote : '',
         name, city, price, date, review, emoji,
         photoUrl: sPhotoUrl,
         photos: sPhotos,
@@ -2054,7 +2146,7 @@
         if (sPhotoUrl) {
           shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram.');
+          showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('sShareThreads').checked) {
@@ -2093,9 +2185,13 @@
       const cPhotoUrl = cPhotos[0] || '';
       const cSponsored = document.getElementById('cSponsored').checked;
       const cPartnerName = document.getElementById('cPartnerName').value.trim();
+      const cClosedStatus = document.getElementById('cClosedStatus').value;
+      const cClosedNote = document.getElementById('cClosedNote').value.trim();
       const result = await saveDoc('culturespots', 'c', {
         sponsored: cSponsored,
         partnerName: cSponsored ? cPartnerName : '',
+        closedStatus: cClosedStatus,
+        closedNote: cClosedStatus !== 'open' ? cClosedNote : '',
         name, city, price, date, review, emoji,
         photoUrl: cPhotoUrl,
         photos: cPhotos,
@@ -2113,7 +2209,7 @@
         if (cPhotoUrl) {
           shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #culture #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram.');
+          showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('cShareThreads').checked) {
@@ -2151,9 +2247,13 @@
       const hlPhotoUrl = hlPhotos[0] || '';
       const hlSponsored = document.getElementById('hlSponsored').checked;
       const hlPartnerName = document.getElementById('hlPartnerName').value.trim();
+      const hlClosedStatus = document.getElementById('hlClosedStatus').value;
+      const hlClosedNote = document.getElementById('hlClosedNote').value.trim();
       const result = await saveDoc('healthspots', 'hl', {
         sponsored: hlSponsored,
         partnerName: hlSponsored ? hlPartnerName : '',
+        closedStatus: hlClosedStatus,
+        closedNote: hlClosedStatus !== 'open' ? hlClosedNote : '',
         name, city, price, date, review, emoji,
         photoUrl: hlPhotoUrl,
         photos: hlPhotos,
@@ -2171,7 +2271,7 @@
         if (hlPhotoUrl) {
           shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #health #${city.replace(/\s+/g,'').toLowerCase()}`);
         } else {
-          showToast('No photo uploaded — cannot share to Instagram.');
+          showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('hlShareThreads').checked) {
@@ -2223,7 +2323,7 @@
       (r.price ? "💰 " + r.price + "\n" : "") +
       "\n" + (r.review || "") + "\n\n" +
       "👉 https://www.strongfoodie.com/reviews.html\n\n" +
-      "— Merdan, Strong Foodie";
+      "Merdan, Strong Foodie";
     navigator.clipboard.writeText(text).then(() => {
       showToast("✅ Text copied! Open Mailchimp and paste the text.");
     }).catch(() => {
@@ -2265,7 +2365,7 @@
       document.getElementById('lastRefresh').textContent =
         'Last updated: ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
     } catch(e) {
-      document.getElementById('lastRefresh').textContent = 'Could not load — check Firebase connection';
+      document.getElementById('lastRefresh').textContent = 'Could not load, check Firebase connection';
     }
   };
   // Auto-refresh every 30 seconds when admin panel is visible
