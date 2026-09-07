@@ -559,15 +559,15 @@
       <p class="widget-title" style="color:#fff;">Community Stats</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
         <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statMembers">, </p>
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statMembers">0</p>
           <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Members</p>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statReviews">, </p>
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statReviews">0</p>
           <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Reviews</p>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statRestaurants">, </p>
+          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statRestaurants">0</p>
           <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Restaurants</p>
         </div>
         <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
@@ -1055,7 +1055,7 @@
       console.error('loadCommunityStats error:', e);
       // Fall back to last-known figures if Firestore is unreachable
       if (document.getElementById('statMembers')) document.getElementById('statMembers').textContent = '1.2k';
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '248';
+      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '62';
       if (document.getElementById('statRestaurants')) document.getElementById('statRestaurants').textContent = '90+';
     }
   }
