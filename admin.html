@@ -1393,8 +1393,14 @@
     const tags = document.getElementById('rTags').value;
     const emoji = document.getElementById('rEmoji').value || '🍽️';
 
-    if (!name || !locations.length || !locations[0].city || !type || !review || !adminRating) {
-      showToast('Please fill in all required fields, at least one location (city) and set a rating!');
+    const missing = [];
+    if (!name) missing.push('restaurantnaam');
+    if (!locations.length || !locations[0].city) missing.push('stad (eerste locatie-rij)');
+    if (!type) missing.push('food type (kies er een uit de lijst)');
+    if (!review) missing.push('reviewtekst');
+    if (!adminRating) missing.push('sterrenrating (klik op de sterren)');
+    if (missing.length) {
+      showToast('Nog invullen: ' + missing.join(', '));
       return;
     }
     const city = locations[0].city;
@@ -1965,7 +1971,12 @@
     const review = document.getElementById('hReview').value.trim();
     const tags = document.getElementById('hTags').value;
     const emoji = document.getElementById('hEmoji').value || '🏨';
-    if (!name || !city || !review || !hotelRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const hotelMissing = [];
+    if (!name) hotelMissing.push('naam');
+    if (!city) hotelMissing.push('stad');
+    if (!review) hotelMissing.push('reviewtekst');
+    if (!hotelRating) hotelMissing.push('sterrenrating (klik op de sterren)');
+    if (hotelMissing.length) { showToast('Nog invullen: ' + hotelMissing.join(', ')); return; }
     const hScheduleVal = document.getElementById('hSchedule').value;
     const hPublishAt = hScheduleVal ? new Date(hScheduleVal) : new Date();
     try {
@@ -2051,7 +2062,12 @@
     const review = document.getElementById('dReview').value.trim();
     const tags = document.getElementById('dTags').value;
     const emoji = document.getElementById('dEmoji').value || '🍸';
-    if (!name || !city || !review || !drinkRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const drinkMissing = [];
+    if (!name) drinkMissing.push('naam');
+    if (!city) drinkMissing.push('stad');
+    if (!review) drinkMissing.push('reviewtekst');
+    if (!drinkRating) drinkMissing.push('sterrenrating (klik op de sterren)');
+    if (drinkMissing.length) { showToast('Nog invullen: ' + drinkMissing.join(', ')); return; }
     const dScheduleVal = document.getElementById('dSchedule').value;
     const dPublishAt = dScheduleVal ? new Date(dScheduleVal) : new Date();
     try {
@@ -2111,7 +2127,12 @@
     const review = document.getElementById('sReview').value.trim();
     const tags = document.getElementById('sTags').value;
     const emoji = document.getElementById('sEmoji').value || '🛍️';
-    if (!name || !locations.length || !locations[0].city || !review || !shopRating) { showToast('Please fill in all required fields, at least one location (city) and set a rating!'); return; }
+    const sMissing = [];
+    if (!name) sMissing.push('naam');
+    if (!locations.length || !locations[0].city) sMissing.push('stad (eerste locatie-rij)');
+    if (!review) sMissing.push('reviewtekst');
+    if (!shopRating) sMissing.push('sterrenrating (klik op de sterren)');
+    if (sMissing.length) { showToast('Nog invullen: ' + sMissing.join(', ')); return; }
     const city = locations[0].city;
     const lat = locations[0].lat;
     const lng = locations[0].lng;
@@ -2177,7 +2198,12 @@
     const review = document.getElementById('cReview').value.trim();
     const tags = document.getElementById('cTags').value;
     const emoji = document.getElementById('cEmoji').value || '🎭';
-    if (!name || !city || !review || !cultureRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const cultureMissing = [];
+    if (!name) cultureMissing.push('naam');
+    if (!city) cultureMissing.push('stad');
+    if (!review) cultureMissing.push('reviewtekst');
+    if (!cultureRating) cultureMissing.push('sterrenrating (klik op de sterren)');
+    if (cultureMissing.length) { showToast('Nog invullen: ' + cultureMissing.join(', ')); return; }
     const cScheduleVal = document.getElementById('cSchedule').value;
     const cPublishAt = cScheduleVal ? new Date(cScheduleVal) : new Date();
     try {
@@ -2239,7 +2265,12 @@
     const review = document.getElementById('hlReview').value.trim();
     const tags = document.getElementById('hlTags').value;
     const emoji = document.getElementById('hlEmoji').value || '💪';
-    if (!name || !city || !review || !healthRating) { showToast('Please fill in all required fields and set a rating!'); return; }
+    const healthMissing = [];
+    if (!name) healthMissing.push('naam');
+    if (!city) healthMissing.push('stad');
+    if (!review) healthMissing.push('reviewtekst');
+    if (!healthRating) healthMissing.push('sterrenrating (klik op de sterren)');
+    if (healthMissing.length) { showToast('Nog invullen: ' + healthMissing.join(', ')); return; }
     const hlScheduleVal = document.getElementById('hlSchedule').value;
     const hlPublishAt = hlScheduleVal ? new Date(hlScheduleVal) : new Date();
     try {
@@ -2354,7 +2385,7 @@
         getDocs(collection(db, 'healthspots'))
       ]);
       document.getElementById('cntFood').textContent  = foodSnap.size;
-      document.getElementById('cntHotel').textContent = hotelSnap.size + 6;
+      document.getElementById('cntHotel').textContent = hotelSnap.size;
       document.getElementById('cntUsers').textContent = usersSnap.size;
       document.getElementById('cntPicks').textContent = picksSnap.size;
       document.getElementById('cntDrink').textContent = drinkSnap.size;

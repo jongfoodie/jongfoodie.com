@@ -206,68 +206,7 @@
 </div>
 
 <script>
-const hotels = [
-  {
-    name: 'Hotel The Craftsmen',
-    address: 'Singel 83, 1012 VE Amsterdam',
-    type: 'Boutique',
-    stars: 4,
-    emoji: '🏛️',
-    desc: 'A stunning boutique hotel right on the Singel canal in the heart of Amsterdam. The craftsmanship in every detail is remarkable, from the hand-picked furniture to the bespoke interiors. A truly unique stay that captures the soul of Amsterdam.',
-    tags: ['Must Visit', 'Canal View', 'Boutique'],
-    location: 'Amsterdam'
-  },
-  {
-    name: 'Petit Ermitage',
-    address: '8822 Cynthia St, West Hollywood, CA',
-    type: 'Luxury',
-    stars: 4,
-    emoji: '🌴',
-    desc: 'A hidden gem in West Hollywood, part boutique hotel, part art gallery. The rooftop pool and bar attract a creative crowd and the vibe is unlike anything else in LA. Intimate, artistic and effortlessly cool. One of those places you never want to leave.',
-    tags: ['Must Visit', 'Rooftop Pool', 'Art Gallery'],
-    location: 'West Hollywood'
-  },
-  {
-    name: 'The Peninsula Bangkok',
-    address: '333 Charoen Nakhon Rd, Bangkok, Thailand',
-    type: 'Luxury',
-    stars: 5,
-    emoji: '🏯',
-    desc: 'Arguably the finest hotel in Bangkok. Perched on the banks of the Chao Phraya River, the views are simply spectacular. The service is flawless, every staff member anticipates your needs before you even ask. The infinity pool overlooking the river at sunset is a memory that stays with you forever.',
-    tags: ['Must Visit', 'River Views', 'World Class Service'],
-    location: 'Bangkok'
-  },
-  {
-    name: 'SLS Dubai Hotel & Residences',
-    address: 'Marasi Dr, Business Bay, Dubai, UAE',
-    type: 'Luxury',
-    stars: 5,
-    emoji: '🏙️',
-    desc: 'One of Dubai\'s most iconic towers rising above the Business Bay skyline. The SLS Dubai delivers an unmatched luxury experience, from the breathtaking infinity pool and rooftop bar to the impeccably designed rooms with panoramic views over the city and Dubai Creek. A world-class stay in one of the world\'s most exciting cities.',
-    tags: ['Must Visit', 'Infinity Pool', 'Rooftop Bar', 'Skyline Views'],
-    location: 'Dubai'
-  },
-  {
-    name: 'Virgin Hotels Las Vegas',
-    address: '4455 Paradise Rd, Las Vegas, NV',
-    type: 'Luxury',
-    stars: 4,
-    emoji: '🎰',
-    desc: 'A rock-and-roll inspired retreat just off the Strip with a distinct personality all its own. Three towers, a Mediterranean-style pool deck, a world-class spa with Roman bath, and an incredible dining lineup including Nobu make this one of Vegas\'s most vibrant stays. Cool, energetic and great value for money.',
-    tags: ['Pool Oasis', 'Live Music', 'Casino', 'Off-Strip'],
-    location: 'Las Vegas'
-  },
-  {
-    name: 'The Venetian Las Vegas',
-    address: '3355 S Las Vegas Blvd, Las Vegas, NV',
-    type: 'Luxury',
-    stars: 5,
-    emoji: '🛶',
-    desc: 'The largest Forbes 4-Star hotel in the world and one of the Strip\'s most iconic landmarks. Every room is a spacious suite with Italian marble bathrooms and a sunken living room. With over 30 award-winning restaurants, a stunning pool deck, world-class entertainment and the Grand Canal Shoppes inside, the Venetian is a destination in itself.',
-    tags: ['Must Visit', 'All-Suite', 'Strip View', 'Fine Dining'],
-    location: 'Las Vegas'
-  }
-];
+const hotels = []; // Hotels komen nu allemaal uit Firebase, niet meer hardcoded
 
 window.__galleryStore = {};
 window.__galleryPhotos = [];

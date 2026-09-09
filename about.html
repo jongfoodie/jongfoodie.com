@@ -365,8 +365,8 @@ function declineCookies(){
   const db = getFirestore(app);
 
   // Offsets for hardcoded reviews not in Firebase
-  const FOOD_OFFSET = 52;
-  const HOTEL_OFFSET = 6;
+  const FOOD_OFFSET = 0; // was 52, maar reviews.html heeft nu geen vaste reviews meer
+  const HOTEL_OFFSET = 0; // was 6, maar hotel.html heeft nu geen vaste hotels meer, alles komt uit Firebase
 
   try {
     const [foodSnap, hotelSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
