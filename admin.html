@@ -115,17 +115,28 @@
 <div class="admin-nav">
   <h1>Strong Foodie <span>ADMIN</span></h1>
   <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
+  <button id="signOutBtn" onclick="adminSignOut()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:12px;">Sign out</button>
 </div>
 
 <!-- LOGIN -->
-<div id="loginBox" class="login-box">
+<div id="loginBox" class="login-box" style="display:none;">
   <h2>Admin Access</h2>
-  <p>This page is only for Strong Foodie. Enter the admin password to continue.</p>
+  <p>This page is only for Strong Foodie. Sign in with your admin account to continue.</p>
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input class="form-input" type="email" id="adminEmail" autocomplete="username" placeholder="you@example.com" onkeydown="if(event.key==='Enter')adminSignIn()">
+  </div>
   <div class="form-group">
     <label class="form-label">Password</label>
-    <input class="form-input" type="password" id="adminPassword" placeholder="Enter admin password..." onkeydown="if(event.key==='Enter')checkPassword()">
+    <input class="form-input" type="password" id="adminPassword" autocomplete="current-password" placeholder="Enter your password..." onkeydown="if(event.key==='Enter')adminSignIn()">
   </div>
-  <button class="btn-publish" onclick="checkPassword()">Enter Admin Panel</button>
+  <button class="btn-publish" id="adminSignInBtn" onclick="adminSignIn()">Sign in</button>
+</div>
+
+<!-- CHECKING SESSION -->
+<div id="authChecking" class="login-box">
+  <h2>Admin Access</h2>
+  <p>Checking your session...</p>
 </div>
 
 <!-- ADMIN PANEL -->
@@ -980,6 +991,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, deleteDoc, doc, setDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 
   const firebaseConfig = {
@@ -994,6 +1006,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const functionsInstance = getFunctions(app);
+  const auth = getAuth(app);
 
 
   // Multi-photo state per form prefix (r = Eat, d = Drink, ...)
@@ -1298,21 +1311,103 @@
     }
   }
 
-  // Admin password - change this to whatever you want!
-  const ADMIN_PASSWORD = "jongfoodie2025";
+  // ── ADMIN AUTHENTICATION ──────────────────────────────────────────────
+  // Real Firebase Auth sign-in. Access is granted by the "admin" custom claim
+  // on the ID token, set by the setAdminClaim Cloud Function. There is no
+  // shared password: a claim lives on the token, which the user cannot edit.
 
-  window.checkPassword = function() {
-    const pw = document.getElementById('adminPassword').value;
-    if (pw === ADMIN_PASSWORD) {
-      document.getElementById('loginBox').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'block';
-    window.loadLiveStats();
+  let panelLoaded = false;
+
+  function showLogin() {
+    document.getElementById('authChecking').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('signOutBtn').style.display = 'none';
+  }
+
+  function showPanel() {
+    document.getElementById('authChecking').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('signOutBtn').style.display = 'inline-block';
+    if (!panelLoaded) {
+      panelLoaded = true;
+      window.loadLiveStats();
       loadPublished();
-    } else {
-      showToast('Wrong password! Try again.');
+    }
+  }
+
+  window.adminSignIn = async function() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const pw = document.getElementById('adminPassword').value;
+    const btn = document.getElementById('adminSignInBtn');
+
+    if (!email || !pw) {
+      showToast('Enter your email and password.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithEmailAndPassword(auth, email, pw);
+      // onAuthStateChanged does the claim check and opens the panel.
+    } catch (err) {
+      console.error('Sign in failed:', err);
+      const code = err && err.code ? err.code : '';
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        showToast('Wrong email or password.');
+      } else if (code === 'auth/too-many-requests') {
+        showToast('Too many attempts. Try again later.');
+      } else if (code === 'auth/network-request-failed') {
+        showToast('No connection. Check your internet.');
+      } else {
+        showToast('Sign in failed. Try again.');
+      }
       document.getElementById('adminPassword').value = '';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
     }
   };
+
+  window.adminSignOut = async function() {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error('Sign out failed:', err);
+    }
+    panelLoaded = false;
+    document.getElementById('adminEmail').value = '';
+    document.getElementById('adminPassword').value = '';
+    showLogin();
+  };
+
+  // Keeps the session across page reloads and decides what is shown.
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      showLogin();
+      return;
+    }
+    try {
+      // Force a refresh so a claim that was just granted is picked up.
+      const token = await user.getIdTokenResult(true);
+      if (token.claims && token.claims.admin === true) {
+        showPanel();
+      } else {
+        showToast('This account is not an admin.');
+        await signOut(auth);
+        showLogin();
+      }
+    } catch (err) {
+      console.error('Could not verify admin claim:', err);
+      showToast('Could not verify your account. Try again.');
+      await signOut(auth);
+      showLogin();
+    }
+  });
 
   // ── MULTI-LOCATION HELPERS (used by Eat & Shop forms) ──
   function locationRowTemplate() {

@@ -1012,11 +1012,9 @@
   // ─────────────────────────────────────────────────────────────────────────
 
   // ── LIVE COMMUNITY STATS ──────────────────────────────────────────────────
-  // Same offsets used elsewhere on the site (about.html, admin.html) to
-  // account for early reviews published before the site tracked them in
-  // Firestore.
-  const FOOD_OFFSET = 52;
-  const HOTEL_OFFSET = 6;
+  // Counts come straight from Firestore, the same collections the admin panel
+  // counts, so the numbers here and in admin always agree. No offsets: what
+  // you see is what is actually in the database.
 
   function countUpStat(el, target, duration = 1000) {
     if (!el) return;
@@ -1031,18 +1029,18 @@
 
   async function loadCommunityStats() {
     try {
-      const [foodSnap, hotelSnap, usersSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
+      const [foodSnap, hotelSnap, profilesSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
         getDocs(collection(db, 'reviews')),
         getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'profiles')),
         getDocs(collection(db, 'drinkspots')),
         getDocs(collection(db, 'shopspots')),
         getDocs(collection(db, 'culturespots')),
         getDocs(collection(db, 'healthspots'))
       ]);
-      const totalFood = foodSnap.size + FOOD_OFFSET;
-      const totalHotel = hotelSnap.size + HOTEL_OFFSET;
-      const totalMembers = usersSnap.size;
+      const totalFood = foodSnap.size;
+      const totalHotel = hotelSnap.size;
+      const totalMembers = profilesSnap.size;
       const totalReviews = totalFood + totalHotel + drinkSnap.size + shopSnap.size + cultureSnap.size + healthSnap.size;
 
       const membersEl = document.getElementById('statMembers');
@@ -1053,10 +1051,11 @@
       countUpStat(document.getElementById('statRestaurants'), totalFood, 900);
     } catch(e) {
       console.error('loadCommunityStats error:', e);
-      // Fall back to last-known figures if Firestore is unreachable
-      if (document.getElementById('statMembers')) document.getElementById('statMembers').textContent = '1.2k';
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '62';
-      if (document.getElementById('statRestaurants')) document.getElementById('statRestaurants').textContent = '90+';
+      // Firestore unreachable: show a dash rather than a made-up number.
+      ['statMembers', 'statReviews', 'statRestaurants'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '—';
+      });
     }
   }
   loadCommunityStats();
