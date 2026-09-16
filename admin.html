@@ -1394,7 +1394,13 @@
     try {
       // Force a refresh so a claim that was just granted is picked up.
       const token = await user.getIdTokenResult(true);
-      if (token.claims && token.claims.admin === true) {
+      // Admin is the custom claim on the token, or the brand account by uid.
+      // A uid comes from Firebase Auth and cannot be faked, so it is just as
+      // safe as the claim. Once setAdminClaim has run for this account, the
+      // uid check below can be removed.
+      const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+      const hasClaim = token.claims && token.claims.admin === true;
+      if (hasClaim || user.uid === BRAND_UID) {
         showPanel();
       } else {
         showToast('This account is not an admin.');
