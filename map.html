@@ -76,6 +76,29 @@
   .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--accent); }
+  .filter-row { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0.5rem 1rem; display: flex; gap: 0.5rem; overflow-x: auto; align-items: center; }
+  .filter-row-alt { background: var(--cream); }
+  .chip { background: var(--warm-white); color: var(--ink); border: 1px solid var(--border); padding: 5px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+  .chip small { opacity: 0.6; margin-left: 2px; }
+  .chip.active { background: #1A1208; color: #fff; border-color: #1A1208; }
+  .filter-sep { width: 1px; align-self: stretch; background: var(--border); margin: 0 0.25rem; flex-shrink: 0; }
+  .map-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 11px; color: var(--muted); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; margin-right: 3px; }
+  .dot-sf { background: var(--accent); }
+  .dot-member { background: #fff; border: 2.5px solid var(--accent); }
+  .spot-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+  .badge { display: inline-block; margin-left: 5px; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 600; vertical-align: 1px; }
+  .badge-new { background: var(--accent); color: #fff; }
+  .badge-member { background: var(--accent-pale); color: var(--accent); border: 1px solid rgba(212,82,26,0.3); }
+  .pop-cat, .pop-new { display: inline-block; margin-left: 4px; color: #fff; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .pop-new { background: var(--accent); }
+  .pop-line { font-size: 11px; color: #8A7A66; }
+  .pop-hours { color: #2D5A3D; }
+  .pop-stars { font-size: 12px; color: #C8901A; }
+  .pop-by { display: inline-block; margin-top: 6px; font-size: 10px; color: #8A7A66; }
+  .pop-by-sf { color: #D4521A; font-weight: 600; }
+  .leaflet-popup-content a.pop-view { display: inline-block; margin: 6px 0 0; }
+  .leaflet-popup-content a.pop-route { font-size: 11px; color: #D4521A; font-weight: 600; text-decoration: none; margin-left: 6px; }
 </style>
 <!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
@@ -126,37 +149,44 @@
 </nav>
 <div class="page-hero">
   <h1>Food Map</h1>
-  <p>All Strong Foodie reviewed spots in Amsterdam & beyond</p>
+  <p>Every Strong Foodie review and every place our members added in the app, on one map</p>
 </div>
-<div class="country-filters">
-  <button onclick="filterByCountry('all')" style="background:#1A1208;color:#fff;border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🌍 All</button>
-  <button onclick="filterByCountry('netherlands')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇳🇱 Netherlands</button>
-  <button onclick="filterByCountry('usa')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇺🇸 USA</button>
-  <button onclick="filterByCountry('aruba')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇦🇼 Aruba</button>
-  <button onclick="filterByCountry('turkey')" style="background:var(--cream);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🇹🇷 Turkey</button>
+<div class="filter-row" id="countryFilters" aria-label="Filter by country">
+  <button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>
 </div>
-<div class="category-filters" id="categoryFilters" style="background:var(--cream);border-bottom:1px solid var(--border);padding:0.5rem 1rem;display:flex;gap:0.5rem;overflow-x:auto;">
-  <button onclick="filterByCategory('all')" data-cat="all" class="cat-btn cat-active" style="background:#1A1208;color:#fff;border:none;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">✨ All Categories</button>
-  <button onclick="filterByCategory('eat')" data-cat="eat" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🍽️ Eat</button>
-  <button onclick="filterByCategory('drink')" data-cat="drink" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🍸 Drink</button>
-  <button onclick="filterByCategory('shop')" data-cat="shop" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🛍️ Shop</button>
-  <button onclick="filterByCategory('culture')" data-cat="culture" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🎭 Culture</button>
-  <button onclick="filterByCategory('health')" data-cat="health" class="cat-btn" style="background:var(--warm-white);color:var(--ink);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">💪 Health</button>
+<div class="filter-row filter-row-alt" id="categoryFilters" aria-label="Filter by category">
+  <button class="chip active" data-cat="all" onclick="filterByCategory('all')">✨ All categories</button>
+  <button class="chip" data-cat="eat" onclick="filterByCategory('eat')">🍽️ Eat</button>
+  <button class="chip" data-cat="drink" onclick="filterByCategory('drink')">🍸 Drink</button>
+  <button class="chip" data-cat="shop" onclick="filterByCategory('shop')">🛍️ Shop</button>
+  <button class="chip" data-cat="culture" onclick="filterByCategory('culture')">🎭 Culture</button>
+  <button class="chip" data-cat="health" onclick="filterByCategory('health')">💪 Health</button>
+  <button class="chip" data-cat="stay" onclick="filterByCategory('stay')">🏨 Stay</button>
+  <span class="filter-sep" aria-hidden="true"></span>
+  <button class="chip active" data-source="all" onclick="filterBySource('all')">Everyone</button>
+  <button class="chip" data-source="sf" onclick="filterBySource('sf')">⭐ Strong Foodie</button>
+  <button class="chip" data-source="member" onclick="filterBySource('member')">👥 Members</button>
 </div>
 <div class="map-layout" style="position:relative;">
-  <div id="loadingBar" class="loading-bar">📍 Loading restaurant locations...</div>
+  <div id="loadingBar" class="loading-bar">📍 Loading places...</div>
   <div class="spots-panel">
     <div class="spots-search">
-      <input class="search-input" type="text" placeholder="Search spots…" oninput="filterSpots(this.value)">
+      <input class="search-input" type="text" placeholder="Search a place or city…" oninput="applyFilters()">
     </div>
     <div class="spots-count" id="spotsCount">Loading...</div>
+    <div class="map-legend">
+      <span><i class="dot dot-sf"></i> Strong Foodie review</span>
+      <span><i class="dot dot-member"></i> Added by a member</span>
+    </div>
     <div class="spots-list" id="spotsList"></div>
   </div>
   <div id="map"></div>
 </div>
 
 <script>
-const spots = [
+// Places from before Firestore. The map shows one of these only when Firestore
+// has no matching place nearby. Add the missing ones to Firestore, then remove.
+window.LEGACY_SPOTS = [
   { name: 'The Coffee', country: 'netherlands', address: 'Eerste Constantijn Huygensstraat 33, Amsterdam', hours: 'Mon–Thu 08:00–17:00 · Fri 08:00–19:00 · Sat 09:00–19:00 · Sun 09:00–17:00', rating: '★★★★★', emoji: '☕', photoUrl: 'images/the-coffee.jpg', lat: 52.3643067, lng: 4.8745352 },
   { name: 'IZAKAYA Asian Kitchen & Bar', country: 'netherlands', address: 'Albert Cuypstraat 2-6 De Pijp Amsterdam Netherlands', hours: 'Mon–Thu 12:00–01:00 · Fri–Sat 12:00–02:00 · Sun 12:00–01:00', rating: '★★★★★', emoji: '🍣', photoUrl: 'images/izakaya-amsterdam.jpg', },
   { name: 'Mondi Amsterdam Nieuw-West', address: 'Transformatorweg 38, Amsterdam', hours: 'Lunch 12:30–16:00 · Dinner 17:30–22:00 · Bar until midnight', rating: '★★★★★', emoji: '🍽️', photoUrl: 'images/mondi.jpg', },
@@ -222,22 +252,7 @@ const spots = [
   { name: 'Madame Jeanette', address: 'Cunucu Abao 37, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🌶️', lat: 12.5473172, lng: -70.04324, country: 'aruba' },
   { name: 'Lucca Trattoria Aruba', address: 'J.E. Irausquin Blvd 374, Noord, Aruba', hours: 'Check Google Maps for latest hours', rating: '', emoji: '🍕', lat: 12.5694622, lng: -70.0437698, country: 'aruba' },
 ];
-
-const map = L.map('map').setView([52.3676, 4.8897], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
-}).addTo(map);
-
-const markers = [];
-let loaded = 0;
-let currentCountry = 'all';
-let currentCategory = 'all';
-
-
-
-function loadAllSpots() {
-  // Hardcoded precise coordinates from exact postcodes
-  const coords = {
+  window.LEGACY_COORDS = {
     'IZAKAYA Asian Kitchen & Bar':    [52.3544444, 4.8872222],
     'Mondi Amsterdam Nieuw-West':     [52.3465433, 4.8312512],
     'Maijard Smashburgers':           [52.3704724, 4.8835143],
@@ -261,113 +276,10 @@ function loadAllSpots() {
     'Zorlu Center':                   [41.06950, 29.01080],
     '360 Istanbul':                   [41.03360, 28.97740],
   };
-
-  // Add country to existing spots without it
-  spots.forEach(s => { if (!s.country) s.country = 'netherlands'; if (!s.category) s.category = 'eat'; });
-
-  spots.forEach(s => {
-    const c = coords[s.name];
-    if (c) { s.lat = c[0]; s.lng = c[1]; }
-    if (!s.lat || !s.lng) return;
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="background:#D4521A;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${s.emoji}</div>`,
-      iconSize: [36,36], iconAnchor: [18,18], popupAnchor: [0,-22]
-    });
-    const marker = L.marker([s.lat, s.lng], {icon}).addTo(map);
-    const popupPhoto = s.photoUrl ? `<img src="${s.photoUrl}" alt="${s.name}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:6px;display:block;">` : '';
-    marker.bindPopup(`<div style="width:180px;">${popupPhoto}<b style="font-size:13px;">${s.name}</b><br><span style="font-size:11px;color:#8A7A66;">📍 ${s.address}</span><br><span style="font-size:11px;color:#2D5A3D;">🕐 ${s.hours}</span><br><span style="font-size:12px;color:#C8901A;">${s.rating}</span></div>`);
-    markers.push({ spot: s, marker });
-  });
-
-  document.getElementById('loadingBar').style.display = 'none';
-  buildList(spots);
-}
-
-function buildList(filtered) {
-  const list = document.getElementById('spotsList');
-  document.getElementById('spotsCount').textContent = filtered.length + ' spots';
-  list.innerHTML = '';
-  filtered.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'spot-item';
-
-    const leftHtml = s.photoUrl
-      ? `<img src="${s.photoUrl}" style="width:42px;height:42px;object-fit:cover;border-radius:8px;flex-shrink:0;">`
-      : `<span class="spot-emoji">${s.emoji}</span>`;
-
-    const newBadge = s.isNew ? `<span style="background:#D4521A;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;margin-left:4px;">NEW</span>` : '';
-
-    div.innerHTML = `
-      ${leftHtml}
-      <div class="spot-info">
-        <p class="spot-name">${s.name}${newBadge}</p>
-        <p class="spot-address">📍 ${s.address}</p>
-        <p class="spot-hours">🕐 ${s.hours}</p>
-      </div>
-      <span class="spot-rating">${s.rating}</span>`;
-    div.onclick = () => {
-      document.querySelectorAll('.spot-item').forEach(x => x.classList.remove('active'));
-      div.classList.add('active');
-      if (s.lat && s.lng) {
-        map.flyTo([s.lat, s.lng], 17, { duration: 1.2 });
-        const m = markers.find(m => m.spot.name === s.name);
-        if (m) m.marker.openPopup();
-      }
-    };
-    list.appendChild(div);
-  });
-}
-
-
-function applyFilters() {
-  let filtered = spots;
-  if (currentCountry !== 'all') filtered = filtered.filter(s => s.country === currentCountry);
-  if (currentCategory !== 'all') filtered = filtered.filter(s => s.category === currentCategory);
-  const searchVal = document.querySelector('.search-input').value.toLowerCase();
-  if (searchVal) filtered = filtered.filter(s => s.name.toLowerCase().includes(searchVal) || s.address.toLowerCase().includes(searchVal));
-  buildList(filtered);
-}
-
-function filterByCountry(country) {
-  currentCountry = country;
-  document.querySelectorAll('.country-filters button').forEach(b => {
-    const isActive = b.getAttribute('onclick') === `filterByCountry('${country}')`;
-    b.style.background = isActive ? '#1A1208' : 'var(--cream)';
-    b.style.color = isActive ? '#fff' : 'var(--ink)';
-    b.style.border = isActive ? 'none' : '1px solid var(--border)';
-  });
-  applyFilters();
-  // Center map on country
-  if (country === 'usa') map.setView([34.05, -118.35], 9);
-  else if (country === 'aruba') map.setView([12.52, -70.03], 13);
-  else if (country === 'turkey') map.setView([41.01, 28.97], 10);
-  else map.setView([52.37, 4.89], 12);
-}
-
-function filterByCategory(cat) {
-  currentCategory = cat;
-  document.querySelectorAll('.cat-btn').forEach(b => {
-    const isActive = b.getAttribute('data-cat') === cat;
-    b.style.background = isActive ? '#1A1208' : 'var(--warm-white)';
-    b.style.color = isActive ? '#fff' : 'var(--ink)';
-    b.style.border = isActive ? 'none' : '1px solid var(--border)';
-  });
-  applyFilters();
-}
-
-function filterSpots(val) {
-  applyFilters();
-}
-
-// Load spots
-loadAllSpots();
-
 </script>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -377,150 +289,391 @@ loadAllSpots();
     messagingSenderId: "1006154240382",
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
   };
+  const db = getFirestore(initializeApp(firebaseConfig));
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  // ── Categories: one Firestore collection each, exactly as the app reads them.
+  // Member places all live in userPlaces, with a category field.
+  const CATS = {
+    eat:     { label: 'Eat',     emoji: '🍽️', color: '#D4521A', coll: 'reviews' },
+    drink:   { label: 'Drink',   emoji: '🍸', color: '#6B2A5C', coll: 'drinkspots' },
+    shop:    { label: 'Shop',    emoji: '🛍️', color: '#A32323', coll: 'shopspots' },
+    culture: { label: 'Culture', emoji: '🎭', color: '#8A6A0A', coll: 'culturespots' },
+    health:  { label: 'Health',  emoji: '💪', color: '#1A5C2E', coll: 'healthspots' },
+    stay:    { label: 'Stay',    emoji: '🏨', color: '#2F5D7C', coll: 'hotelreviews' },
+  };
+  const CAT_ALIASES = {
+    food: 'eat', restaurant: 'eat', restaurants: 'eat', eatspots: 'eat',
+    bar: 'drink', bars: 'drink', drinks: 'drink', cafe: 'drink',
+    shops: 'shop', store: 'shop',
+    museum: 'culture', cultuur: 'culture',
+    gym: 'health', sport: 'health', spa: 'health',
+    hotel: 'stay', hotels: 'stay', stays: 'stay',
+  };
+  const COUNTRY_LABELS = {
+    netherlands: '🇳🇱 Netherlands', usa: '🇺🇸 USA', aruba: '🇦🇼 Aruba', turkey: '🇹🇷 Turkey',
+    belgium: '🇧🇪 Belgium', germany: '🇩🇪 Germany', france: '🇫🇷 France', italy: '🇮🇹 Italy',
+    spain: '🇪🇸 Spain', uk: '🇬🇧 UK', uae: '🇦🇪 UAE', thailand: '🇹🇭 Thailand', curacao: '🇨🇼 Curaçao',
+  };
+  const COUNTRY_ALIASES = {
+    'the netherlands': 'netherlands', nederland: 'netherlands', nl: 'netherlands', holland: 'netherlands',
+    'united states': 'usa', us: 'usa', 'u.s.a.': 'usa', america: 'usa',
+    'türkiye': 'turkey', turkiye: 'turkey', turkije: 'turkey',
+    'united kingdom': 'uk', england: 'uk', 'united arab emirates': 'uae', dubai: 'uae',
+    'curaçao': 'curacao', belgie: 'belgium', 'belgië': 'belgium', duitsland: 'germany', frankrijk: 'france', italie: 'italy', 'italië': 'italy', spanje: 'spain',
+  };
 
-  async function loadFirebaseReviews() {
-    try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      if (snap.empty) return;
+  // ── Helpers
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = v => (typeof v === 'number' && isFinite(v) && v !== 0) ? v : null;
 
-      const newSpots = [];
+  function normCat(raw, fallback) {
+    const c = String(raw || '').toLowerCase().trim();
+    if (CATS[c]) return c;
+    return CAT_ALIASES[c] || fallback || 'eat';
+  }
 
-      const now = new Date();
-      snap.docs.forEach(d => {
-        const r = d.data();
-        if (!r.lat || !r.lng) return;
-        if (r.publishAt) {
-          const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
-          if (pubDate > now) return;
-        }
+  // Countries are written in many spellings ("USA", "netherlands", "Turkey").
+  // Normalise them, and fall back to the coordinates when the field is empty.
+  function normCountry(raw, lat, lng) {
+    const c = String(raw || '').toLowerCase().trim();
+    if (c) return COUNTRY_ALIASES[c] || c;
+    if (lat == null || lng == null) return 'other';
+    if (lat > 50.7 && lat < 53.7 && lng > 3.2 && lng < 7.3) return 'netherlands';
+    if (lat > 12.3 && lat < 12.7 && lng > -70.1 && lng < -69.8) return 'aruba';
+    if (lat > 35.8 && lat < 42.2 && lng > 25.6 && lng < 44.9) return 'turkey';
+    if (lat > 24 && lat < 50 && lng > -125 && lng < -66) return 'usa';
+    return 'other';
+  }
+  function countryLabel(c) {
+    if (COUNTRY_LABELS[c]) return COUNTRY_LABELS[c];
+    if (c === 'other') return '📍 Other';
+    return '📍 ' + c.charAt(0).toUpperCase() + c.slice(1);
+  }
 
-        const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
+  function starsHtml(n) {
+    if (!n) return '';
+    const full = Math.floor(n), half = n - full >= 0.5;
+    return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - (half ? 1 : 0));
+  }
+  function starsToNumber(s) {
+    if (!s) return null;
+    const n = (s.match(/★/g) || []).length + (s.includes('½') ? 0.5 : 0);
+    return n || null;
+  }
+  function toDate(ts) {
+    if (!ts) return null;
+    if (ts.toDate) return ts.toDate();
+    const d = new Date(ts);
+    return isNaN(d) ? null : d;
+  }
+  function distanceM(a, b) {
+    const R = 6371000, toR = x => x * Math.PI / 180;
+    const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  // First meaningful word of a name, used to recognise the same place under
+  // slightly different titles ("Bisous Amsterdam" vs "Bisous Amsterdam: Poulet Suprême").
+  const STOP = new Set(['the', 'le', 'la', 'de', 'het', 'een', 'cafe', 'café', 'restaurant', 'bar', 'hotel', 'a', 'an']);
+  function nameKey(name) {
+    const words = String(name || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean);
+    return words.find(w => !STOP.has(w) && w.length >= 3) || words[0] || '';
+  }
 
-        // Photo in popup
-        const photoHtml = r.photoUrl
-          ? `<img src="${r.photoUrl}" alt="${r.name}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
-          : '';
-
-        const icon = L.divIcon({
-          className: '',
-          html: `<div style="background:#2D5A3D;color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${r.emoji || '🍽️'}</div>`,
-          iconSize: [38,38], iconAnchor: [19,19], popupAnchor: [0,-24]
-        });
-
-        const marker = L.marker([r.lat, r.lng], { icon }).addTo(window._leafletMap || map);
-        marker.bindPopup(`
-          <div style="width:200px;">
-            ${photoHtml}
-            <b style="font-size:13px;">${r.name}</b>
-            <span style="display:inline-block;margin-left:4px;background:#D4521A;color:#fff;font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;">NEW</span><br>
-            <span style="font-size:11px;color:#8A7A66;">📍 ${r.city}</span><br>
-            <span style="font-size:11px;color:#8A7A66;">🍽️ ${r.type}</span><br>
-            ${r.price ? `<span style="font-size:11px;color:#8A7A66;">💰 ${r.price}</span><br>` : ''}
-            ${r.hours ? `<span style="font-size:11px;color:#2D5A3D;">🕐 ${r.hours}</span><br>` : ''}
-            <span style="font-size:12px;color:#C8901A;">${stars}</span>
-          </div>
-        `);
-
-        // Add to sidebar list data
-        const spotData = {
-          name: r.name,
-          address: r.city,
-          hours: r.hours || '',
-          rating: stars,
-          emoji: r.emoji || '🍽️',
-          lat: r.lat,
-          lng: r.lng,
-          country: 'firebase',
-          category: 'eat',
-          photoUrl: r.photoUrl || '',
-          isNew: true
-        };
-        newSpots.push({ spot: spotData, marker });
-        spots.unshift(spotData);
-        markers.unshift({ spot: spotData, marker });
+  // ── Photos: catalogue photos are normal URLs; photos added in the app are
+  // "fsimg://<id>", a base64 image in the images collection.
+  const photoCache = new Map();
+  function resolvePhoto(url) {
+    if (!url) return Promise.resolve('');
+    if (!url.startsWith('fsimg://')) return Promise.resolve(url);
+    const id = url.slice('fsimg://'.length);
+    if (!photoCache.has(id)) {
+      photoCache.set(id, getDoc(doc(db, 'images', id))
+        .then(s => {
+          const d = s.exists() ? s.data() : null;
+          return d && d.data ? `data:${d.contentType || 'image/jpeg'};base64,${d.data}` : '';
+        })
+        .catch(() => ''));
+    }
+    return photoCache.get(id);
+  }
+  function hydratePhotos(root) {
+    root.querySelectorAll('img[data-photo]').forEach(img => {
+      const src = img.getAttribute('data-photo');
+      img.removeAttribute('data-photo');
+      resolvePhoto(src).then(url => {
+        if (url) { img.src = url; img.hidden = false; const fb = img.nextElementSibling; if (fb && fb.classList.contains('photo-fallback')) fb.remove(); }
       });
+    });
+  }
 
-      // Rebuild sidebar list to include new spots
-      buildList(spots);
+  // ── State
+  const map = L.map('map').setView([52.3676, 4.8897], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors', maxZoom: 19
+  }).addTo(map);
+  const pinLayer = L.layerGroup().addTo(map);
 
-    } catch(e) {
-      console.error('Could not load Firebase reviews on map:', e);
+  let places = [];
+  let filters = { country: 'all', cat: 'all', source: 'all' };
+
+  function makeIcon(p) {
+    const color = CATS[p.cat].color;
+    const style = p.source === 'member'
+      ? `background:#fff;color:${color};border:3px solid ${color};`
+      : `background:${color};color:#fff;border:2px solid #fff;`;
+    return L.divIcon({
+      className: '',
+      html: `<div style="${style}border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`,
+      iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -22]
+    });
+  }
+
+  function popupHtml(p) {
+    const cat = CATS[p.cat];
+    const photo = p.photo
+      ? `<img ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : `src="${esc(p.photo)}"`} alt="${esc(p.name)}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
+      : '';
+    const by = p.source === 'member'
+      ? `<span class="pop-by">Added by ${esc(p.addedBy || 'a member')}</span>`
+      : `<span class="pop-by pop-by-sf">Strong Foodie review</span>`;
+    const route = (p.lat != null && p.lng != null)
+      ? `<a class="pop-route" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Route ↗</a>` : '';
+    return `<div style="width:210px;">
+      ${photo}
+      <b style="font-size:13px;">${esc(p.name)}</b>
+      <span class="pop-cat" style="background:${cat.color};">${cat.label.toUpperCase()}</span>${p.isNew ? '<span class="pop-new">NEW</span>' : ''}<br>
+      ${p.address ? `<span class="pop-line">📍 ${esc(p.address)}${p.approx ? ' <em>(approx.)</em>' : ''}</span><br>` : ''}
+      ${p.type ? `<span class="pop-line">${esc(p.type)}</span><br>` : ''}
+      ${p.hours ? `<span class="pop-line pop-hours">🕐 ${esc(p.hours)}</span><br>` : ''}
+      ${p.rating ? `<span class="pop-stars">${starsHtml(p.rating)}</span><br>` : ''}
+      ${by} ${route}
+      ${p.coll !== 'legacy' ? `<br><a class="pop-route pop-view" href="plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">View place →</a>` : ''}
+    </div>`;
+  }
+
+  function addMarker(p) {
+    const marker = L.marker([p.lat, p.lng], { icon: makeIcon(p) });
+    marker.bindPopup(() => popupHtml(p));
+    marker.on('popupopen', e => hydratePhotos(e.popup.getElement()));
+    p.marker = marker;
+  }
+
+  function visible(p) {
+    if (filters.country !== 'all' && p.country !== filters.country) return false;
+    if (filters.cat !== 'all' && p.cat !== filters.cat) return false;
+    if (filters.source !== 'all' && p.source !== filters.source) return false;
+    const q = (document.querySelector('.search-input').value || '').toLowerCase().trim();
+    if (q && !(`${p.name} ${p.address} ${p.city}`.toLowerCase().includes(q))) return false;
+    return true;
+  }
+
+  function applyFilters(fit) {
+    const shown = places.filter(visible);
+    pinLayer.clearLayers();
+    shown.forEach(p => { if (p.marker) pinLayer.addLayer(p.marker); });
+    buildList(shown);
+    if (fit) {
+      const pts = shown.filter(p => p.marker).map(p => [p.lat, p.lng]);
+      if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 14 });
+    }
+  }
+  window.applyFilters = () => applyFilters(false);
+
+  function setActive(attr, value) {
+    document.querySelectorAll(`[data-${attr}]`).forEach(b => b.classList.toggle('active', b.getAttribute(`data-${attr}`) === value));
+  }
+  window.filterByCountry = c => { filters.country = c; setActive('country', c); applyFilters(true); };
+  window.filterByCategory = c => { filters.cat = c; setActive('cat', c); applyFilters(true); };
+  window.filterBySource = s => { filters.source = s; setActive('source', s); applyFilters(true); };
+
+  function buildList(shown) {
+    const list = document.getElementById('spotsList');
+    const members = shown.filter(p => p.source === 'member').length;
+    document.getElementById('spotsCount').textContent =
+      `${shown.length} places` + (members ? ` · ${members} added by members` : '');
+    list.innerHTML = '';
+    const sorted = [...shown].sort((a, b) => (b.isNew - a.isNew) || (b.source === 'member') - (a.source === 'member') || a.name.localeCompare(b.name));
+    sorted.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'spot-item';
+      const thumb = p.photo
+        ? `<img class="spot-thumb" ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : `src="${esc(p.photo)}"`} alt=""><span class="spot-emoji photo-fallback">${esc(p.emoji)}</span>`
+        : `<span class="spot-emoji">${esc(p.emoji)}</span>`;
+      const badge = p.source === 'member'
+        ? `<span class="badge badge-member">Member</span>`
+        : (p.isNew ? `<span class="badge badge-new">NEW</span>` : '');
+      div.innerHTML = `
+        ${thumb}
+        <div class="spot-info">
+          <p class="spot-name">${esc(p.name)}${badge}</p>
+          ${p.address ? `<p class="spot-address">📍 ${esc(p.address)}</p>` : ''}
+          ${p.hours ? `<p class="spot-hours">🕐 ${esc(p.hours)}</p>` : ''}
+          ${!p.marker ? `<p class="spot-address"><em>Location not on the map yet</em></p>` : ''}
+        </div>
+        <span class="spot-rating">${p.rating ? starsHtml(p.rating) : ''}</span>`;
+      div.onclick = () => {
+        document.querySelectorAll('.spot-item').forEach(x => x.classList.remove('active'));
+        div.classList.add('active');
+        if (p.marker) { map.flyTo([p.lat, p.lng], 17, { duration: 1.2 }); p.marker.openPopup(); }
+      };
+      list.appendChild(div);
+    });
+    hydratePhotos(list);
+  }
+
+  function buildCountryButtons() {
+    const counts = {};
+    places.forEach(p => { counts[p.country] = (counts[p.country] || 0) + 1; });
+    const order = ['netherlands', 'usa', 'aruba', 'turkey'];
+    const keys = Object.keys(counts).sort((a, b) => {
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      if (a === 'other') return 1; if (b === 'other') return -1;
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || counts[b] - counts[a];
+    });
+    const row = document.getElementById('countryFilters');
+    row.innerHTML = `<button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>` +
+      keys.map(k => `<button class="chip chip-dark" data-country="${esc(k)}" onclick="filterByCountry('${esc(k)}')">${countryLabel(k)} <small>${counts[k]}</small></button>`).join('');
+  }
+
+  // ── Loading
+  function isPublished(r, now) {
+    if (r.status === 'draft' || r.status === 'hidden' || r.hidden === true) return false;
+    const pub = toDate(r.publishAt);
+    return !(pub && pub > now);
+  }
+
+  async function loadCatalogue(cat, now) {
+    const snap = await getDocs(collection(db, CATS[cat].coll));
+    const out = [];
+    snap.docs.forEach(d => {
+      const r = d.data();
+      if (!r.name || !isPublished(r, now)) return;
+      const lat = num(r.lat), lng = num(r.lng);
+      const created = toDate(r.createdAt);
+      out.push({
+        id: d.id, coll: CATS[cat].coll, cat, source: 'sf',
+        name: r.name, address: r.city || r.address || '', city: r.city || '',
+        type: r.type || '', hours: r.hours || '', rating: r.rating || null,
+        emoji: r.emoji || CATS[cat].emoji, photo: r.photoUrl || (Array.isArray(r.photos) && typeof r.photos[0] === 'string' ? r.photos[0] : ''),
+        lat, lng, country: normCountry(r.country, lat, lng),
+        isNew: !r.importedFromHtml && !!created && (now - created) < 30 * 864e5,
+      });
+    });
+    return out;
+  }
+
+  async function loadMemberPlaces(now) {
+    const snap = await getDocs(collection(db, 'userPlaces'));
+    const raw = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name && r.hidden !== true);
+
+    // Respect private accounts: their places are for followers only.
+    const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];
+    const privateOwners = new Set();
+    await Promise.all(owners.map(uid => getDoc(doc(db, 'profiles', uid))
+      .then(s => { if (s.exists() && s.data().isPrivate === true) privateOwners.add(uid); })
+      .catch(() => {})));
+
+    return raw.filter(r => !privateOwners.has(r.addedByUserId)).map(r => {
+      const lat = num(r.lat), lng = num(r.lng);
+      const cat = normCat(r.category, 'eat');
+      const created = toDate(r.createdAt);
+      const address = [r.address, r.city].filter(Boolean).join(', ');
+      return {
+        id: r.id, coll: 'userPlaces', cat, source: 'member',
+        name: r.name, address, city: r.city || '', type: r.type || '', hours: r.hours || '',
+        rating: r.rating || null, emoji: r.emoji || CATS[cat].emoji,
+        photo: r.photoUrl || (Array.isArray(r.photos) ? r.photos[0] : '') || '',
+        addedBy: r.addedByName || '', lat, lng,
+        country: normCountry(r.country || r.countryLabel, lat, lng),
+        isNew: !!created && (now - created) < 30 * 864e5,
+      };
+    });
+  }
+
+  // Member places the app has not geocoded yet: look them up once with
+  // OpenStreetMap, one request per second, and remember the result in this
+  // browser only.
+  async function geocodeMissing(list) {
+    const todo = list.filter(p => p.lat == null && p.address).slice(0, 10);
+    for (const p of todo) {
+      const key = 'sf_geo_' + p.coll + '_' + p.id;
+      let hit = null;
+      try { hit = JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) {}
+      if (!hit) {
+        try {
+          const res = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(p.address));
+          const js = await res.json();
+          if (js[0]) hit = { lat: +js[0].lat, lng: +js[0].lon };
+          try { if (hit) localStorage.setItem(key, JSON.stringify(hit)); } catch (e) {}
+        } catch (e) {}
+        await new Promise(r => setTimeout(r, 1100));
+      }
+      if (hit) {
+        p.lat = hit.lat; p.lng = hit.lng; p.approx = true;
+        if (p.country === 'other') p.country = normCountry('', p.lat, p.lng);
+        addMarker(p);
+      }
     }
   }
 
-  async function loadCategorySpots(collectionName, category, color, defaultEmoji) {
-    try {
-      const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      if (snap.empty) return;
-
-      const now = new Date();
-      snap.docs.forEach(d => {
-        const r = d.data();
-        if (!r.lat || !r.lng) return;
-        if (r.publishAt) {
-          const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
-          if (pubDate > now) return;
-        }
-
-        const stars = r.rating ? '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) : '';
-
-        const photoHtml = r.photoUrl
-          ? `<img src="${r.photoUrl}" alt="${r.name}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
-          : '';
-
-        const icon = L.divIcon({
-          className: '',
-          html: `<div style="background:${color};color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,0.35);border:2px solid #fff;">${r.emoji || defaultEmoji}</div>`,
-          iconSize: [38,38], iconAnchor: [19,19], popupAnchor: [0,-24]
-        });
-
-        const marker = L.marker([r.lat, r.lng], { icon }).addTo(window._leafletMap || map);
-        marker.bindPopup(`
-          <div style="width:200px;">
-            ${photoHtml}
-            <b style="font-size:13px;">${r.name}</b>
-            <span style="display:inline-block;margin-left:4px;background:${color};color:#fff;font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;">${category.toUpperCase()}</span><br>
-            <span style="font-size:11px;color:#8A7A66;">📍 ${r.city}</span><br>
-            ${r.price ? `<span style="font-size:11px;color:#8A7A66;">💰 ${r.price}</span><br>` : ''}
-            <span style="font-size:12px;color:#C8901A;">${stars}</span>
-          </div>
-        `);
-
-        const spotData = {
-          name: r.name,
-          address: r.city,
-          hours: '',
-          rating: stars,
-          emoji: r.emoji || defaultEmoji,
-          lat: r.lat,
-          lng: r.lng,
-          country: 'firebase',
-          category: category,
-          photoUrl: r.photoUrl || '',
-          isNew: true
-        };
-        spots.unshift(spotData);
-        markers.unshift({ spot: spotData, marker });
+  // Places that still live only in this page's code, from before Firestore.
+  // Each one is shown only when Firestore has no matching place nearby, so
+  // nothing appears twice. Once all of them are in Firestore this list can go.
+  function legacyPlaces() {
+    const out = [];
+    (window.LEGACY_SPOTS || []).forEach(s => {
+      const c = (window.LEGACY_COORDS || {})[s.name];
+      const lat = c ? c[0] : num(s.lat), lng = c ? c[1] : num(s.lng);
+      out.push({
+        id: 'legacy-' + s.name, coll: 'legacy', cat: 'eat', source: 'sf',
+        name: s.name, address: s.address || '', city: '', type: '', hours: s.hours || '',
+        rating: starsToNumber(s.rating), emoji: s.emoji || '🍽️', photo: s.photoUrl || '',
+        lat, lng, country: normCountry(s.country, lat, lng), isNew: false,
       });
-
-      applyFilters();
-    } catch(e) {
-      console.error('Could not load ' + collectionName + ' on map:', e);
-    }
+    });
+    return out;
   }
 
-  // Make map accessible to module
-  window._leafletMap = map;
-  loadFirebaseReviews().then(() => {
-    loadCategorySpots('drinkspots', 'drink', '#6B2A5C', '🍸');
-    loadCategorySpots('shopspots', 'shop', '#A32323', '🛍️');
-    loadCategorySpots('culturespots', 'culture', '#8A6A0A', '🎭');
-    loadCategorySpots('healthspots', 'health', '#1A5C2E', '💪');
+  async function init() {
+    const now = new Date();
+    const jobs = Object.keys(CATS).map(cat => loadCatalogue(cat, now));
+    jobs.push(loadMemberPlaces(now));
+    const results = await Promise.allSettled(jobs);
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') places.push(...r.value);
+      else console.error('Could not load', i < 6 ? Object.values(CATS)[i].coll : 'userPlaces', r.reason);
+    });
+
+    const firestoreEat = places.filter(p => p.cat === 'eat' && p.lat != null);
+    const stillLegacy = [];
+    legacyPlaces().forEach(l => {
+      const dup = l.lat != null && firestoreEat.some(f => nameKey(f.name) === nameKey(l.name) && distanceM(f, l) < 300);
+      const dupNoCoords = l.lat == null && firestoreEat.some(f => nameKey(f.name) === nameKey(l.name));
+      if (!dup && !dupNoCoords) { places.push(l); stillLegacy.push(l.name); }
+    });
+    if (stillLegacy.length) console.info('Places still only in map.html (add them to Firestore):', stillLegacy);
+
+    places.forEach(p => { if (p.lat != null && p.lng != null) addMarker(p); });
+    buildCountryButtons();
+    document.getElementById('loadingBar').style.display = 'none';
+
+    // Links such as map.html?cat=drink&source=member open the map pre-filtered.
+    const qs = new URLSearchParams(location.search);
+    const qCat = qs.get('cat'), qSource = qs.get('source'), qCountry = qs.get('country');
+    if (qCat && CATS[qCat]) { filters.cat = qCat; setActive('cat', qCat); }
+    if (qSource === 'sf' || qSource === 'member') { filters.source = qSource; setActive('source', qSource); }
+    if (qCountry && places.some(p => p.country === qCountry)) { filters.country = qCountry; setActive('country', qCountry); }
+    applyFilters(!!(qCat || qSource || qCountry));
+
+    const missing = places.filter(p => p.source === 'member' && p.lat == null);
+    if (missing.length) { await geocodeMissing(missing); applyFilters(false); }
+  }
+
+  init().catch(e => {
+    console.error('Map failed to load:', e);
+    document.getElementById('loadingBar').textContent = 'Could not load the map. Please refresh.';
   });
 </script>
 

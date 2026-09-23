@@ -118,6 +118,10 @@
   .gallery-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; }
   .gallery-dots span.active { background: #fff; }
   .spot-img-clickable { cursor: zoom-in; }
+
+  .place-link { color: inherit; text-decoration: none; }
+  .place-link:hover { color: var(--accent); }
+  .place-more { display: inline-block; margin-top: 0.4rem; font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none; }
 </style>
 <!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
@@ -195,6 +199,9 @@
       <p>Loading culture spots...</p>
     </div>
   </div>
+
+  <section data-member-places="culture" data-search="#searchInput"></section>
+  <script type="module" src="js/member-places.js"></script>
 
   <div class="community-section">
     <p class="community-label">Community Culture Picks</p>
@@ -343,7 +350,7 @@
         ${imgHtml}
         <div class="spot-body">
           <div class="spot-top">
-            <p class="spot-name">${s.name}</p>
+            <p class="spot-name">${s.__id ? `<a class="place-link" href="plek.html?c=culturespots&id=${s.__id}">${s.name}</a>` : s.name}</p>
             <span class="spot-stars">${renderStars(s.rating || 0)}</span>
           </div>
           <div class="spot-meta">
@@ -353,6 +360,7 @@
           </div>
           ${closedNoteHtml}
           <p class="spot-desc">${s.review || ''}</p>
+          ${s.__id ? `<a class="place-more" href="plek.html?c=culturespots&id=${s.__id}">View place →</a>` : ''}
           <div class="spot-tags">
             ${(s.tags || []).map(t => '<span class="spot-tag">' + t + '</span>').join('')}
           </div>
@@ -376,7 +384,7 @@
       const q = query(collection(db, 'culturespots'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
       const now = new Date();
-      allSpots = snap.docs.map(d => d.data()).filter(s => {
+      allSpots = snap.docs.map(d => ({ ...d.data(), __id: d.id })).filter(s => {
         if (!s.publishAt) return true; // no schedule = always visible
         const pubDate = s.publishAt.toDate ? s.publishAt.toDate() : new Date(s.publishAt);
         return pubDate <= now;

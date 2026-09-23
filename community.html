@@ -170,19 +170,11 @@
 
 <div class="wrapper">
   <main>
-    <!-- POST FORM -->
-    <div class="post-form">
-      <div class="post-form-top">
-        <div class="avatar">JF</div>
-        <textarea class="post-input" rows="3" placeholder="Share a food find, ask a question, or recommend a spot…"></textarea>
-      </div>
-      <div class="post-form-footer">
-        <div class="post-options">
-          <button class="post-opt-btn">📍 Add location</button>
-          <button class="post-opt-btn">⭐ Rate a spot</button>
-        </div>
-        <button class="btn-accent" onclick="submitPost()">Post</button>
-      </div>
+    <!-- The community lives in the Strong Foodie app. Places members add there
+         show up here, on the map and on every category page. -->
+    <div class="post-form" style="margin-bottom:2rem;">
+      <p style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.35rem;">The community lives in the Strong Foodie app</p>
+      <p style="font-size:14px;color:var(--ink-soft);line-height:1.6;">Members add their favourite places in the app. They appear here, on the <a href="map.html?source=member" style="color:var(--accent);">map</a> and on every category page straight away.</p>
     </div>
 
     <!-- COMMUNITY PICKS FROM FIRESTORE -->
@@ -425,110 +417,8 @@
     </div>
     <div id="healthPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading health picks...</p></div>
 
-    <p class="section-label">Community Posts</p>
-    <div class="posts-list">
-
-      <div class="post-card">
-        <div class="post-header">
-          <div class="member-avatar" style="background:#C8521A;">MR</div>
-          <div>
-            <p class="post-author">Marco R.</p>
-            <p style="font-size:11px;color:var(--muted);">Amsterdam</p>
-          </div>
-          <span class="post-time">2h ago</span>
-        </div>
-        <span class="post-tag">🍔 Burgers</span>
-        <p class="post-body">Just tried Maijard Smashburgers for the first time and honestly blown away. The beef patty has this perfect crispy edge and the sauce is unreal. Strong Foodie's review was spot on, definitely a must visit if you're in the Netherlands!</p>
-        <div class="post-actions">
-          <button class="post-action" onclick="toggleLikePost(this, 'static-1')"><span>♡</span> <span class="like-count">14</span> likes</button>
-          <button class="post-action" onclick="toggleComments(this, 'static-1')"><span>💬</span> 3 comments</button>
-          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
-        </div>
-          <div class="comments-section" id="comments-static-1" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-            <div class="comments-list" id="comments-list-static-1"></div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-1" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-1')">
-              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-1')">Post</button>
-            </div>
-          </div>
-      </div>
-
-      <div class="post-card">
-        <div class="post-header">
-          <div class="member-avatar" style="background:#2D5A3D;">SL</div>
-          <div>
-            <p class="post-author">Sarah L.</p>
-            <p style="font-size:11px;color:var(--muted);">Rotterdam</p>
-          </div>
-          <span class="post-time">5h ago</span>
-        </div>
-        <span class="post-tag">🥪 Sandwiches</span>
-        <p class="post-body">Has anyone tried the Banh Mi Deli shrimp sandwich? I went today and it was incredible, left the peppers in like the review suggested and it made all the difference. So fresh and flavourful. 10/10 would recommend!</p>
-        <div class="post-actions">
-          <button class="post-action" onclick="toggleLikePost(this, 'static-2')"><span>♡</span> <span class="like-count">8</span> likes</button>
-          <button class="post-action" onclick="toggleComments(this, 'static-2')"><span>💬</span> 5 comments</button>
-          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
-        </div>
-          <div class="comments-section" id="comments-static-2" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-            <div class="comments-list" id="comments-list-static-2"></div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-2" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-2')">
-              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-2')">Post</button>
-            </div>
-          </div>
-      </div>
-
-      <div class="post-card">
-        <div class="post-header">
-          <div class="member-avatar" style="background:#C8901A;">KT</div>
-          <div>
-            <p class="post-author">Kevin T.</p>
-            <p style="font-size:11px;color:var(--muted);">Amsterdam</p>
-          </div>
-          <span class="post-time">1d ago</span>
-        </div>
-        <span class="post-tag">🍽️ Restaurant</span>
-        <p class="post-body">Mondi Restaurant in Amsterdam New West is seriously underrated. Went for dinner last night and the vibe was so cozy. Service was attentive without being over the top. Everything on the menu was delicious, going back next week for sure!</p>
-        <div class="post-actions">
-          <button class="post-action" onclick="toggleLikePost(this, 'static-3')"><span>♡</span> <span class="like-count">21</span> likes</button>
-          <button class="post-action" onclick="toggleComments(this, 'static-3')"><span>💬</span> 9 comments</button>
-          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
-        </div>
-          <div class="comments-section" id="comments-static-3" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-            <div class="comments-list" id="comments-list-static-3"></div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-3" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-3')">
-              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-3')">Post</button>
-            </div>
-          </div>
-      </div>
-
-      <div class="post-card">
-        <div class="post-header">
-          <div class="member-avatar" style="background:#3D2F1A;">AN</div>
-          <div>
-            <p class="post-author">Aisha N.</p>
-            <p style="font-size:11px;color:var(--muted);">Den Haag</p>
-          </div>
-          <span class="post-time">2d ago</span>
-        </div>
-        <span class="post-tag">❓ Question</span>
-        <p class="post-body">Anyone know good spots for Korean food in Amsterdam? Looking for something authentic and not too pricey. Budget around €15-20 per person. Would love some Strong Foodie community recommendations!</p>
-        <div class="post-actions">
-          <button class="post-action" onclick="toggleLikePost(this, 'static-4')"><span>♡</span> <span class="like-count">6</span> likes</button>
-          <button class="post-action" onclick="toggleComments(this, 'static-4')"><span>💬</span> 12 comments</button>
-          <button class="post-action" onclick="showToast('Link copied!')">↗ Share</button>
-        </div>
-          <div class="comments-section" id="comments-static-4" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-            <div class="comments-list" id="comments-list-static-4"></div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-static-4" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('static-4')">
-              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('static-4')">Post</button>
-            </div>
-          </div>
-      </div>
-
-    </div>
+    <section data-member-places="all" data-limit="6"></section>
+    <script type="module" src="js/member-places.js"></script>
   </main>
 
   <aside class="sidebar">
@@ -1482,45 +1372,8 @@
   };
 
   // Pre-seeded comments for static posts
-  const staticComments = {
-    'static-1': [
-      { userName: 'Sarah L.', text: 'Totally agree! The crispy edges are what make it special 🍔' },
-      { userName: 'Kevin T.', text: 'Been there twice already, never disappoints!' },
-      { userName: 'Aisha N.', text: 'Strong Foodie was right, its a must try!' },
-    ],
-    'static-2': [
-      { userName: 'Marco R.', text: 'The shrimp banh mi is my go-to, so good!' },
-      { userName: 'Kevin T.', text: 'Went yesterday, still thinking about it 😍' },
-      { userName: 'Aisha N.', text: 'Best Vietnamese spot in Amsterdam hands down' },
-      { userName: 'Marco R.', text: 'Agreed! The bread is so crispy and fresh' },
-      { userName: 'Kevin T.', text: 'Adding this to my weekly lunch rotation for sure' },
-    ],
-    'static-3': [
-      { userName: 'Sarah L.', text: 'The Caribbean vibes are so unique in Amsterdam!' },
-      { userName: 'Aisha N.', text: 'Went for brunch, the staff were amazing 🌟' },
-      { userName: 'Marco R.', text: 'The cocktails are also great, try the tropical ones' },
-      { userName: 'Sarah L.', text: 'Going next Friday, cant wait!' },
-      { userName: 'Kevin T.', text: 'Book in advance, it gets very busy on weekends' },
-      { userName: 'Aisha N.', text: 'Worth every penny, 10/10 experience' },
-      { userName: 'Marco R.', text: 'The DJ nights are incredible too!' },
-      { userName: 'Sarah L.', text: 'Best atmosphere in all of Amsterdam West' },
-      { userName: 'Kevin T.', text: 'Already booked again for next month!' },
-    ],
-    'static-4': [
-      { userName: 'Marco R.', text: 'Try Buk! on Zeedijk, very authentic Korean!' },
-      { userName: 'Sarah L.', text: 'I know a great spot in De Pijp, will DM you!' },
-      { userName: 'Kevin T.', text: 'Korean House near Nieuwmarkt is solid and affordable' },
-      { userName: 'Marco R.', text: 'Also check if Strong Foodie covers Korean soon 🤞' },
-      { userName: 'Sarah L.', text: 'Definitely within your €15-20 budget at Korean House!' },
-      { userName: 'Aisha N.', text: 'Thanks everyone, going to try Korean House this week!' },
-      { userName: 'Kevin T.', text: 'Let us know what you think when you go!' },
-      { userName: 'Marco R.', text: 'The bibimbap there is amazing' },
-      { userName: 'Sarah L.', text: 'And the banchan side dishes are so generous!' },
-      { userName: 'Kevin T.', text: 'Strong Foodie should definitely review Korean food next!' },
-      { userName: 'Aisha N.', text: 'Agreed! Korean cuisine in Amsterdam deserves a review 🙏' },
-      { userName: 'Marco R.', text: 'Tag Strong Foodie so they see this post!' },
-    ],
-  };
+  // No pre-written comments: only real comments from Firestore are shown.
+  const staticComments = {};
 
   async function loadComments(postId) {
     const list = document.getElementById('comments-list-' + postId);

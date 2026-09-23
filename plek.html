@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Place | Strong Foodie</title>
+<meta name="description" content="Honest reviews and member tips from Strong Foodie.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Strong Foodie">
+<meta property="og:description" content="Honest reviews and member tips from Strong Foodie.">
+<meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://www.strongfoodie.com/plek.html">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .newsletter { display: none; }
+
+  .place-wrap { max-width: 880px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+  .place-loading, .place-empty { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+  .place-empty h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .place-empty a, .back a, .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; overflow-wrap: anywhere; }
+  .place { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+  .hero-photo { position: relative; height: 340px; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); display: flex; align-items: center; justify-content: center; }
+  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-emoji { font-size: 72px; }
+  .hero-photo img:not([hidden]) + .hero-emoji { display: none; }
+  .thumbs { display: flex; gap: 0.5rem; padding: 0.75rem 1.25rem 0; overflow-x: auto; }
+  .thumb { width: 64px; height: 64px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; padding: 0; cursor: pointer; background: var(--cream); }
+  .thumb.active { border-color: var(--accent); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .head { padding: 1.25rem 1.5rem 1.5rem; }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+  .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .badge-sf { background: var(--accent-pale); color: var(--accent); }
+  .badge-member { background: #fff; color: var(--accent); border: 1px solid rgba(212,82,26,0.4); }
+  .badge-ad { background: var(--ink); color: #fff; }
+  .head h1 { font-family: 'Playfair Display', serif; font-size: 2.1rem; line-height: 1.15; overflow-wrap: anywhere; }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 0.35rem; overflow-wrap: anywhere; }
+  .closed-banner { margin-top: 0.75rem; background: #FFF4E5; color: #8A5A10; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 500; }
+  .scores { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
+  .score { display: flex; align-items: center; gap: 0.6rem; }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .score-num.member { color: var(--green); }
+  .score-stars { color: var(--gold); font-size: 15px; letter-spacing: 1px; }
+  .score-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+  .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); text-decoration: none; cursor: pointer; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
+  .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .block p { line-height: 1.65; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .block p + p { margin-top: 0.5rem; }
+  .lead { font-size: 16px; color: var(--ink) !important; }
+  .review-text { font-size: 15px; white-space: pre-line; }
+  .muted { color: var(--muted) !important; font-size: 12px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--cream); color: var(--ink-soft); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem 1.5rem; }
+  .facts dt { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .facts dd { font-size: 14px; color: var(--ink); overflow-wrap: anywhere; }
+  .facts dd a { color: var(--accent); text-decoration: none; }
+  .place-map { height: 260px; border-radius: 12px; overflow: hidden; }
+  .member-reviews { display: flex; flex-direction: column; gap: 0.9rem; }
+  .mr { border-top: 1px solid var(--border); padding-top: 0.9rem; }
+  .mr:first-child { border-top: none; padding-top: 0; }
+  .mr-top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+  .mr-photo img { max-width: 220px; width: 100%; border-radius: 10px; margin-top: 0.4rem; }
+  .nearby { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; }
+  .near { display: flex; gap: 0.75rem; align-items: center; padding: 0.7rem; border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--ink); background: var(--cream); }
+  .near:hover { border-color: var(--accent); }
+  .near-emoji { font-size: 22px; }
+  .near-body { display: flex; flex-direction: column; min-width: 0; }
+  .near-body strong { font-size: 14px; overflow-wrap: anywhere; }
+  .back { margin-top: 1.5rem; font-size: 14px; }
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 700px) {
+    .hero-photo { height: 240px; }
+    .head h1 { font-size: 1.7rem; }
+    .head { padding: 1rem 1.1rem 1.25rem; }
+    .block { padding: 1rem 1.1rem; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="place-wrap" id="placeRoot">
+  <div class="place-loading">Loading place…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const db = getFirestore(initializeApp(firebaseConfig));
+
+  // Every place collection the app reads, with the page it belongs to.
+  const COLLS = {
+    reviews:      { cat: 'eat' },
+    drinkspots:   { cat: 'drink' },
+    shopspots:    { cat: 'shop' },
+    culturespots: { cat: 'culture' },
+    healthspots:  { cat: 'health' },
+    hotelreviews: { cat: 'stay' },
+    userPlaces:   { cat: null, member: true },
+  };
+  const CATS = {
+    eat:     { label: 'Eat',     emoji: '🍽️', color: '#D4521A', page: 'reviews.html', coll: 'reviews',      schema: 'Restaurant',     aliases: ['eat', 'food', 'restaurant', 'restaurants'] },
+    drink:   { label: 'Drink',   emoji: '🍸', color: '#6B2A5C', page: 'drink.html',   coll: 'drinkspots',   schema: 'BarOrPub',       aliases: ['drink', 'drinks', 'bar', 'bars', 'cafe'] },
+    shop:    { label: 'Shop',    emoji: '🛍️', color: '#A32323', page: 'shop.html',    coll: 'shopspots',    schema: 'Store',          aliases: ['shop', 'shops', 'store'] },
+    culture: { label: 'Culture', emoji: '🎭', color: '#8A6A0A', page: 'culture.html', coll: 'culturespots', schema: 'TouristAttraction', aliases: ['culture', 'cultuur', 'museum'] },
+    health:  { label: 'Health',  emoji: '💪', color: '#1A5C2E', page: 'health.html',  coll: 'healthspots',  schema: 'HealthClub',     aliases: ['health', 'gym', 'sport', 'spa'] },
+    stay:    { label: 'Stay',    emoji: '🏨', color: '#2F5D7C', page: 'hotel.html',   coll: 'hotelreviews', schema: 'Hotel',          aliases: ['stay', 'stays', 'hotel', 'hotels'] },
+  };
+
+  // ── Helpers
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = v => (typeof v === 'number' && isFinite(v) && v !== 0) ? v : null;
+  const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
+  const catOf = raw => { const c = String(raw || '').toLowerCase().trim(); return Object.keys(CATS).find(k => CATS[k].aliases.includes(c)) || 'eat'; };
+  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+  function distanceM(a, b) {
+    const R = 6371000, t = x => x * Math.PI / 180;
+    const h = Math.sin(t(b.lat - a.lat) / 2) ** 2 + Math.cos(t(a.lat)) * Math.cos(t(b.lat)) * Math.sin(t(b.lng - a.lng) / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  const fmtDist = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${fmt1(m / 1000)} km`;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // Photos: normal URLs, "fsimg://<id>" (base64 in `images`), or base64 stored
+  // directly on a review.
+  const photoCache = new Map();
+  function resolvePhoto(url) {
+    if (!url || typeof url !== 'string') return Promise.resolve('');
+    if (url.startsWith('data:') || /^https?:\/\//.test(url) || url.startsWith('images/') || url.startsWith('/')) return Promise.resolve(url);
+    if (url.startsWith('fsimg://')) {
+      const id = url.slice(8);
+      if (!photoCache.has(id)) {
+        photoCache.set(id, getDoc(doc(db, 'images', id))
+          .then(s => { const d = s.exists() ? s.data() : null; return d && d.data ? `data:${d.contentType || 'image/jpeg'};base64,${d.data}` : ''; })
+          .catch(() => ''));
+      }
+      return photoCache.get(id);
+    }
+    if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
+    return Promise.resolve(url);
+  }
+  function hydratePhotos(root) {
+    root.querySelectorAll('img[data-photo]').forEach(img => {
+      const src = img.getAttribute('data-photo');
+      img.removeAttribute('data-photo');
+      img.onerror = () => { img.hidden = true; if (img.dataset.hideParent) img.parentElement.remove(); };
+      resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else if (img.dataset.hideParent) img.parentElement.remove(); });
+    });
+  }
+
+  function isPublished(r, now) {
+    if (r.status === 'draft' || r.status === 'hidden' || r.hidden === true) return false;
+    const pub = toDate(r.publishAt);
+    return !(pub && pub > now);
+  }
+
+  function normalise(coll, id, r) {
+    const member = !!COLLS[coll].member;
+    const cat = member ? catOf(r.category) : COLLS[coll].cat;
+    const photos = [];
+    if (Array.isArray(r.photos)) r.photos.forEach(p => { if (typeof p === 'string' && p && !photos.includes(p)) photos.push(p); });
+    if (r.photoUrl && !photos.includes(r.photoUrl)) photos.unshift(r.photoUrl);
+    return {
+      coll, id, cat, member,
+      name: r.name || 'Unnamed place',
+      address: member ? [r.address, r.city].filter(Boolean).join(', ') : (r.city || r.address || ''),
+      city: r.city || '',
+      country: r.country || r.countryLabel || '',
+      type: member ? '' : (r.type || ''),
+      tip: member ? (r.type || '') : '',
+      review: r.review || '',
+      rating: typeof r.rating === 'number' ? r.rating : null,
+      price: r.price || '',
+      hours: r.hours || '',
+      phone: r.phone || '',
+      date: r.date || '',
+      tags: Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [],
+      emoji: r.emoji || CATS[cat].emoji,
+      photos,
+      lat: num(r.lat), lng: num(r.lng),
+      closedStatus: r.closedStatus && r.closedStatus !== 'open' ? r.closedStatus : '',
+      closedNote: r.closedNote || '',
+      sponsored: r.sponsored === true,
+      partnerName: r.partnerName || '',
+      author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
+      addedByUserId: r.addedByUserId || '',
+      created: toDate(r.createdAt),
+    };
+  }
+
+  // In the catalogue the "city" field often holds a whole address
+  // ("8361 Beverly Blvd, Los Angeles", "Singel 83, 1012 VE Amsterdam").
+  // Take the town from it for titles.
+  function townOf(p) {
+    const parts = String(p.city || p.address || '').split(',').map(x => x.trim()).filter(Boolean);
+    const country = String(p.country || '').toLowerCase();
+    for (let i = parts.length - 1; i >= 0; i--) {
+      let t = parts[i].replace(/^\d{4}\s?[A-Z]{2}\s+/, '').trim();
+      if (!t || t.toLowerCase() === country || /^[A-Z]{2}$/.test(t) || /\d/.test(t)) continue;
+      return t;
+    }
+    return '';
+  }
+
+  function notFound(msg) {
+    document.title = 'Place not found | Strong Foodie';
+    document.getElementById('placeRoot').innerHTML = `
+      <div class="place-empty">
+        <div style="font-size:42px;margin-bottom:0.75rem;">🗺️</div>
+        <h1>${esc(msg || 'This place could not be found')}</h1>
+        <p>It may have been removed or the link is incomplete. Find it on the <a href="map.html">map</a> or browse <a href="reviews.html">all reviews</a>.</p>
+      </div>`;
+  }
+
+  // ── Page
+  function render(p) {
+    const cat = CATS[p.cat];
+    const town = townOf(p);
+    document.title = `${p.name}${town ? ', ' + town : ''} | Strong Foodie`;
+    const desc = (p.review || p.tip || `${cat.label} spot${p.address ? ' at ' + p.address : ''}`).slice(0, 155);
+    document.querySelector('meta[name="description"]').setAttribute('content', desc);
+    const canonical = `https://www.strongfoodie.com/plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
+    document.querySelector('link[rel="canonical"]').setAttribute('href', canonical);
+
+    const hasCoords = p.lat != null && p.lng != null;
+    const routeUrl = hasCoords
+      ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`
+      : (p.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.address)}` : '');
+
+    const hero = p.photos.length
+      ? `<div class="hero-photo"><img id="heroImg" data-photo="${esc(p.photos[0])}" alt="${esc(p.name)}" hidden><span class="hero-emoji">${esc(p.emoji)}</span></div>`
+      : `<div class="hero-photo"><span class="hero-emoji">${esc(p.emoji)}</span></div>`;
+    const thumbs = p.photos.length > 1
+      ? `<div class="thumbs">${p.photos.map((ph, i) => `<button class="thumb${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Photo ${i + 1}"><img data-photo="${esc(ph)}" data-hide-parent="1" alt="" hidden></button>`).join('')}</div>`
+      : '';
+
+    const closed = p.closedStatus
+      ? `<div class="closed-banner">${p.closedStatus === 'perm' ? '🚪 Permanently closed' : '🚪 Temporarily closed'}${p.closedNote ? ': ' + esc(p.closedNote) : ''}</div>` : '';
+    const partner = p.sponsored
+      ? `<span class="badge badge-ad">AD · Partner${p.partnerName ? ': ' + esc(p.partnerName) : ''}</span>` : '';
+    const sourceBadge = p.member
+      ? `<span class="badge badge-member">Member spot</span>`
+      : `<span class="badge badge-sf">Strong Foodie review</span>`;
+
+    const facts = [
+      p.address && ['📍', 'Address', esc(p.address)],
+      p.hours && ['🕐', 'Opening hours', esc(p.hours)],
+      p.price && ['💰', 'Price', esc(p.price)],
+      p.type && ['🏷️', 'Type', esc(p.type)],
+      p.phone && ['📞', 'Phone', `<a href="tel:${esc(p.phone.replace(/\s/g, ''))}">${esc(p.phone)}</a>`],
+      p.date && ['📅', 'Visited', esc(p.date)],
+    ].filter(Boolean);
+
+    const sfScore = !p.member && p.rating
+      ? `<div class="score"><div class="score-num">${fmt1(p.rating)}</div><div><div class="score-stars">${stars(p.rating)}</div><div class="score-label">Strong Foodie score</div></div></div>` : '';
+
+    const reviewBlock = p.member
+      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${esc(p.author)} in the Strong Foodie app. Not reviewed by Strong Foodie.</p></section>` : `<section class="block"><p class="muted">Added by ${esc(p.author)} in the Strong Foodie app. Not reviewed by Strong Foodie.</p></section>`)
+      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${esc(p.author === 'Jong Foodie' ? 'Strong Foodie' : p.author)}${p.date ? ' · ' + esc(p.date) : ''}</p></section>` : '');
+
+    const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+
+    document.getElementById('placeRoot').innerHTML = `
+      <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › <a href="${cat.page}">${cat.label}</a> › <span>${esc(p.name)}</span></div>
+      <article class="place">
+        <div class="media">${hero}${thumbs}</div>
+        <div class="head">
+          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}</div>
+          <h1>${esc(p.name)}</h1>
+          ${p.address ? `<p class="sub">📍 ${esc(p.address)}</p>` : ''}
+          ${closed}
+          <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
+          <div class="actions">
+            ${routeUrl ? `<a class="btn btn-primary" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
+            <button class="btn" id="shareBtn">Share</button>
+            ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
+          </div>
+        </div>
+      </article>
+
+      ${reviewBlock}
+      ${tags ? `<section class="block">${tags}</section>` : ''}
+      ${facts.length ? `<section class="block"><h2>Details</h2><dl class="facts">${facts.map(([i, k, v]) => `<div><dt>${i} ${k}</dt><dd>${v}</dd></div>`).join('')}</dl></section>` : ''}
+      ${hasCoords ? `<section class="block"><h2>Location</h2><div id="placeMap" class="place-map"></div></section>` : ''}
+      <section class="block" id="memberReviews">
+        <h2>Member reviews</h2>
+        <p class="muted" id="memberReviewsBody">Loading…</p>
+      </section>
+      <section class="block" id="nearbyBlock" hidden>
+        <h2>Nearby ${cat.label.toLowerCase()} spots</h2>
+        <div class="nearby" id="nearbyList"></div>
+      </section>
+      <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a></p>`;
+
+    hydratePhotos(document.getElementById('placeRoot'));
+    document.querySelectorAll('.thumb').forEach(btn => btn.addEventListener('click', () => {
+      const i = +btn.dataset.i;
+      document.querySelectorAll('.thumb').forEach(b => b.classList.toggle('active', b === btn));
+      resolvePhoto(p.photos[i]).then(url => { const h = document.getElementById('heroImg'); if (url && h) { h.hidden = false; h.src = url; } });
+    }));
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const url = location.href;
+      try {
+        if (navigator.share) { await navigator.share({ title: p.name, text: `${p.name} on Strong Foodie`, url }); return; }
+        await navigator.clipboard.writeText(url);
+        toast('Link copied');
+      } catch (e) { if (e && e.name !== 'AbortError') toast('Copy the link from the address bar'); }
+    });
+
+    if (hasCoords && window.L) {
+      const m = L.map('placeMap', { scrollWheelZoom: false }).setView([p.lat, p.lng], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(m);
+      L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', html: `<div style="background:${cat.color};color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`, iconSize: [38, 38], iconAnchor: [19, 19] }) }).addTo(m);
+    }
+
+    // Structured data for search engines: a critic review for Strong Foodie
+    // reviews, plain place data for member spots.
+    const ld = { '@context': 'https://schema.org', '@type': cat.schema, name: p.name, url: canonical };
+    if (p.address) ld.address = p.address;
+    if (hasCoords) ld.geo = { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng };
+    if (p.price) ld.priceRange = p.price;
+    if (!p.member && p.rating && p.review) {
+      ld.review = { '@type': 'Review', author: { '@type': 'Person', name: 'Merdan Koc' }, publisher: { '@type': 'Organization', name: 'Strong Foodie' },
+        reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5, worstRating: 1 }, reviewBody: p.review.slice(0, 500) };
+    }
+    const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
+    document.head.appendChild(s);
+  }
+
+  // Member reviews appear here once reviews carry placeDocId (Rork batch Q).
+  async function loadMemberReviews(p) {
+    const body = document.getElementById('memberReviewsBody');
+    let rows = [];
+    try {
+      const snap = await getDocs(query(collection(db, 'userReviews'), where('placeDocId', '==', p.id)));
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(r => (!r.placeCollection || r.placeCollection === p.coll) && typeof r.rating === 'number');
+    } catch (e) { console.error('Member reviews could not load:', e); }
+
+    // Leave out reviews by members with a private account.
+    const authors = [...new Set(rows.map(r => r.authorId).filter(Boolean))];
+    const info = {};
+    await Promise.all(authors.map(uid => getDoc(doc(db, 'profiles', uid))
+      .then(s => { info[uid] = s.exists() ? { name: s.data().displayName || 'Member', priv: s.data().isPrivate === true } : { name: 'Member', priv: false }; })
+      .catch(() => { info[uid] = { name: 'Member', priv: false }; })));
+    rows = rows.filter(r => !(info[r.authorId] && info[r.authorId].priv))
+      .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+
+    if (!rows.length) {
+      body.textContent = 'No member reviews yet. Members review places in the Strong Foodie app.';
+      return;
+    }
+    const avg = rows.reduce((s, r) => s + r.rating, 0) / rows.length;
+    const ms = document.getElementById('memberScore');
+    ms.innerHTML = `<div class="score-num member">${fmt1(avg)}</div><div><div class="score-stars">${stars(avg)}</div><div class="score-label">Members · ${rows.length} review${rows.length === 1 ? '' : 's'}</div></div>`;
+    ms.hidden = false;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'member-reviews';
+    wrap.innerHTML = rows.map(r => {
+      const d = toDate(r.createdAt);
+      return `<div class="mr">
+        <div class="mr-top"><strong>${esc((info[r.authorId] || {}).name || 'Member')}</strong><span class="score-stars">${stars(r.rating)}</span></div>
+        ${r.text ? `<p>${esc(r.text)}</p>` : ''}
+        ${r.photoUrl ? `<div class="mr-photo"><img data-photo="${esc(r.photoUrl)}" data-hide-parent="1" alt="" hidden></div>` : ''}
+        ${d ? `<p class="muted">${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>` : ''}
+      </div>`;
+    }).join('');
+    body.replaceWith(wrap);
+    hydratePhotos(wrap);
+  }
+
+  // Up to four spots of the same category within 5 km.
+  async function loadNearby(p) {
+    if (p.lat == null || p.lng == null) return;
+    const cat = CATS[p.cat];
+    const now = new Date();
+    const results = await Promise.allSettled([
+      getDocs(collection(db, cat.coll)),
+      getDocs(query(collection(db, 'userPlaces'), where('category', 'in', cat.aliases))),
+    ]);
+    const list = [];
+    results.forEach((res, i) => {
+      if (res.status !== 'fulfilled') return;
+      const coll = i === 0 ? cat.coll : 'userPlaces';
+      res.value.docs.forEach(d => {
+        if (coll === p.coll && d.id === p.id) return;
+        const r = d.data();
+        if (!r.name || (coll !== 'userPlaces' && !isPublished(r, now))) return;
+        const q = normalise(coll, d.id, r);
+        if (q.lat == null || q.lng == null) return;
+        const dist = distanceM(p, q);
+        if (dist <= 5000) list.push({ ...q, dist });
+      });
+    });
+    list.sort((a, b) => a.dist - b.dist);
+    const top = list.slice(0, 4);
+    if (!top.length) return;
+    document.getElementById('nearbyList').innerHTML = top.map(q => `
+      <a class="near" href="plek.html?c=${encodeURIComponent(q.coll)}&id=${encodeURIComponent(q.id)}">
+        <span class="near-emoji">${esc(q.emoji)}</span>
+        <span class="near-body"><strong>${esc(q.name)}</strong><span class="muted">${fmtDist(q.dist)}${q.member ? ' · Member spot' : (q.rating ? ' · ' + stars(q.rating) : '')}</span></span>
+      </a>`).join('');
+    document.getElementById('nearbyBlock').hidden = false;
+  }
+
+  async function init() {
+    const qs = new URLSearchParams(location.search);
+    const coll = qs.get('c'), id = qs.get('id');
+    if (!coll || !id || !COLLS[coll]) return notFound();
+
+    let snap;
+    try { snap = await getDoc(doc(db, coll, id)); }
+    catch (e) { console.error(e); return notFound('This place could not load right now'); }
+    if (!snap.exists()) return notFound();
+
+    const r = snap.data();
+    if (!COLLS[coll].member && !isPublished(r, new Date())) return notFound();
+    const p = normalise(coll, id, r);
+
+    if (p.member && p.addedByUserId) {
+      try {
+        const owner = await getDoc(doc(db, 'profiles', p.addedByUserId));
+        if (owner.exists() && owner.data().isPrivate === true) return notFound('This place is only visible to followers in the app');
+      } catch (e) {}
+    }
+
+    render(p);
+    loadMemberReviews(p);
+    loadNearby(p).catch(e => console.error('Nearby could not load:', e));
+  }
+
+  init();
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:none;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+</body>
+</html>

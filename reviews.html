@@ -109,6 +109,10 @@
   .gallery-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; }
   .gallery-dots span.active { background: #fff; }
   .review-photo-clickable { cursor: zoom-in; }
+
+  .place-link { color: inherit; text-decoration: none; }
+  .place-link:hover { color: var(--accent); }
+  .place-more { display: inline-block; margin-top: 0.4rem; font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none; }
 </style>
 <!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
@@ -261,6 +265,8 @@
 
 
 </div>
+<section data-member-places="eat" data-search="#reviewSearchInput" style="max-width:960px;margin:0 auto 3rem;padding:0 2rem;"></section>
+<script type="module" src="js/member-places.js"></script>
 <p class="section-label">Community Picks</p>
 <div class="reviews-list" id="communityPicksList">
 <div style="text-align:center;padding:2rem;color:var(--muted);font-size:14px;">
@@ -479,7 +485,7 @@
               ${r.hours ? `<span class="hours-badge" style="font-size:10px;">🕐 ${r.hours}</span>` : '<span></span>'}
               <span class="stars" style="color:#C8901A;font-size:14px;letter-spacing:1px;">${stars}</span>
             </div>
-            <div class="review-top"><h2 class="review-title">${r.name}</h2></div>
+            <div class="review-top"><h2 class="review-title"><a class="place-link" href="plek.html?c=reviews&id=${d.id}">${r.name}</a></h2></div>
             <div class="review-meta">
               <span>📍 ${r.city}</span>
               <span>${r.type}</span>
@@ -488,6 +494,7 @@
             </div>
             ${closedNoteHtml}
             <p class="review-excerpt">${r.review}</p>
+            <a class="place-more" href="plek.html?c=reviews&id=${d.id}">View place →</a>
             <div class="review-tags">${tagsHtml}</div>
           </div>`;
 
@@ -522,6 +529,9 @@
       }
     });
   }
+
+  // The search field calls searchReviews() from HTML, so it must be global.
+  window.searchReviews = searchReviews;
 
   // Auto-search if coming from homepage search
   window.addEventListener('DOMContentLoaded', () => {

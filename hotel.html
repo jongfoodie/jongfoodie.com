@@ -114,6 +114,10 @@
   .gallery-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; }
   .gallery-dots span.active { background: #fff; }
   .hotel-img-clickable { cursor: zoom-in; }
+
+  .place-link { color: inherit; text-decoration: none; }
+  .place-link:hover { color: var(--accent); }
+  .place-more { display: inline-block; margin-top: 0.4rem; font-size: 12px; font-weight: 600; color: var(--accent); text-decoration: none; }
 </style>
 <!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
@@ -189,6 +193,9 @@
 <div class="main">
   <p class="section-label">Strong Foodie Hotel Reviews</p>
   <div id="hotelList"></div>
+
+  <section data-member-places="stay" data-search=".search-bar input"></section>
+  <script type="module" src="js/member-places.js"></script>
 
   <div class="community-section">
     <p class="community-label">Community Hotel Picks</p>
@@ -319,7 +326,7 @@ function renderHotels(list) {
       ${imgHtml}
       <div class="hotel-body">
         <div class="hotel-top">
-          <p class="hotel-name">${h.name}</p>
+          <p class="hotel-name">${h.id ? `<a class="place-link" href="plek.html?c=hotelreviews&id=${h.id}">${h.name}</a>` : h.name}</p>
           <span class="hotel-stars">${renderStars(h.stars)}</span>
         </div>
         <div class="hotel-meta">
@@ -328,6 +335,7 @@ function renderHotels(list) {
         </div>
         ${closedNoteHtml}
         <p class="hotel-desc">${h.desc}</p>
+        ${h.id ? `<a class="place-more" href="plek.html?c=hotelreviews&id=${h.id}">View place →</a>` : ''}
         <div class="hotel-tags">
           ${h.tags.map(t => `<span class="tag">${t}</span>`).join('')}
           <span class="tag location">${h.location}</span>
@@ -375,7 +383,7 @@ renderHotels(hotels);
 
       const now = new Date();
       const visible = snap.docs
-        .map(d => d.data())
+        .map(d => ({ ...d.data(), __id: d.id }))
         .filter(r => {
           if (!r.publishAt) return true; // no schedule = always visible
           const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
@@ -384,6 +392,7 @@ renderHotels(hotels);
 
       // Map Firebase fields onto the same shape renderHotels() expects
       const mapped = visible.map(r => ({
+        id: r.__id,
         name: r.name,
         address: r.city || '',
         type: r.price || '',
