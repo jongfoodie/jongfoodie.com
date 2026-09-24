@@ -26,7 +26,7 @@
   "description": "Real eats, honest reviews. Strong Foodie covers the best restaurants, hotels and hidden gems, from Amsterdam to the world.",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://www.strongfoodie.com/reviews.html?q={search_term_string}",
+    "target": "https://www.strongfoodie.com/?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
@@ -854,6 +854,78 @@
   }
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--accent); }
+
+  /* ── HOMEPAGE: search, top picks, destinations (live data from the app database) ── */
+  .hero { overflow: visible; }
+  .hero-search-wrap { position: relative; max-width: 480px; margin: 0 auto; z-index: 30; }
+  .hero-search-wrap .hero-search { margin: 0; }
+  .hero-search input[type="search"] { -webkit-appearance: none; appearance: none; }
+  .hero-search input::-webkit-search-cancel-button { display: none; }
+  .search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--warm-white); color: var(--ink); border-radius: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.35); text-align: left; max-height: min(430px, 62vh); overflow-y: auto; }
+  .search-results[hidden] { display: none; }
+  .sr-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; text-decoration: none; color: inherit; border-bottom: 1px solid var(--border); }
+  .sr-item.active, .sr-item:hover { background: var(--accent-pale); }
+  .sr-ico { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .sr-text { min-width: 0; flex: 1; }
+  .sr-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-meta { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-star { color: var(--gold); }
+  .sr-empty { padding: 14px 16px; font-size: 13px; color: var(--muted); }
+  .sr-more { display: block; width: 100%; padding: 12px 16px; font: 500 13px 'DM Sans', sans-serif; color: var(--accent); background: var(--cream); border: none; text-align: left; cursor: pointer; }
+  .sr-more:hover { background: var(--accent-pale); }
+
+  .section-sub { font-size: 13px; color: var(--muted); margin: -0.75rem 0 1.25rem; line-height: 1.5; }
+  #latestLabel { scroll-margin-top: 80px; }
+
+  .top-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+  .top-card { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 3 / 4; text-decoration: none; color: #fff; background: var(--ink); }
+  .top-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .top-card:hover img { transform: scale(1.04); }
+  .top-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+  .top-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0) 35%, rgba(26,18,8,0.9) 100%); }
+  .top-rank { position: absolute; top: 10px; left: 10px; z-index: 2; background: var(--accent); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .top-info { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; }
+  .top-name { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.25; margin-bottom: 4px; overflow-wrap: anywhere; }
+  .top-meta { font-size: 11px; color: rgba(255,255,255,0.78); }
+  .top-meta .sr-star { color: #F5C896; }
+
+  .dest-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .dest-chip { border: 1px solid var(--border); background: var(--warm-white); color: var(--ink-soft); padding: 7px 14px; border-radius: 20px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .dest-chip:hover { border-color: var(--ink-soft); }
+  .dest-chip span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .dest-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .dest-chip.active span { color: rgba(255,255,255,0.6); }
+  .dest-foot { text-align: center; margin: -1rem 0 2.5rem; }
+  .dest-foot[hidden] { display: none; }
+
+  a.mini-card { display: block; text-decoration: none; color: inherit; }
+  .mini-img { position: relative; overflow: hidden; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .grid-empty { font-size: 13px; color: var(--muted); grid-column: 1 / -1; }
+  .load-more [hidden] { display: none; }
+
+  .featured-card a.featured-img { text-decoration: none; }
+  .featured-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card-title a { color: inherit; text-decoration: none; }
+  .card-title a:hover { color: var(--accent); }
+  .featured-link { font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; }
+
+  .cat-list { display: flex; flex-direction: column; }
+  .cat-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-row:hover { color: var(--accent); }
+  .cat-ico { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .cat-count { margin-left: auto; color: var(--muted); font-weight: 400; font-size: 12px; }
+
+  @media (max-width: 900px) {
+    .top-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
@@ -933,22 +1005,25 @@
   <p class="hero-eyebrow">Real eats. Honest reviews.</p>
   <h1>Discover your next<br><em>favourite bite</em></h1>
   <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks, all in one place.</p>
-  <div class="hero-search">
-    <input type="text" id="heroSearchInput" placeholder="Search cafes, burgers, pastries…" onkeydown="if(event.key==='Enter')doHeroSearch()" />
-    <button onclick="doHeroSearch()">Search</button>
+  <div class="hero-search-wrap">
+    <div class="hero-search" role="search">
+      <input type="search" id="heroSearchInput" placeholder="Search a place, dish or city…" autocomplete="off" aria-label="Search places" aria-controls="heroResults" aria-expanded="false" onkeydown="if(event.key==='Enter'){event.preventDefault();doHeroSearch();}" />
+      <button onclick="doHeroSearch()">Search</button>
+    </div>
+    <div class="search-results" id="heroResults" role="listbox" aria-label="Search results" hidden></div>
   </div>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num" id="heroReviews">62</div>
-      <div class="stat-label">Reviews</div>
+      <div class="stat-num" id="heroReviews">–</div>
+      <div class="stat-label">Places reviewed</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="heroRestaurants">62</div>
-      <div class="stat-label">Restaurants</div>
+      <div class="stat-num" id="heroDestinations">–</div>
+      <div class="stat-label">Destinations</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="heroMembers">1</div>
-      <div class="stat-label">Members</div>
+      <div class="stat-num" id="heroCountries">–</div>
+      <div class="stat-label">Countries</div>
     </div>
   </div>
 </section>
@@ -973,55 +1048,34 @@
     <!-- FEATURED -->
     <p class="section-label">Featured Review</p>
     <div class="featured-card" id="featuredCard">
-      <div class="featured-img bg-cafe" style="font-size:72px;">🍔</div>
+      <div class="featured-img bg-cafe" style="font-size:72px;">🍽️</div>
       <div class="featured-body">
         <div>
-          <div class="rating">
-            <span class="stars">★★★★☆</span>
-            <span class="rating-num">4.0</span>
-          </div>
-          <h2 class="card-title">BUNS</h2>
-          <div class="card-meta">
-            <span>Amsterdam</span>
-            <span class="dot"></span>
-            <span>Restaurant</span>
-            <span class="dot"></span>
-            <span>€13,50</span>
-          </div>
-          <p class="card-excerpt">The fried chicken burger is a winner, super crispy, well-seasoned and packed into a soft bun. Great late-night spot, friendly service.</p>
-          <div class="card-tags">
-            <span class="card-tag">Great value</span>
-            <span class="card-tag">Must try</span>
-            <span class="card-tag">Fried chicken burger</span>
-          </div>
-        </div>
-        <div class="card-footer">
-          <div class="author">
-            <div class="avatar">JF</div>
-            <span class="author-name">Strong Foodie</span>
-          </div>
-          <div class="card-actions">
-            <button class="icon-btn" title="Like" onclick="toggleLike(this)">♡</button>
-            <button class="icon-btn" title="Share" onclick="showToast('Link copied!')">↗</button>
-          </div>
+          <h2 class="card-title">Loading the newest review…</h2>
+          <p class="card-excerpt">One moment.</p>
         </div>
       </div>
     </div>
 
-    <!-- GRID -->
-    <p class="section-label">Latest Reviews</p>
+    <!-- TOP PICKS: a new selection of top-rated places every month -->
+    <p class="section-label" id="topLabel">Top picks this month</p>
+    <p class="section-sub">Four of our highest-rated places. A new selection every month.</p>
+    <div class="top-grid" id="topGrid"></div>
+
+    <!-- DESTINATIONS -->
+    <p class="section-label">Explore by destination</p>
+    <div class="dest-chips" id="destChips"></div>
+    <div class="cards-grid" id="destGrid"></div>
+    <div class="dest-foot" id="destFoot" hidden><button class="btn-outline" id="destMoreBtn">Show all</button></div>
+
+    <!-- GRID: newest places, or the result of a tag / search -->
+    <p class="section-label" id="latestLabel">Latest on Strong Foodie</p>
     <div class="cards-grid" id="cardsGrid">
-      <div class="mini-card">
-        <div class="mini-img bg-cafe">⏳</div>
-        <div class="mini-body">
-          <p class="mini-meta">Loading...</p>
-          <h3 class="mini-title">Loading latest content...</h3>
-        </div>
-      </div>
+      <p class="grid-empty">Loading the latest places…</p>
     </div>
 
     <div class="load-more">
-      <button class="btn-outline" onclick="loadMoreReviews()">Load more reviews</button>
+      <button class="btn-outline" id="loadMoreBtn" onclick="loadMoreReviews()">Load more</button>
     </div>
 
     <!-- JONG HOTEL BANNER -->
@@ -1148,15 +1202,15 @@
       <div class="user-bio">Food explorer · Amsterdam</div>
       <div class="user-stats-row">
         <div class="user-stat">
-          <div class="user-stat-num" id="statReviews">62</div>
+          <div class="user-stat-num" id="statReviews">–</div>
           <div class="user-stat-lbl" id="statReviewsLbl">Reviews</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statSaved">6</div>
+          <div class="user-stat-num" id="statSaved">–</div>
           <div class="user-stat-lbl" id="statSavedLbl">Hotels</div>
         </div>
         <div class="user-stat">
-          <div class="user-stat-num" id="statFollowers">3</div>
+          <div class="user-stat-num" id="statFollowers">–</div>
           <div class="user-stat-lbl" id="statFollowersLbl">Followers</div>
         </div>
       </div>
@@ -1166,44 +1220,17 @@
       </div>
     </div>
 
-    <!-- SAVED LIST -->
+    <!-- CATEGORIES (counts come from the same database as the app) -->
     <div class="sidebar-widget">
-      <p class="widget-title">Saved Places</p>
-      <div class="saved-list" id="savedList">
-        <div class="saved-item"><span class="saved-emoji">🍜</span><span class="saved-title">Cafe Nobuya</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
-        <div class="saved-item"><span class="saved-emoji">🥐</span><span class="saved-title">Pistachio Cube: Maison</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
-        <div class="saved-item"><span class="saved-emoji">🍔</span><span class="saved-title">Le Smash Burgers</span><button class="saved-remove" onclick="removeSaved(this)">✕</button></div>
-      </div>
-    </div>
-
-    <!-- TRENDING -->
-    <div class="sidebar-widget">
-      <p class="widget-title">Trending This Week</p>
-      <div class="trending-list">
-        <div class="trending-item">
-          <span class="trending-num">01</span>
-          <span class="trending-emoji">🍜</span>
-          <div class="trending-info">
-            <p class="trending-title">Cafe Nobuya</p>
-            <p class="trending-sub">248 views · ★ 4.9</p>
-          </div>
-        </div>
-        <div class="trending-item">
-          <span class="trending-num">02</span>
-          <span class="trending-emoji">🍔</span>
-          <div class="trending-info">
-            <p class="trending-title">Le Smash</p>
-            <p class="trending-sub">180 views · ★ 4.2</p>
-          </div>
-        </div>
-        <div class="trending-item">
-          <span class="trending-num">03</span>
-          <span class="trending-emoji">🥐</span>
-          <div class="trending-info">
-            <p class="trending-title">Pistachio Cube</p>
-            <p class="trending-sub">132 views · ★ 3.8</p>
-          </div>
-        </div>
+      <p class="widget-title">Browse by category</p>
+      <div class="cat-list" id="catList">
+        <a class="cat-row" href="reviews.html" data-cat="eat"><span class="cat-ico" style="background:#FBF3EF;">🍽️</span>Eat<span class="cat-count"></span></a>
+        <a class="cat-row" href="drink.html" data-cat="drink"><span class="cat-ico" style="background:#F3E8F0;">🍸</span>Drink<span class="cat-count"></span></a>
+        <a class="cat-row" href="shop.html" data-cat="shop"><span class="cat-ico" style="background:#F6E6E6;">🛍️</span>Shop<span class="cat-count"></span></a>
+        <a class="cat-row" href="culture.html" data-cat="culture"><span class="cat-ico" style="background:#F4EEDD;">🎭</span>Culture<span class="cat-count"></span></a>
+        <a class="cat-row" href="health.html" data-cat="health"><span class="cat-ico" style="background:#E3EFE6;">💪</span>Health<span class="cat-count"></span></a>
+        <a class="cat-row" href="hotel.html" data-cat="stay"><span class="cat-ico" style="background:#E4ECF2;">🏨</span>Stay<span class="cat-count"></span></a>
+        <a class="cat-row" href="map.html"><span class="cat-ico" style="background:#F0EBE3;">🗺️</span>Everything on the map<span class="cat-count">→</span></a>
       </div>
     </div>
 
@@ -1354,6 +1381,7 @@
 
   function addToSavedList(name, emoji) {
     const list = document.getElementById('savedList');
+    if (!list) return;
     const item = document.createElement('div');
     item.className = 'saved-item';
     item.innerHTML = `<span class="saved-emoji">${emoji}</span><span class="saved-title">${name}</span><button class="saved-remove" onclick="removeSaved(this)">✕</button>`;
@@ -1475,45 +1503,6 @@
   }
 
 
-  const extraReviews = [
-    { emoji: '🍔', color: 'bg-burger', title: 'Maijard: Chicken Smash Burger', meta: 'Burgers · $$ · Oct 2024', text: 'Fresh veg, juicy patty, solid bun. The smash technique gives it that perfect crispy edge. Just needs a better sauce to reach the absolute top tier.', stars: '★★★★★', rating: '5.0' },
-    { emoji: '🍟', color: 'bg-burger', title: 'Fabel Friet: Parmesan Truffle Fries', meta: 'Fries · $ · Dec 2024 · 5 locaties', text: 'Perfectly crispy Dutch fries with freshly grated parmesan and homemade truffle mayo. Simple, fresh, and absolutely worth the queue. Open daily 11:00–21:00 at Oude Hoogstraat, Nieuwendijk, Damrak, Runstraat & Leidsestraat.', stars: '★★★★★', rating: '5.0' },
-    { emoji: '🐙', color: 'bg-ramen', title: 'Sjefietshé: Hotdoctopus', meta: 'Seafood · $$ · Nov 2024', text: 'The hotdoctopus dish is unlike anything else in Amsterdam. Creative, bold, and delicious. A hidden gem in De Pijp that deserves way more attention.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🥗', color: 'bg-cafe', title: 'Leauf Amsterdam: Leauf du Chef', meta: 'Sandwiches · $$ · Dec 2024', text: 'Paris meets Jordaan. Michelin-star precision in a sandwich shop. The freshest ingredients, crispiest bread, and the most creative flavor combinations in Amsterdam.', stars: '★★★★★', rating: '5.0' },
-    { emoji: '🥐', color: 'bg-pastry', title: 'et CLAIRE: Pistachio Cube Croissant', meta: 'Pastries · $$ · Oct 2024', text: 'Beautiful cube shape and gorgeous pistachio cream. Eye-catching and Instagram-worthy but the price left me wanting more flavor for my money.', stars: '★★★☆☆', rating: '3.0' },
-    { emoji: '🍜', color: 'bg-ramen', title: 'Cafe Nobuya: Mochi Donuts', meta: 'Japanese Fusion · $$ · Nov 2024', text: 'The chewiest, most creative mochi donuts in Amsterdam. The gyudon beef sandwich hits every note, sweet, savoury, spicy, crunchy. An absolute must-visit.', stars: '★★★★★', rating: '5.0' },
-    { emoji: '🧀', color: 'bg-cafe', title: 'Brioche Amsterdam: Grilled Cheese', meta: 'Cafe · $$ · Sep 2024', text: 'High hopes, flat results. The grilled cheese lacked flavor and I could not even finish it. For this price they really need to step it up significantly.', stars: '★☆☆☆☆', rating: '1.0' },
-    { emoji: '🍔', color: 'bg-burger', title: 'Le Smash: Le Special with Extra Bacon', meta: 'Burgers · $$ · Oct 2024', text: 'Extra bacon, smash patty, secret sauce, this burger delivers on almost every front. One of the best smashburgers in De Pijp. Reasonably priced and always consistent.', stars: '★★★★½', rating: '4.8' },
-    { emoji: '🥩', color: 'bg-sushi', title: 'Zorlu Center: Steak Tater', meta: 'Steak · Istanbul · Aug 2024', text: 'Discovered this gem while in Istanbul. The steak tater with garlic sauce is phenomenal. Incredible quality at a fraction of Amsterdam prices.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🥩', color: 'bg-ramen', title: '360 Istanbul: Steak & Live Music', meta: 'Steak · Istanbul · Aug 2024', text: 'Rooftop dining with a stunning view of Istanbul. The steak was excellent and the live music on Saturdays makes it a complete evening. Unforgettable experience.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🍽️', color: 'bg-pastry', title: 'Sjefietshé: Hotdoctopus', meta: 'Seafood · $$ · Sep 2024', text: 'Bold, creative, and unlike anything else in the city. The hotdoctopus is their signature dish for a reason. Small portions but huge flavors.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🫔', color: 'bg-pastry', title: 'Bonnie: Kimchi Croque', meta: 'Cafe · $$ · Nov 2024', text: 'The kimchi croque is addictive. The combination of melted cheese and spicy kimchi is genius. Open late, perfect for a night out snack in Amsterdam.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🥪', color: 'bg-cafe', title: 'Banh Mi Deli Amsterdam', meta: 'Vietnamese · $ · Oct 2024', text: 'Family-run gem on the Prinsengracht. The beef banh mi is fresh, flaky and absolutely delicious. Chef Vinh combines French culinary training with Vietnamese roots perfectly.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '🍔', color: 'bg-burger', title: 'Maijard Smashburgers: The Original', meta: 'Burgers · $$ · Jun 2024', text: 'Crowned Best Burger in the Netherlands by Burger Dudes for a reason. Locally sourced, double smashed, and served with their unique garlic mashed potatoes. A true Amsterdam icon.', stars: '★★★★½', rating: '4.5' },
-    { emoji: '🫔', color: 'bg-burger', title: 'Bonnie: Best Steak Sandwich', meta: 'Cafe · $$ · Dec 2024', text: 'The steak sandwich at Bonnie is genuinely one of the best in Amsterdam. Tender meat, perfect seasoning, and great value. A must on Amstelveenseweg.', stars: '★★★★☆', rating: '4.0' },
-    { emoji: '☕', color: 'bg-cafe', title: 'Chun Cafe: Bacon Egg & Cheese Toast', meta: 'Cafe · $$ · Jan 2025', text: 'Japanese-Korean minimalist cafe that nails the toast game. The matcha latte is the best in Amsterdam. Always a queue but always worth it. Daily staple material.', stars: '★★★★★', rating: '5.0' },
-  ];
-  let reviewsLoaded = 0;
-
-  function loadMoreReviews() {
-    const grid = document.querySelector('.cards-grid');
-    const toLoad = extraReviews.slice(reviewsLoaded, reviewsLoaded + 2);
-    if (toLoad.length === 0) { showToast('No more reviews to load!'); return; }
-    toLoad.forEach(r => {
-      const card = document.createElement('div');
-      card.className = 'mini-card';
-      card.style.animation = 'fadeIn 0.4s ease both';
-      card.innerHTML = `<div class="mini-img ${r.color}">${r.emoji}</div><div class="mini-body"><p class="mini-meta">${r.meta}</p><h3 class="mini-title">${r.title}</h3><p style="font-size:13px;color:var(--ink-soft);">${r.text}</p><div class="mini-footer"><span class="mini-rating">${r.stars} ${r.rating}</span><button class="mini-save" onclick="toggleMiniSave(this,'${r.title}')">🔖</button></div></div>`;
-      grid.appendChild(card);
-    });
-    reviewsLoaded += toLoad.length;
-    if (reviewsLoaded >= extraReviews.length) {
-      document.querySelector('.btn-outline').textContent = 'All reviews loaded!';
-      document.querySelector('.btn-outline').disabled = true;
-    }
-    showToast('Loaded more reviews! 🎉');
-  }
-
   function openMyProfile() {
     const name = document.querySelector('.user-name').textContent;
     const initials = name.substring(0,2).toUpperCase();
@@ -1595,7 +1584,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, getDoc, getCountFromServer, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1615,136 +1604,500 @@
 
   let currentUser = null;
 
-  // Load live hero stats
-  // Show stats immediately
-  if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = '62';
-  if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = '62';
-  if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = '1';
-  if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = '62';
+  // ══ HOMEPAGE DATA ══════════════════════════════════════════════════════
+  // Every section below (stats, featured, top picks, destinations, latest,
+  // search, categories) is built from ONE read of each collection: the same
+  // collections the app uses. Places members add in the app are included.
+  const CATS = {
+    eat:     { label: 'Eat',     emoji: '🍽️', color: '#D4521A', tint: '#FBF3EF', page: 'reviews.html', coll: 'reviews',      aliases: ['eat', 'food', 'restaurant', 'restaurants'] },
+    drink:   { label: 'Drink',   emoji: '🍸', color: '#6B2A5C', tint: '#F3E8F0', page: 'drink.html',   coll: 'drinkspots',   aliases: ['drink', 'drinks', 'bar', 'bars', 'cafe'] },
+    shop:    { label: 'Shop',    emoji: '🛍️', color: '#A32323', tint: '#F6E6E6', page: 'shop.html',    coll: 'shopspots',    aliases: ['shop', 'shops', 'store'] },
+    culture: { label: 'Culture', emoji: '🎭', color: '#8A6A0A', tint: '#F4EEDD', page: 'culture.html', coll: 'culturespots', aliases: ['culture', 'cultuur', 'museum'] },
+    health:  { label: 'Health',  emoji: '💪', color: '#1A5C2E', tint: '#E3EFE6', page: 'health.html',  coll: 'healthspots',  aliases: ['health', 'gym', 'sport', 'spa'] },
+    stay:    { label: 'Stay',    emoji: '🏨', color: '#2F5D7C', tint: '#E4ECF2', page: 'hotel.html',   coll: 'hotelreviews', aliases: ['stay', 'stays', 'hotel', 'hotels'] },
+  };
 
-  async function loadHeroStats() {
-    try {
-      const [foodSnap, hotelSnap, usersSnap] = await Promise.all([
-        getDocs(collection(db, 'reviews')),
-        getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'users'))
-      ]);
-      const totalFood = foodSnap.size;
-      const totalHotel = hotelSnap.size;
-      const totalReviews = totalFood + totalHotel;
-      const totalMembers = usersSnap.size;
-      if (document.getElementById('heroReviews')) document.getElementById('heroReviews').textContent = totalReviews;
-      if (document.getElementById('heroRestaurants')) document.getElementById('heroRestaurants').textContent = totalFood;
-      if (document.getElementById('heroMembers')) document.getElementById('heroMembers').textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
-      if (document.getElementById('statReviews')) document.getElementById('statReviews').textContent = totalFood;
-    } catch(e) { console.log('Hero stats error:', e); }
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fold = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
+  const starStr = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  const catOf = raw => { const c = String(raw || '').toLowerCase().trim(); return Object.keys(CATS).find(k => CATS[k].aliases.includes(c)) || 'eat'; };
+  const placeUrl = p => `plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
+
+  // Country names and abbreviations that can appear in an address.
+  const COUNTRY_NORM = {
+    'usa': 'United States', 'us': 'United States', 'united states': 'United States', 'united states of america': 'United States', 'america': 'United States',
+    'nl': 'Netherlands', 'netherlands': 'Netherlands', 'the netherlands': 'Netherlands', 'nederland': 'Netherlands', 'holland': 'Netherlands',
+    'turkey': 'Turkey', 'turkiye': 'Turkey', 'uae': 'United Arab Emirates', 'united arab emirates': 'United Arab Emirates',
+    'uk': 'United Kingdom', 'united kingdom': 'United Kingdom', 'england': 'United Kingdom',
+    'aruba': 'Aruba', 'thailand': 'Thailand', 'spain': 'Spain', 'france': 'France', 'italy': 'Italy', 'germany': 'Germany',
+    'belgium': 'Belgium', 'portugal': 'Portugal', 'greece': 'Greece', 'morocco': 'Morocco', 'japan': 'Japan', 'indonesia': 'Indonesia',
+  };
+  // Neighbourhoods and towns that belong to a bigger destination.
+  const DEST_ALIAS = {
+    'west hollywood': 'Los Angeles', 'hollywood': 'Los Angeles', 'venice': 'Los Angeles', 'venice beach': 'Los Angeles',
+    'beverly hills': 'Los Angeles', 'santa monica': 'Los Angeles', 'la': 'Los Angeles',
+    'la jolla': 'San Diego',
+    'oranjestad': 'Aruba', 'savaneta': 'Aruba', 'palm beach': 'Aruba', 'eagle beach': 'Aruba',
+    'new west': 'Amsterdam', 'nieuw-west': 'Amsterdam', 'amsterdam-noord': 'Amsterdam', 'amsterdam noord': 'Amsterdam', 'de pijp': 'Amsterdam', 'jordaan': 'Amsterdam',
+    'business bay': 'Dubai',
+  };
+  // Parts of a city: shown as the city itself.
+  const NEIGHBOURHOODS = new Set(['new west', 'nieuw-west', 'amsterdam-noord', 'amsterdam noord', 'de pijp', 'jordaan', 'business bay']);
+  const titleCase = s => s.replace(/\S+/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
+  function countryOf(raw) {
+    const k = fold(raw).trim();
+    if (!k) return '';
+    return COUNTRY_NORM[k] || titleCase(String(raw).trim());
   }
-  loadHeroStats();
-
-  // Load newest review as featured
-  async function loadFeaturedReview() {
-    try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      if (snap.empty) return;
-      const r = snap.docs[0].data();
-      const card = document.querySelector('.featured-card');
-      if (!card) return;
-      const stars = Math.round(r.rating || 5);
-      const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
-      const tags = (r.tags || []).slice(0, 3).map(t => '<span class="card-tag">' + t + '</span>').join('');
-      const imgHtml = r.photoUrl
-        ? '<div class="featured-img" style="background-color:#3D2F1A;background-image:url(\'' + r.photoUrl.replace(/'/g, "\\'") + '\');background-size:cover;background-position:center;"></div>'
-        : '<div class="featured-img bg-cafe" style="font-size:72px;">' + (r.emoji || '🍽️') + '</div>';
-      card.innerHTML = imgHtml +
-        '<div class="featured-body"><div>' +
-        '<div class="rating"><span class="stars">' + starsStr + '</span><span class="rating-num">' + (r.rating||5).toFixed(1) + '</span></div>' +
-        '<h2 class="card-title">' + (r.name||'') + '</h2>' +
-        '<div class="card-meta"><span>' + (r.city||'') + '</span><span class="dot"></span><span>' + (r.type||'') + '</span>' + (r.price ? '<span class="dot"></span><span>' + r.price + '</span>' : '') + '</div>' +
-        '<p class="card-excerpt">' + (r.review||'').substring(0,120) + (r.review && r.review.length > 120 ? '…' : '') + '</p>' +
-        '<div class="card-tags">' + tags + '</div>' +
-        '</div><div class="card-footer"><div class="author"><div class="avatar">JF</div><span class="author-name">Strong Foodie</span></div>' +
-        '<div class="card-actions"><button class="icon-btn" onclick="toggleLike(this)">♡</button><button class="icon-btn" onclick="showToast(&quot;Link copied!&quot;)">↗</button></div></div></div>';
-    } catch(e) { console.log('Featured error:', e); }
+  // In the catalogue "city" often holds a whole address
+  // ("8361 Beverly Blvd, Los Angeles", "Singel 83, 1012 VE Amsterdam").
+  function townOf(raw, country) {
+    const parts = String(raw || '').split(',').map(x => x.split('·')[0].replace(/\(.*?\)/g, '').trim()).filter(Boolean);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const t = parts[i].replace(/^\d{4}\s?[A-Z]{2}\s+/, '').trim();
+      if (!t || /\d/.test(t) || /^[A-Z]{2,3}$/.test(t)) continue;
+      const f = fold(t);
+      if (COUNTRY_NORM[f] || (country && f === fold(country))) continue;
+      return t;
+    }
+    return '';
   }
-  loadFeaturedReview();
-
-  // ── LATEST FROM ALL CATEGORIES (Eat, Drink, Shop, Culture, Health, Stay) ──
-  const CATEGORY_SOURCES = [
-    { coll: 'reviews',      page: 'reviews.html', label: 'Eat',     bg: 'bg-cafe',   emoji: '🍽️' },
-    { coll: 'drinkspots',   page: 'drink.html',   label: 'Drink',   bg: 'bg-ramen',  emoji: '🍸' },
-    { coll: 'shopspots',    page: 'shop.html',    label: 'Shop',    bg: 'bg-burger', emoji: '🛍️' },
-    { coll: 'culturespots', page: 'culture.html', label: 'Culture', bg: 'bg-pastry', emoji: '🎭' },
-    { coll: 'healthspots',  page: 'health.html',  label: 'Health',  bg: 'bg-sushi',  emoji: '💪' },
-    { coll: 'hotelreviews', page: 'hotel.html',   label: 'Stay',    bg: 'bg-tacos',  emoji: '🏨' },
-  ];
-
-  function toMillis(ts) {
-    if (!ts) return 0;
-    if (ts.toDate) return ts.toDate().getTime();
-    if (ts.seconds) return ts.seconds * 1000;
-    return new Date(ts).getTime() || 0;
+  function destinationOf(town, country) {
+    if (country === 'Aruba') return 'Aruba';
+    if (!town) return '';
+    return DEST_ALIAS[fold(town)] || town;
   }
 
-  function isVisibleNow(item) {
-    if (!item.publishAt) return true;
-    const pubDate = item.publishAt.toDate ? item.publishAt.toDate() : new Date(item.publishAt);
-    return pubDate <= new Date();
+  function isPublished(r, now) {
+    if (r.status === 'draft' || r.status === 'hidden' || r.hidden === true) return false;
+    const pub = toDate(r.publishAt);
+    return !(pub && pub > now);
   }
 
-  async function loadLatestFromAllCategories() {
-    const grid = document.getElementById('cardsGrid');
-    try {
-      const results = await Promise.all(
-        CATEGORY_SOURCES.map(src =>
-          getDocs(query(collection(db, src.coll), orderBy('createdAt', 'desc')))
-            .then(snap => snap.docs.map(d => ({ ...d.data(), _src: src })))
-            .catch(() => [])
-        )
-      );
+  function normalise(coll, id, r, member) {
+    const cat = member ? catOf(r.category) : Object.keys(CATS).find(k => CATS[k].coll === coll);
+    const photos = [];
+    if (r.photoUrl) photos.push(r.photoUrl);
+    if (Array.isArray(r.photos)) r.photos.forEach(ph => { if (typeof ph === 'string' && ph && !photos.includes(ph)) photos.push(ph); });
+    const country = countryOf(r.country || r.countryLabel);
+    const town = townOf(r.city || r.address, country);
+    const tags = Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [];
+    const p = {
+      coll, id, cat, member,
+      name: r.name || 'Unnamed place',
+      town, country, destination: destinationOf(town, country), where: '',
+      type: member ? '' : (r.type || ''),
+      tip: member ? (r.type || '') : '',
+      review: r.review || '',
+      rating: typeof r.rating === 'number' && r.rating > 0 ? r.rating : null,
+      price: r.price || '',
+      tags,
+      emoji: r.emoji || CATS[cat].emoji,
+      photos,
+      closed: !!(r.closedStatus && r.closedStatus !== 'open'),
+      author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
+      created: toDate(r.createdAt),
+    };
+    // What cards show as the location: "Noord, Aruba", "Venice, Los Angeles", "Amsterdam".
+    p.where = !p.town ? (p.destination || p.country)
+      : NEIGHBOURHOODS.has(fold(p.town)) ? p.destination
+      : (p.destination && fold(p.destination) !== fold(p.town) ? `${p.town}, ${p.destination}` : p.town);
+    p._name = fold(p.name);
+    p._place = fold([p.town, p.destination, r.address, r.city, p.country].join(' '));
+    p._kind = fold([CATS[cat].label, p.type, p.tip, tags.join(' ')].join(' '));
+    p._text = fold(p.review);
+    return p;
+  }
 
-      let allItems = results.flat().filter(isVisibleNow);
-      allItems.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
-      allItems = allItems.slice(0, 8);
-
-      if (allItems.length === 0) {
-        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No content published yet.</p>';
-        return;
+  // Photos: normal URLs, or "fsimg://<id>" (a base64 image in `images`, from the app).
+  const photoCache = new Map();
+  function resolvePhoto(url) {
+    if (!url || typeof url !== 'string') return Promise.resolve('');
+    if (url.startsWith('fsimg://')) {
+      const id = url.slice(8);
+      if (!photoCache.has(id)) {
+        photoCache.set(id, getDoc(doc(db, 'images', id))
+          .then(s => { const d = s.exists() ? s.data() : null; return d && d.data ? `data:${d.contentType || 'image/jpeg'};base64,${d.data}` : ''; })
+          .catch(() => ''));
       }
+      return photoCache.get(id);
+    }
+    if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
+    return Promise.resolve(url);
+  }
+  function hydratePhotos(root) {
+    root.querySelectorAll('img[data-photo]').forEach(img => {
+      const src = img.getAttribute('data-photo');
+      img.removeAttribute('data-photo');
+      img.onerror = () => img.remove();
+      resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else img.remove(); });
+    });
+  }
 
-      grid.innerHTML = allItems.map(item => {
-        const src = item._src;
-        const stars = item.rating ? '★'.repeat(Math.round(item.rating)) + '☆'.repeat(5 - Math.round(item.rating)) : '';
-        const imgStyle = item.photoUrl
-          ? `background-color:#3D2F1A;background-image:url('${item.photoUrl.replace(/'/g, "\\'")}');background-size:cover;background-position:center;`
-          : '';
-        const imgClass = item.photoUrl ? '' : src.bg;
-        const imgContent = item.photoUrl ? '' : (item.emoji || src.emoji);
-        return `<div class="mini-card">
-          <div class="mini-img ${imgClass}" style="${imgStyle}">${imgContent}</div>
-          <div class="mini-body">
-            <p class="mini-meta" style="display:flex;align-items:center;gap:6px;">
-              <span style="background:var(--accent-pale);color:var(--accent);font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;letter-spacing:0.05em;text-transform:uppercase;">${src.label}</span>
-              ${item.city || ''}
-            </p>
-            <h3 class="mini-title">${item.name || ''}</h3>
-            <p style="font-size:13px;color:var(--ink-soft);">${(item.review || '').substring(0, 90)}${item.review && item.review.length > 90 ? '…' : ''}</p>
-            <div class="mini-footer">
-              <span class="mini-rating">${stars}</span>
-              <div style="display:flex;gap:6px;align-items:center;">
-                <a href="${src.page}" class="mini-read">Read more →</a>
-              </div>
-            </div>
-          </div>
-        </div>`;
-      }).join('');
-    } catch(e) {
-      console.log('Latest-from-all error:', e);
-      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load latest content.</p>';
+  async function readAll(coll) {
+    try {
+      const snap = await getDocs(collection(db, coll));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) { console.log('Could not load ' + coll + ':', e.code || e); return []; }
+  }
+
+  // Places members added in the app. Members with a private account are left out.
+  async function readMemberPlaces() {
+    const raw = (await readAll('userPlaces')).filter(r => r.name && r.hidden !== true);
+    const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];
+    const privateOwners = new Set();
+    await Promise.all(owners.map(uid => getDoc(doc(db, 'profiles', uid))
+      .then(s => { if (s.exists() && s.data().isPrivate === true) privateOwners.add(uid); })
+      .catch(() => {})));
+    return raw.filter(r => !privateOwners.has(r.addedByUserId));
+  }
+
+  let CATALOG = [], MEMBERS = [], ALL = [], LATEST = [];
+
+  async function loadAll() {
+    const now = new Date();
+    const keys = Object.keys(CATS);
+    const [lists, members] = await Promise.all([
+      Promise.all(keys.map(k => readAll(CATS[k].coll))),
+      readMemberPlaces(),
+    ]);
+    keys.forEach((k, i) => {
+      lists[i].filter(r => r.name && isPublished(r, now))
+        .forEach(r => CATALOG.push(normalise(CATS[k].coll, r.id, r, false)));
+    });
+    MEMBERS = members.map(r => normalise('userPlaces', r.id, r, true));
+    ALL = CATALOG.concat(MEMBERS);
+
+    renderStats();
+    const featured = renderFeatured();
+    renderTopPicks(featured);
+    renderDestinations();
+    LATEST = ALL.filter(p => p !== featured).sort((a, b) => (b.created || 0) - (a.created || 0));
+    showList(LATEST, 'Latest on Strong Foodie', false);
+    renderCategoryCounts();
+    openSearchFromUrl();
+  }
+
+  // ── Stats
+  function renderStats() {
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const dests = new Set(ALL.map(p => p.destination).filter(Boolean));
+    const countries = new Set(ALL.map(p => p.country).filter(Boolean));
+    set('heroReviews', CATALOG.length);
+    set('heroDestinations', dests.size);
+    set('heroCountries', countries.size);
+    if (!currentUser) {
+      set('statReviews', CATALOG.filter(p => p.cat === 'eat').length);
+      set('statSaved', CATALOG.filter(p => p.cat === 'stay').length);
+      getCountFromServer(query(collection(db, 'follows'), where('following', '==', 'Strong Foodie')))
+        .then(s => { if (!currentUser) set('statFollowers', s.data().count); })
+        .catch(() => {});
     }
   }
-  loadLatestFromAllCategories();
-  // ─────────────────────────────────────────────────────────────────────────
+
+  function renderCategoryCounts() {
+    document.querySelectorAll('#catList .cat-row[data-cat]').forEach(row => {
+      const n = ALL.filter(p => p.cat === row.dataset.cat).length;
+      row.querySelector('.cat-count').textContent = n ? n : '';
+    });
+  }
+
+  // ── Featured: the newest Strong Foodie review
+  function renderFeatured() {
+    const card = document.getElementById('featuredCard');
+    const p = CATALOG.filter(x => !x.closed).sort((a, b) => (b.created || 0) - (a.created || 0))[0];
+    if (!card) return p;
+    if (!p) { card.style.display = 'none'; return null; }
+    const cat = CATS[p.cat];
+    const url = placeUrl(p);
+    const meta = [p.where, p.type || cat.label, p.price].filter(Boolean);
+    card.innerHTML = `
+      <a class="featured-img" href="${url}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);" aria-label="${esc(p.name)}">
+        <span>${esc(p.emoji)}</span>
+        ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" hidden>` : ''}
+      </a>
+      <div class="featured-body">
+        <div>
+          ${p.rating ? `<div class="rating"><span class="stars">${starStr(p.rating)}</span><span class="rating-num">${p.rating.toFixed(1)}</span></div>` : ''}
+          <h2 class="card-title"><a href="${url}">${esc(p.name)}</a></h2>
+          <div class="card-meta">${meta.map(m => `<span>${esc(m)}</span>`).join('<span class="dot"></span>')}</div>
+          <p class="card-excerpt">${esc(p.review.slice(0, 160))}${p.review.length > 160 ? '…' : ''}</p>
+          <div class="card-tags">${p.tags.slice(0, 3).map(t => `<span class="card-tag">${esc(t)}</span>`).join('')}</div>
+        </div>
+        <div class="card-footer">
+          <div class="author"><div class="avatar">SF</div><span class="author-name">${esc(p.author)}</span></div>
+          <div class="card-actions">
+            <a class="featured-link" href="${url}">Read the review →</a>
+            <button class="icon-btn" title="Share" aria-label="Share" data-share="${esc(url)}" data-title="${esc(p.name)}">↗</button>
+          </div>
+        </div>
+      </div>`;
+    hydratePhotos(card);
+    return p;
+  }
+
+  // Share: the phone's share sheet, or copy the link.
+  document.addEventListener('click', async e => {
+    const btn = e.target.closest('[data-share]');
+    if (!btn) return;
+    const url = new URL(btn.dataset.share, location.href).href;
+    try {
+      if (navigator.share) { await navigator.share({ title: btn.dataset.title || 'Strong Foodie', url }); return; }
+    } catch (err) { if (err && err.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url); showToast('Link copied!'); }
+    catch { window.prompt('Copy this link:', url); }
+  });
+
+  // ── Top picks: a fixed selection per month from the highest-rated places
+  function seededShuffle(arr, seed) {
+    let a = seed >>> 0;
+    const rnd = () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const out = arr.slice();
+    for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+    return out;
+  }
+  function renderTopPicks(featured) {
+    const grid = document.getElementById('topGrid');
+    if (!grid) return;
+    const now = new Date();
+    const month = now.toLocaleString('en-GB', { month: 'long' });
+    document.getElementById('topLabel').textContent = `Top picks · ${month}`;
+    const pool = CATALOG.filter(p => p !== featured && !p.closed && p.rating && p.photos.length);
+    const best = Math.max(0, ...pool.map(p => p.rating));
+    let candidates = pool.filter(p => p.rating >= best);
+    if (candidates.length < 4) candidates = pool.filter(p => p.rating >= Math.min(best, 4));
+    candidates.sort((a, b) => (a.coll + a.id).localeCompare(b.coll + b.id));
+    const shuffled = seededShuffle(candidates, now.getFullYear() * 100 + now.getMonth() + 1);
+    // Prefer four different destinations, then fill up.
+    const picks = [], seen = new Set();
+    shuffled.forEach(p => { if (picks.length < 4 && !seen.has(p.destination)) { picks.push(p); seen.add(p.destination); } });
+    shuffled.forEach(p => { if (picks.length < 4 && !picks.includes(p)) picks.push(p); });
+    if (!picks.length) { grid.previousElementSibling.hidden = true; grid.previousElementSibling.previousElementSibling.hidden = true; grid.hidden = true; return; }
+    grid.innerHTML = picks.map((p, i) => `
+      <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">
+        <span class="top-emoji">${esc(p.emoji)}</span>
+        <img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>
+        <span class="top-rank">#${i + 1}</span>
+        <span class="top-info">
+          <span class="top-name" style="display:block;">${esc(p.name)}</span>
+          <span class="top-meta"><span class="sr-star">${starStr(p.rating)}</span> · ${esc(p.where || CATS[p.cat].label)}</span>
+        </span>
+      </a>`).join('');
+    hydratePhotos(grid);
+  }
+
+  // ── Cards
+  const byQuality = (a, b) => (b.rating || 0) - (a.rating || 0) || (b.photos.length ? 1 : 0) - (a.photos.length ? 1 : 0) || (a.member - b.member) || (b.created || 0) - (a.created || 0);
+  function miniCard(p) {
+    const cat = CATS[p.cat];
+    const text = p.review || p.tip || (p.type ? p.type : '');
+    const foot = p.rating
+      ? `<span class="mini-rating">${starStr(p.rating)} ${p.rating}</span>`
+      : `<span class="mini-meta" style="margin:0;">${p.member ? 'Added by ' + esc(p.author) : ''}</span>`;
+    return `<a class="mini-card" href="${placeUrl(p)}">
+      <div class="mini-img" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
+        <span>${esc(p.emoji)}</span>
+        ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+      </div>
+      <div class="mini-body">
+        <p class="mini-meta"><span class="pill pill-cat">${cat.label}</span>${p.member ? '<span class="pill pill-member">Member</span>' : ''}${p.closed ? '<span class="pill pill-closed">Closed</span>' : ''}${esc(p.where)}</p>
+        <h3 class="mini-title">${esc(p.name)}</h3>
+        ${text ? `<p class="mini-text">${esc(text.slice(0, 90))}${text.length > 90 ? '…' : ''}</p>` : ''}
+        <div class="mini-footer">${foot}<span class="mini-read">View place →</span></div>
+      </div>
+    </a>`;
+  }
+
+  // ── Destinations
+  let destPlaces = [];
+  function renderDestinations() {
+    const chips = document.getElementById('destChips');
+    if (!chips) return;
+    const counts = new Map();
+    ALL.forEach(p => { if (p.destination) counts.set(p.destination, (counts.get(p.destination) || 0) + 1); });
+    const dests = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    if (!dests.length) { chips.previousElementSibling.hidden = true; return; }
+    chips.innerHTML = dests.map(([d, n], i) =>
+      `<button class="dest-chip${i === 0 ? ' active' : ''}" data-dest="${esc(d)}" aria-pressed="${i === 0}">${esc(d)}<span>${n}</span></button>`).join('');
+    chips.addEventListener('click', e => {
+      const chip = e.target.closest('.dest-chip');
+      if (!chip) return;
+      chips.querySelectorAll('.dest-chip').forEach(c => { c.classList.toggle('active', c === chip); c.setAttribute('aria-pressed', c === chip); });
+      showDestination(chip.dataset.dest, false);
+    });
+    document.getElementById('destMoreBtn').addEventListener('click', () => {
+      const active = chips.querySelector('.dest-chip.active');
+      if (active) showDestination(active.dataset.dest, true);
+    });
+    showDestination(dests[0][0], false);
+  }
+  function showDestination(dest, all) {
+    const grid = document.getElementById('destGrid');
+    const foot = document.getElementById('destFoot');
+    destPlaces = ALL.filter(p => p.destination === dest).sort(byQuality);
+    const list = all ? destPlaces : destPlaces.slice(0, 4);
+    grid.innerHTML = list.map(miniCard).join('');
+    hydratePhotos(grid);
+    foot.hidden = all || destPlaces.length <= 4;
+    document.getElementById('destMoreBtn').textContent = `Show all ${destPlaces.length} places in ${dest}`;
+  }
+
+  // ── Latest / tag / search results grid
+  const PAGE = 8;
+  let list = [], shown = 0;
+  function showList(items, label, scroll) {
+    list = items; shown = 0;
+    const grid = document.getElementById('cardsGrid');
+    document.getElementById('latestLabel').textContent = label;
+    grid.innerHTML = items.length ? '' : '<p class="grid-empty">No places found yet. Try another word, or <a href="map.html" style="color:var(--accent);">browse the map</a>.</p>';
+    renderMore();
+    if (scroll) document.getElementById('latestLabel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function renderMore() {
+    const grid = document.getElementById('cardsGrid');
+    const next = list.slice(shown, shown + PAGE);
+    grid.insertAdjacentHTML('beforeend', next.map(miniCard).join(''));
+    shown += next.length;
+    hydratePhotos(grid);
+    const btn = document.getElementById('loadMoreBtn');
+    if (btn) { btn.hidden = shown >= list.length; btn.textContent = `Load more (${list.length - shown})`; }
+  }
+
+  const ready = loadAll().catch(e => {
+    console.log('Homepage data error:', e);
+    document.getElementById('cardsGrid').innerHTML = '<p class="grid-empty">Could not load the latest places. Please refresh the page.</p>';
+  });
+  window.loadMoreReviews = () => ready.then(renderMore);
+
+  // ── Tag bar: filters every place, not only the cards on screen
+  const TAG_WORDS = {
+    'cafes': ['cafe', 'coffee', 'koffie', 'brunch', 'lunchroom', 'matcha', 'espresso'],
+    'burgers': ['burger', 'smash'],
+    'pastries': ['pastry', 'pastries', 'croissant', 'bakery', 'bakkerij', 'patisserie', 'viennoiserie'],
+    'sandwiches': ['sandwich', 'banh mi', 'croque', 'broodje', 'deli', 'panini', 'toast'],
+    'sushi': ['sushi', 'japanese', 'izakaya', 'omakase', 'poke'],
+    'street food': ['street food', 'fries', 'friet', 'frites', 'taco', 'kebab', 'doner', 'hot dog', 'food truck', 'shawarma'],
+    'desserts': ['dessert', 'donut', 'doughnut', 'ice cream', 'gelato', 'mochi', 'cake', 'cookie', 'chocolate', 'waffle', 'pancake'],
+    'fine dining': ['fine dining', 'michelin', 'tasting menu', 'luxury', 'omakase'],
+  };
+  function priceValue(p) {
+    const m = String(p.price).replace(',', '.').match(/\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : (/^[$€]$/.test(String(p.price).trim()) ? 1 : null);
+  }
+  function matchesTag(p, tag) {
+    if (tag === 'budget') { const v = priceValue(p); return v != null && v <= 15; }
+    const words = TAG_WORDS[tag] || [tag];
+    const hay = p._name + ' ' + p._kind;
+    return words.some(w => hay.includes(w));
+  }
+  window.setTag = async function (el) {
+    document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    await ready;
+    const label = el.textContent.trim();
+    const tag = label.toLowerCase().replace(/^[^\w]+/, '').trim();
+    if (tag === 'all') { showList(LATEST, 'Latest on Strong Foodie', true); return; }
+    const items = ALL.filter(p => matchesTag(p, tag)).sort(byQuality);
+    showList(items, `${label} · ${items.length} ${items.length === 1 ? 'place' : 'places'}`, true);
+  };
+
+  // ── Search: every place from the website and the app, as you type
+  function searchPlaces(q) {
+    const terms = fold(q).split(/\s+/).filter(Boolean);
+    if (!terms.length) return [];
+    const out = [];
+    for (const p of ALL) {
+      let score = 0;
+      for (const t of terms) {
+        let s = 0;
+        if (p._name.startsWith(t)) s = 100;
+        else if (p._name.includes(' ' + t)) s = 70;
+        else if (p._name.includes(t)) s = 50;
+        else if (p._place.includes(t)) s = 35;
+        else if (p._kind.includes(t)) s = 25;
+        else if (t.length >= 4 && p._text.includes(t)) s = 8;
+        if (!s) { score = 0; break; }
+        score += s;
+      }
+      if (score) out.push({ p, score: score + (p.rating || 0) + (p.closed ? -20 : 0) });
+    }
+    return out.sort((a, b) => b.score - a.score).map(x => x.p);
+  }
+
+  const input = document.getElementById('heroSearchInput');
+  const box = document.getElementById('heroResults');
+  const MAX_DROPDOWN = 7;
+  let results = [], active = -1, lastQuery = '';
+
+  function closeResults() { box.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); active = -1; }
+  function renderResults(q) {
+    lastQuery = q;
+    results = searchPlaces(q);
+    active = -1;
+    if (!q.trim()) { closeResults(); return; }
+    const top = results.slice(0, MAX_DROPDOWN);
+    box.innerHTML = (top.length
+      ? top.map((p, i) => {
+          const cat = CATS[p.cat];
+          const meta = [cat.label, p.where].filter(Boolean).join(' · ');
+          return `<a class="sr-item" role="option" id="sr-${i}" href="${placeUrl(p)}">
+            <span class="sr-ico" style="background:${cat.tint};">${esc(p.emoji)}</span>
+            <span class="sr-text">
+              <span class="sr-name" style="display:block;">${esc(p.name)}</span>
+              <span class="sr-meta" style="display:block;">${esc(meta)}${p.rating ? ` · <span class="sr-star">★</span> ${p.rating}` : ''}${p.member ? ' · Member spot' : ''}${p.closed ? ' · Closed' : ''}</span>
+            </span></a>`;
+        }).join('')
+      : `<div class="sr-empty">No places found for “${esc(q)}”. Try a dish, a city or a category.</div>`)
+      + (results.length > MAX_DROPDOWN ? `<button class="sr-more" type="button" data-all>Show all ${results.length} results →</button>` : '');
+    box.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+  }
+  function setActive(i) {
+    const items = box.querySelectorAll('.sr-item');
+    if (!items.length) return;
+    active = (i + items.length) % items.length;
+    items.forEach((el, n) => el.classList.toggle('active', n === active));
+    input.setAttribute('aria-activedescendant', 'sr-' + active);
+    items[active].scrollIntoView({ block: 'nearest' });
+  }
+  function showAllResults() {
+    closeResults();
+    showList(results, `Results for “${lastQuery}” · ${results.length}`, true);
+  }
+
+  input.addEventListener('input', () => ready.then(() => renderResults(input.value)));
+  input.addEventListener('focus', () => { if (input.value.trim()) ready.then(() => renderResults(input.value)); });
+  input.addEventListener('keydown', e => {
+    if (box.hidden) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
+    else if (e.key === 'Escape') closeResults();
+  });
+  box.addEventListener('click', e => { if (e.target.closest('[data-all]')) showAllResults(); });
+  document.addEventListener('click', e => { if (!e.target.closest('.hero-search-wrap')) closeResults(); });
+
+  // Enter / the Search button: open the highlighted place, the only match,
+  // or show every match in the grid below.
+  window.doHeroSearch = async function () {
+    await ready;
+    const q = input.value.trim();
+    if (!q) { input.focus(); return; }
+    if (q !== lastQuery) renderResults(q);
+    const items = box.querySelectorAll('.sr-item');
+    if (active >= 0 && items[active]) { location.href = items[active].getAttribute('href'); return; }
+    if (results.length === 1) { location.href = placeUrl(results[0]); return; }
+    if (results.length > 1) showAllResults();
+  };
+
+  // strongfoodie.com/?q=burger opens the search (used by Google's search box).
+  function openSearchFromUrl() {
+    const q = new URLSearchParams(location.search).get('q');
+    if (!q) return;
+    input.value = q;
+    renderResults(q);
+  }
+  // ═══════════════════════════════════════════════════════════════════════
 
   // Star rating for the restaurant pick form
   window.pickRatingVal = 0;
