@@ -1064,9 +1064,10 @@
 
     <!-- DESTINATIONS -->
     <p class="section-label">Explore by destination</p>
+    <p class="section-sub">Every city and island we have reviewed. <a href="stad.html" style="color:var(--accent);text-decoration:none;font-weight:500;">All destinations →</a></p>
     <div class="dest-chips" id="destChips"></div>
     <div class="cards-grid" id="destGrid"></div>
-    <div class="dest-foot" id="destFoot" hidden><button class="btn-outline" id="destMoreBtn">Show all</button></div>
+    <div class="dest-foot" id="destFoot" hidden><a class="btn-outline" id="destMoreBtn" href="stad.html" style="display:inline-block;text-decoration:none;">All places →</a></div>
 
     <!-- GRID: newest places, or the result of a tag / search -->
     <p class="section-label" id="latestLabel">Latest on Strong Foodie</p>
@@ -1585,6 +1586,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, getDoc, getCountFromServer, orderBy, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1607,168 +1609,12 @@
   // ══ HOMEPAGE DATA ══════════════════════════════════════════════════════
   // Every section below (stats, featured, top picks, destinations, latest,
   // search, categories) is built from ONE read of each collection: the same
-  // collections the app uses. Places members add in the app are included.
-  const CATS = {
-    eat:     { label: 'Eat',     emoji: '🍽️', color: '#D4521A', tint: '#FBF3EF', page: 'reviews.html', coll: 'reviews',      aliases: ['eat', 'food', 'restaurant', 'restaurants'] },
-    drink:   { label: 'Drink',   emoji: '🍸', color: '#6B2A5C', tint: '#F3E8F0', page: 'drink.html',   coll: 'drinkspots',   aliases: ['drink', 'drinks', 'bar', 'bars', 'cafe'] },
-    shop:    { label: 'Shop',    emoji: '🛍️', color: '#A32323', tint: '#F6E6E6', page: 'shop.html',    coll: 'shopspots',    aliases: ['shop', 'shops', 'store'] },
-    culture: { label: 'Culture', emoji: '🎭', color: '#8A6A0A', tint: '#F4EEDD', page: 'culture.html', coll: 'culturespots', aliases: ['culture', 'cultuur', 'museum'] },
-    health:  { label: 'Health',  emoji: '💪', color: '#1A5C2E', tint: '#E3EFE6', page: 'health.html',  coll: 'healthspots',  aliases: ['health', 'gym', 'sport', 'spa'] },
-    stay:    { label: 'Stay',    emoji: '🏨', color: '#2F5D7C', tint: '#E4ECF2', page: 'hotel.html',   coll: 'hotelreviews', aliases: ['stay', 'stays', 'hotel', 'hotels'] },
-  };
-
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fold = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
-  const starStr = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
-  const catOf = raw => { const c = String(raw || '').toLowerCase().trim(); return Object.keys(CATS).find(k => CATS[k].aliases.includes(c)) || 'eat'; };
-  const placeUrl = p => `plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
-
-  // Country names and abbreviations that can appear in an address.
-  const COUNTRY_NORM = {
-    'usa': 'United States', 'us': 'United States', 'united states': 'United States', 'united states of america': 'United States', 'america': 'United States',
-    'nl': 'Netherlands', 'netherlands': 'Netherlands', 'the netherlands': 'Netherlands', 'nederland': 'Netherlands', 'holland': 'Netherlands',
-    'turkey': 'Turkey', 'turkiye': 'Turkey', 'uae': 'United Arab Emirates', 'united arab emirates': 'United Arab Emirates',
-    'uk': 'United Kingdom', 'united kingdom': 'United Kingdom', 'england': 'United Kingdom',
-    'aruba': 'Aruba', 'thailand': 'Thailand', 'spain': 'Spain', 'france': 'France', 'italy': 'Italy', 'germany': 'Germany',
-    'belgium': 'Belgium', 'portugal': 'Portugal', 'greece': 'Greece', 'morocco': 'Morocco', 'japan': 'Japan', 'indonesia': 'Indonesia',
-  };
-  // Neighbourhoods and towns that belong to a bigger destination.
-  const DEST_ALIAS = {
-    'west hollywood': 'Los Angeles', 'hollywood': 'Los Angeles', 'venice': 'Los Angeles', 'venice beach': 'Los Angeles',
-    'beverly hills': 'Los Angeles', 'santa monica': 'Los Angeles', 'la': 'Los Angeles',
-    'la jolla': 'San Diego',
-    'oranjestad': 'Aruba', 'savaneta': 'Aruba', 'palm beach': 'Aruba', 'eagle beach': 'Aruba',
-    'new west': 'Amsterdam', 'nieuw-west': 'Amsterdam', 'amsterdam-noord': 'Amsterdam', 'amsterdam noord': 'Amsterdam', 'de pijp': 'Amsterdam', 'jordaan': 'Amsterdam',
-    'business bay': 'Dubai',
-  };
-  // Parts of a city: shown as the city itself.
-  const NEIGHBOURHOODS = new Set(['new west', 'nieuw-west', 'amsterdam-noord', 'amsterdam noord', 'de pijp', 'jordaan', 'business bay']);
-  const titleCase = s => s.replace(/\S+/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
-  function countryOf(raw) {
-    const k = fold(raw).trim();
-    if (!k) return '';
-    return COUNTRY_NORM[k] || titleCase(String(raw).trim());
-  }
-  // In the catalogue "city" often holds a whole address
-  // ("8361 Beverly Blvd, Los Angeles", "Singel 83, 1012 VE Amsterdam").
-  function townOf(raw, country) {
-    const parts = String(raw || '').split(',').map(x => x.split('·')[0].replace(/\(.*?\)/g, '').trim()).filter(Boolean);
-    for (let i = parts.length - 1; i >= 0; i--) {
-      const t = parts[i].replace(/^\d{4}\s?[A-Z]{2}\s+/, '').trim();
-      if (!t || /\d/.test(t) || /^[A-Z]{2,3}$/.test(t)) continue;
-      const f = fold(t);
-      if (COUNTRY_NORM[f] || (country && f === fold(country))) continue;
-      return t;
-    }
-    return '';
-  }
-  function destinationOf(town, country) {
-    if (country === 'Aruba') return 'Aruba';
-    if (!town) return '';
-    return DEST_ALIAS[fold(town)] || town;
-  }
-
-  function isPublished(r, now) {
-    if (r.status === 'draft' || r.status === 'hidden' || r.hidden === true) return false;
-    const pub = toDate(r.publishAt);
-    return !(pub && pub > now);
-  }
-
-  function normalise(coll, id, r, member) {
-    const cat = member ? catOf(r.category) : Object.keys(CATS).find(k => CATS[k].coll === coll);
-    const photos = [];
-    if (r.photoUrl) photos.push(r.photoUrl);
-    if (Array.isArray(r.photos)) r.photos.forEach(ph => { if (typeof ph === 'string' && ph && !photos.includes(ph)) photos.push(ph); });
-    const country = countryOf(r.country || r.countryLabel);
-    const town = townOf(r.city || r.address, country);
-    const tags = Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [];
-    const p = {
-      coll, id, cat, member,
-      name: r.name || 'Unnamed place',
-      town, country, destination: destinationOf(town, country), where: '',
-      type: member ? '' : (r.type || ''),
-      tip: member ? (r.type || '') : '',
-      review: r.review || '',
-      rating: typeof r.rating === 'number' && r.rating > 0 ? r.rating : null,
-      price: r.price || '',
-      tags,
-      emoji: r.emoji || CATS[cat].emoji,
-      photos,
-      closed: !!(r.closedStatus && r.closedStatus !== 'open'),
-      author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
-      created: toDate(r.createdAt),
-    };
-    // What cards show as the location: "Noord, Aruba", "Venice, Los Angeles", "Amsterdam".
-    p.where = !p.town ? (p.destination || p.country)
-      : NEIGHBOURHOODS.has(fold(p.town)) ? p.destination
-      : (p.destination && fold(p.destination) !== fold(p.town) ? `${p.town}, ${p.destination}` : p.town);
-    p._name = fold(p.name);
-    p._place = fold([p.town, p.destination, r.address, r.city, p.country].join(' '));
-    p._kind = fold([CATS[cat].label, p.type, p.tip, tags.join(' ')].join(' '));
-    p._text = fold(p.review);
-    return p;
-  }
-
-  // Photos: normal URLs, or "fsimg://<id>" (a base64 image in `images`, from the app).
-  const photoCache = new Map();
-  function resolvePhoto(url) {
-    if (!url || typeof url !== 'string') return Promise.resolve('');
-    if (url.startsWith('fsimg://')) {
-      const id = url.slice(8);
-      if (!photoCache.has(id)) {
-        photoCache.set(id, getDoc(doc(db, 'images', id))
-          .then(s => { const d = s.exists() ? s.data() : null; return d && d.data ? `data:${d.contentType || 'image/jpeg'};base64,${d.data}` : ''; })
-          .catch(() => ''));
-      }
-      return photoCache.get(id);
-    }
-    if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
-    return Promise.resolve(url);
-  }
-  function hydratePhotos(root) {
-    root.querySelectorAll('img[data-photo]').forEach(img => {
-      const src = img.getAttribute('data-photo');
-      img.removeAttribute('data-photo');
-      img.onerror = () => img.remove();
-      resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else img.remove(); });
-    });
-  }
-
-  async function readAll(coll) {
-    try {
-      const snap = await getDocs(collection(db, coll));
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    } catch (e) { console.log('Could not load ' + coll + ':', e.code || e); return []; }
-  }
-
-  // Places members added in the app. Members with a private account are left out.
-  async function readMemberPlaces() {
-    const raw = (await readAll('userPlaces')).filter(r => r.name && r.hidden !== true);
-    const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];
-    const privateOwners = new Set();
-    await Promise.all(owners.map(uid => getDoc(doc(db, 'profiles', uid))
-      .then(s => { if (s.exists() && s.data().isPrivate === true) privateOwners.add(uid); })
-      .catch(() => {})));
-    return raw.filter(r => !privateOwners.has(r.addedByUserId));
-  }
-
+  // collections the app uses (see js/sf-places.js, shared with stad.html).
+  const { hydratePhotos } = photoTools(db);
   let CATALOG = [], MEMBERS = [], ALL = [], LATEST = [];
 
   async function loadAll() {
-    const now = new Date();
-    const keys = Object.keys(CATS);
-    const [lists, members] = await Promise.all([
-      Promise.all(keys.map(k => readAll(CATS[k].coll))),
-      readMemberPlaces(),
-    ]);
-    keys.forEach((k, i) => {
-      lists[i].filter(r => r.name && isPublished(r, now))
-        .forEach(r => CATALOG.push(normalise(CATS[k].coll, r.id, r, false)));
-    });
-    MEMBERS = members.map(r => normalise('userPlaces', r.id, r, true));
-    ALL = CATALOG.concat(MEMBERS);
-
+    ({ catalog: CATALOG, members: MEMBERS, all: ALL } = await loadPlaces(db));
     renderStats();
     const featured = renderFeatured();
     renderTopPicks(featured);
@@ -1887,60 +1733,32 @@
     hydratePhotos(grid);
   }
 
-  // ── Cards
-  const byQuality = (a, b) => (b.rating || 0) - (a.rating || 0) || (b.photos.length ? 1 : 0) - (a.photos.length ? 1 : 0) || (a.member - b.member) || (b.created || 0) - (a.created || 0);
-  function miniCard(p) {
-    const cat = CATS[p.cat];
-    const text = p.review || p.tip || (p.type ? p.type : '');
-    const foot = p.rating
-      ? `<span class="mini-rating">${starStr(p.rating)} ${p.rating}</span>`
-      : `<span class="mini-meta" style="margin:0;">${p.member ? 'Added by ' + esc(p.author) : ''}</span>`;
-    return `<a class="mini-card" href="${placeUrl(p)}">
-      <div class="mini-img" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
-        <span>${esc(p.emoji)}</span>
-        ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
-      </div>
-      <div class="mini-body">
-        <p class="mini-meta"><span class="pill pill-cat">${cat.label}</span>${p.member ? '<span class="pill pill-member">Member</span>' : ''}${p.closed ? '<span class="pill pill-closed">Closed</span>' : ''}${esc(p.where)}</p>
-        <h3 class="mini-title">${esc(p.name)}</h3>
-        ${text ? `<p class="mini-text">${esc(text.slice(0, 90))}${text.length > 90 ? '…' : ''}</p>` : ''}
-        <div class="mini-footer">${foot}<span class="mini-read">View place →</span></div>
-      </div>
-    </a>`;
-  }
-
-  // ── Destinations
-  let destPlaces = [];
+  // ── Destinations: chips switch the preview, the button opens the destination page
+  let DESTS = [];
   function renderDestinations() {
     const chips = document.getElementById('destChips');
     if (!chips) return;
-    const counts = new Map();
-    ALL.forEach(p => { if (p.destination) counts.set(p.destination, (counts.get(p.destination) || 0) + 1); });
-    const dests = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-    if (!dests.length) { chips.previousElementSibling.hidden = true; return; }
-    chips.innerHTML = dests.map(([d, n], i) =>
-      `<button class="dest-chip${i === 0 ? ' active' : ''}" data-dest="${esc(d)}" aria-pressed="${i === 0}">${esc(d)}<span>${n}</span></button>`).join('');
+    DESTS = destinations(ALL);
+    if (!DESTS.length) { chips.previousElementSibling.hidden = true; chips.previousElementSibling.previousElementSibling.hidden = true; chips.hidden = true; return; }
+    chips.innerHTML = DESTS.map((d, i) =>
+      `<button class="dest-chip${i === 0 ? ' active' : ''}" data-slug="${esc(d.slug)}" aria-pressed="${i === 0}">${esc(d.name)}<span>${d.count}</span></button>`).join('');
     chips.addEventListener('click', e => {
       const chip = e.target.closest('.dest-chip');
       if (!chip) return;
       chips.querySelectorAll('.dest-chip').forEach(c => { c.classList.toggle('active', c === chip); c.setAttribute('aria-pressed', c === chip); });
-      showDestination(chip.dataset.dest, false);
+      showDestination(DESTS.find(d => d.slug === chip.dataset.slug));
     });
-    document.getElementById('destMoreBtn').addEventListener('click', () => {
-      const active = chips.querySelector('.dest-chip.active');
-      if (active) showDestination(active.dataset.dest, true);
-    });
-    showDestination(dests[0][0], false);
+    showDestination(DESTS[0]);
   }
-  function showDestination(dest, all) {
+  function showDestination(d) {
+    if (!d) return;
     const grid = document.getElementById('destGrid');
-    const foot = document.getElementById('destFoot');
-    destPlaces = ALL.filter(p => p.destination === dest).sort(byQuality);
-    const list = all ? destPlaces : destPlaces.slice(0, 4);
-    grid.innerHTML = list.map(miniCard).join('');
+    grid.innerHTML = d.places.slice().sort(byQuality).slice(0, 4).map(miniCard).join('');
     hydratePhotos(grid);
-    foot.hidden = all || destPlaces.length <= 4;
-    document.getElementById('destMoreBtn').textContent = `Show all ${destPlaces.length} places in ${dest}`;
+    const link = document.getElementById('destMoreBtn');
+    link.href = d.url;
+    link.textContent = d.count > 1 ? `All ${d.count} places in ${d.name} →` : `View ${d.name} →`;
+    document.getElementById('destFoot').hidden = false;
   }
 
   // ── Latest / tag / search results grid

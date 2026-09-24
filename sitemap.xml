@@ -1,87 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.jongfoodie.com/</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>1.0</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/reviews.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/reviews.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/drink.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/drink.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/shop.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/shop.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/culture.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/culture.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/health.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/health.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/hotel.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/hotel.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/community.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/community.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/map.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/map.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/guides.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/guides.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/videos.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/videos.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/friends.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/friends.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/about.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/about.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://www.jongfoodie.com/privacy.html</loc>
-    <lastmod>2026-07-20</lastmod>
+    <loc>https://www.strongfoodie.com/privacy.html</loc>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.2</priority>
     <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=amsterdam</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=los-angeles</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=aruba</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=las-vegas</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=san-diego</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=istanbul</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=rotterdam</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=bangkok</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.strongfoodie.com/stad.html?d=dubai</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
   </url>
 </urlset>

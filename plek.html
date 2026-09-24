@@ -160,6 +160,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { locate, destinationUrl } from "./js/sf-places.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -348,8 +349,13 @@
 
     const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
 
+    // The destination page this place belongs to (same logic as the homepage and stad.html).
+    const dest = locate(p.address, p.country).destination;
+
     document.getElementById('placeRoot').innerHTML = `
-      <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › <a href="${cat.page}">${cat.label}</a> › <span>${esc(p.name)}</span></div>
+      <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › ${dest
+        ? `<a href="${destinationUrl(dest)}">${esc(dest)}</a> › <a href="${destinationUrl(dest)}&cat=${p.cat}">${cat.label}</a>`
+        : `<a href="${cat.page}">${cat.label}</a>`} › <span>${esc(p.name)}</span></div>
       <article class="place">
         <div class="media">${hero}${thumbs}</div>
         <div class="head">
@@ -378,7 +384,7 @@
         <h2>Nearby ${cat.label.toLowerCase()} spots</h2>
         <div class="nearby" id="nearbyList"></div>
       </section>
-      <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a></p>`;
+      <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a>${dest ? ` &nbsp;·&nbsp; <a href="${destinationUrl(dest)}">More in ${esc(dest)} →</a>` : ''}</p>`;
 
     hydratePhotos(document.getElementById('placeRoot'));
     document.querySelectorAll('.thumb').forEach(btn => btn.addEventListener('click', () => {

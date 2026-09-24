@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destinations | Strong Foodie</title>
+<meta name="description" content="Every city and island Strong Foodie has reviewed: the best places to eat, drink, shop and stay, with honest ratings.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Destinations | Strong Foodie">
+<meta property="og:description" content="Every city and island Strong Foodie has reviewed: the best places to eat, drink, shop and stay, with honest ratings.">
+<meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://www.strongfoodie.com/stad.html">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; overflow-x: hidden; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  .loading, .empty { text-align: center; padding: 4rem 1rem; color: var(--muted); line-height: 1.6; }
+  .empty h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .empty a, .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 2.5rem 0 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Index of destinations */
+  .intro h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+  .intro p { color: var(--muted); margin-top: 0.5rem; max-width: 560px; line-height: 1.6; }
+  .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .dest-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; color: #fff; text-decoration: none; background: var(--ink); }
+  .dest-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .dest-card:hover img { transform: scale(1.04); }
+  .dest-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.05) 30%, rgba(26,18,8,0.9) 100%); }
+  .dest-card .dc-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .dest-card .dc-info { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; }
+  .dc-name { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.15; display: block; }
+  .dc-meta { font-size: 12px; color: rgba(255,255,255,0.78); display: block; margin-top: 3px; }
+
+  /* Destination hero */
+  .d-hero { position: relative; border-radius: 20px; overflow: hidden; min-height: 300px; display: flex; align-items: flex-end; color: #fff; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); }
+  .d-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .d-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.1) 20%, rgba(26,18,8,0.88) 100%); }
+  .d-hero-body { position: relative; z-index: 2; padding: 2rem; width: 100%; }
+  .d-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #F5C896; margin-bottom: 0.5rem; }
+  .d-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; overflow-wrap: anywhere; }
+  .d-sub { margin-top: 0.6rem; font-size: 14px; color: rgba(255,255,255,0.8); display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; }
+  .d-actions { display: flex; gap: 0.5rem; margin-top: 1.1rem; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); text-decoration: none; cursor: pointer; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn-light { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
+  .btn-light:hover { border-color: #fff; }
+
+  /* Favourites */
+  .fav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .top-card { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; text-decoration: none; color: #fff; background: var(--ink); }
+  .top-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .top-card:hover img { transform: scale(1.04); }
+  .top-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 44px; }
+  .top-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0) 35%, rgba(26,18,8,0.9) 100%); }
+  .top-rank { position: absolute; top: 10px; left: 10px; z-index: 2; background: var(--accent); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .top-info { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; }
+  .top-name { display: block; font-family: 'Playfair Display', serif; font-size: 17px; line-height: 1.25; margin-bottom: 4px; overflow-wrap: anywhere; }
+  .top-meta { font-size: 12px; color: rgba(255,255,255,0.8); }
+  .top-meta .star { color: #F5C896; }
+
+  /* Toolbar */
+  .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .tool-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .search { flex: 1; min-width: 180px; border: 1px solid var(--border); border-radius: 22px; padding: 9px 16px; font: 14px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); outline: none; }
+  .search:focus { border-color: var(--accent); }
+  .sort { border: 1px solid var(--border); border-radius: 22px; padding: 9px 14px; font: 13px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); cursor: pointer; }
+  .chip { border: 1px solid var(--border); background: var(--warm-white); color: var(--ink-soft); padding: 7px 14px; border-radius: 20px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { border-color: var(--ink-soft); }
+  .chip span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip.active span { color: rgba(255,255,255,0.6); }
+  .chip-sm { padding: 5px 12px; font-size: 12px; }
+  .map-toggle { display: none; }
+  .result-count { font-size: 13px; color: var(--muted); }
+
+  /* List + map */
+  .d-body { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 1.5rem; align-items: start; }
+  .d-map { position: sticky; top: 76px; height: calc(100vh - 100px); max-height: 620px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: #E8E2D8; }
+  .d-map .no-map { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: var(--muted); font-size: 13px; }
+  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 13px; }
+  .leaflet-popup-content a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  a.mini-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .mini-img { position: relative; overflow: hidden; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-body { padding: 1rem; }
+  .mini-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-title { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.3; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+  .mini-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .grid-empty { grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 14px; background: var(--warm-white); border: 1px dashed var(--border); border-radius: 12px; }
+  .more { text-align: center; margin-top: 1.5rem; }
+  .more[hidden] { display: none; }
+
+  .others { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .others a { text-decoration: none; }
+  .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1000px) {
+    .d-body { grid-template-columns: 1fr; }
+    .d-map { position: relative; top: 0; height: 300px; display: none; order: -1; }
+    .d-map.open { display: block; }
+    .map-toggle { display: inline-block; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 1rem 2.5rem; }
+    .d-hero { min-height: 240px; border-radius: 16px; }
+    .d-hero-body { padding: 1.25rem; }
+    .fav-grid { grid-template-columns: 1fr; }
+    .fav-grid .top-card { aspect-ratio: 16 / 9; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .dest-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .dc-name { font-size: 18px; }
+    .dest-card .dc-emoji { align-items: flex-start; justify-content: flex-end; padding: 12px 14px 0 0; font-size: 30px; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="friends.html">🤝 Friends</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="stad.html" class="active">Destinations</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="wrap" id="root">
+  <div class="loading">Loading destinations…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=1";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const db = getFirestore(initializeApp(firebaseConfig));
+  const { hydratePhotos } = photoTools(db);
+  const root = document.getElementById('root');
+  const params = new URLSearchParams(location.search);
+  const SITE = 'https://www.strongfoodie.com/';
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  function setMeta(title, desc, path) {
+    document.title = title;
+    document.querySelector('meta[name="description"]').setAttribute('content', desc);
+    document.querySelector('meta[property="og:title"]').setAttribute('content', title);
+    document.querySelector('meta[property="og:description"]').setAttribute('content', desc);
+    document.querySelector('link[rel="canonical"]').setAttribute('href', SITE + path);
+  }
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  // The best photo of a destination: the highest-rated place that has one.
+  const coverOf = places => places.filter(p => p.photos.length).sort(byQuality)[0];
+  const catCounts = places => Object.keys(CATS).map(k => [k, places.filter(p => p.cat === k).length]).filter(([, n]) => n);
+
+  // ── All destinations ─────────────────────────────────────────────────
+  function renderIndex(dests, total) {
+    setMeta('Destinations | Strong Foodie',
+      `${dests.length} destinations and ${total} places: the best spots to eat, drink, shop and stay, with honest ratings from Strong Foodie.`, 'stad.html');
+    root.innerHTML = `
+      <div class="crumbs"><a href="index.html">Home</a> › Destinations</div>
+      <div class="intro">
+        <h1>Destinations</h1>
+        <p>Every city and island Strong Foodie has reviewed, plus the spots members add in the app. ${plural(dests.length, 'destination', 'destinations')}, ${plural(total, 'place', 'places')}.</p>
+      </div>
+      <div class="dest-grid">${dests.map(d => {
+        const cover = coverOf(d.places);
+        const counts = catCounts(d.places).sort((a, b) => b[1] - a[1]);
+        const cats = counts.map(([k]) => CATS[k].emoji).join(' ');
+        const main = CATS[counts[0][0]];
+        return `<a class="dest-card" href="${d.url}" style="background:linear-gradient(135deg, ${main.color} 0%, #1A1208 100%);">
+          <span class="dc-emoji">${main.emoji}</span>
+          ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+          <span class="dc-info">
+            <span class="dc-name">${esc(d.name)}</span>
+            <span class="dc-meta">${esc([d.country, plural(d.count, 'place', 'places')].filter(Boolean).join(' · '))}  ${cats}</span>
+          </span>
+        </a>`;
+      }).join('')}</div>`;
+    hydratePhotos(root);
+  }
+
+  function renderNotFound(slug, dests) {
+    const name = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    setMeta('Destination not found | Strong Foodie', 'Browse every destination Strong Foodie has reviewed.', 'stad.html');
+    root.innerHTML = `
+      <div class="empty">
+        <div style="font-size:42px;margin-bottom:0.75rem;">🧭</div>
+        <h1>No places in ${esc(name)} yet</h1>
+        <p>Strong Foodie hasn't reviewed anything here so far. Pick another destination:</p>
+        <div class="others" style="justify-content:center;margin-top:1.25rem;">${dests.map(d => `<a class="chip" href="${d.url}">${esc(d.name)}<span>${d.count}</span></a>`).join('')}</div>
+      </div>`;
+  }
+
+  // ── One destination ──────────────────────────────────────────────────
+  const PAGE = 12;
+  const state = { cat: 'all', area: 'all', q: '', sort: 'best', shown: PAGE };
+  let D = null, map = null, markerLayer = null;
+
+  function renderDestination(d, dests) {
+    D = d;
+    const counts = catCounts(d.places);
+    const reviewed = d.places.filter(p => !p.member).length;
+    const members = d.count - reviewed;
+    const catWords = counts.map(([k, n]) => `${n} ${CATS[k].label.toLowerCase()}`).join(', ');
+    setMeta(`Best places in ${d.name}: where to eat, drink and stay | Strong Foodie`,
+      `${plural(d.count, 'place', 'places')} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''} (${catWords}). Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`,
+      `stad.html?d=${d.slug}`);
+
+    const areas = [...new Set(d.places.map(p => p.area).filter(Boolean))].sort((a, b) => (a === d.name ? -1 : b === d.name ? 1 : a.localeCompare(b)));
+    const cover = coverOf(d.places);
+    const favs = d.places.filter(p => !p.member && !p.closed && p.rating && p.photos.length).sort(byQuality).slice(0, 3);
+    const initialCat = params.get('cat');
+    if (initialCat && CATS[initialCat] && counts.some(([k]) => k === initialCat)) state.cat = initialCat;
+
+    root.innerHTML = `
+      <div class="crumbs"><a href="index.html">Home</a> › <a href="stad.html">Destinations</a> › ${esc(d.name)}</div>
+      <header class="d-hero">
+        ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" hidden>` : ''}
+        <div class="d-hero-body">
+          <p class="d-eyebrow">${esc(d.country && d.country !== d.name ? d.country : 'Destination')}</p>
+          <h1>${esc(d.name)}</h1>
+          <p class="d-sub">
+            ${reviewed ? `<span>${plural(reviewed, 'place reviewed', 'places reviewed')}</span>` : ''}
+            ${members ? `<span>${plural(members, 'member spot', 'member spots')}</span>` : ''}
+            <span>${counts.map(([k, n]) => `${CATS[k].emoji} ${n}`).join('&nbsp;&nbsp;')}</span>
+          </p>
+          <div class="d-actions">
+            <a class="btn btn-light" href="#places">See all places</a>
+            <button class="btn btn-light" id="shareBtn" type="button">Share ↗</button>
+          </div>
+        </div>
+      </header>
+
+      ${favs.length ? `
+      <p class="section-label">Strong Foodie's favourites in ${esc(d.name)}</p>
+      <div class="fav-grid">${favs.map((p, i) => `
+        <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">
+          <span class="top-emoji">${esc(p.emoji)}</span>
+          <img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>
+          <span class="top-rank">#${i + 1}</span>
+          <span class="top-info">
+            <span class="top-name">${esc(p.name)}</span>
+            <span class="top-meta"><span class="star">${starStr(p.rating)}</span> · ${esc(CATS[p.cat].label)}${p.area && p.area !== d.name ? ' · ' + esc(p.area) : ''}</span>
+          </span>
+        </a>`).join('')}</div>` : ''}
+
+      <p class="section-label" id="places" style="scroll-margin-top:80px;">All places in ${esc(d.name)}</p>
+      <div class="toolbar">
+        <div class="tool-row">
+          <input class="search" id="q" type="search" placeholder="Search in ${esc(d.name)}…" aria-label="Search in ${esc(d.name)}" autocomplete="off">
+          <select class="sort" id="sort" aria-label="Sort">
+            <option value="best">Best rated</option>
+            <option value="new">Newest</option>
+            <option value="az">A to Z</option>
+          </select>
+          <button class="chip map-toggle" id="mapToggle" type="button">🗺️ Map</button>
+        </div>
+        ${counts.length > 1 ? `<div class="tool-row" id="catChips">
+          <button class="chip" data-cat="all">All<span>${d.count}</span></button>
+          ${counts.map(([k, n]) => `<button class="chip" data-cat="${k}">${CATS[k].emoji} ${CATS[k].label}<span>${n}</span></button>`).join('')}
+        </div>` : ''}
+        ${areas.length > 1 ? `<div class="tool-row" id="areaChips">
+          <button class="chip chip-sm" data-area="all">All areas</button>
+          ${areas.map(a => `<button class="chip chip-sm" data-area="${esc(a)}">${esc(a)}</button>`).join('')}
+        </div>` : ''}
+        <p class="result-count" id="count"></p>
+      </div>
+      <div class="d-body">
+        <div>
+          <div class="cards-grid" id="grid"></div>
+          <div class="more" id="more" hidden><button class="btn" id="moreBtn" type="button">Show more</button></div>
+        </div>
+        <div class="d-map" id="map"></div>
+      </div>
+
+      <p class="section-label">More destinations</p>
+      <div class="others">${dests.filter(x => x !== d).map(x => `<a class="chip" href="${x.url}">${esc(x.name)}<span>${x.count}</span></a>`).join('')}
+        <a class="chip" href="stad.html">All destinations →</a></div>
+
+      <div class="app-note">📱 Been somewhere in ${esc(d.name)} that is missing? Add it in the <strong>Strong Foodie app</strong>. Places members add there show up on this page too.</div>`;
+
+    hydratePhotos(root.querySelector('.d-hero'));
+    const fav = root.querySelector('.fav-grid');
+    if (fav) hydratePhotos(fav);
+    addJsonLd(d);
+
+    // Controls
+    const q = document.getElementById('q');
+    q.addEventListener('input', () => { state.q = q.value; state.shown = PAGE; update(); });
+    document.getElementById('sort').addEventListener('change', e => { state.sort = e.target.value; state.shown = PAGE; update(); });
+    root.querySelectorAll('[data-cat]').forEach(b => b.addEventListener('click', () => { state.cat = b.dataset.cat; state.shown = PAGE; update(); }));
+    root.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => { state.area = b.dataset.area; state.shown = PAGE; update(); }));
+    document.getElementById('moreBtn').addEventListener('click', () => { state.shown += PAGE; update(false); });
+    document.getElementById('mapToggle').addEventListener('click', () => {
+      const el = document.getElementById('map');
+      el.classList.toggle('open');
+      if (map) setTimeout(() => { map.invalidateSize(); fitMap(); }, 50);
+    });
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const url = location.href;
+      try { if (navigator.share) { await navigator.share({ title: document.title, url }); return; } }
+      catch (err) { if (err && err.name === 'AbortError') return; }
+      try { await navigator.clipboard.writeText(url); toast('Link copied!'); } catch { window.prompt('Copy this link:', url); }
+    });
+
+    initMap();
+    update();
+  }
+
+  function filtered() {
+    const terms = fold(state.q).split(/\s+/).filter(Boolean);
+    let list = D.places.filter(p =>
+      (state.cat === 'all' || p.cat === state.cat) &&
+      (state.area === 'all' || p.area === state.area) &&
+      terms.every(t => p._name.includes(t) || p._kind.includes(t) || p._place.includes(t) || (t.length >= 4 && p._text.includes(t))));
+    const sorters = {
+      best: byQuality,
+      new: (a, b) => (b.created || 0) - (a.created || 0),
+      az: (a, b) => a.name.localeCompare(b.name),
+    };
+    return list.sort(sorters[state.sort]);
+  }
+
+  function update(redrawMap = true) {
+    root.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b.dataset.cat === state.cat));
+    root.querySelectorAll('[data-area]').forEach(b => b.classList.toggle('active', b.dataset.area === state.area));
+    const list = filtered();
+    const grid = document.getElementById('grid');
+    grid.innerHTML = list.length
+      ? list.slice(0, state.shown).map(miniCard).join('')
+      : `<p class="grid-empty">Nothing found${state.q ? ` for “${esc(state.q)}”` : ''}. Try another filter.</p>`;
+    hydratePhotos(grid);
+    document.getElementById('count').textContent = plural(list.length, 'place', 'places');
+    const more = document.getElementById('more');
+    more.hidden = state.shown >= list.length;
+    document.getElementById('moreBtn').textContent = `Show more (${list.length - state.shown})`;
+    // Keep the filter in the address, so a filtered page can be shared.
+    const url = new URL(location.href);
+    if (state.cat === 'all') url.searchParams.delete('cat'); else url.searchParams.set('cat', state.cat);
+    history.replaceState(null, '', url);
+    if (redrawMap) drawMarkers(list);
+  }
+
+  // ── Map
+  function initMap() {
+    const el = document.getElementById('map');
+    const withCoords = D.places.filter(p => p.lat != null && p.lng != null);
+    if (typeof L === 'undefined' || !withCoords.length) {
+      el.innerHTML = '<div class="no-map">No map points for this destination yet.</div>';
+      document.getElementById('mapToggle').hidden = true;
+      return;
+    }
+    map = L.map(el, { scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+    markerLayer = L.layerGroup().addTo(map);
+  }
+  let lastPoints = [];
+  function drawMarkers(list) {
+    if (!map) return;
+    markerLayer.clearLayers();
+    lastPoints = [];
+    list.forEach(p => {
+      if (p.lat == null || p.lng == null) return;
+      const cat = CATS[p.cat];
+      const icon = L.divIcon({ className: '', html: `<div style="background:${cat.color};color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`, iconSize: [32, 32], iconAnchor: [16, 16] });
+      L.marker([p.lat, p.lng], { icon, title: p.name }).addTo(markerLayer)
+        .bindPopup(`<strong>${esc(p.name)}</strong><br>${p.rating ? `<span style="color:#C8901A;">${starStr(p.rating)}</span><br>` : ''}<a href="${placeUrl(p)}">View place →</a>`);
+      lastPoints.push([p.lat, p.lng]);
+    });
+    fitMap();
+  }
+  function fitMap() {
+    if (!map) return;
+    if (lastPoints.length === 1) map.setView(lastPoints[0], 15);
+    else if (lastPoints.length) map.fitBounds(lastPoints, { padding: [30, 30], maxZoom: 15 });
+    else if (!map._loaded) map.setView([D.places[0].lat || 52.37, D.places[0].lng || 4.89], 12);
+  }
+
+  // Search engines: the places on this page as a list.
+  function addJsonLd(d) {
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'ItemList',
+      name: `Best places in ${d.name}`,
+      itemListElement: d.places.slice().sort(byQuality).slice(0, 20).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + placeUrl(p), name: p.name })),
+    });
+    document.head.appendChild(s);
+  }
+
+  // ── Start
+  try {
+    const { all } = await loadPlaces(db);
+    const dests = destinations(all);
+    const slug = slugOf(params.get('d') || '');
+    if (!slug) renderIndex(dests, all.filter(p => p.destination).length);
+    else {
+      const d = dests.find(x => x.slug === slug);
+      if (d) renderDestination(d, dests); else renderNotFound(slug, dests);
+    }
+  } catch (e) {
+    console.log('Destinations error:', e);
+    root.innerHTML = '<div class="empty"><h1>Could not load this page</h1><p>Please refresh, or browse the <a href="map.html">map</a>.</p></div>';
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:none;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+</body>
+</html>
