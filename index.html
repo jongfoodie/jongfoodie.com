@@ -923,6 +923,14 @@
   .cat-ico { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
   .cat-count { margin-left: auto; color: var(--muted); font-weight: 400; font-size: 12px; }
 
+  .app-block { display: flex; gap: 1rem; align-items: flex-start; background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+  .app-block-emoji { font-size: 30px; line-height: 1; }
+  .app-block-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin-bottom: 0.3rem; }
+  .app-block-text { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+  .app-block-text a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  #memberGrid { margin-bottom: 2rem; }
+  #memberGrid:empty { display: none; }
+
   @media (max-width: 900px) {
     .top-grid { grid-template-columns: repeat(2, 1fr); }
   }
@@ -1092,106 +1100,16 @@
       </div>
     </div>
 
-    <!-- COMMUNITY QUICK RATE -->
-    <p class="section-label">Rate a Place</p>
-
-    <!-- NOT LOGGED IN -->
-    <div id="rateLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 2rem; text-align:center;">
-      <div style="font-size:40px;margin-bottom:0.75rem;">⭐</div>
-      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Visited somewhere recently?</p>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to share a review with the community!</p>
-      <button class="btn-fill" onclick="openModal('login')">Log in to review</button>
-      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
-      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
-    </div>
-
-    <!-- LOGGED IN FORM -->
-    <div id="rateForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; display:none;">
-      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1rem;">Have you visited one of Strong Foodie's reviewed restaurants? Share your own rating!</p>
-      <div class="rate-form">
-        <select id="rateRestaurant" class="rate-input" style="height:40px;cursor:pointer;">
-          <option value="">Select a restaurant from Strong Foodie's reviews…</option>
-          <option>Izakaya Amsterdam</option>
-          <option>Mondi Amsterdam Nieuw-West</option>
-          <option>Maijard Smashburgers</option>
-          <option>BISOUS Amsterdam</option>
-          <option>Fort Negen Sandwich Bar</option>
-          <option>Leauf Amsterdam</option>
-          <option>et CLAIRE</option>
-          <option>Cafe Nobuya</option>
-          <option>Brioche Amsterdam</option>
-          <option>Le Smash Amsterdam</option>
-          <option>Fabel Friet, Oude Hoogstraat</option>
-          <option>Fabel Friet, Nieuwendijk</option>
-          <option>Fabel Friet, Damrak</option>
-          <option>Fabel Friet, Runstraat</option>
-          <option>Fabel Friet, Leidsestraat</option>
-          <option>Sjefietshé</option>
-          <option>Bonnie Amsterdam</option>
-          <option>Banh Mi Deli Amsterdam</option>
-          <option>Chun Cafe Amsterdam</option>
-          <option>Zorlu Center Istanbul</option>
-          <option>360 Istanbul</option>
-        </select>
-        <div class="rate-stars-input" id="starRating">
-          <span class="rate-star" onclick="setRating(1)">★</span>
-          <span class="rate-star" onclick="setRating(2)">★</span>
-          <span class="rate-star" onclick="setRating(3)">★</span>
-          <span class="rate-star" onclick="setRating(4)">★</span>
-          <span class="rate-star" onclick="setRating(5)">★</span>
-        </div>
-        <textarea id="rateReview" class="rate-input" rows="3" placeholder="What did you think? Did you agree with Strong Foodie's review?…"></textarea>
-        <button class="btn-accent" onclick="submitReview()">Submit My Rating</button>
+    <!-- MEMBERS: rating and adding places happens in the app; everything shows up here -->
+    <p class="section-label">New from members</p>
+    <div class="app-block">
+      <div class="app-block-emoji">📱</div>
+      <div>
+        <p class="app-block-title">Rate places and share your finds in the Strong Foodie app</p>
+        <p class="app-block-text">Places members add in the app appear on this website straight away: on the place page, on its <a href="stad.html">destination page</a> and on the <a href="map.html?source=member">map</a>.</p>
       </div>
     </div>
-
-    <!-- COMMUNITY PICKS -->
-    <p class="section-label">Community Picks</p>
-
-    <!-- NOT LOGGED IN -->
-    <div id="picksLoginPrompt" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; text-align:center;">
-      <div style="font-size:40px;margin-bottom:0.75rem;">🍴</div>
-      <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Know a great place?</p>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Log in to recommend a restaurant to the community!</p>
-      <button class="btn-fill" onclick="openModal('login')">Log in to recommend</button>
-      <span style="font-size:13px;color:var(--muted);margin:0 0.75rem;">or</span>
-      <button class="btn-ghost" onclick="openModal('signup')">Create account</button>
-    </div>
-
-    <!-- LOGGED IN FORM -->
-    <div id="picksForm" style="background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; display:none;">
-      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:1.25rem;">Know a great place that hasn't been reviewed yet? Share it with the community!</p>
-      <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-          <input id="pickName" class="rate-input" type="text" placeholder="Restaurant name..." style="height:40px;resize:none;margin:0;">
-          <input id="pickLocation" class="rate-input" type="text" placeholder="Location / City..." style="height:40px;resize:none;margin:0;">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-          <select id="pickType" class="rate-input" style="height:40px;margin:0;cursor:pointer;">
-            <option value="">Food type...</option>
-            <option>Burgers</option><option>Cafe</option><option>Asian</option>
-            <option>Pastries</option><option>Sushi</option><option>Street Food</option>
-            <option>Desserts</option><option>Restaurant</option><option>Sandwiches</option>
-            <option>Fine Dining</option>
-            <option>Drinks</option>
-          </select>
-          <input id="pickPrice" class="rate-input" type="text" placeholder="Price range e.g. 10-15..." style="height:40px;resize:none;margin:0;">
-        </div>
-        <div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-          <div id="pickStars" style="font-size:26px;cursor:pointer;letter-spacing:4px;">
-            <span onclick="setPickRating(1)">☆</span>
-            <span onclick="setPickRating(2)">☆</span>
-            <span onclick="setPickRating(3)">☆</span>
-            <span onclick="setPickRating(4)">☆</span>
-            <span onclick="setPickRating(5)">☆</span>
-          </div>
-        </div>
-        <textarea id="pickWhy" class="rate-input" rows="2" placeholder="Why do you recommend it?..." style="margin:0;"></textarea>
-        <button class="btn-accent" onclick="submitPick()" style="align-self:flex-start;">Recommend this Place</button>
-      </div>
-    </div>
-    <div id="picksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;"></div>
+    <div class="cards-grid" id="memberGrid"></div>
   </main>
 
   <!-- SIDEBAR -->
@@ -1418,76 +1336,6 @@
   }
 
 
-  let currentRating = 0;
-  function setRating(n) {
-    currentRating = n;
-    document.querySelectorAll('.rate-star').forEach((s, i) => s.classList.toggle('lit', i < n));
-  }
-
-  async function submitReview() {
-    const name = document.getElementById('rateRestaurant').value;
-    const review = document.getElementById('rateReview').value.trim();
-    if (!name) { showToast('Please select a restaurant!'); return; }
-    if (!currentRating) { showToast('Please select a star rating!'); return; }
-    if (!review) { showToast('Please write a short review!'); return; }
-    if (!currentUser) { showToast('Please log in first!'); return; }
-
-    const userName = currentUser.displayName || currentUser.email.split('@')[0];
-    const stars = '★'.repeat(currentRating) + '☆'.repeat(5-currentRating);
-
-    try {
-      // Save to Firestore as a community post
-      const { addDoc, collection, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      await addDoc(collection(db, 'posts'), {
-        restaurant: name,
-        text: review,
-        rating: currentRating,
-        stars: stars,
-        userName: userName,
-        type: 'rating',
-        likes: 0,
-        createdAt: serverTimestamp()
-      });
-
-      document.getElementById('rateRestaurant').value = '';
-      document.getElementById('rateReview').value = '';
-      currentRating = 0;
-      document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('lit'));
-      showToast('Review posted to Community! 🎉');
-    } catch(e) {
-      showToast('Could not save review. Try again!');
-      console.error(e);
-    }
-  }
-
-  function submitPick() {
-    const name = document.getElementById('pickName').value.trim();
-    const location = document.getElementById('pickLocation').value.trim();
-    const type = document.getElementById('pickType').value.trim();
-    const price = document.getElementById('pickPrice').value.trim();
-    const why = document.getElementById('pickWhy').value.trim();
-    if (!name) { showToast('Please enter a restaurant name!'); return; }
-    if (!why) { showToast('Please tell us why you recommend it!'); return; }
-    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
-    const emoji = typeEmojis[type] || '🍽️';
-    const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
-    const color = colors[Math.floor(Math.random()*colors.length)];
-    const card = document.createElement('div');
-    card.className = 'mini-card';
-    card.style.animation = 'fadeIn 0.4s ease both';
-    card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p><h3 class="mini-title">${name}</h3><p style="font-size:12px;color:var(--muted);">${location ? '📍 '+location : ''} ${type ? '· '+type : ''} ${price ? '· '+price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by you</span><button class="mini-save" onclick="toggleMiniSave(this,'${name}')">🔖</button></div></div>`;
-    const grid = document.getElementById('picksGrid');
-    grid.insertBefore(card, grid.firstChild);
-    document.getElementById('pickName').value = '';
-    document.getElementById('pickLocation').value = '';
-    document.getElementById('pickType').value = '';
-    document.getElementById('pickPrice').value = '';
-    document.getElementById('pickWhy').value = '';
-    showToast('Thanks for the recommendation! 🎉');
-    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  
   function openModal(tab) {
     document.getElementById('modalBg').classList.add('open');
     if (tab === 'signup') {
@@ -1622,7 +1470,17 @@
     LATEST = ALL.filter(p => p !== featured).sort((a, b) => (b.created || 0) - (a.created || 0));
     showList(LATEST, 'Latest on Strong Foodie', false);
     renderCategoryCounts();
+    renderMemberPlaces();
     openSearchFromUrl();
+  }
+
+  // Newest places members added in the app
+  function renderMemberPlaces() {
+    const grid = document.getElementById('memberGrid');
+    if (!grid) return;
+    const newest = MEMBERS.slice().sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 4);
+    grid.innerHTML = newest.map(miniCard).join('');
+    hydratePhotos(grid);
   }
 
   // ── Stats
@@ -1917,88 +1775,6 @@
   }
   // ═══════════════════════════════════════════════════════════════════════
 
-  // Star rating for the restaurant pick form
-  window.pickRatingVal = 0;
-  window.setPickRating = function(n) {
-    window.pickRatingVal = n;
-    document.querySelectorAll('#pickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  };
-
-  function pickStarsHtml(rating) {
-    if (!rating) return '';
-    const n = Math.round(rating);
-    return `<span style="color:#C8901A;">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</span>`;
-  }
-
-  const OTHER_PICK_CATEGORIES = ['hotel', 'drink', 'shop', 'culture', 'health'];
-
-  // Load all picks from Firestore on page load
-  async function loadPicks() {
-    const picksGrid = document.getElementById('picksGrid');
-    picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:1rem;">Loading community picks...</p>';
-    try {
-      const q = query(collection(db, 'picks'), orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
-      picksGrid.innerHTML = '';
-      // Restaurant/eat picks = everything that isn't tagged as one of the
-      // other categories (covers legacy docs with no "category" field, and
-      // is safe even if "restaurant" is spelled/cased differently somewhere)
-      const restaurantDocs = snapshot.docs.filter(d => {
-        const c = d.data().category;
-        return !c || !OTHER_PICK_CATEGORIES.includes(c);
-      });
-      if (restaurantDocs.length === 0) {
-        picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">No picks yet, be the first to add one!</p>';
-        return;
-      }
-      restaurantDocs.forEach(doc => {
-        const p = doc.data();
-        const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪'};
-        const emoji = typeEmojis[p.type] || '🍽️';
-        const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
-        const color = colors[Math.floor(Math.random()*colors.length)];
-        const card = document.createElement('div');
-        card.className = 'mini-card';
-        card.innerHTML = `<div class="mini-img ${color}">${emoji}</div><div class="mini-body"><p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick · by ${p.userName}</p><h3 class="mini-title">${p.name} ${pickStarsHtml(p.rating)}</h3><p style="font-size:12px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p><p style="font-size:13px;color:var(--ink-soft);margin-top:4px;">${p.why}</p><div class="mini-footer"><span style="font-size:12px;color:var(--muted);">Recommended by ${p.userName}</span></div></div>`;
-        picksGrid.appendChild(card);
-      });
-    } catch(e) {
-      picksGrid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
-    }
-  }
-
-  // Save pick to Firestore
-  window.submitPick = async function() {
-    const name = document.getElementById('pickName').value.trim();
-    const location = document.getElementById('pickLocation').value.trim();
-    const type = document.getElementById('pickType').value.trim();
-    const price = document.getElementById('pickPrice').value.trim();
-    const why = document.getElementById('pickWhy').value.trim();
-    const rating = window.pickRatingVal || 0;
-    if (!name) { showToast('Please enter a restaurant name!'); return; }
-    if (!rating) { showToast('Please give a star rating!'); return; }
-    if (!why) { showToast('Please tell us why you recommend it!'); return; }
-    try {
-      await addDoc(collection(db, 'picks'), {
-        category: 'restaurant',
-        name, location, type, price, why, rating,
-        userName: currentUser.displayName || currentUser.email.split('@')[0],
-        userEmail: currentUser.email,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById('pickName').value = '';
-      document.getElementById('pickLocation').value = '';
-      document.getElementById('pickType').value = '';
-      document.getElementById('pickPrice').value = '';
-      document.getElementById('pickWhy').value = '';
-      window.setPickRating(0);
-      showToast('Thanks for the recommendation! 🎉');
-      loadPicks();
-    } catch(e) {
-      showToast('Could not save. Please try again!');
-    }
-  };
-
   onAuthStateChanged(auth, (user) => {
     currentUser = user;
     if (user) {
@@ -2018,11 +1794,6 @@
       // Load dynamic stats for any logged-in user
       loadUserStats(user);
 
-      // Forms
-      document.getElementById('rateForm').style.display = 'block';
-      document.getElementById('rateLoginPrompt').style.display = 'none';
-      document.getElementById('picksForm').style.display = 'block';
-      document.getElementById('picksLoginPrompt').style.display = 'none';
     } else {
       const name = 'Strong Foodie';
       const initials = 'JF';
@@ -2034,12 +1805,7 @@
       document.getElementById('navLogin').style.display = 'block';
       document.getElementById('navSignup').style.display = 'block';
       document.getElementById('navLogout').style.display = 'none';
-      document.getElementById('rateForm').style.display = 'none';
-      document.getElementById('rateLoginPrompt').style.display = 'block';
-      document.getElementById('picksForm').style.display = 'none';
-      document.getElementById('picksLoginPrompt').style.display = 'block';
     }
-    loadPicks();
   });
 
   async function loadUserStats(user) {
