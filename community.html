@@ -5,8 +5,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Join the Strong Foodie community. Share your favourite restaurants and discover hidden gems recommended by fellow foodies.">
-<title>Community, Strong Foodie</title>
+<meta name="description" content="The Strong Foodie community: new spots and reviews that members share in the Strong Foodie app, from Amsterdam to the world.">
+<title>Community | Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -101,6 +101,53 @@
   .mobile-nav a:last-child { border-bottom: none; }
   .mobile-nav a:hover { color: var(--accent); }
 
+
+  /* ── Community from the app ── */
+  .app-block { display: flex; gap: 1rem; align-items: flex-start; }
+  .app-block-emoji { font-size: 30px; line-height: 1; }
+  .app-block-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; line-height: 1.3; }
+  .app-block-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .app-block-text a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin-bottom: 1.25rem; }
+  a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; line-height: 1.5; }
+  a.mini-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .mini-img { position: relative; overflow: hidden; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-body { padding: 1rem; }
+  .mini-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-title { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.3; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+  .mini-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .grid-empty { grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 14px; background: var(--warm-white); border: 1px dashed var(--border); border-radius: 12px; }
+  .more { text-align: center; margin-bottom: 2.5rem; }
+  .more[hidden] { display: none; }
+  .btn-outline { background: none; border: 1px solid var(--border); padding: 10px 28px; border-radius: 24px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--ink-soft); font-weight: 500; }
+  .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+  #reviewsSection { margin-top: 1.5rem; }
+  .review-list { display: flex; flex-direction: column; gap: 0.9rem; }
+  .review-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; }
+  .review-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .review-place { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+  .review-place:hover { color: var(--accent); }
+  .review-stars { color: var(--gold); font-size: 14px; white-space: nowrap; }
+  .review-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-top: 0.35rem; overflow-wrap: anywhere; }
+  .review-meta { font-size: 12px; color: var(--muted); margin-top: 0.4rem; }
+  .review-meta a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .stat-box { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: #fff; font-family: 'Playfair Display', serif; line-height: 1.3; }
+  .stat-lbl { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; }
+  a.topic-pill { text-decoration: none; display: inline-block; line-height: 1.5; }
+  @media (max-width: 700px) {
+    .wrapper { padding: 2rem 1rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
 </style>
 <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
 <link rel="manifest" href="/manifest.json">
@@ -131,6 +178,7 @@
   <a href="reviews.html">🍽️ Reviews</a>
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="friends.html">🤝 Friends</a>
@@ -152,479 +200,76 @@
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="guides.html">Guides</a></li>
     <li><a href="videos.html">Videos</a></li>
+    <li><a href="stad.html">Destinations</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html" class="active">Community</a></li>
     <li><a href="hotel.html" style="color:var(--accent);font-weight:600;">🏨 Hotel</a></li>
   </ul>
   <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
-  <div class="nav-actions">
-    <button id="navLogin" class="btn-ghost" onclick="window.location.href='index.html'" style="display:none;">Log in</button>
-    <button id="navLogout" class="btn-ghost" onclick="doLogout()" style="display:none;">Log out</button>
-  </div>
 </nav>
 
 <div class="page-hero">
   <h1>Community</h1>
-  <p>Share tips, ask questions, and connect with fellow foodies</p>
+  <p>What members discover and review in the Strong Foodie app</p>
 </div>
 
 <div class="wrapper">
   <main>
-    <!-- The community lives in the Strong Foodie app. Places members add there
-         show up here, on the map and on every category page. -->
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.35rem;">The community lives in the Strong Foodie app</p>
-      <p style="font-size:14px;color:var(--ink-soft);line-height:1.6;">Members add their favourite places in the app. They appear here, on the <a href="map.html?source=member" style="color:var(--accent);">map</a> and on every category page straight away.</p>
-    </div>
-
-    <!-- COMMUNITY PICKS FROM FIRESTORE -->
-    <p class="section-label">Community Picks</p>
-    <div id="communityPicksGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);grid-column:span 2;">Loading community picks...</p>
-    </div>
-
-    <!-- RATE A RESTAURANT -->
-    <p class="section-label">Rate a Restaurant</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="restaurantSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a restaurant from Strong Foodie reviews...</option>
-        </select>
-        <div id="restaurantStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setRestaurantRating(1)">☆</span>
-          <span onclick="setRestaurantRating(2)">☆</span>
-          <span onclick="setRestaurantRating(3)">☆</span>
-          <span onclick="setRestaurantRating(4)">☆</span>
-          <span onclick="setRestaurantRating(5)">☆</span>
-        </div>
-        <textarea id="restaurantReviewText" class="post-input" rows="3" placeholder="What did you think of this restaurant? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitRestaurantRating()" style="width:100%;">Submit Restaurant Rating</button>
+    <!-- The community lives in the Strong Foodie app. Everything members add
+         or review there shows up on this page, the place pages, the destination
+         pages and the map. -->
+    <div class="post-form app-block">
+      <div class="app-block-emoji">📱</div>
+      <div>
+        <p class="app-block-title">The community lives in the Strong Foodie app</p>
+        <p class="app-block-text">Members add their favourite places and review the spots they visit in the app. It all appears here straight away, on the place page, on its <a href="stad.html">destination page</a> and on the <a href="map.html?source=member">map</a>.</p>
       </div>
     </div>
-    <div id="restaurantRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading restaurant ratings...</p></div>
 
-    <!-- RESTAURANT PICKS -->
-    <p class="section-label">Restaurant Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great restaurant that's not on Strong Foodie yet? Share it!</p>
-      <input id="restaurantPickName" type="text" placeholder="Restaurant name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="restaurantPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="restaurantPickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setRestaurantPickRating(1)">☆</span>
-        <span onclick="setRestaurantPickRating(2)">☆</span>
-        <span onclick="setRestaurantPickRating(3)">☆</span>
-        <span onclick="setRestaurantPickRating(4)">☆</span>
-        <span onclick="setRestaurantPickRating(5)">☆</span>
-      </div>
-      <textarea id="restaurantPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitRestaurantPick()" style="width:100%;">Recommend this Restaurant</button>
-    </div>
-    <div id="restaurantPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading restaurant picks...</p></div>
+    <p class="section-label">New spots from members</p>
+    <div class="cards-grid" id="memberGrid"><p class="grid-empty">Loading member spots…</p></div>
+    <div class="more" id="memberMore" hidden><button class="btn-outline" id="memberMoreBtn" type="button">Show more</button></div>
 
-    <!-- RATE A HOTEL -->
-    <p class="section-label">Rate a Hotel</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="hotelSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a hotel from Strong Hotel reviews...</option>
-        </select>
-        <div id="hotelStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setHotelRating(1)">☆</span>
-          <span onclick="setHotelRating(2)">☆</span>
-          <span onclick="setHotelRating(3)">☆</span>
-          <span onclick="setHotelRating(4)">☆</span>
-          <span onclick="setHotelRating(5)">☆</span>
-        </div>
-        <textarea id="hotelReviewText" class="post-input" rows="3" placeholder="What did you think of this hotel? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitHotelRating()" style="width:100%;">Submit Hotel Rating</button>
-      </div>
-    </div>
-    <div id="hotelRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading hotel ratings...</p></div>
-
-    <!-- HOTEL PICKS -->
-    <p class="section-label">Hotel Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great hotel that's not on Strong Hotel yet? Share it!</p>
-      <input id="hotelPickName" type="text" placeholder="Hotel name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="hotelPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="hotelPickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setHotelPickRating(1)">☆</span>
-        <span onclick="setHotelPickRating(2)">☆</span>
-        <span onclick="setHotelPickRating(3)">☆</span>
-        <span onclick="setHotelPickRating(4)">☆</span>
-        <span onclick="setHotelPickRating(5)">☆</span>
-      </div>
-      <textarea id="hotelPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitHotelPick()" style="width:100%;">Recommend this Hotel</button>
-    </div>
-    <div id="hotelPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading hotel picks...</p></div>
-
-    <!-- RATE A DRINK SPOT -->
-    <p class="section-label">Rate a Drink Spot</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="drinkSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a spot from Strong Drink reviews...</option>
-        </select>
-        <div id="drinkStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setDrinkRating(1)">☆</span>
-          <span onclick="setDrinkRating(2)">☆</span>
-          <span onclick="setDrinkRating(3)">☆</span>
-          <span onclick="setDrinkRating(4)">☆</span>
-          <span onclick="setDrinkRating(5)">☆</span>
-        </div>
-        <textarea id="drinkReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitDrinkRating()" style="width:100%;">Submit Drink Rating</button>
-      </div>
-    </div>
-    <div id="drinkRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading drink ratings...</p></div>
-
-    <!-- DRINK PICKS -->
-    <p class="section-label">Drink Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great bar or café that's not on Strong Drink yet? Share it!</p>
-      <input id="drinkPickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="drinkPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="drinkPickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setDrinkPickRating(1)">☆</span>
-        <span onclick="setDrinkPickRating(2)">☆</span>
-        <span onclick="setDrinkPickRating(3)">☆</span>
-        <span onclick="setDrinkPickRating(4)">☆</span>
-        <span onclick="setDrinkPickRating(5)">☆</span>
-      </div>
-      <textarea id="drinkPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitDrinkPick()" style="width:100%;">Recommend this Spot</button>
-    </div>
-    <div id="drinkPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading drink picks...</p></div>
-
-    <!-- RATE A SHOP -->
-    <p class="section-label">Rate a Shop</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="shopSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a shop from Jong Shop reviews...</option>
-        </select>
-        <div id="shopStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setShopRating(1)">☆</span>
-          <span onclick="setShopRating(2)">☆</span>
-          <span onclick="setShopRating(3)">☆</span>
-          <span onclick="setShopRating(4)">☆</span>
-          <span onclick="setShopRating(5)">☆</span>
-        </div>
-        <textarea id="shopReviewText" class="post-input" rows="3" placeholder="What did you think of this shop? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitShopRating()" style="width:100%;">Submit Shop Rating</button>
-      </div>
-    </div>
-    <div id="shopRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading shop ratings...</p></div>
-
-    <!-- SHOP PICKS -->
-    <p class="section-label">Shop Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great shop that's not on Jong Shop yet? Share it!</p>
-      <input id="shopPickName" type="text" placeholder="Shop name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="shopPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="shopPickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setShopPickRating(1)">☆</span>
-        <span onclick="setShopPickRating(2)">☆</span>
-        <span onclick="setShopPickRating(3)">☆</span>
-        <span onclick="setShopPickRating(4)">☆</span>
-        <span onclick="setShopPickRating(5)">☆</span>
-      </div>
-      <textarea id="shopPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitShopPick()" style="width:100%;">Recommend this Shop</button>
-    </div>
-    <div id="shopPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading shop picks...</p></div>
-
-    <!-- RATE A CULTURE SPOT -->
-    <p class="section-label">Rate a Culture Spot</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="cultureSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a spot from Strong Culture reviews...</option>
-        </select>
-        <div id="cultureStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setCultureRating(1)">☆</span>
-          <span onclick="setCultureRating(2)">☆</span>
-          <span onclick="setCultureRating(3)">☆</span>
-          <span onclick="setCultureRating(4)">☆</span>
-          <span onclick="setCultureRating(5)">☆</span>
-        </div>
-        <textarea id="cultureReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitCultureRating()" style="width:100%;">Submit Culture Rating</button>
-      </div>
-    </div>
-    <div id="cultureRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading culture ratings...</p></div>
-
-    <!-- CULTURE PICKS -->
-    <p class="section-label">Culture Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great museum or gallery that's not on Strong Culture yet? Share it!</p>
-      <input id="culturePickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="culturePickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="culturePickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setCulturePickRating(1)">☆</span>
-        <span onclick="setCulturePickRating(2)">☆</span>
-        <span onclick="setCulturePickRating(3)">☆</span>
-        <span onclick="setCulturePickRating(4)">☆</span>
-        <span onclick="setCulturePickRating(5)">☆</span>
-      </div>
-      <textarea id="culturePickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitCulturePick()" style="width:100%;">Recommend this Spot</button>
-    </div>
-    <div id="culturePicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading culture picks...</p></div>
-
-    <!-- RATE A HEALTH SPOT -->
-    <p class="section-label">Rate a Health Spot</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <div style="margin-bottom:1rem;">
-        <select id="healthSelect" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);outline:none;margin-bottom:0.75rem;">
-          <option value="">Select a spot from Strong Health reviews...</option>
-        </select>
-        <div id="healthStars" style="font-size:28px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-          <span onclick="setHealthRating(1)">☆</span>
-          <span onclick="setHealthRating(2)">☆</span>
-          <span onclick="setHealthRating(3)">☆</span>
-          <span onclick="setHealthRating(4)">☆</span>
-          <span onclick="setHealthRating(5)">☆</span>
-        </div>
-        <textarea id="healthReviewText" class="post-input" rows="3" placeholder="What did you think of this spot? Share your experience…" style="width:100%;margin-bottom:0.75rem;"></textarea>
-        <button class="btn-accent" onclick="submitHealthRating()" style="width:100%;">Submit Health Rating</button>
-      </div>
-    </div>
-    <div id="healthRatingsList" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading health ratings...</p></div>
-
-    <!-- HEALTH PICKS -->
-    <p class="section-label">Health Picks</p>
-    <div class="post-form" style="margin-bottom:2rem;">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Know a great gym or spa that's not on Strong Health yet? Share it!</p>
-      <input id="healthPickName" type="text" placeholder="Spot name..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <input id="healthPickLocation" type="text" placeholder="Location / City..." class="post-input" style="width:100%;height:40px;margin-bottom:0.75rem;">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:0.4rem;">Your rating</p>
-      <div id="healthPickStars" style="font-size:26px;margin-bottom:0.75rem;cursor:pointer;letter-spacing:4px;">
-        <span onclick="setHealthPickRating(1)">☆</span>
-        <span onclick="setHealthPickRating(2)">☆</span>
-        <span onclick="setHealthPickRating(3)">☆</span>
-        <span onclick="setHealthPickRating(4)">☆</span>
-        <span onclick="setHealthPickRating(5)">☆</span>
-      </div>
-      <textarea id="healthPickWhy" class="post-input" rows="3" placeholder="Why do you recommend it?..." style="width:100%;margin-bottom:0.75rem;"></textarea>
-      <button class="btn-accent" onclick="submitHealthPick()" style="width:100%;">Recommend this Spot</button>
-    </div>
-    <div id="healthPicksList" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem;"><p style="font-size:13px;color:var(--muted);">Loading health picks...</p></div>
-
-    <section data-member-places="all" data-limit="6"></section>
-    <script type="module" src="js/member-places.js"></script>
+    <section id="reviewsSection" hidden>
+      <p class="section-label">Latest member reviews</p>
+      <div class="review-list" id="reviewList"></div>
+    </section>
   </main>
 
   <aside class="sidebar">
-    <!-- TOP MEMBERS -->
-    <div class="sidebar-widget">
-      <p class="widget-title">Top Members</p>
-      <div class="member-list" id="topMembersList">
-        <p style="font-size:12px;color:var(--muted);">Loading members...</p>
-      </div>
-
-    <!-- POPULAR TOPICS -->
-    <div class="sidebar-widget">
-      <p class="widget-title">Popular Topics</p>
-      <div class="topics-list">
-        <button class="topic-pill">🍔 Burgers</button>
-        <button class="topic-pill">☕ Cafes</button>
-        <button class="topic-pill">🥪 Sandwiches</button>
-        <button class="topic-pill">🍜 Asian</button>
-        <button class="topic-pill">💰 Budget eats</button>
-        <button class="topic-pill">🗺️ Amsterdam</button>
-        <button class="topic-pill">🇳🇱 Netherlands</button>
-        <button class="topic-pill">⭐ Top rated</button>
+    <!-- COMMUNITY IN NUMBERS -->
+    <div class="sidebar-widget" style="background:var(--ink);border-color:transparent;">
+      <p class="widget-title" style="color:#fff;">Community in numbers</p>
+      <div class="stat-grid">
+        <div class="stat-box"><p class="stat-num" id="statMembers">–</p><p class="stat-lbl">Members</p></div>
+        <div class="stat-box"><p class="stat-num" id="statSpots">–</p><p class="stat-lbl">Member spots</p></div>
+        <div class="stat-box"><p class="stat-num" id="statReviews">–</p><p class="stat-lbl">Member reviews</p></div>
+        <div class="stat-box"><p class="stat-num" id="statDestinations">–</p><p class="stat-lbl">Destinations</p></div>
       </div>
     </div>
 
-    <!-- COMMUNITY STATS -->
-    <div class="sidebar-widget" style="background:var(--ink);border-color:transparent;">
-      <p class="widget-title" style="color:#fff;">Community Stats</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statMembers">0</p>
-          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Members</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statReviews">0</p>
-          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Reviews</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;" id="statRestaurants">0</p>
-          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Restaurants</p>
-        </div>
-        <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:12px;text-align:center;">
-          <p style="font-size:22px;font-weight:700;color:#fff;font-family:'Playfair Display',serif;">🇳🇱</p>
-          <p style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.05em;">Netherlands</p>
-        </div>
+    <!-- MOST ACTIVE MEMBERS -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Most active members</p>
+      <div class="member-list" id="topMembersList">
+        <p style="font-size:12px;color:var(--muted);">Loading…</p>
       </div>
+    </div>
+
+    <!-- DESTINATIONS -->
+    <div class="sidebar-widget">
+      <p class="widget-title">Explore destinations</p>
+      <div class="topics-list" id="destList"></div>
     </div>
   </aside>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
-  function toggleLike(btn) {
-    btn.classList.toggle('liked');
-    const parts = btn.textContent.match(/(\d+)/);
-    if (parts) {
-      const n = parseInt(parts[1]);
-      btn.textContent = btn.classList.contains('liked') ? `♥ ${n+1} likes` : `♡ ${n} likes`;
-    }
-  }
-
-  function submitPost() {
-    const content = document.getElementById('postContent').value.trim();
-    if (!content) { showToast('Please write something first!'); return; }
-    const post = document.createElement('div');
-    post.className = 'post-card';
-    post.style.animation = 'fadeIn 0.4s ease both';
-    post.innerHTML = `
-      <div class="post-header">
-        <div class="post-avatar post-avatar-me" id="composerAvatar" style="background:var(--accent);opacity:0;transition:opacity 0.3s;">JF</div>
-        <div class="post-user-info">
-          <p class="post-username">Strong Foodie</p>
-          <p class="post-location">Amsterdam</p>
-        </div>
-        <span class="post-time">Just now</span>
-      </div>
-      <p class="post-text">${content}</p>
-      <div class="post-footer">
-        <button class="post-action" onclick="togglePostLike(this)"><span>♡</span> 0 likes</button>
-        <button class="post-action"><span>💬</span> 0 comments</button>
-        <button class="post-action" onclick="showToast('Link copied!')"><span>↗</span> Share</button>
-      </div>`;
-    const postsSection = document.querySelector('.posts-list');
-    postsSection.insertBefore(post, postsSection.firstChild);
-    document.getElementById('postContent').value = '';
-    showToast('Posted! 🎉');
-  }
-
-  function togglePostLike(btn) {
-    const span = btn.querySelector('span');
-    const isLiked = span.textContent === '♥';
-    const count = parseInt(btn.textContent.match(/\d+/)[0]);
-    span.textContent = isLiked ? '♡' : '♥';
-    btn.innerHTML = `<span>${isLiked ? '♡' : '♥'}</span> ${isLiked ? count - 1 : count + 1} likes`;
-    btn.style.color = isLiked ? '' : 'var(--accent)';
-  }
-
-  // Rating star widgets, values stored on window so the Firestore
-  // submit logic in the module script below can read the chosen value
-  window.hotelRatingVal = 0;
-  function setHotelRating(n) {
-    window.hotelRatingVal = n;
-    const stars = document.querySelectorAll('#hotelStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#hotelStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-  window.drinkRatingVal = 0;
-  function setDrinkRating(n) {
-    window.drinkRatingVal = n;
-    const stars = document.querySelectorAll('#drinkStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#drinkStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-  window.shopRatingVal = 0;
-  function setShopRating(n) {
-    window.shopRatingVal = n;
-    const stars = document.querySelectorAll('#shopStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#shopStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-  window.cultureRatingVal = 0;
-  function setCultureRating(n) {
-    window.cultureRatingVal = n;
-    const stars = document.querySelectorAll('#cultureStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#cultureStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-  window.healthRatingVal = 0;
-  function setHealthRating(n) {
-    window.healthRatingVal = n;
-    const stars = document.querySelectorAll('#healthStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#healthStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-  window.restaurantRatingVal = 0;
-  function setRestaurantRating(n) {
-    window.restaurantRatingVal = n;
-    const stars = document.querySelectorAll('#restaurantStars span');
-    stars.forEach((s, i) => s.textContent = i < n ? '★' : '☆');
-    document.querySelectorAll('#restaurantStars span').forEach((s, i) => {
-      s.style.color = i < n ? '#C8901A' : '#ccc';
-    });
-  }
-
-
-
-  // Category-picks star rating widgets (stored on window so the Firestore
-  // submit logic in the module script below can read the chosen value)
-  window.restaurantPickRatingVal = 0;
-  window.hotelPickRatingVal = 0;
-  window.drinkPickRatingVal = 0;
-  window.shopPickRatingVal = 0;
-  window.culturePickRatingVal = 0;
-  window.healthPickRatingVal = 0;
-  function setRestaurantPickRating(n) {
-    window.restaurantPickRatingVal = n;
-    document.querySelectorAll('#restaurantPickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-  function setHotelPickRating(n) {
-    window.hotelPickRatingVal = n;
-    document.querySelectorAll('#hotelPickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-  function setDrinkPickRating(n) {
-    window.drinkPickRatingVal = n;
-    document.querySelectorAll('#drinkPickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-  function setShopPickRating(n) {
-    window.shopPickRatingVal = n;
-    document.querySelectorAll('#shopPickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-  function setCulturePickRating(n) {
-    window.culturePickRatingVal = n;
-    document.querySelectorAll('#culturePickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-  function setHealthPickRating(n) {
-    window.healthPickRatingVal = n;
-    document.querySelectorAll('#healthPickStars span').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.style.color = i < n ? '#C8901A' : '#ccc'; });
-  }
-</script>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, orderBy, query, serverTimestamp, doc, setDoc, getDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, starStr, toDate, loadPlaces, destinations, miniCard, photoTools } from "./js/sf-places.js?v=2";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -634,912 +279,117 @@
     messagingSenderId: "1006154240382",
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
   };
+  const db = getFirestore(initializeApp(firebaseConfig));
+  const { hydratePhotos } = photoTools(db);
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  let currentUser = null;
-
-  function starsHtml(rating) {
-    if (!rating) return '';
-    const n = Math.round(rating);
-    return `<span style="color:#C8901A;font-size:12px;">${'★'.repeat(n)}${'☆'.repeat(5 - n)}</span>`;
+  // Profile info (name, private account) for a list of member ids.
+  async function profilesOf(ids) {
+    const info = {};
+    await Promise.all([...new Set(ids.filter(Boolean))].map(uid => getDoc(doc(db, 'profiles', uid))
+      .then(s => { info[uid] = s.exists() ? { name: s.data().displayName || '', priv: s.data().isPrivate === true } : { name: '', priv: false }; })
+      .catch(() => { info[uid] = { name: '', priv: false }; })));
+    return info;
   }
 
-  // Load picks immediately on page load - no auth needed to read
-  const OTHER_PICK_CATEGORIES = ['hotel', 'drink', 'shop', 'culture', 'health'];
-
-  setTimeout(async () => {
-    const grid = document.getElementById('communityPicksGrid');
-    if (!grid) return;
+  // Reviews members write in the app. Only reviews that are linked to a place
+  // (placeDocId, see Rork batch Q) can be shown; private accounts are left out.
+  async function loadMemberReviews() {
+    let rows = [];
     try {
-      const snap = await getDocs(query(collection(db, 'picks'), orderBy('createdAt', 'desc')));
-      grid.innerHTML = '';
-      // Restaurant/eat picks = everything that isn't tagged as one of the
-      // other categories (covers legacy docs with no "category" field, and
-      // is safe even if "restaurant" is spelled/cased differently somewhere)
-      const restaurantDocs = snap.docs.filter(d => {
-        const c = d.data().category;
-        return !c || !OTHER_PICK_CATEGORIES.includes(c);
-      });
-      if (restaurantDocs.length === 0) {
-        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:span 2;">No picks yet!</p>';
-        return;
-      }
-      const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂','Drinks':'🍹'};
-      const grouped = {};
-      restaurantDocs.forEach(d => {
-        const p = { id: d.id, ...d.data() };
-        const key = p.name.toLowerCase().trim();
-        if (!grouped[key]) grouped[key] = { main: p, reviews: [] };
-        grouped[key].reviews.push(p);
-      });
-      const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
-      Object.values(grouped).forEach((group, i) => {
-        const p = group.main;
-        const reviews = group.reviews;
-        const count = reviews.length;
-        const emoji = typeEmojis[p.type] || '🍽️';
-        const color = colors[i % colors.length];
-        const reviewsHtml = reviews.map(r => `
-          <div style="padding:8px 0;border-bottom:1px solid var(--border);">
-            <p style="font-size:12px;font-weight:500;color:var(--accent);">by ${r.userName} ${starsHtml(r.rating)}</p>
-            <p style="font-size:13px;color:var(--ink-soft);">${r.why}</p>
-          </div>`).join('');
-        const card = document.createElement('div');
-        card.className = 'mini-card';
-        card.style.gridColumn = count > 1 ? 'span 2' : '';
-        card.innerHTML = `
-          <div class="mini-img ${color}" style="font-size:40px;">${emoji}</div>
-          <div class="mini-body">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-              <p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p>
-              ${count > 1 ? `<span style="background:var(--accent);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;">${count} people recommend this</span>` : ''}
-            </div>
-            <h3 class="mini-title">${p.name}</h3>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''}</p>
-            <div>${reviewsHtml}</div>
-          </div>`;
-        grid.appendChild(card);
-      });
-    } catch(e) {
-      console.error('loadPicks error:', e);
-      const grid = document.getElementById('communityPicksGrid');
-      if (grid) grid.innerHTML = '<p style="color:red;font-size:12px;">Error: ' + e.message + '</p>';
-    }
-  }, 500);
-
-  // ── CATEGORY PICKS (Hotel / Drink / Shop / Culture / Health) ─────────────
-  // All saved live to the shared "picks" Firestore collection with a
-  // category field, so they persist across visits just like the restaurant
-  // picks above and count towards the live Community Stats.
-  const CATEGORY_PICKS = [
-    { category: 'restaurant', emoji: '🍽️', listId: 'restaurantPicksList', nameId: 'restaurantPickName', locId: 'restaurantPickLocation', whyId: 'restaurantPickWhy', ratingKey: 'restaurantPickRatingVal', ratingWidget: 'restaurantPickStars', setter: 'setRestaurantPickRating', label: 'restaurant' },
-    { category: 'hotel',   emoji: '🏨', listId: 'hotelPicksList',   nameId: 'hotelPickName',   locId: 'hotelPickLocation',   whyId: 'hotelPickWhy',   ratingKey: 'hotelPickRatingVal',   ratingWidget: 'hotelPickStars',   setter: 'setHotelPickRating',   label: 'hotel' },
-    { category: 'drink',   emoji: '🍸', listId: 'drinkPicksList',   nameId: 'drinkPickName',   locId: 'drinkPickLocation',   whyId: 'drinkPickWhy',   ratingKey: 'drinkPickRatingVal',   ratingWidget: 'drinkPickStars',   setter: 'setDrinkPickRating',   label: 'bar or café' },
-    { category: 'shop',    emoji: '🛍️', listId: 'shopPicksList',    nameId: 'shopPickName',    locId: 'shopPickLocation',    whyId: 'shopPickWhy',    ratingKey: 'shopPickRatingVal',    ratingWidget: 'shopPickStars',    setter: 'setShopPickRating',    label: 'shop' },
-    { category: 'culture', emoji: '🎭', listId: 'culturePicksList', nameId: 'culturePickName', locId: 'culturePickLocation', whyId: 'culturePickWhy', ratingKey: 'culturePickRatingVal', ratingWidget: 'culturePickStars', setter: 'setCulturePickRating', label: 'museum or gallery' },
-    { category: 'health',  emoji: '💪', listId: 'healthPicksList',  nameId: 'healthPickName',  locId: 'healthPickLocation',  whyId: 'healthPickWhy',  ratingKey: 'healthPickRatingVal',  ratingWidget: 'healthPickStars',  setter: 'setHealthPickRating',  label: 'gym or spa' },
-  ];
-
-  function toMillisLocal(ts) {
-    if (!ts) return 0;
-    if (ts.toDate) return ts.toDate().getTime();
-    if (ts.seconds) return ts.seconds * 1000;
-    return new Date(ts).getTime() || 0;
+      const snap = await getDocs(collection(db, 'userReviews'));
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => typeof r.rating === 'number' && r.rating > 0);
+    } catch (e) { console.log('Member reviews could not load:', e.code || e); }
+    const info = await profilesOf(rows.map(r => r.authorId));
+    return rows
+      .filter(r => !(info[r.authorId] && info[r.authorId].priv))
+      .map(r => ({ ...r, authorName: (info[r.authorId] && info[r.authorId].name) || r.authorName || 'Member', created: toDate(r.createdAt) }))
+      .sort((a, b) => (b.created || 0) - (a.created || 0));
   }
 
-  async function loadCategoryPicks(cfg) {
-    const list = document.getElementById(cfg.listId);
-    if (!list) return;
-    try {
-      const snap = await getDocs(collection(db, 'picks'));
-      const docs = snap.docs
-        .filter(d => d.data().category === cfg.category)
-        .sort((a, b) => toMillisLocal(b.data().createdAt) - toMillisLocal(a.data().createdAt));
-      if (docs.length === 0) {
-        list.innerHTML = '';
-        return;
-      }
-      list.innerHTML = docs.map(d => {
-        const p = d.data();
-        const isOwner = currentUser && p.userEmail === currentUser.email;
-        return `<div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span style="font-size:20px;">${cfg.emoji}</span>
-            <p style="font-weight:600;font-size:14px;">${p.name}</p>
-            ${starsHtml(p.rating)}
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">${p.location ? '📍 ' + p.location : ''} · by ${p.userName || 'Anonymous'}</p>
-          <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
-          ${isOwner ? `<button onclick="deleteCategoryPick('${d.id}', '${cfg.category}')" style="margin-top:6px;background:none;border:1px solid #e0d0c8;padding:3px 10px;border-radius:8px;font-size:11px;color:#D4521A;cursor:pointer;">🗑 Delete</button>` : ''}
-        </div>`;
-      }).join('');
-    } catch(e) {
-      console.error('loadCategoryPicks error (' + cfg.category + '):', e);
-      list.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load ' + cfg.category + ' picks.</p>';
-    }
-  }
-
-  window.deleteCategoryPick = async function(id, category) {
-    try {
-      await deleteDoc(doc(db, 'picks', id));
-      const cfg = CATEGORY_PICKS.find(c => c.category === category);
-      if (cfg) loadCategoryPicks(cfg);
-      showToast('Pick deleted.');
-    } catch(e) {
-      showToast('Could not delete: ' + e.message);
-    }
-  };
-
-  async function submitCategoryPick(cfg) {
-    if (!currentUser) { showToast('Please log in to recommend a ' + cfg.label + '!'); return; }
-    const name = document.getElementById(cfg.nameId).value.trim();
-    const location = document.getElementById(cfg.locId).value.trim();
-    const why = document.getElementById(cfg.whyId).value.trim();
-    const rating = window[cfg.ratingKey] || 0;
-    if (!name || !location || !why) { showToast('Please fill in all fields!'); return; }
-    if (!rating) { showToast('Please give a star rating!'); return; }
-    try {
-      await addDoc(collection(db, 'picks'), {
-        category: cfg.category,
-        name, location, why, rating,
-        userName: currentUser.displayName || currentUser.email.split('@')[0],
-        userEmail: currentUser.email,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById(cfg.nameId).value = '';
-      document.getElementById(cfg.locId).value = '';
-      document.getElementById(cfg.whyId).value = '';
-      window[cfg.setter](0);
-      showToast(cfg.emoji + ' Pick added!');
-      loadCategoryPicks(cfg);
-    } catch(e) {
-      showToast('Could not save. Please try again!');
-    }
-  }
-
-  window.submitRestaurantPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'restaurant'));
-  window.submitHotelPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'hotel'));
-  window.submitDrinkPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'drink'));
-  window.submitShopPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'shop'));
-  window.submitCulturePick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'culture'));
-  window.submitHealthPick = () => submitCategoryPick(CATEGORY_PICKS.find(c => c.category === 'health'));
-
-  setTimeout(() => { CATEGORY_PICKS.forEach(loadCategoryPicks); }, 500);
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // ── "RATE A ___" SUBMISSIONS (Restaurant / Hotel / Drink / Shop / Culture / Health) ──
-  // Everyone's star rating + written review for an already-published place,
-  // saved live to a shared "ratings" Firestore collection so other visitors
-  // can actually see them (previously these forms didn't save anything).
-  const RATE_CONFIGS = [
-    { category: 'restaurant', emoji: '🍽️', selectId: 'restaurantSelect', textId: 'restaurantReviewText', listId: 'restaurantRatingsList', ratingKey: 'restaurantRatingVal', setter: 'setRestaurantRating', label: 'restaurant' },
-    { category: 'hotel',      emoji: '🏨', selectId: 'hotelSelect',      textId: 'hotelReviewText',      listId: 'hotelRatingsList',      ratingKey: 'hotelRatingVal',      setter: 'setHotelRating',      label: 'hotel' },
-    { category: 'drink',      emoji: '🍸', selectId: 'drinkSelect',      textId: 'drinkReviewText',      listId: 'drinkRatingsList',      ratingKey: 'drinkRatingVal',      setter: 'setDrinkRating',      label: 'drink spot' },
-    { category: 'shop',       emoji: '🛍️', selectId: 'shopSelect',       textId: 'shopReviewText',       listId: 'shopRatingsList',       ratingKey: 'shopRatingVal',       setter: 'setShopRating',       label: 'shop' },
-    { category: 'culture',    emoji: '🎭', selectId: 'cultureSelect',    textId: 'cultureReviewText',    listId: 'cultureRatingsList',    ratingKey: 'cultureRatingVal',    setter: 'setCultureRating',    label: 'culture spot' },
-    { category: 'health',     emoji: '💪', selectId: 'healthSelect',     textId: 'healthReviewText',     listId: 'healthRatingsList',     ratingKey: 'healthRatingVal',     setter: 'setHealthRating',     label: 'health spot' },
-  ];
-
-  async function loadRatings(cfg) {
-    const list = document.getElementById(cfg.listId);
-    if (!list) return;
-    try {
-      const snap = await getDocs(collection(db, 'ratings'));
-      const docs = snap.docs
-        .filter(d => d.data().category === cfg.category)
-        .sort((a, b) => toMillisLocal(b.data().createdAt) - toMillisLocal(a.data().createdAt));
-      if (docs.length === 0) {
-        list.innerHTML = '';
-        return;
-      }
-      list.innerHTML = docs.map(d => {
-        const r = d.data();
-        const isOwner = currentUser && r.userEmail === currentUser.email;
-        return `<div style="background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:1rem;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
-            <span style="font-weight:600;font-size:14px;">${r.place}</span>
-            ${starsHtml(r.rating)}
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">by ${r.userName || 'Anonymous'}</p>
-          <p style="font-size:13px;color:var(--ink-soft);">${r.review}</p>
-          ${isOwner ? `<button onclick="deleteRating('${d.id}', '${cfg.category}')" style="margin-top:6px;background:none;border:1px solid #e0d0c8;padding:3px 10px;border-radius:8px;font-size:11px;color:#D4521A;cursor:pointer;">🗑 Delete</button>` : ''}
-        </div>`;
-      }).join('');
-    } catch(e) {
-      console.error('loadRatings error (' + cfg.category + '):', e);
-      list.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load ' + cfg.category + ' ratings.</p>';
-    }
-  }
-
-  window.deleteRating = async function(id, category) {
-    try {
-      await deleteDoc(doc(db, 'ratings', id));
-      const cfg = RATE_CONFIGS.find(c => c.category === category);
-      if (cfg) loadRatings(cfg);
-      showToast('Rating deleted.');
-    } catch(e) {
-      showToast('Could not delete: ' + e.message);
-    }
-  };
-
-  async function submitRating(cfg) {
-    if (!currentUser) { showToast('Please log in to rate a ' + cfg.label + '!'); return; }
-    const place = document.getElementById(cfg.selectId).value;
-    const review = document.getElementById(cfg.textId).value.trim();
-    const rating = window[cfg.ratingKey] || 0;
-    if (!place) { showToast('Please select a ' + cfg.label + ' first!'); return; }
-    if (!rating) { showToast('Please give a star rating!'); return; }
-    if (!review) { showToast('Please write something about your visit!'); return; }
-    try {
-      await addDoc(collection(db, 'ratings'), {
-        category: cfg.category,
-        place, rating, review,
-        userName: currentUser.displayName || currentUser.email.split('@')[0],
-        userEmail: currentUser.email,
-        createdAt: serverTimestamp()
-      });
-      document.getElementById(cfg.selectId).value = '';
-      document.getElementById(cfg.textId).value = '';
-      window[cfg.setter](0);
-      showToast(cfg.emoji + ' Rating submitted!');
-      loadRatings(cfg);
-    } catch(e) {
-      showToast('Could not save. Please try again!');
-    }
-  }
-
-  window.submitRestaurantRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'restaurant'));
-  window.submitHotelRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'hotel'));
-  window.submitDrinkRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'drink'));
-  window.submitShopRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'shop'));
-  window.submitCultureRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'culture'));
-  window.submitHealthRating = () => submitRating(RATE_CONFIGS.find(c => c.category === 'health'));
-
-  setTimeout(() => { RATE_CONFIGS.forEach(loadRatings); }, 500);
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // ── LIVE COMMUNITY STATS ──────────────────────────────────────────────────
-  // Counts come straight from Firestore, the same collections the admin panel
-  // counts, so the numbers here and in admin always agree. No offsets: what
-  // you see is what is actually in the database.
-
-  function countUpStat(el, target, duration = 1000) {
-    if (!el) return;
-    const step = target / (duration / 16);
-    let current = 0;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) { el.textContent = target; clearInterval(timer); return; }
-      el.textContent = Math.floor(current);
-    }, 16);
-  }
-
-  async function loadCommunityStats() {
-    try {
-      const [foodSnap, hotelSnap, profilesSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
-        getDocs(collection(db, 'reviews')),
-        getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'profiles')),
-        getDocs(collection(db, 'drinkspots')),
-        getDocs(collection(db, 'shopspots')),
-        getDocs(collection(db, 'culturespots')),
-        getDocs(collection(db, 'healthspots'))
-      ]);
-      const totalFood = foodSnap.size;
-      const totalHotel = hotelSnap.size;
-      const totalMembers = profilesSnap.size;
-      const totalReviews = totalFood + totalHotel + drinkSnap.size + shopSnap.size + cultureSnap.size + healthSnap.size;
-
-      const membersEl = document.getElementById('statMembers');
-      if (membersEl) {
-        membersEl.textContent = totalMembers > 999 ? (totalMembers / 1000).toFixed(1) + 'k' : totalMembers;
-      }
-      countUpStat(document.getElementById('statReviews'), totalReviews, 900);
-      countUpStat(document.getElementById('statRestaurants'), totalFood, 900);
-    } catch(e) {
-      console.error('loadCommunityStats error:', e);
-      // Firestore unreachable: show a dash rather than a made-up number.
-      ['statMembers', 'statReviews', 'statRestaurants'].forEach(function(id) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = '—';
-      });
-    }
-  }
-  loadCommunityStats();
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // ── LIVE "RATE A ___" DROPDOWNS ───────────────────────────────────────────
-  // Populate each select with the spots Merdan has actually published.
-  // "legacyNames" covers entries published before Firestore tracking existed
-  // (e.g. the first 6 hotels) so those don't disappear once this list also
-  // starts pulling live data from Firestore.
-  const RATE_SELECTS = [
-    { selectId: 'restaurantSelect', coll: 'reviews', placeholder: 'Select a restaurant from Strong Foodie reviews...', legacyNames: [
-        'Izakaya Amsterdam',
-        'The Coffee',
-        'Mondi Amsterdam Nieuw-West',
-        'Maijard Smashburger, Chicken Smash',
-        'Bisous Amsterdam, Poulet Suprême',
-        'Fort Negen Sandwich Bar',
-        'Leauf Amsterdam, Leauf du Chef',
-        'Maijard Chicken Smashed Burger',
-        'et CLAIRE, Pistachio Cube Croissant',
-        'Cafe Nobuya, Mochi Donuts & Gyudon Beef',
-        'Brioche Amsterdam, Grilled Cheese',
-        'Le Smash, Le Special with Extra Bacon',
-        'Zorlu Center, Steak Tater with Garlic Sauce',
-        'Fabel Friet, Parmesan Truffle Fries',
-        '360 Istanbul, Steak & Live Music',
-        'Sjefietshé, Hotdoctopus',
-        'Bonnie, Kimchi Croque',
-        'Banh Mi Deli Amsterdam',
-        'Maijard Smashburgers, The Original',
-        'Bonnie, Best Steak Sandwich in Amsterdam',
-        'Chun Cafe Amsterdam, Bacon Egg & Cheese',
-        'Bussia',
-        'PLUK Berenstraat',
-        'BagelBoy',
-        'Eetsalon Van Dobben',
-        'KID Amsterdam',
-        'L\'Entrecôte et les Dames',
-        'Cecconi\'s Amsterdam',
-        'Beef Chief // Transit Bar',
-        'Men Impossible',
-        'Zero Zero',
-        'Salvo Bake House',
-        'Ceppi\'s',
-        'nNea Pizza',
-        'THE GOAT Rotterdam',
-        'Republiek Bloemendaal',
-        'Amigos Birria Tacos',
-        'Great White Venice',
-        'Cecconi\'s West Hollywood',
-        'Soho House West Hollywood',
-        'RVR Venice',
-        'A.O.C.',
-        'Met Her At A Bar',
-        'Kings Road',
-        'République',
-        'In-N-Out Burger Hollywood',
-        'Mauro Cafe',
-        'El Agave Restaurant',
-        'Georges at the Cove',
-        'Local Store Aruba',
-        'Papiamento Restaurant',
-        'Gianni\'s Ristorante Italiano',
-        'Lola Taqueria',
-        'Flying Fishbone',
-        'BLT Steak (The Ritz-Carlton)',
-        'Ruth\'s Chris Steak House (Marriott Resort)',
-        'Madame Jeanette',
-        'Lucca Trattoria Aruba'
-      ] },
-    { selectId: 'hotelSelect',      coll: 'hotelreviews', placeholder: 'Select a hotel from Strong Hotel reviews...', legacyNames: [
-        'Hotel The Craftsmen, Amsterdam',
-        'Petit Ermitage, West Hollywood',
-        'The Peninsula Bangkok',
-        'SLS Dubai Hotel & Residences',
-        'Virgin Hotels Las Vegas',
-        'The Venetian Las Vegas'
-      ] },
-    { selectId: 'drinkSelect',   coll: 'drinkspots',   placeholder: 'Select a spot from Strong Drink reviews...', legacyNames: [] },
-    { selectId: 'shopSelect',    coll: 'shopspots',    placeholder: 'Select a shop from Jong Shop reviews...', legacyNames: [] },
-    { selectId: 'cultureSelect', coll: 'culturespots', placeholder: 'Select a spot from Strong Culture reviews...', legacyNames: [] },
-    { selectId: 'healthSelect',  coll: 'healthspots',  placeholder: 'Select a spot from Strong Health reviews...', legacyNames: [] },
-  ];
-
-  async function loadRateSelectOptions(cfg) {
-    const select = document.getElementById(cfg.selectId);
-    if (!select) return;
-    try {
-      const snap = await getDocs(collection(db, cfg.coll));
-      const liveNames = snap.docs
-        .map(d => d.data())
-        .filter(p => p.name)
-        .map(p => p.name + (p.city ? ', ' + p.city : ''));
-
-      // Merge legacy (pre-Firestore) names with live ones, no duplicates
-      const allNames = Array.from(new Set([...cfg.legacyNames, ...liveNames])).sort((a, b) => a.localeCompare(b));
-
-      select.innerHTML = `<option value="">${cfg.placeholder}</option>` +
-        allNames.map(n => `<option value="${n.replace(/"/g, '&quot;')}">${n}</option>`).join('');
-    } catch(e) {
-      console.error('loadRateSelectOptions error (' + cfg.coll + '):', e);
-      // Fall back to legacy names only if Firestore is unreachable
-      select.innerHTML = `<option value="">${cfg.placeholder}</option>` +
-        cfg.legacyNames.map(n => `<option value="${n.replace(/"/g, '&quot;')}">${n}</option>`).join('');
-    }
-  }
-
-  setTimeout(() => { RATE_SELECTS.forEach(loadRateSelectOptions); }, 300);
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // Update avatar and name when logged in
-  onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    if (user) {
-      const name = user.displayName || user.email.split('@')[0];
-      const initials = name.substring(0,2).toUpperCase();
-      // Update composer avatar
-      document.querySelectorAll('.post-avatar-me').forEach(a => {
-        a.textContent = initials;
-        a.style.opacity = '1';
-      });
-      // Update name in Top Members
-      document.querySelectorAll('.current-user-name').forEach(el => el.textContent = name);
-      // Show logout in nav
-      if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'none';
-      if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'block';
-      // Load real top members
-      loadTopMembers(name);
-    } else {
-      document.querySelectorAll('.post-avatar-me').forEach(a => {
-        a.textContent = 'JF';
-        a.style.opacity = '1';
-      });
-      document.querySelectorAll('.current-user-name').forEach(el => el.textContent = 'Strong Foodie');
-      if (document.getElementById('navLogin')) document.getElementById('navLogin').style.display = 'block';
-      if (document.getElementById('navLogout')) document.getElementById('navLogout').style.display = 'none';
-      loadTopMembers(null);
-    }
-  });
-
-  // Follow functionality
-  let allPicksData = [];
-
-  async function loadTopMembers(currentUserName) {
-    const list = document.getElementById('topMembersList');
-    if (!list) return;
-    try {
-      const picksSnap = await getDocs(collection(db, 'picks'));
-      allPicksData = picksSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-      const counts = {};
-      allPicksData.forEach(p => {
-        if (p.userName) counts[p.userName] = (counts[p.userName] || 0) + 1;
-      });
-
-      // Always include current user with their CURRENT name
-      if (currentUserName) {
-        // Remove any old usernames that match current user's picks
-        // Current user is identified by their picks' userEmail
-        if (!counts[currentUserName]) counts[currentUserName] = 0;
-      }
-
-      // Sort by count, current user always first
-      let sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-      if (currentUserName) {
-        const idx = sorted.findIndex(([n]) => n === currentUserName);
-        if (idx > 0) {
-          const [item] = sorted.splice(idx, 1);
-          sorted.unshift(item);
-        }
-        // Remove duplicate entries that might be old names of current user
-        // Keep only if it's not the same as current user
-      }
-
-      const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A','#C83030','#60871A'];
-      list.innerHTML = sorted.map(([name, count], i) => {
-        const initials = name.substring(0,2).toUpperCase();
-        const isMe = name === currentUserName;
-        const picks = allPicksData.filter(p => p.userName === name);
-        const pickNames = picks.map(p => p.name).join(', ') || 'No picks yet';
-        return `<div class="member-item" style="flex-direction:column;align-items:flex-start;gap:8px;padding:12px 0;">
-          <div style="display:flex;align-items:center;gap:10px;width:100%;">
-            <div class="member-avatar" style="background:${colors[i % colors.length]};">${initials}</div>
-            <div class="member-info" style="flex:1;">
-              <p class="member-name">${name}${isMe ? ' <span style="font-size:10px;color:var(--accent);">(you)</span>' : ''}</p>
-              <p class="member-reviews">${count} pick${count !== 1 ? 's' : ''}</p>
-            </div>
-            ${!isMe ? `<button class="follow-btn" onclick="toggleFollow(this, '${name}')">Follow</button>` : ''}
-          </div>
-          <button onclick="openMemberProfile('${name}')" style="width:100%;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:7px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--ink-soft);font-weight:500;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-soft)'">
-            🍴 See all places by ${name}
-          </button>
-        </div>`;
-      }).join('');
-
-      if (sorted.length === 0) {
-        list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Be the first to contribute!</p>';
-      }
-      // Also refresh popular topics
-      loadPopularTopics();
-    } catch(e) {
-      console.error(e);
-      list.innerHTML = '<p style="font-size:12px;color:var(--muted);">Could not load members.</p>';
-    }
-  }
-
-  async function loadPopularTopics() {
-    const grid = document.getElementById('popularTopicsGrid');
-    if (!grid) return;
-    try {
-      const picksSnap = await getDocs(collection(db, 'picks'));
-      const typeCounts = {};
-      const locationCounts = {};
-
-      picksSnap.docs.forEach(d => {
-        const p = d.data();
-        if (p.type) typeCounts[p.type] = (typeCounts[p.type] || 0) + 1;
-        if (p.location) {
-          const city = p.location.split(',')[0].trim();
-          if (city) locationCounts[city] = (locationCounts[city] || 0) + 1;
-        }
-      });
-
-      const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
-
-      // Sort types by count
-      const sortedTypes = Object.entries(typeCounts).sort((a,b) => b[1]-a[1]);
-      const sortedCities = Object.entries(locationCounts).sort((a,b) => b[1]-a[1]).slice(0,3);
-
-      let buttons = sortedTypes.map(([type, count]) => {
-        const emoji = typeEmojis[type] || '🍽️';
-        return `<button class="topic-btn" onclick="filterByTopic('${type}')">${emoji} ${type} <span style="font-size:10px;opacity:0.6;">(${count})</span></button>`;
-      });
-
-      // Add top cities
-      sortedCities.forEach(([city, count]) => {
-        buttons.push(`<button class="topic-btn" onclick="filterByTopic('${city}')">📍 ${city} <span style="font-size:10px;opacity:0.6;">(${count})</span></button>`);
-      });
-
-      // Always add these if no data
-      if (buttons.length === 0) {
-        buttons = [
-          '<button class="topic-btn">🍔 Burgers</button>',
-          '<button class="topic-btn">☕ Cafes</button>',
-          '<button class="topic-btn">🥪 Sandwiches</button>',
-          '<button class="topic-btn">🍜 Asian</button>',
-          '<button class="topic-btn">🗺️ Amsterdam</button>',
-          '<button class="topic-btn">🇳🇱 Netherlands</button>',
-        ];
-      }
-
-      grid.innerHTML = buttons.join('');
-    } catch(e) {
-      console.error(e);
-    }
-  }
-
-  window.filterByTopic = function(topic) {
-    // Filter community picks by topic
-    const picks = allPicksData.filter(p => 
-      (p.type && p.type.toLowerCase().includes(topic.toLowerCase())) ||
-      (p.location && p.location.toLowerCase().includes(topic.toLowerCase()))
-    );
-    if (picks.length === 0) {
-      showToast('No picks for ' + topic + ' yet!');
-      return;
-    }
-    // Show filtered results in a popup
-    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
-    document.getElementById('profileAvatar').textContent = '🔍';
-    document.getElementById('profileAvatar').style.background = '#D4521A';
-    document.getElementById('profileName').textContent = topic;
-    document.getElementById('profileStats').textContent = picks.length + ' recommendation' + (picks.length !== 1 ? 's' : '');
-    document.getElementById('profilePicksList').innerHTML = picks.map(p => {
-      const emoji = typeEmojis[p.type] || '🍽️';
-      return `<div class="member-pick-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-          <span style="font-size:24px;">${emoji}</span>
-          <div>
-            <p style="font-weight:600;font-size:14px;">${p.name}</p>
-            <p style="font-size:11px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p>
-            <p style="font-size:11px;color:var(--accent);">by ${p.userName}</p>
-          </div>
+  function renderReviews(reviews) {
+    const linked = reviews.filter(r => r.placeDocId && r.placeCollection);
+    if (!linked.length) return;
+    document.getElementById('reviewList').innerHTML = linked.slice(0, 8).map(r => {
+      const url = `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}`;
+      const date = r.created ? r.created.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      return `<article class="review-card">
+        <div class="review-top">
+          <a class="review-place" href="${url}">${esc(r.placeName || 'View place')}</a>
+          <span class="review-stars">${starStr(r.rating)}</span>
         </div>
-        <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
+        ${r.text ? `<p class="review-text">${esc(r.text.slice(0, 280))}${r.text.length > 280 ? '…' : ''}</p>` : ''}
+        <p class="review-meta">${esc(r.authorName)}${date ? ' · ' + date : ''} · <a href="${url}">View place →</a></p>
+      </article>`;
+    }).join('');
+    document.getElementById('reviewsSection').hidden = false;
+  }
+
+  // Members with the most spots and reviews.
+  function renderTopMembers(members, reviews) {
+    const people = new Map();
+    const add = (id, name, key) => {
+      const k = id || 'name:' + name;
+      if (!people.has(k)) people.set(k, { name, spots: 0, reviews: 0 });
+      const p = people.get(k);
+      if (name && (!p.name || p.name === 'Member' || p.name === 'a member')) p.name = name;
+      p[key]++;
+    };
+    members.forEach(p => add(p.authorId, p.author, 'spots'));
+    reviews.forEach(r => add(r.authorId, r.authorName, 'reviews'));
+    const top = [...people.values()].sort((a, b) => (b.spots + b.reviews) - (a.spots + a.reviews)).slice(0, 5);
+    const list = document.getElementById('topMembersList');
+    if (!top.length) { list.innerHTML = '<p style="font-size:12px;color:var(--muted);">No member activity yet.</p>'; return; }
+    list.innerHTML = top.map((m, i) => {
+      const name = m.name && m.name !== 'a member' ? m.name : 'Member';
+      const parts = [m.spots ? `${m.spots} ${m.spots === 1 ? 'spot' : 'spots'}` : '', m.reviews ? `${m.reviews} ${m.reviews === 1 ? 'review' : 'reviews'}` : ''].filter(Boolean).join(' · ');
+      return `<div class="member-item">
+        <div class="member-avatar" style="background:${COLOURS[i % COLOURS.length]};">${esc(name.slice(0, 2).toUpperCase())}</div>
+        <div><p class="member-name">${esc(name)}</p><p class="member-reviews">${parts}</p></div>
       </div>`;
     }).join('');
-    document.getElementById('memberProfileBg').classList.add('open');
-  };
-
-  window.openMemberProfile = function(name) {
-    const picks = allPicksData.filter(p => p.userName === name);
-    const initials = name.substring(0,2).toUpperCase();
-    const colors = ['#D4521A','#2D5A3D','#C8901A','#3D2F1A','#8B3A1A'];
-    const colorIdx = name.charCodeAt(0) % colors.length;
-
-    document.getElementById('profileAvatar').textContent = initials;
-    document.getElementById('profileAvatar').style.background = colors[colorIdx];
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileStats').textContent = picks.length + ' recommendation' + (picks.length !== 1 ? 's' : '');
-
-    const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂'};
-
-    const list = document.getElementById('profilePicksList');
-    if (picks.length === 0) {
-      list.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:2rem;">No recommendations yet!</p>';
-    } else {
-      list.innerHTML = picks.map(p => {
-        const emoji = typeEmojis[p.type] || '🍽️';
-        return `<div class="member-pick-card">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-            <span style="font-size:24px;">${emoji}</span>
-            <div>
-              <p style="font-weight:600;font-size:14px;">${p.name}</p>
-              <p style="font-size:11px;color:var(--muted);">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''} ${p.price ? '· €'+p.price : ''}</p>
-            </div>
-          </div>
-          <p style="font-size:13px;color:var(--ink-soft);">${p.why}</p>
-        </div>`;
-      }).join('');
-    }
-    document.getElementById('memberProfileBg').classList.add('open');
-  };
-
-  window.closeMemberProfile = function(e) {
-    if (e.target === document.getElementById('memberProfileBg')) {
-      document.getElementById('memberProfileBg').classList.remove('open');
-    }
-  };
-
-  // Load community posts from Firestore
-  async function loadPosts() {
-    const list = document.getElementById('postsList');
-    try {
-      const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-
-      // Keep static posts but add real ones at top
-      const staticPosts = list.innerHTML.includes('Marco R.') ? list.innerHTML : '';
-
-      if (snap.empty) {
-        list.innerHTML = staticPosts || '<p style="font-size:13px;color:var(--muted);">No posts yet!</p>';
-        return;
-      }
-
-      let postsHtml = '';
-      snap.docs.forEach(d => {
-        const p = d.data();
-        const initials = p.userName ? p.userName.substring(0,2).toUpperCase() : 'JF';
-        const timeAgo = p.createdAt ? 'Just now' : '';
-        const isRating = p.type === 'rating';
-
-        postsHtml += `<div class="post-card" data-id="${d.id}">
-          <div class="post-header">
-            <div class="post-avatar" style="background:var(--accent);">${initials}</div>
-            <div class="post-user-info">
-              <p class="post-username">${p.userName}</p>
-              <p class="post-location">Amsterdam</p>
-            </div>
-            <span class="post-time">${timeAgo}</span>
-          </div>
-          ${isRating ? `<div style="margin-bottom:6px;"><span style="background:var(--accent-pale);color:var(--accent);font-size:11px;padding:3px 8px;border-radius:8px;font-weight:500;">⭐ Rated: ${p.restaurant}</span></div>` : ''}
-          <p class="post-text">${p.text}</p>
-          ${isRating ? `<p style="color:#C8901A;font-size:14px;margin-top:4px;">${p.stars} ${p.rating}.0</p>` : ''}
-          <div class="post-footer">
-            <button class="post-action" onclick="toggleLikePost(this, '${d.id}')"><span>♡</span> <span class="like-count">${p.likes || 0}</span> likes</button>
-            <button class="post-action" onclick="toggleComments(this, '${d.id}')"><span>💬</span> Comments</button>
-            <button class="post-action" onclick="sharePost('${p.restaurant || p.text.substring(0,30)}')"><span>↗</span> Share</button>
-            ${currentUser && p.userName === (currentUser.displayName || currentUser.email.split('@')[0]) ? `<button class="post-action" style="color:var(--accent);" onclick="deletePost('${d.id}', this)">🗑 Delete</button>` : ''}
-          </div>
-          <div class="comments-section" id="comments-${d.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-            <div class="comments-list" id="comments-list-${d.id}"></div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <input class="rate-input" type="text" placeholder="Write a comment..." id="comment-input-${d.id}" style="height:36px;flex:1;" onkeydown="if(event.key==='Enter')addComment('${d.id}')">
-              <button class="btn-accent" style="padding:6px 14px;font-size:12px;" onclick="addComment('${d.id}')">Post</button>
-            </div>
-          </div>
-        </div>`;
-      });
-
-      list.innerHTML = postsHtml + staticPosts;
-    } catch(e) {
-      console.error(e);
-    }
   }
 
-  window.toggleLikePost = async function(btn, postId) {
-    const countEl = btn.querySelector('.like-count');
-    const span = btn.querySelector('span');
-    const liked = span.textContent === '♥';
-    const count = parseInt(countEl.textContent) || 0;
-    span.textContent = liked ? '♡' : '♥';
-    countEl.textContent = liked ? count - 1 : count + 1;
-    btn.style.color = liked ? '' : 'var(--accent)';
-  };
-
-  window.toggleComments = function(btn, postId) {
-    const section = document.getElementById('comments-' + postId);
-    const isHidden = section.style.display === 'none';
-    section.style.display = isHidden ? 'block' : 'none';
-    if (isHidden) loadComments(postId);
-  };
-
-  window.addComment = async function(postId) {
-    const input = document.getElementById('comment-input-' + postId);
-    const text = input.value.trim();
-    if (!text) return;
-    if (!currentUser) { showToast('Please log in to comment!'); return; }
-    const userName = currentUser.displayName || currentUser.email.split('@')[0];
-    try {
-      await addDoc(collection(db, 'comments'), {
-        postId: postId,
-        text: text,
-        userName: userName,
-        createdAt: serverTimestamp()
-      });
-      input.value = '';
-      showToast('Comment posted! 💬');
-      loadComments(postId);
-    } catch(e) {
-      showToast('Could not post comment. Try again!');
-    }
-  };
-
-  // Pre-seeded comments for static posts
-  // No pre-written comments: only real comments from Firestore are shown.
-  const staticComments = {};
-
-  async function loadComments(postId) {
-    const list = document.getElementById('comments-list-' + postId);
-    if (!list) return;
-    try {
-      // Load from Firestore
-      const q = query(collection(db, 'comments'), orderBy('createdAt', 'asc'));
-      const snap = await getDocs(q);
-      const firestoreComments = snap.docs
-        .filter(d => d.data().postId === postId)
-        .map(d => ({ userName: d.data().userName, text: d.data().text }));
-
-      // Combine static + real comments
-      const preloaded = staticComments[postId] || [];
-      const allComments = [...preloaded, ...firestoreComments];
-
-      list.innerHTML = allComments.map(c => `
-        <div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
-          <span style="font-weight:500;color:var(--accent);">${c.userName}:</span> ${c.text}
-        </div>`).join('') || '<p style="font-size:12px;color:var(--muted);">No comments yet. Be the first!</p>';
-    } catch(e) {
-      console.error(e);
-    }
+  const PAGE = 6;
+  let shown = 0, newest = [];
+  function renderMore() {
+    const grid = document.getElementById('memberGrid');
+    const next = newest.slice(shown, shown + PAGE);
+    grid.insertAdjacentHTML('beforeend', next.map(miniCard).join(''));
+    shown += next.length;
+    hydratePhotos(grid);
+    document.getElementById('memberMore').hidden = shown >= newest.length;
+    document.getElementById('memberMoreBtn').textContent = `Show more (${newest.length - shown})`;
   }
+  document.getElementById('memberMoreBtn').addEventListener('click', renderMore);
 
-  window.sharePost = function(text) {
-    if (navigator.share) {
-      navigator.share({ title: 'Strong Foodie', text: text, url: window.location.href });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      showToast('Link copied to clipboard! 🔗');
-    }
-  };
+  // Member count without downloading every profile.
+  getCountFromServer(collection(db, 'profiles'))
+    .then(s => set('statMembers', s.data().count))
+    .catch(() => {});
 
-  window.deletePost = async function(postId, btn) {
-    if (!confirm('Delete this post?')) return;
-    await deleteDoc(doc(db, 'posts', postId));
-    btn.closest('.post-card').remove();
-    showToast('Post deleted!');
-  };
+  try {
+    const [{ all, members }, reviews] = await Promise.all([loadPlaces(db), loadMemberReviews()]);
+    newest = members.slice().sort((a, b) => (b.created || 0) - (a.created || 0));
+    const grid = document.getElementById('memberGrid');
+    grid.innerHTML = newest.length ? '' : '<p class="grid-empty">No member spots yet. Add the first one in the Strong Foodie app.</p>';
+    renderMore();
+    renderReviews(reviews);
+    renderTopMembers(members, reviews);
 
-
-  window.deletePick = async function(docId, btn) {
-    if (!confirm('Delete this pick?')) return;
-    try {
-      const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      await deleteDoc(doc(db, 'picks', docId));
-      btn.closest('.mini-card').remove();
-      showToast('Pick deleted!');
-      loadTopMembers(currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : null);
-    } catch(e) {
-      showToast('Could not delete. Please try again!');
-    }
-  };
-
-  window.doLogout = async function() {
-    const { signOut } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
-    await signOut(auth);
-    window.location.href = 'index.html';
-  };
-
-  window.toggleFollow = async function(btn, targetName) {
-    if (!currentUser) { 
-      showToast('Please log in to follow members!'); 
-      return; 
-    }
-    const followId = currentUser.uid + '_' + targetName;
-    const followRef = doc(db, 'follows', followId);
-    const followDoc = await getDoc(followRef);
-    if (followDoc.exists()) {
-      await deleteDoc(followRef);
-      btn.textContent = 'Follow';
-      btn.style.background = '';
-      btn.style.color = '';
-      showToast('Unfollowed ' + targetName);
-    } else {
-      await setDoc(followRef, {
-        followerId: currentUser.uid,
-        followerName: currentUser.displayName || currentUser.email.split('@')[0],
-        following: targetName,
-        createdAt: serverTimestamp()
-      });
-      btn.textContent = 'Following ✓';
-      btn.style.background = 'var(--accent)';
-      btn.style.color = '#fff';
-      showToast('Now following ' + targetName + '! 👋');
-    }
-  };
-
-  async function loadPicks() {
-    const grid = document.getElementById('communityPicksGrid');
-    if (!grid) return;
-    try {
-      const snapshot = await getDocs(collection(db, 'picks'));
-      grid.innerHTML = '';
-      if (snapshot.empty) {
-        grid.innerHTML = '<p style="font-size:13px;color:var(--muted);grid-column:span 2;">No picks yet, be the first to add one on the homepage!</p>';
-        return;
-      }
-
-      // Group by restaurant name
-      const grouped = {};
-      snapshot.docs.forEach(docSnap => {
-        const p = { id: docSnap.id, ...docSnap.data() };
-        const key = p.name.toLowerCase().trim();
-        if (!grouped[key]) grouped[key] = { main: p, reviews: [] };
-        grouped[key].reviews.push(p);
-      });
-
-      const typeEmojis = {'Burgers':'🍔','Cafe':'☕','Asian':'🍜','Pastries':'🥐','Sushi':'🍣','Street Food':'🌮','Desserts':'🍰','Restaurant':'🍽️','Sandwiches':'🥪','Fine Dining':'🥂','Drinks':'🍹'};
-      const colors = ['bg-burger','bg-cafe','bg-pastry','bg-ramen','bg-sushi'];
-
-      Object.values(grouped).forEach((group, i) => {
-        const p = group.main;
-        const reviews = group.reviews;
-        const emoji = typeEmojis[p.type] || '🍽️';
-        const color = colors[i % colors.length];
-        const count = reviews.length;
-
-        const reviewsHtml = reviews.map(r => {
-          const isOwner = currentUser && r.userName === (currentUser.displayName || currentUser.email.split('@')[0]);
-          return `<div style="padding:8px 0;border-bottom:1px solid var(--border);">
-            <p style="font-size:12px;font-weight:500;color:var(--accent);">by ${r.userName}</p>
-            <p style="font-size:13px;color:var(--ink-soft);">${r.why}</p>
-            ${isOwner ? `<button onclick="deletePick('${r.id}', this)" style="margin-top:4px;background:none;border:1px solid #e0d0c8;padding:3px 10px;border-radius:8px;font-size:11px;color:#D4521A;cursor:pointer;">🗑 Delete</button>` : ''}
-          </div>`;
-        }).join('');
-
-        const card = document.createElement('div');
-        card.className = 'mini-card';
-        card.style.gridColumn = count > 1 ? 'span 2' : '';
-        card.innerHTML = `
-          <div class="mini-img ${color}" style="font-size:40px;">${emoji}</div>
-          <div class="mini-body">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-              <p class="mini-meta" style="color:#2D5A3D;font-weight:500;">Community Pick</p>
-              ${count > 1 ? `<span style="background:var(--accent);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;">${count} people recommend this</span>` : ''}
-            </div>
-            <h3 class="mini-title">${p.name}</h3>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">${p.location ? '📍 '+p.location : ''} ${p.type ? '· '+p.type : ''}</p>
-            <div>${reviewsHtml}</div>
-          </div>`;
-        grid.appendChild(card);
-      });
-    } catch(e) {
-      grid.innerHTML = '<p style="font-size:13px;color:var(--muted);">Could not load picks.</p>';
-      console.error(e);
-    }
+    const dests = destinations(all);
+    set('statSpots', members.length);
+    set('statReviews', reviews.length);
+    set('statDestinations', dests.length);
+    document.getElementById('destList').innerHTML = dests.slice(0, 10).map(d =>
+      `<a class="topic-pill" href="${d.url}">${esc(d.name)} <span style="opacity:0.6;">${d.count}</span></a>`).join('')
+      + '<a class="topic-pill" href="stad.html">All destinations →</a>';
+  } catch (e) {
+    console.log('Community error:', e);
+    document.getElementById('memberGrid').innerHTML = '<p class="grid-empty">Could not load member spots. Please refresh the page.</p>';
   }
-
 </script>
-<!-- MEMBER PROFILE MODAL -->
-<div class="member-profile-bg" id="memberProfileBg" onclick="closeMemberProfile(event)">
-  <div class="member-profile-modal">
-    <button onclick="document.getElementById('memberProfileBg').classList.remove('open')" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
-      <div id="profileAvatar" style="width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;font-size:20px;font-weight:600;display:flex;align-items:center;justify-content:center;"></div>
-      <div>
-        <h2 id="profileName" style="font-family:'Playfair Display',serif;font-size:20px;"></h2>
-        <p id="profileStats" style="font-size:13px;color:var(--muted);"></p>
-      </div>
-    </div>
-    <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;font-weight:500;">Restaurant Recommendations</p>
-    <div id="profilePicksList"></div>
-  </div>
-</div>
 
 <script>
   if ('serviceWorker' in navigator) {

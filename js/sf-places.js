@@ -115,6 +115,7 @@ function normalise(coll, id, r, member) {
     lat: num(r.lat), lng: num(r.lng),
     closed: !!(r.closedStatus && r.closedStatus !== 'open'),
     author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
+    authorId: member ? (r.addedByUserId || '') : '',
     created: toDate(r.createdAt),
   };
   // Lower-case copies for searching
