@@ -198,11 +198,11 @@
   <script type="module" src="js/member-places.js"></script>
 
   <div class="community-section">
-    <p class="community-label">Community Hotel Picks</p>
+    <p class="community-label">Share a stay</p>
     <div class="community-cta">
-      <h3>Share Your Favourite Stay</h3>
-      <p>Been somewhere unforgettable? Tell the Strong Foodie community about it.</p>
-      <button class="cta-btn" onclick="window.location.href='community.html'">Submit a Hotel</button>
+      <h3>Know a great stay that is missing?</h3>
+      <p>Add it in the Strong Foodie app. It shows up on this page, on the map and on its destination page straight away.</p>
+      <button class="cta-btn" onclick="window.location.href='community.html'">See what members share</button>
     </div>
   </div>
 </div>
@@ -346,6 +346,15 @@ function renderHotels(list) {
   }).join('');
 }
 
+// hotel.html?search=… (from the search box on the homepage) fills in the search.
+function applySearchParam() {
+  const q = new URLSearchParams(location.search).get('search');
+  const input = document.querySelector('.search-bar input');
+  if (!q || !input) return;
+  input.value = q;
+  input.dispatchEvent(new Event('input'));
+}
+
 function filterHotels(val) {
   const v = val.toLowerCase();
   renderHotels(hotels.filter(h =>
@@ -357,6 +366,7 @@ function filterHotels(val) {
 }
 
 renderHotels(hotels);
+applySearchParam();
 </script>
 
 <script type="module">
@@ -412,6 +422,7 @@ renderHotels(hotels);
       // Add newest live entries to the top of the existing hardcoded list
       hotels.unshift(...mapped);
       renderHotels(hotels);
+      applySearchParam();
     } catch(e) {
       console.error('Could not load hotel reviews from Firebase:', e);
     }
