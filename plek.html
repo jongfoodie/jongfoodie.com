@@ -44,8 +44,16 @@
   .place-empty a, .back a, .crumbs a { color: var(--accent); text-decoration: none; }
   .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; overflow-wrap: anywhere; }
   .place { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
-  .hero-photo { position: relative; height: 340px; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); display: flex; align-items: center; justify-content: center; }
-  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-photo { position: relative; width: 100%; height: 340px; overflow: hidden; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); display: flex; align-items: center; justify-content: center; }
+  .hero-photo.has-photo { height: auto; max-height: min(78vh, 680px); background: var(--ink); }
+  .hero-backdrop { position: absolute; inset: -40px; background-size: cover; background-position: center; filter: blur(28px) brightness(0.75); }
+  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; cursor: zoom-in; }
+  .hero-zoom { position: absolute; right: 12px; bottom: 12px; z-index: 2; background: rgba(26,18,8,0.65); color: #fff; border: none; border-radius: 20px; padding: 6px 12px; font: 500 12px 'DM Sans', sans-serif; cursor: pointer; }
+  .hero-zoom[hidden] { display: none; }
+  .lightbox { position: fixed; inset: 0; z-index: 20000; background: rgba(10,7,3,0.94); display: flex; align-items: center; justify-content: center; padding: 1rem; cursor: zoom-out; }
+  .lightbox[hidden] { display: none; }
+  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+  .lightbox-close { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.15); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
   .hero-emoji { font-size: 72px; }
   .hero-photo img:not([hidden]) + .hero-emoji { display: none; }
   .thumbs { display: flex; gap: 0.5rem; padding: 0.75rem 1.25rem 0; overflow-x: auto; }
@@ -100,6 +108,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   @media (max-width: 700px) {
     .hero-photo { height: 240px; }
+    .hero-photo.has-photo { max-height: 70vh; }
     .head h1 { font-size: 1.7rem; }
     .head { padding: 1rem 1.1rem 1.25rem; }
     .block { padding: 1rem 1.1rem; }
@@ -301,6 +310,26 @@
       </div>`;
   }
 
+  // Full-screen photo. Closes with a tap, the ✕ or Escape.
+  function openLightbox(src, alt) {
+    let box = document.getElementById('lightbox');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'lightbox';
+      box.className = 'lightbox';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      box.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close">✕</button><img alt="">';
+      box.addEventListener('click', () => { box.hidden = true; });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') box.hidden = true; });
+      document.body.appendChild(box);
+    }
+    const img = box.querySelector('img');
+    img.src = src; img.alt = alt || '';
+    box.hidden = false;
+    box.querySelector('.lightbox-close').focus();
+  }
+
   // ── Page
   function render(p) {
     const cat = CATS[p.cat];
@@ -317,7 +346,7 @@
       : (p.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.address)}` : '');
 
     const hero = p.photos.length
-      ? `<div class="hero-photo"><img id="heroImg" data-photo="${esc(p.photos[0])}" alt="${esc(p.name)}" hidden><span class="hero-emoji">${esc(p.emoji)}</span></div>`
+      ? `<div class="hero-photo" id="heroPhoto"><div class="hero-backdrop" id="heroBackdrop"></div><img id="heroImg" data-photo="${esc(p.photos[0])}" alt="${esc(p.name)}" hidden><span class="hero-emoji">${esc(p.emoji)}</span><button class="hero-zoom" id="heroZoom" type="button" hidden>⤢ Full photo</button></div>`
       : `<div class="hero-photo"><span class="hero-emoji">${esc(p.emoji)}</span></div>`;
     const thumbs = p.photos.length > 1
       ? `<div class="thumbs">${p.photos.map((ph, i) => `<button class="thumb${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Photo ${i + 1}"><img data-photo="${esc(ph)}" data-hide-parent="1" alt="" hidden></button>`).join('')}</div>`
@@ -386,6 +415,20 @@
       </section>
       <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a>${dest ? ` &nbsp;·&nbsp; <a href="${destinationUrl(dest)}">More in ${esc(dest)} →</a>` : ''}</p>`;
 
+    // The hero takes the shape of the photo, so the whole photo is visible.
+    const heroImg = document.getElementById('heroImg');
+    if (heroImg) {
+      heroImg.addEventListener('load', () => {
+        const box = document.getElementById('heroPhoto');
+        if (heroImg.naturalWidth && heroImg.naturalHeight) box.style.aspectRatio = `${heroImg.naturalWidth} / ${heroImg.naturalHeight}`;
+        box.classList.add('has-photo');
+        document.getElementById('heroBackdrop').style.backgroundImage = `url("${heroImg.src}")`;
+        document.getElementById('heroZoom').hidden = false;
+      });
+      const openFull = () => { if (heroImg.src) openLightbox(heroImg.src, heroImg.alt); };
+      heroImg.addEventListener('click', openFull);
+      document.getElementById('heroZoom').addEventListener('click', openFull);
+    }
     hydratePhotos(document.getElementById('placeRoot'));
     document.querySelectorAll('.thumb').forEach(btn => btn.addEventListener('click', () => {
       const i = +btn.dataset.i;
