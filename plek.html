@@ -118,6 +118,10 @@
   .form-error { background: #FFF1EC; color: #A3300B !important; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
   .form-error[hidden] { display: none; }
   .btn:disabled { opacity: 0.6; cursor: default; }
+  .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
+  .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+  .check-row input { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
+  .check-row a { color: var(--accent); }
   .nearby { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; }
   .near { display: flex; gap: 0.75rem; align-items: center; padding: 0.7rem; border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--ink); background: var(--cream); }
   .near:hover { border-color: var(--accent); }
@@ -163,7 +167,7 @@
   <a href="videos.html">🎬 Videos</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
-  <a href="friends.html">🤝 Friends</a>
+  <a href="stad.html">🌍 Destinations</a>
   <a href="about.html">👤 About me</a>
   <a href="hotel.html">🏨 Stay</a>
 </div>
@@ -189,8 +193,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { locate, destinationUrl } from "./js/sf-places.js?v=1";
 
   const firebaseConfig = {
@@ -501,16 +505,19 @@
   let reviewRows = [];      // every review of this place
   let authorInfo = {};      // uid -> { name, priv }
   let composerOpen = false;
+  let authMode = 'login';   // 'login' | 'signup'
+  let signingUp = false;    // the sign-up flow sets `me` itself
   let draft = { rating: 0, photo: '' };
 
   onAuthStateChanged(auth, async user => {
+    if (signingUp) return;
     if (user) {
-      let name = '', photo = '';
+      let name = '', photo = '', hasProfile = false;
       try {
         const s = await getDoc(doc(db, 'profiles', user.uid));
-        if (s.exists()) { name = s.data().displayName || ''; photo = s.data().photoUrl || ''; }
-      } catch (e) {}
-      me = { uid: user.uid, name: name || 'Foodie', photo };
+        if (s.exists()) { hasProfile = true; name = s.data().displayName || ''; photo = s.data().photoUrl || ''; }
+      } catch (e) { hasProfile = true; } // could not check: don't block the member
+      me = { uid: user.uid, name: name || user.displayName || 'Foodie', photo, hasProfile, authName: user.displayName || '' };
     } else {
       me = null;
     }
@@ -575,15 +582,85 @@
     wireComposer(mine);
   }
 
+  // Date of birth + privacy consent, shared by "create account" and "complete profile".
+  function birthFields(prefix) {
+    return `<label class="field-label" for="${prefix}Birth">Date of birth</label>
+      <input class="field" id="${prefix}Birth" type="date" max="${new Date().toISOString().slice(0, 10)}" required>
+      <label class="check-row"><input type="checkbox" id="${prefix}Consent"><span>I am 18 or older and agree to the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>`;
+  }
+  function ageFrom(iso) {
+    const b = new Date(iso + 'T00:00:00');
+    if (isNaN(b)) return -1;
+    const n = new Date();
+    let age = n.getFullYear() - b.getFullYear();
+    if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) age--;
+    return age;
+  }
+  // Returns an error message, or '' when name + date of birth + consent are fine.
+  function checkPerson(prefix) {
+    const name = document.getElementById(prefix + 'Name').value.trim();
+    const birth = document.getElementById(prefix + 'Birth').value;
+    const age = ageFrom(birth);
+    if (name.length < 2) return 'Fill in a name of at least 2 characters.';
+    if (!birth || age < 0 || age > 120) return 'Fill in your date of birth.';
+    if (age < 18) return 'You need to be 18 or older to create an account.';
+    if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
+    return '';
+  }
+  // Same profile fields the app writes when someone signs up there. The date of
+  // birth is checked but not stored: profiles are still public until Rork batch P
+  // moves private details to a place only the owner can read.
+  function newProfile(name) {
+    return {
+      displayName: name, bio: '', city: '', photoUrl: '', birthDate: '', isAdult: true,
+      meetupEnabled: false, meetupMode: 'friends', favouriteCuisines: [], blockedUsers: [],
+      createdAt: serverTimestamp(),
+    };
+  }
+
   function composerHtml(mine) {
     if (!composerOpen) {
       if (mine) return me ? `<p class="muted">Signed in as ${esc(me.name)} · <button class="link-btn" data-act="logout">Log out</button></p>` : '';
       return `<button class="btn btn-primary" data-act="open">✍️ Write a review</button>`;
     }
+    if (!me && authMode === 'signup') {
+      return `<div class="composer-card">
+        <p class="composer-title">Create your Strong Foodie account</p>
+        <p class="muted" style="margin-bottom:0.75rem;">One account for the website and the app. You need to be 18 or older.</p>
+        <form id="signupForm" class="composer-form" novalidate>
+          <input class="field" id="suName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" required>
+          <input class="field" id="suEmail" type="email" autocomplete="email" placeholder="Email" required>
+          <input class="field" id="suPassword" type="password" autocomplete="new-password" placeholder="Password (at least 6 characters)" required>
+          ${birthFields('su')}
+          <p class="form-error" id="signupError" hidden></p>
+          <div class="composer-actions">
+            <button class="btn btn-primary" type="submit">Create account</button>
+            <button class="btn" type="button" data-act="cancel">Cancel</button>
+          </div>
+          <p class="muted">Already have an account? <button class="link-btn" type="button" data-act="tologin">Log in</button></p>
+        </form>
+      </div>`;
+    }
+    if (me && !me.hasProfile) {
+      return `<div class="composer-card">
+        <p class="composer-title">Complete your profile</p>
+        <p class="muted" style="margin-bottom:0.75rem;">Your account has no profile yet. Add a name and your date of birth, then you can post reviews here and use the account in the app.</p>
+        <form id="profileForm" class="composer-form" novalidate>
+          <input class="field" id="pfName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" value="${esc(me.authName)}" required>
+          ${birthFields('pf')}
+          <p class="form-error" id="profileError" hidden></p>
+          <div class="composer-actions">
+            <button class="btn btn-primary" type="submit">Save profile</button>
+            <button class="btn" type="button" data-act="cancel">Cancel</button>
+          </div>
+          <p class="muted">Signed in as ${esc(me.name)} · <button class="link-btn" type="button" data-act="logout">Log out</button></p>
+        </form>
+      </div>`;
+    }
     if (!me) {
       return `<div class="composer-card">
         <p class="composer-title">Log in to write a review</p>
-        <p class="muted" style="margin-bottom:0.75rem;">Use your Strong Foodie app account. No account yet? The app is coming soon to the App Store.</p>
+        <p class="muted" style="margin-bottom:0.75rem;">Use your Strong Foodie account, the same one as in the app. No account yet? <button class="link-btn" type="button" data-act="tosignup">Create one</button></p>
         <form id="loginForm" class="composer-form" novalidate>
           <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
           <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
@@ -630,7 +707,9 @@
     box.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async e => {
       const act = b.dataset.act;
       if (act === 'open' || act === 'edit') { composerOpen = true; startDraft(act === 'edit' ? mine : null); renderMemberReviews(); focusComposer(); }
-      if (act === 'cancel') { composerOpen = false; renderMemberReviews(); }
+      if (act === 'cancel') { composerOpen = false; authMode = 'login'; renderMemberReviews(); }
+      if (act === 'tosignup') { authMode = 'signup'; renderMemberReviews(); focusComposer(); }
+      if (act === 'tologin') { authMode = 'login'; renderMemberReviews(); focusComposer(); }
       if (act === 'logout') { await signOut(auth); composerOpen = false; toast('Logged out'); }
       if (act === 'nophoto') { draft.photo = ''; draft.keepPhoto = ''; keepText(); renderMemberReviews(); }
       if (act === 'delete') {
@@ -660,6 +739,64 @@
       } catch (err) {
         btn.disabled = false; btn.textContent = 'Log in';
         showError('loginError', authMessage(err));
+      }
+    });
+
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) signupForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('su');
+      if (problem) return showError('signupError', problem);
+      const name = document.getElementById('suName').value.trim();
+      const email = document.getElementById('suEmail').value.trim();
+      const password = document.getElementById('suPassword').value;
+      if (!email) return showError('signupError', 'Fill in your email.');
+      if (password.length < 6) return showError('signupError', 'Use a password of at least 6 characters.');
+      const btn = signupForm.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Creating account…';
+      signingUp = true;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
+        let hasProfile = true;
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); }
+        catch (err) { console.error('Profile could not be saved:', err); hasProfile = false; }
+        me = { uid: cred.user.uid, name, photo: '', hasProfile, authName: name };
+        signingUp = false;
+        authMode = 'login';
+        startDraft(null);
+        toast(hasProfile ? 'Welcome, ' + name + '! Your account works in the app too.' : 'Account created. Please complete your profile.');
+        renderMemberReviews();
+        focusComposer();
+      } catch (err) {
+        signingUp = false;
+        btn.disabled = false; btn.textContent = 'Create account';
+        showError('signupError', signupMessage(err));
+      }
+    });
+
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) profileForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('pf');
+      if (problem) return showError('profileError', problem);
+      const name = document.getElementById('pfName').value.trim();
+      const btn = profileForm.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const ref = doc(db, 'profiles', me.uid);
+        const existing = await getDoc(ref);
+        if (!existing.exists()) await setDoc(ref, newProfile(name));
+        try { await updateProfile(auth.currentUser, { displayName: name }); } catch (err) {}
+        me = { ...me, name, hasProfile: true };
+        startDraft(myReview());
+        toast('Profile saved');
+        renderMemberReviews();
+        focusComposer();
+      } catch (err) {
+        console.error('Profile could not be saved:', err);
+        btn.disabled = false; btn.textContent = 'Save profile';
+        showError('profileError', 'Your profile could not be saved. Please try again later.');
       }
     });
 
@@ -724,10 +861,19 @@
 
   function keepText() { const t = document.getElementById('reviewText'); if (t) draft.text = t.value; }
   function focusComposer() {
-    const el = document.getElementById('loginEmail') || document.querySelector('#reviewForm .star');
+    const el = document.getElementById('suName') || document.getElementById('pfName') || document.getElementById('loginEmail') || document.querySelector('#reviewForm .star');
     if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.focus({ preventScroll: true }); }
   }
   function showError(id, msg) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.hidden = false; } }
+  function signupMessage(err) {
+    const c = err && err.code;
+    if (c === 'auth/email-already-in-use') return 'There is already an account with this email. Log in instead, with the same password as in the app.';
+    if (c === 'auth/invalid-email') return 'That email address doesn’t look right.';
+    if (c === 'auth/weak-password' || c === 'auth/password-does-not-meet-requirements') return 'Choose a stronger password (at least 6 characters).';
+    if (c === 'auth/network-request-failed') return 'No connection. Check your internet and try again.';
+    if (c === 'auth/operation-not-allowed') return 'Creating accounts is switched off right now.';
+    return 'Your account could not be created. Please try again.';
+  }
   function authMessage(err) {
     const c = err && err.code;
     if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-login-credentials') return 'Wrong email or password.';
@@ -866,7 +1012,7 @@
     <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
   </div>
 </div>
-<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="position:fixed;bottom:10px;left:10px;z-index:9999;background:none;border:none;color:rgba(255,255,255,0.3);font-size:11px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px;">Cookie settings</button>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
 <script>
 (function(){
   var c = localStorage.getItem('jf_cookie_consent');
