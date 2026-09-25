@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My account | Strong Foodie</title>
+<meta name="description" content="Log in or create your Strong Foodie account: one account for strongfoodie.com and the Strong Foodie app.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="My account | Strong Foodie">
+<meta property="og:description" content="One account for strongfoodie.com and the Strong Foodie app.">
+<meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://www.strongfoodie.com/account.html">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; overflow-x: hidden; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .wrap { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  .loading { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+  h1 { font-family: 'Playfair Display', serif; font-size: 2rem; line-height: 1.15; }
+  .lead { color: var(--ink-soft); margin: 0.4rem 0 1.25rem; line-height: 1.6; }
+  .small { font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .small a, .lead a { color: var(--accent); }
+  .acct-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; padding: 1.75rem 1.5rem; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+  .tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 14px; font: 500 14px 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; margin-bottom: -1px; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .form { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font: 15px 'DM Sans', sans-serif; color: var(--ink); background: #fff; outline: none; }
+  .field:focus { border-color: var(--accent); }
+  .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
+  .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+  .check-row input { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
+  .check-row a { color: var(--accent); }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); cursor: pointer; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { border-color: var(--accent); opacity: 0.92; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .link-btn { background: none; border: none; padding: 0; font: inherit; font-size: 14px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; align-self: flex-start; }
+  .form-error { background: #FFF1EC; color: #A3300B; border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.45; }
+  .form-error[hidden] { display: none; }
+  .acct-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .acct-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .acct-who { flex: 1; min-width: 0; }
+  .acct-who h1 { font-size: 1.7rem; overflow-wrap: anywhere; }
+  .acct-block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.25rem; margin-top: 1rem; }
+  .acct-block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .count { letter-spacing: 0; }
+  .inline-form { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
+  .inline-form .field { flex: 1; min-width: 0; }
+  .acct-list { list-style: none; display: flex; flex-direction: column; }
+  .acct-list li { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .acct-list li:first-child { border-top: none; padding-top: 0; }
+  .acct-list a { color: var(--ink); font-weight: 600; text-decoration: none; }
+  .acct-list a:hover { color: var(--accent); }
+  .acct-list p { font-size: 14px; color: var(--ink-soft); margin-top: 0.2rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .row-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .stars { color: var(--gold); white-space: nowrap; }
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 600px) {
+    .wrap { padding: 1.25rem 1rem 2.5rem; }
+    .acct-card { padding: 1.25rem 1.1rem; }
+    h1 { font-size: 1.7rem; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near <script type="module" src="js/sf-account-nav.js?v=1"></script>
+</body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="stad.html">Destinations</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="wrap" id="root">
+  <div class="loading">Loading…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
+  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  const fmtDate = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function showError(id, msg) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.hidden = false; } }
+
+  // Where to go after logging in: only pages on this site.
+  function nextUrl() {
+    const n = new URLSearchParams(location.search).get('next');
+    if (!n) return '';
+    try { const u = new URL(n, location.href); return u.origin === location.origin && !u.pathname.endsWith('account.html') ? u.href : ''; }
+    catch (e) { return ''; }
+  }
+
+  // ── Same rules and profile as the app ─────────────────────────────────
+  function ageFrom(iso) {
+    const b = new Date(iso + 'T00:00:00');
+    if (isNaN(b)) return -1;
+    const n = new Date();
+    let age = n.getFullYear() - b.getFullYear();
+    if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) age--;
+    return age;
+  }
+  function checkPerson(prefix) {
+    const name = document.getElementById(prefix + 'Name').value.trim();
+    const birth = document.getElementById(prefix + 'Birth').value;
+    const age = ageFrom(birth);
+    if (name.length < 2) return 'Fill in a name of at least 2 characters.';
+    if (!birth || age < 0 || age > 120) return 'Fill in your date of birth.';
+    if (age < 18) return 'You need to be 18 or older to create an account.';
+    if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
+    return '';
+  }
+  // The date of birth is checked but not stored: profiles are still public
+  // until Rork batch P moves private details to a place only the owner can read.
+  function newProfile(name) {
+    return {
+      displayName: name, bio: '', city: '', photoUrl: '', birthDate: '', isAdult: true,
+      meetupEnabled: false, meetupMode: 'friends', favouriteCuisines: [], blockedUsers: [],
+      createdAt: serverTimestamp(),
+    };
+  }
+  function birthFields(prefix) {
+    return `<label class="field-label" for="${prefix}Birth">Date of birth</label>
+      <input class="field" id="${prefix}Birth" type="date" max="${new Date().toISOString().slice(0, 10)}" required>
+      <label class="check-row"><input type="checkbox" id="${prefix}Consent"><span>I am 18 or older and agree to the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>`;
+  }
+  function authMessage(err) {
+    const c = err && err.code;
+    if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-login-credentials') return 'Wrong email or password. Forgot it? Use “Forgot password?” below; the new password works in the app too.';
+    if (c === 'auth/invalid-email') return 'That email address doesn’t look right.';
+    if (c === 'auth/too-many-requests') return 'Too many attempts. Wait a moment and try again.';
+    if (c === 'auth/user-disabled') return 'This account has been disabled.';
+    if (c === 'auth/network-request-failed') return 'No connection. Check your internet and try again.';
+    return 'Logging in did not work. Please try again.';
+  }
+  function signupMessage(err) {
+    const c = err && err.code;
+    if (c === 'auth/email-already-in-use') return 'There is already an account with this email. Log in instead, with the same password as in the app.';
+    if (c === 'auth/invalid-email') return 'That email address doesn’t look right.';
+    if (c === 'auth/weak-password' || c === 'auth/password-does-not-meet-requirements') return 'Choose a stronger password (at least 6 characters).';
+    if (c === 'auth/network-request-failed') return 'No connection. Check your internet and try again.';
+    if (c === 'auth/operation-not-allowed') return 'Creating accounts is switched off right now.';
+    return 'Your account could not be created. Please try again.';
+  }
+
+  // ── Views ─────────────────────────────────────────────────────────────
+  let mode = new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login';
+  let signingUp = false;
+
+  function renderSignedOut() {
+    document.title = (mode === 'signup' ? 'Create account' : 'Log in') + ' | Strong Foodie';
+    const n = nextUrl();
+    root.innerHTML = `
+      <div class="acct-card">
+        <h1>${mode === 'signup' ? 'Create your account' : 'Log in'}</h1>
+        <p class="lead">One Strong Foodie account for this website and the app.${n ? ' After logging in you go straight back to the page you came from.' : ''}</p>
+        <div class="tabs" role="tablist">
+          <button class="tab${mode === 'login' ? ' active' : ''}" data-mode="login" role="tab" aria-selected="${mode === 'login'}">Log in</button>
+          <button class="tab${mode === 'signup' ? ' active' : ''}" data-mode="signup" role="tab" aria-selected="${mode === 'signup'}">Create account</button>
+        </div>
+        ${mode === 'login' ? `
+        <form id="loginForm" class="form" novalidate>
+          <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+          <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+          <p class="form-error" id="loginError" hidden></p>
+          <button class="btn btn-primary" type="submit">Log in</button>
+          <button class="link-btn" type="button" id="resetBtn">Forgot password?</button>
+        </form>` : `
+        <form id="signupForm" class="form" novalidate>
+          <input class="field" id="suName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" required>
+          <input class="field" id="suEmail" type="email" autocomplete="email" placeholder="Email" required>
+          <input class="field" id="suPassword" type="password" autocomplete="new-password" placeholder="Password (at least 6 characters)" required>
+          ${birthFields('su')}
+          <p class="form-error" id="signupError" hidden></p>
+          <button class="btn btn-primary" type="submit">Create account</button>
+        </form>`}
+        <p class="small">Do you log in to the app with Apple or Google? That does not work on the website yet. Try “Forgot password?” with the same email: if a mail arrives, the new password works on the website and in the app.</p>
+      </div>`;
+
+    root.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+      mode = b.dataset.mode; renderSignedOut();
+      const url = new URL(location.href);
+      if (mode === 'signup') url.searchParams.set('mode', 'signup'); else url.searchParams.delete('mode');
+      history.replaceState(null, '', url);
+    }));
+
+    const lf = document.getElementById('loginForm');
+    if (lf) {
+      lf.addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) return showError('loginError', 'Fill in your email and password.');
+        const btn = lf.querySelector('[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Logging in…';
+        try { await signInWithEmailAndPassword(auth, email, password); }
+        catch (err) { btn.disabled = false; btn.textContent = 'Log in'; showError('loginError', authMessage(err)); }
+      });
+      document.getElementById('resetBtn').addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        if (!email) return showError('loginError', 'Fill in your email first, then tap “Forgot password?” again.');
+        try { await sendPasswordResetEmail(auth, email); showError('loginError', 'If there is an account for this email, a link to set a new password is on its way. Check your spam folder too.'); }
+        catch (err) { showError('loginError', authMessage(err)); }
+      });
+    }
+
+    const sf = document.getElementById('signupForm');
+    if (sf) sf.addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('su');
+      if (problem) return showError('signupError', problem);
+      const name = document.getElementById('suName').value.trim();
+      const email = document.getElementById('suEmail').value.trim();
+      const password = document.getElementById('suPassword').value;
+      if (!email) return showError('signupError', 'Fill in your email.');
+      if (password.length < 6) return showError('signupError', 'Use a password of at least 6 characters.');
+      const btn = sf.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Creating account…';
+      signingUp = true;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); }
+        catch (err) { console.error('Profile could not be saved:', err); }
+        signingUp = false;
+        toast('Welcome, ' + name + '! Your account works in the app too.');
+        const n = nextUrl();
+        if (n) { location.href = n; return; }
+        show(cred.user);
+      } catch (err) {
+        signingUp = false;
+        btn.disabled = false; btn.textContent = 'Create account';
+        showError('signupError', signupMessage(err));
+      }
+    });
+  }
+
+  function renderCompleteProfile(user) {
+    document.title = 'Complete your profile | Strong Foodie';
+    root.innerHTML = `
+      <div class="acct-card">
+        <h1>Complete your profile</h1>
+        <p class="lead">Your account has no profile yet. Add a name and your date of birth, then you can post reviews here and use the account in the app.</p>
+        <form id="profileForm" class="form" novalidate>
+          <input class="field" id="pfName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" value="${esc(user.displayName || '')}" required>
+          ${birthFields('pf')}
+          <p class="form-error" id="profileError" hidden></p>
+          <button class="btn btn-primary" type="submit">Save profile</button>
+          <button class="link-btn" type="button" id="logoutBtn">Log out</button>
+        </form>
+      </div>`;
+    document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+    document.getElementById('profileForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('pf');
+      if (problem) return showError('profileError', problem);
+      const name = document.getElementById('pfName').value.trim();
+      try {
+        const ref = doc(db, 'profiles', user.uid);
+        if (!(await getDoc(ref)).exists()) await setDoc(ref, newProfile(name));
+        try { await updateProfile(user, { displayName: name }); } catch (err) {}
+        toast('Profile saved');
+        const n = nextUrl();
+        if (n) { location.href = n; return; }
+        show(user);
+      } catch (err) {
+        console.error(err);
+        showError('profileError', 'Your profile could not be saved. Please try again later.');
+      }
+    });
+  }
+
+  async function renderAccount(user, profile) {
+    const name = profile.displayName || user.displayName || 'Foodie';
+    document.title = name + ' | My account | Strong Foodie';
+    const initials = name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    root.innerHTML = `
+      <div class="acct-head">
+        <div class="acct-avatar">${esc(initials)}</div>
+        <div class="acct-who">
+          <h1>${esc(name)}</h1>
+          <p class="small">${esc(user.email || '')} · one account for the website and the app</p>
+        </div>
+        <button class="btn" id="logoutBtn">Log out</button>
+      </div>
+
+      <section class="acct-block">
+        <h2>Your name</h2>
+        <form id="nameForm" class="inline-form" novalidate>
+          <input class="field" id="nameInput" type="text" maxlength="30" value="${esc(name)}" aria-label="Your name">
+          <button class="btn" type="submit">Save</button>
+        </form>
+        <p class="small">Shown with your reviews and spots, here and in the app.</p>
+        <p class="form-error" id="nameError" hidden></p>
+      </section>
+
+      <section class="acct-block">
+        <h2>Your reviews <span class="count" id="revCount"></span></h2>
+        <div id="revList"><p class="small">Loading…</p></div>
+      </section>
+
+      <section class="acct-block">
+        <h2>Your spots <span class="count" id="spotCount"></span></h2>
+        <div id="spotList"><p class="small">Loading…</p></div>
+      </section>
+
+      <p class="small" style="margin-top:1.5rem;">To write a review, open any place, for example from the <a href="stad.html">destinations</a> or the <a href="map.html">map</a>, and tap “Write a review”.</p>`;
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); toast('Logged out'); });
+    document.getElementById('nameForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const v = document.getElementById('nameInput').value.trim();
+      if (v.length < 2) return showError('nameError', 'Fill in a name of at least 2 characters.');
+      try {
+        await updateDoc(doc(db, 'profiles', user.uid), { displayName: v });
+        try { await updateProfile(user, { displayName: v }); } catch (err) {}
+        toast('Name saved');
+        renderAccount(user, { ...profile, displayName: v });
+      } catch (err) { console.error(err); showError('nameError', 'Your name could not be saved. Please try again later.'); }
+    });
+
+    // Your reviews (written here or in the app)
+    try {
+      const snap = await getDocs(query(collection(db, 'userReviews'), where('authorId', '==', user.uid)));
+      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+      document.getElementById('revCount').textContent = rows.length ? `(${rows.length})` : '';
+      document.getElementById('revList').innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => {
+        const link = r.placeDocId && r.placeCollection ? `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}` : '';
+        return `<li>
+          <div class="row-top">${link ? `<a href="${link}">${esc(r.placeName || 'A place')}</a>` : `<strong>${esc(r.placeName || 'A place')}</strong>`}<span class="stars">${stars(r.rating)}</span></div>
+          ${r.text ? `<p>${esc(r.text.slice(0, 160))}${r.text.length > 160 ? '…' : ''}</p>` : ''}
+          <p class="small">${fmtDate(toDate(r.createdAt))}${r.source === 'web' ? ' · on the website' : ' · in the app'}</p>
+        </li>`;
+      }).join('')}</ul>` : '<p class="small">No reviews yet.</p>';
+    } catch (e) { document.getElementById('revList').innerHTML = '<p class="small">Your reviews could not load.</p>'; }
+
+    // Your spots (added in the app)
+    try {
+      const snap = await getDocs(query(collection(db, 'userPlaces'), where('addedByUserId', '==', user.uid)));
+      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+      document.getElementById('spotCount').textContent = rows.length ? `(${rows.length})` : '';
+      document.getElementById('spotList').innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => `<li>
+          <div class="row-top"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(r.id)}">${esc(r.name)}</a></div>
+          <p class="small">${esc([r.address, r.city].filter(Boolean).join(', '))}${r.createdAt ? ' · ' + fmtDate(toDate(r.createdAt)) : ''}</p>
+        </li>`).join('')}</ul>` : '<p class="small">No spots yet. You add spots in the Strong Foodie app.</p>';
+    } catch (e) { document.getElementById('spotList').innerHTML = '<p class="small">Your spots could not load.</p>'; }
+  }
+
+  async function show(user) {
+    if (!user) return renderSignedOut();
+    let profile = null;
+    try { const s = await getDoc(doc(db, 'profiles', user.uid)); profile = s.exists() ? s.data() : null; }
+    catch (e) { profile = {}; } // could not check: don't block the member
+    if (!profile) return renderCompleteProfile(user);
+    const n = nextUrl();
+    if (n) { location.href = n; return; }
+    renderAccount(user, profile);
+  }
+
+  onAuthStateChanged(auth, user => { if (!signingUp) show(user); });
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module" src="js/sf-account-nav.js?v=1"></script>
+</body>
+</html>
