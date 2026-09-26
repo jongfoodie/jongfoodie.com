@@ -78,6 +78,17 @@
   .acct-list p { font-size: 14px; color: var(--ink-soft); margin-top: 0.2rem; line-height: 1.5; overflow-wrap: anywhere; }
   .row-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
   .stars { color: var(--gold); white-space: nowrap; }
+  .wish-form { margin-top: 0.75rem; margin-bottom: 0; }
+  .wish-form[hidden], #wishAddOpen[hidden] { display: none; }
+  .cat-pick { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .cat-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .cat-opt span { display: inline-block; border: 1px solid var(--border); border-radius: 20px; padding: 7px 12px; font-size: 13px; background: #fff; cursor: pointer; }
+  .cat-opt input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .cat-opt input:focus-visible + span { outline: 2px solid var(--accent); }
+  .row-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pill-new { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: #FFF4E5; color: #8A5A10; padding: 2px 8px; border-radius: 8px; margin-top: 4px; }
+  .small-link { font-size: 13px; }
+  .acct-list .small a { color: var(--accent); font-weight: 500; }
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   @media (max-width: 600px) {
@@ -142,7 +153,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -379,6 +390,26 @@
         <p class="form-error" id="nameError" hidden></p>
       </section>
 
+      <section class="acct-block" id="wishlist">
+        <h2>Your wishlist <span class="count" id="wishCount"></span></h2>
+        <p class="small" style="margin-bottom:0.75rem;">Places you want to go. Save a place with 🔖 on its page, or add one that is not on Strong Foodie yet. Your wishlist is private and the same as in the app.</p>
+        <div id="wishList"><p class="small">Loading…</p></div>
+        <button class="btn" id="wishAddOpen" type="button">＋ Add a place you want to visit</button>
+        <form id="wishForm" class="form wish-form" novalidate hidden>
+          <input class="field" id="wName" type="text" maxlength="120" placeholder="Name of the place" required>
+          <div class="cat-pick" role="radiogroup" aria-label="Category">
+            ${WISH_CATS.map((c, i) => `<label class="cat-opt"><input type="radio" name="wCat" value="${c.key}"${i === 0 ? ' checked' : ''}><span>${c.emoji} ${c.label}</span></label>`).join('')}
+          </div>
+          <input class="field" id="wCity" type="text" maxlength="80" placeholder="City (optional)">
+          <textarea class="field" id="wNote" rows="2" maxlength="300" placeholder="Why do you want to go? (optional)"></textarea>
+          <p class="form-error" id="wishError" hidden></p>
+          <div class="row-btns">
+            <button class="btn btn-primary" type="submit">Add to wishlist</button>
+            <button class="btn" type="button" id="wishCancel">Cancel</button>
+          </div>
+        </form>
+      </section>
+
       <section class="acct-block">
         <h2>Your reviews <span class="count" id="revCount"></span></h2>
         <div id="revList"><p class="small">Loading…</p></div>
@@ -403,6 +434,39 @@
         renderAccount(user, { ...profile, displayName: v });
       } catch (err) { console.error(err); showError('nameError', 'Your name could not be saved. Please try again later.'); }
     });
+
+    // Wishlist
+    const wf = document.getElementById('wishForm');
+    const openBtn = document.getElementById('wishAddOpen');
+    openBtn.addEventListener('click', () => { wf.hidden = false; openBtn.hidden = true; document.getElementById('wName').focus(); });
+    document.getElementById('wishCancel').addEventListener('click', () => { wf.hidden = true; openBtn.hidden = false; wf.reset(); document.getElementById('wishError').hidden = true; });
+    wf.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('wName').value.trim();
+      if (name.length < 2) return showError('wishError', 'Fill in the name of the place.');
+      const btn = wf.querySelector('[type="submit"]');
+      btn.disabled = true;
+      try {
+        await addDoc(collection(db, 'profiles', user.uid, 'wishlistItems'), {
+          kind: 'idea',
+          name,
+          category: (wf.querySelector('input[name="wCat"]:checked') || {}).value || 'eat',
+          city: document.getElementById('wCity').value.trim(),
+          note: document.getElementById('wNote').value.trim(),
+          source: 'web',
+          createdAt: serverTimestamp(),
+        });
+        toast('Added to your wishlist');
+        wf.reset(); wf.hidden = true; openBtn.hidden = false;
+        document.getElementById('wishError').hidden = true;
+        loadWishlist(user);
+      } catch (err) {
+        console.error('Wishlist could not be saved:', err);
+        showError('wishError', err && err.code === 'permission-denied' ? 'The wishlist is not switched on yet. Please try again later.' : 'Could not save. Please try again.');
+      }
+      btn.disabled = false;
+    });
+    loadWishlist(user);
 
     // Your reviews (written here or in the app)
     try {
@@ -429,6 +493,45 @@
           <p class="small">${esc([r.address, r.city].filter(Boolean).join(', '))}${r.createdAt ? ' · ' + fmtDate(toDate(r.createdAt)) : ''}</p>
         </li>`).join('')}</ul>` : '<p class="small">No spots yet. You add spots in the Strong Foodie app.</p>';
     } catch (e) { document.getElementById('spotList').innerHTML = '<p class="small">Your spots could not load.</p>'; }
+  }
+
+  const WISH_CATS = [
+    { key: 'eat', label: 'Eat', emoji: '🍽️' }, { key: 'drink', label: 'Drink', emoji: '🍸' },
+    { key: 'shop', label: 'Shop', emoji: '🛍️' }, { key: 'culture', label: 'Culture', emoji: '🎭' },
+    { key: 'health', label: 'Health', emoji: '💪' }, { key: 'stay', label: 'Stay', emoji: '🏨' },
+  ];
+  const catInfo = k => WISH_CATS.find(c => c.key === k) || WISH_CATS[0];
+
+  async function loadWishlist(user) {
+    const box = document.getElementById('wishList');
+    if (!box) return;
+    let rows = [];
+    try {
+      const snap = await getDocs(collection(db, 'profiles', user.uid, 'wishlistItems'));
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    } catch (e) {
+      console.log('Wishlist could not load:', e.code || e);
+      box.innerHTML = '<p class="small">Your wishlist could not load right now.</p>';
+      return;
+    }
+    document.getElementById('wishCount').textContent = rows.length ? `(${rows.length})` : '';
+    box.innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => {
+      const c = catInfo(r.kind === 'place' ? r.placeCategory : r.category);
+      const title = r.kind === 'place' ? (r.placeName || 'A place') : (r.name || 'A place');
+      const link = r.kind === 'place' && r.placeDocId && r.placeCollection ? `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}` : '';
+      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([title, r.city].filter(Boolean).join(', '))}`;
+      return `<li>
+        <div class="row-top">${link ? `<a href="${link}">${esc(title)}</a>` : `<strong>${esc(title)}</strong>`}<span class="small">${c.emoji} ${c.label}</span></div>
+        ${r.kind === 'idea' ? '<span class="pill-new">Not on Strong Foodie yet</span>' : ''}
+        ${r.city ? `<p class="small">📍 ${esc(r.city)}</p>` : ''}
+        ${r.note ? `<p>${esc(r.note)}</p>` : ''}
+        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
+      </li>`;
+    }).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">Nothing on your wishlist yet.</p>';
+    box.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', async () => {
+      try { await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', b.dataset.remove)); toast('Removed from your wishlist'); loadWishlist(user); }
+      catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
+    }));
   }
 
   async function show(user) {
