@@ -290,6 +290,8 @@ function renderHotels(list) {
   }
   container.innerHTML = list.map((h, i) => {
     const photos = (h.photos && h.photos.length) ? h.photos : (h.photoUrl ? [h.photoUrl] : []);
+      // Cards load the small copy from images/thumbs/, and the original if there is none.
+      const thumb = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?images\/[^\/?#]+\.jpe?g$/i.test(photos[0] || '') ? String(photos[0]).replace(/images\/([^\/?#]+)$/i, 'images/thumbs/$1') : '';
     const galleryId = 'gh' + i;
     if (photos.length) window.__galleryStore[galleryId] = photos;
     const photoCountBadge = photos.length > 1
@@ -311,7 +313,7 @@ function renderHotels(list) {
       : '';
     const imgHtml = photos.length
       ? `<div class="hotel-img hotel-img-clickable" style="position:relative;padding:0;overflow:hidden;" onclick="openGallery('${galleryId}', 0)">
-           <img src="${photos[0]}" alt="${h.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
+           <img src="${thumb || photos[0]}" ${thumb ? `data-full="${photos[0]}"` : ''} loading="lazy" decoding="async" onerror="if(this.dataset.full&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}" alt="${h.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
            ${partnerBadge}
            ${photoCountBadge}
            ${closedOverlay}

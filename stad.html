@@ -12,7 +12,18 @@
 <meta property="og:title" content="Destinations | Strong Foodie">
 <meta property="og:description" content="Every city and island Strong Foodie has reviewed: the best places to eat, drink, shop and stay, with honest ratings.">
 <meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
-<link rel="canonical" href="https://www.strongfoodie.com/stad.html">
+<script>
+  // The canonical address is set here and not in plain HTML, because every
+  // place or destination is its own page: only the parameters that choose it count.
+  (function () {
+    var q = new URLSearchParams(location.search), keep = [];
+    ['d'].forEach(function (k) { if (q.get(k)) keep.push(k + '=' + encodeURIComponent(q.get(k))); });
+    var l = document.createElement('link');
+    l.rel = 'canonical';
+    l.href = 'https://www.strongfoodie.com/stad.html' + (keep.length ? '?' + keep.join('&') : '');
+    document.head.appendChild(l);
+  })();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -316,7 +327,7 @@
     root.innerHTML = `
       <div class="crumbs"><a href="index.html">Home</a> › <a href="stad.html">Destinations</a> › ${esc(d.name)}</div>
       <header class="d-hero">
-        ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" hidden>` : ''}
+        ${cover ? `<img data-photo="${esc(cover.photos[0])}" data-full alt="" hidden>` : ''}
         <div class="d-hero-body">
           <p class="d-eyebrow">${esc(d.country && d.country !== d.name ? d.country : 'Destination')}</p>
           <h1>${esc(d.name)}</h1>

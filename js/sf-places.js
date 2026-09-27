@@ -183,6 +183,12 @@ export const byQuality = (a, b) => (b.rating || 0) - (a.rating || 0)
   || (a.member - b.member)
   || (b.created || 0) - (a.created || 0);
 
+// Small copy of a photo from the site's own images folder, for cards.
+export function thumbOf(url) {
+  const m = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?images\/([^\/?#]+\.jpe?g)$/i.exec(String(url || ''));
+  return m ? (m[1] || '') + 'images/thumbs/' + m[2] : '';
+}
+
 // ── Photos: normal URLs, or "fsimg://<id>" (a base64 image in `images`, from the app)
 export function photoTools(db) {
   const cache = new Map();
@@ -200,10 +206,18 @@ export function photoTools(db) {
     if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
     return Promise.resolve(url);
   }
+  // Cards get the small copy from images/thumbs/; an image marked data-full
+  // (a large cover) gets the original. No small copy yet: the original.
   function hydratePhotos(root) {
     root.querySelectorAll('img[data-photo]').forEach(img => {
       const src = img.getAttribute('data-photo');
       img.removeAttribute('data-photo');
+      const small = img.hasAttribute('data-full') ? '' : thumbOf(src);
+      if (small) {
+        img.onerror = () => { img.onerror = () => img.remove(); resolvePhoto(src).then(url => { if (url) img.src = url; else img.remove(); }); };
+        img.src = small; img.hidden = false;
+        return;
+      }
       img.onerror = () => img.remove();
       resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else img.remove(); });
     });

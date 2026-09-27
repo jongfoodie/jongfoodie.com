@@ -380,6 +380,12 @@ window.LEGACY_SPOTS = [
   }
 
   // ── Photos: catalogue photos are normal URLs; photos added in the app are
+  // The small copy in images/thumbs/ when there is one, else the original.
+  function smallImg(url) {
+    const m = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?images\/([^\/?#]+\.jpe?g)$/i.exec(String(url || ''));
+    if (!m) return `src="${esc(url)}"`;
+    return `src="${esc((m[1] || '') + 'images/thumbs/' + m[2])}" data-full="${esc(url)}" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}"`;
+  }
   // "fsimg://<id>", a base64 image in the images collection.
   const photoCache = new Map();
   function resolvePhoto(url) {
@@ -431,7 +437,7 @@ window.LEGACY_SPOTS = [
   function popupHtml(p) {
     const cat = CATS[p.cat];
     const photo = p.photo
-      ? `<img ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : `src="${esc(p.photo)}"`} alt="${esc(p.name)}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
+      ? `<img ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : smallImg(p.photo)} alt="${esc(p.name)}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
       : '';
     const by = p.source === 'member'
       ? `<span class="pop-by">Added by ${esc(p.addedBy || 'a member')}</span>`
@@ -497,7 +503,7 @@ window.LEGACY_SPOTS = [
       const div = document.createElement('div');
       div.className = 'spot-item';
       const thumb = p.photo
-        ? `<img class="spot-thumb" ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : `src="${esc(p.photo)}"`} alt=""><span class="spot-emoji photo-fallback">${esc(p.emoji)}</span>`
+        ? `<img class="spot-thumb" ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : smallImg(p.photo)} loading="lazy" alt=""><span class="spot-emoji photo-fallback">${esc(p.emoji)}</span>`
         : `<span class="spot-emoji">${esc(p.emoji)}</span>`;
       const badge = p.source === 'member'
         ? `<span class="badge badge-member">Member</span>`
