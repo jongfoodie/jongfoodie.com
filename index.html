@@ -660,6 +660,13 @@
     cursor: pointer;
     font-weight: 500;
   }
+  .btn-green:disabled { opacity: 0.6; cursor: default; }
+  .nl-form { position: relative; }
+  .nl-trap { position: absolute; left: -5000px; width: 1px; height: 1px; overflow: hidden; }
+  .newsletter-widget .nl-note { font-size: 11px; margin: 0.75rem 0 0; opacity: 0.75; }
+  .newsletter-widget .nl-note a { color: var(--green); }
+  .newsletter-widget .nl-note.ok { opacity: 1; font-weight: 500; }
+  .newsletter-widget .nl-note.err { opacity: 1; color: #B3261E; }
 
   /* SAVED POSTS */
   .saved-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -1186,10 +1193,15 @@
     <div class="newsletter-widget">
       <p class="widget-title">Weekly Bites</p>
       <p>Get the best new reviews delivered to your inbox every Friday.</p>
-      <div class="nl-input-row">
-        <input class="nl-input" type="email" placeholder="your@email.com">
-        <button class="btn-green" onclick="showToast('Subscribed! See you Friday 🎉')">Subscribe</button>
-      </div>
+      <form class="nl-form" id="nlForm" novalidate>
+        <div class="nl-input-row">
+          <input class="nl-input" id="nlEmail" type="email" name="EMAIL" autocomplete="email" placeholder="your@email.com" aria-label="Your email address" required>
+          <button class="btn-green" id="nlBtn" type="submit">Subscribe</button>
+        </div>
+        <!-- Left empty by people. Bots fill it in, and Mailchimp then ignores the signup. -->
+        <div class="nl-trap" aria-hidden="true"><input type="text" id="nlTrap" tabindex="-1" autocomplete="off" value=""></div>
+      </form>
+      <p class="nl-note" id="nlNote" aria-live="polite">No spam. Unsubscribe anytime. <a href="privacy.html">Privacy</a></p>
     </div>
   </aside>
 </div>
@@ -1216,6 +1228,71 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2800);
   }
+
+  // Weekly Bites: sends the email address to the Mailchimp audience.
+  // Mailchimp's post-json address answers in JSONP, so the visitor stays on this page.
+  (function () {
+    const MC = 'https://jongfoodie.us9.list-manage.com/subscribe/post-json?u=0252a7809924477245601c5ff&id=2037c1e204&f_id=008cc2e1f0';
+    const TRAP = 'b_0252a7809924477245601c5ff_2037c1e204';
+    const form = document.getElementById('nlForm');
+    if (!form) return;
+    const input = document.getElementById('nlEmail');
+    const btn = document.getElementById('nlBtn');
+    const note = document.getElementById('nlNote');
+    const noteHtml = note.innerHTML;
+    let busy = false;
+
+    const say = (text, kind) => { note.textContent = text; note.className = 'nl-note ' + kind; };
+
+    function done(res) {
+      busy = false;
+      btn.disabled = false;
+      btn.textContent = 'Subscribe';
+      const msg = String((res && res.msg) || '');
+      if (res && res.result === 'success') {
+        input.value = '';
+        const confirm = /confirm/i.test(msg);
+        say(confirm ? 'Almost done! Check your inbox and click the link to confirm.' : 'You are on the list. See you Friday 🎉', 'ok');
+        showToast(confirm ? 'Check your inbox to confirm 📬' : 'Subscribed! See you Friday 🎉');
+        if (window.gtag) gtag('event', 'sign_up', { method: 'newsletter' });
+        return;
+      }
+      let text = 'Something went wrong. Please try again in a moment.';
+      if (/already subscribed/i.test(msg)) text = 'You are already subscribed. See you Friday 🎉';
+      else if (/too many/i.test(msg)) text = 'Too many tries with this address. Please try again later.';
+      else if (/valid|domain|email address/i.test(msg)) text = 'Please check your email address.';
+      say(text, /already subscribed/i.test(msg) ? 'ok' : 'err');
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (busy) return;
+      const email = input.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say('Please enter a valid email address.', 'err'); input.focus(); return; }
+      if (document.getElementById('nlTrap').value) return;   // a bot
+      busy = true;
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      note.className = 'nl-note';
+      note.innerHTML = noteHtml;
+
+      const cb = 'sfNl' + Date.now();
+      const s = document.createElement('script');
+      let finished = false;
+      const finish = res => {
+        if (finished) return;
+        finished = true;
+        window[cb] = function () {};   // a late answer after a timeout does nothing
+        s.remove();
+        done(res);
+      };
+      window[cb] = finish;
+      s.onerror = () => finish(null);
+      setTimeout(() => finish(null), 12000);
+      s.src = MC + '&' + new URLSearchParams({ EMAIL: email, [TRAP]: '', c: cb });
+      document.body.appendChild(s);
+    });
+  })();
 
   function toggleLike(btn) {
     btn.classList.toggle('saved');
