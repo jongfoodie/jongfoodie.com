@@ -11,7 +11,7 @@
 <meta property="og:site_name" content="Strong Foodie">
 <meta property="og:title" content="Strong Foodie">
 <meta property="og:description" content="Honest reviews and member tips from Strong Foodie.">
-<meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
 <script>
   // The canonical address is set here and not in plain HTML, because every
   // place or destination is its own page: only the parameters that choose it count.
@@ -20,7 +20,7 @@
     ['c', 'id'].forEach(function (k) { if (q.get(k)) keep.push(k + '=' + encodeURIComponent(q.get(k))); });
     var l = document.createElement('link');
     l.rel = 'canonical';
-    l.href = 'https://www.strongfoodie.com/plek.html' + (keep.length ? '?' + keep.join('&') : '');
+    l.href = 'https://strongfoodie.com/plek.html' + (keep.length ? '?' + keep.join('&') : '');
     document.head.appendChild(l);
   })();
 </script>
@@ -376,7 +376,7 @@
     document.title = `${p.name}${town ? ', ' + town : ''} | Strong Foodie`;
     const desc = (p.review || p.tip || `${cat.label} spot${p.address ? ' at ' + p.address : ''}`).slice(0, 155);
     document.querySelector('meta[name="description"]').setAttribute('content', desc);
-    const canonical = `https://www.strongfoodie.com/plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
+    const canonical = `https://strongfoodie.com/plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
     document.querySelector('link[rel="canonical"]').setAttribute('href', canonical);
 
     const hasCoords = p.lat != null && p.lng != null;

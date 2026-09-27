@@ -1608,7 +1608,7 @@
 
   // ── SOCIAL MEDIA AUTO-POST ───────────────────────────────────────────────
   // ── ONE-CLICK CONNECT (Instagram / TikTok) ───────────────────────────────
-  const REDIRECT_URI = 'https://www.strongfoodie.com/admin.html';
+  const REDIRECT_URI = 'https://strongfoodie.com/admin.html';
 
   window.connectInstagram = function() {
     const appId = document.getElementById('igAppId').value.trim();
@@ -1877,9 +1877,9 @@
       '<title>' + nameSafe + ' Review: Strong Foodie</title>',
       '<meta name="description" content="' + reviewShort + '">',
       '<meta property="og:title" content="' + nameSafe + ': Strong Foodie">',
-      '<meta property="og:image" content="' + (r.photoUrl || 'https://www.strongfoodie.com/icon-512.png') + '">',
-      '<meta property="og:url" content="https://www.strongfoodie.com/' + filename + '">',
-      '<link rel="canonical" href="https://www.strongfoodie.com/' + filename + '">',
+      '<meta property="og:image" content="' + (r.photoUrl || 'https://strongfoodie.com/icon-512.png') + '">',
+      '<meta property="og:url" content="https://strongfoodie.com/' + filename + '">',
+      '<link rel="canonical" href="https://strongfoodie.com/' + filename + '">',
       '<scr'+'ipt async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></scr'+'ipt>',
       '<scr'+'ipt>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</scr'+'ipt>',
       '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">',
@@ -2455,7 +2455,7 @@
       "⭐ " + ("★".repeat(Math.round(r.rating || 5))) + "\n" +
       (r.price ? "💰 " + r.price + "\n" : "") +
       "\n" + (r.review || "") + "\n\n" +
-      "👉 https://www.strongfoodie.com/reviews.html\n\n" +
+      "👉 https://strongfoodie.com/reviews.html\n\n" +
       "Merdan, Strong Foodie";
     navigator.clipboard.writeText(text).then(() => {
       showToast("✅ Text copied! Open Mailchimp and paste the text.");
