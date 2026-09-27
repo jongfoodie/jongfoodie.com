@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Correcties · Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --ink: #1A1208; --ink2: #3D2F1A; --accent: #D4521A;
+    --border: rgba(26,18,8,0.12); --muted: #8A7A66; --green: #2D5A3D;
+    --green-bg: #E8F0EA; --card: #FFFDF9; --red: #B3261E; --red-bg: #FBEAE8;
+    --old-bg: #F3EEE6;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.5; min-height: 100vh; }
+  .bar { background: var(--ink); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .bar h1 { font-family: 'Playfair Display', serif; font-size: 18px; }
+  .bar h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; margin-left: 6px; }
+  .bar button { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 20px; padding: 6px 12px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 6px; }
+  .lead { color: var(--ink2); margin-bottom: 18px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  .login { max-width: 400px; margin: 40px auto; }
+  .login label { display: block; font-size: 13px; font-weight: 500; margin: 14px 0 6px; }
+  .login input { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px; font: 16px 'DM Sans', sans-serif; background: #fff; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 22px; padding: 10px 18px; font: 500 14px 'DM Sans', sans-serif; cursor: pointer; background: var(--accent); color: #fff; text-decoration: none; }
+  .btn:disabled { opacity: 0.55; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--ink2); border: 1px solid var(--border); }
+  .btn.dark { background: var(--ink); }
+  .btn.full { width: 100%; margin-top: 18px; }
+  .err { color: var(--red); font-size: 14px; margin-top: 10px; }
+  .top { position: sticky; top: 0; z-index: 5; background: var(--cream); padding: 12px 0; margin-bottom: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; border-bottom: 1px solid var(--border); }
+  .progress { flex: 1 1 200px; }
+  .progress b { font-size: 15px; }
+  .meter { height: 6px; background: var(--old-bg); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 0; background: var(--green); transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-top: 14px; }
+  .card.done { border-color: rgba(45,90,61,0.35); }
+  .card.missing { opacity: 0.75; }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .head h3 { font-size: 17px; font-weight: 700; margin-right: auto; }
+  .chip { font-size: 12px; font-weight: 500; border-radius: 12px; padding: 3px 9px; background: var(--old-bg); color: var(--ink2); }
+  .pill { font-size: 12px; font-weight: 700; border-radius: 12px; padding: 3px 9px; }
+  .pill.todo { background: #FFF1E8; color: var(--accent); }
+  .pill.done { background: var(--green-bg); color: var(--green); }
+  .pill.missing, .pill.error { background: var(--red-bg); color: var(--red); }
+  .why { font-size: 14px; color: var(--ink2); margin-bottom: 12px; }
+  .field { margin-top: 10px; }
+  .field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 4px; }
+  .old { background: var(--old-bg); border-radius: 10px; padding: 10px 12px; font-size: 14px; color: var(--ink2); white-space: pre-line; word-break: break-word; }
+  .card.done .field.was { display: none; }
+  .card.done textarea, .card.done .field input { background: var(--green-bg); border-color: transparent; }
+  textarea, .field input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 16px/1.5 'DM Sans', sans-serif; color: var(--ink); background: #fff; resize: vertical; }
+  textarea:focus, .field input:focus, .login input:focus { outline: 2px solid rgba(212,82,26,0.35); border-color: var(--accent); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+  .actions a.view { font-size: 14px; color: var(--ink2); margin-left: auto; }
+  .card-err { color: var(--red); font-size: 14px; margin-top: 8px; }
+  h3.group { font-family: 'Playfair Display', serif; font-size: 20px; margin: 26px 0 2px; }
+  .foot { margin-top: 28px; font-size: 14px; color: var(--muted); }
+  [hidden] { display: none !important; }
+  @media (max-width: 480px) {
+    h2 { font-size: 22px; }
+    .actions a.view { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>Strong Foodie <span>CORRECTIES</span></h1>
+  <button id="signOutBtn" type="button" hidden>Uitloggen</button>
+</div>
+
+<main>
+  <p id="checking" class="muted">Even kijken of je bent ingelogd...</p>
+
+  <div id="loginBox" class="box login" hidden>
+    <h2>Inloggen</h2>
+    <p class="muted">Log in met het Strong Foodie admin-account (hetzelfde als op admin.html).</p>
+    <form id="loginForm">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="pw">Wachtwoord</label>
+      <input id="pw" type="password" autocomplete="current-password" required>
+      <button class="btn full" id="loginBtn" type="submit">Inloggen</button>
+      <p class="err" id="loginErr" hidden></p>
+    </form>
+  </div>
+
+  <div id="notAdmin" class="box login" hidden>
+    <h2>Geen admin</h2>
+    <p class="muted" id="notAdminText">Dit account mag de reviews niet aanpassen. Log uit en log in met het Strong Foodie admin-account.</p>
+    <button class="btn full" id="notAdminOut" type="button">Uitloggen</button>
+  </div>
+
+  <div id="panel" hidden>
+    <h2>Correcties</h2>
+    <p class="lead">Per plek zie je wat er niet klopt, de tekst die er nu staat en de nieuwe tekst. Je kunt de nieuwe tekst eerst nog aanpassen. Met <b>Toepassen</b> staat hij direct op de website en in de app.</p>
+
+    <div class="top">
+      <div class="progress">
+        <b id="progressText">Laden...</b>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+      <button class="btn dark" id="applyAll" type="button" disabled>Alles toepassen</button>
+    </div>
+    <p class="err" id="loadErr" hidden></p>
+
+    <div id="list"></div>
+
+    <p class="foot">Klaar? Dan kun je dit bestand (correcties.html) weer van GitHub verwijderen. Alleen het admin-account kan hiermee iets aanpassen, dus laten staan kan ook.</p>
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  // Same default app as admin.html, so a sign-in there also counts here.
+  const app = getApps().some(a => a.name === '[DEFAULT]') ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+
+  const CAT = { reviews: 'Eat', hotelreviews: 'Stay', drinkspots: 'Drink', userPlaces: 'Member spot' };
+  const LABEL = { review: 'Tekst', name: 'Naam', city: 'Locatie', type: 'Tip', lat: 'Kaart: breedtegraad', lng: 'Kaart: lengtegraad' };
+  const NUM_FIELDS = new Set(['lat', 'lng']);
+
+  // The corrections. Reviews are found by document id; the others by name.
+  const FIXES = [
+    { coll: 'reviews', id: '3USc2cZdzhwysxMKSZwJ', name: 'Eetsalon Van Dobben',
+      why: 'De kroketten worden sinds 1992 niet meer zelf gemaakt, maar door een fabriek (wel met het oude recept).',
+      set: { review: "An Amsterdam institution since 1945. Famous for their croquettes (kroket) on a white bun with mustard." } },
+    { coll: 'reviews', id: '9MNWsXrs5sN7M8zAwWFX', name: 'nNea Pizza',
+      why: 'nNea bakt in elektrische ovens, niet in een houtoven.',
+      set: { review: "Neapolitan-style pizza in Amsterdam. Perfect leopard-spotted crust and fresh, top-quality ingredients." } },
+    { coll: 'reviews', id: 'wIqFSvnI5vZlKyhooz9K', name: 'BagelBoy',
+      why: 'Het zijn geen New Yorkse bagels. Ze noemen ze zelf "Amsterdam sourdough bagels".',
+      set: { review: "Sourdough bagels made in Amsterdam. Fresh, chewy bagels with creative toppings. A must-visit on the Albert Cuypstraat." } },
+    { coll: 'reviews', id: 'XgxTz6Noh7G7D4rP1lIa', name: "L'Entrecôte et les Dames",
+      why: 'Je krijgt een tweede portie, maar onbeperkt is het niet.',
+      set: { review: "An Amsterdam classic. The set menu is entrecôte with their famous house sauce and frites, and you get a second serving. One of the best deals in town." } },
+    { coll: 'reviews', id: 'emeqDtJYsN0KTCAqruAu', name: 'Beef Chief // Transit Bar',
+      why: 'Ze maken dikke burgers, geen smashburgers.',
+      set: { review: "Hidden gem in Amsterdam-Noord. Thick, juicy burgers in a cool bar setting, try the Kimchief. Worth the trip across the water for some of the best beef in the city." } },
+    { coll: 'reviews', id: 'gg0krN67ZncvtTvKFC4N', name: 'THE GOAT Rotterdam',
+      why: "Dat de smashburger-hype in Nederland hier begon, klopt niet (Fat Phill's was eerder).",
+      set: { review: "Rotterdam's legendary smash burger spot. Juicy smashed patties and an incredible Korean kimchi burger." } },
+    { coll: 'reviews', id: 'ho0RfyOC8STBgXVqoSnD', name: 'Salvo Bake House',
+      why: 'Zit in Amsterdam-West, niet in de Jordaan. En het is een Italiaanse banketbakker, geen zuurdesembakker.',
+      set: { review: "A hidden bakery gem in Amsterdam-West. Italian pastries made with exceptional craft: maritozzi, bomboloni and cornetti. One of Amsterdam's best kept secrets." } },
+    { coll: 'reviews', id: 'lDtb6Sh4mbz6Mi8d1ggL', name: 'Republiek Bloemendaal',
+      why: 'Ligt bij Haarlem, niet vlak bij Amsterdam. En je kijkt uit op zee, niet op de oceaan.',
+      set: { review: "A beautiful beach club in Bloemendaal aan Zee, near Haarlem. Great food, sea views and a relaxed atmosphere. Perfect for a summer day trip from Amsterdam." } },
+    { coll: 'reviews', id: '24A2DkgfME8ApQNR7vIG', name: 'Local Store Aruba',
+      why: 'Er staan 13 smaken wings op de kaart, geen 15+. Het is meer een rumshop met gastropub dan een craft-beerbar.',
+      set: { review: "Aruba's favourite rumshop meets gastropub, with craft beer and incredible chicken wings in more than a dozen flavours. The local hotspot where Arubans go after work. Homemade chips and fried polenta are must-orders." } },
+    { coll: 'reviews', id: 'HCV5MvuaafdAiJwOy001', name: 'Flying Fishbone',
+      why: 'De tafels staan in het ondiepe water, niet erboven.',
+      set: { review: "One of Aruba's most unique dining experiences: tables stand in the shallow water of Savaneta bay, so you eat with your feet in the sea. Fresh seafood, stunning sunsets and an atmosphere unlike anywhere else on the island." } },
+    { coll: 'reviews', id: 'JMsPyd6aSJOfeCaLG63z', name: 'Madame Janette',
+      why: 'Het restaurant schrijf je "Janette". De peper komt uit Suriname, en het eten is Europees en Caribisch, niet typisch Arubaans.',
+      set: { name: "Madame Janette",
+             review: "Named after the famous Madame Jeanette pepper, Madame Janette is a must-visit on Aruba. European and Caribbean dishes in a charming outdoor setting with fairy lights, tropical gardens and plenty of flavour." } },
+    { coll: 'reviews', id: 'V6smAGuczzTNS1VAM7Nw', name: 'Papiamento Restaurant',
+      why: 'Het huis is uit 1886, dus ongeveer 140 jaar oud en geen 175.',
+      set: { review: "Aruba's most iconic restaurant since 1983. Dining in a 19th-century cunucu house under tropical trees by a pool. The keshi yena and lobster are unforgettable." } },
+    { coll: 'reviews', id: 'RMhpQyIG0vrVL7yr6L5y', name: 'RVR Venice',
+      why: 'Dit is een Japanse izakaya (een soort Japans eetcafé), geen koffiezaak.',
+      set: { review: "A stylish Japanese izakaya on the famous Abbot Kinney Boulevard, from the team behind Gjelina. Skewers, gyoza and ramen, with excellent people-watching on one of LA's most vibrant streets." } },
+    { coll: 'reviews', id: 'SlSwyMClb1IlhljbN4yg', name: 'Soho House West Hollywood',
+      why: 'Er is geen zwembad op het dak, wel een dakterras.',
+      set: { review: "The iconic Soho House on the Sunset Strip. A stunning rooftop terrace with views over LA. The food and cocktails are excellent. Members and their guests only." } },
+    { coll: 'reviews', id: 'pURRAuQiW9upf0zIsKnI', name: 'Met Her At A Bar',
+      why: 'Ondanks de naam is het een café dat alleen overdag open is, zonder cocktails.',
+      set: { review: "A cool daytime café on La Brea with Belgian waffles and great coffee. Buzzing atmosphere and one of the most fun breakfast spots in LA." } },
+    { coll: 'reviews', id: 'oifDeYKcXnKRjyELkTRr', name: 'El Agave Restaurant',
+      why: '"De indrukwekkendste tequilacollectie ter wereld" kun je niet hard maken. Ze hebben wel meer dan 2.000 tequila\'s.',
+      set: { review: "Award-winning Mexican restaurant in Old Town San Diego. Incredible mole sauces, fresh seafood and a collection of more than 2,000 tequilas." } },
+    { coll: 'reviews', id: 'tOdWHBI8vo2yySrV3vfL', name: 'Georges at the Cove',
+      why: 'Er zijn geen drie verdiepingen meer om te eten. De fine-dining verdieping wordt nu alleen voor besloten feesten gebruikt.',
+      set: { review: "Stunning ocean views from one of La Jolla's best restaurants. The rooftop Ocean Terrace with Pacific views is absolutely breathtaking, and Level2 is great for a more casual meal." } },
+
+    { coll: 'hotelreviews', findName: 'The Venetian Las Vegas', name: 'The Venetian Las Vegas',
+      why: 'Bijna letterlijk de reclametekst van het hotel zelf. Nu in eigen woorden, en zonder "award-winning" bij alle restaurants.',
+      set: { review: "One of the Strip's most iconic landmarks and, by its own count, the largest Forbes Travel Guide Four-Star hotel in the world. Every room is a suite of around 60 m², with an Italian marble bathroom and a sunken living room. Inside you'll find more than 30 restaurants, a big pool deck with cabanas, headline shows and the Grand Canal Shoppes with their gondola rides, so you hardly need to leave the building. Now part of World of Hyatt." } },
+    { coll: 'hotelreviews', findName: 'Virgin Hotels Las Vegas', name: 'Virgin Hotels Las Vegas',
+      why: 'Het rock-and-roll thema hoorde bij het oude Hard Rock Hotel. Virgin heeft een woestijn-oase stijl.',
+      set: { review: "A stylish desert-oasis retreat just off the Strip, where the old Hard Rock Hotel used to be. Three towers, a 5-acre pool complex, a spa with a Roman-style bathhouse and a great dining lineup including Nobu make this one of Vegas's most vibrant stays. Cool, energetic and great value for money." } },
+    { coll: 'hotelreviews', findName: 'Petit Ermitage', name: 'Petit Ermitage',
+      why: 'Het zwembad op het dak is alleen voor hotelgasten, en het is geen echte galerie.',
+      set: { review: "A hidden gem in West Hollywood, a boutique hotel full of original art. The rooftop pool and garden, open only to hotel guests, have a vibe unlike anything else in LA. Intimate, artistic and effortlessly cool. One of those places you never want to leave." } },
+    { coll: 'hotelreviews', findName: 'The Peninsula Bangkok', name: 'The Peninsula Bangkok',
+      why: 'Het is geen infinity pool maar een zwembad met drie niveaus in de tuin aan de rivier.',
+      set: { review: "Arguably the finest hotel in Bangkok. Perched on the banks of the Chao Phraya River, the views are simply spectacular. The service is flawless, every staff member anticipates your needs before you even ask. The three-tiered pool in the riverside garden at sunset is a memory that stays with you forever." } },
+
+    { coll: 'drinkspots', findName: 'Sapphirel', name: 'Sapphire',
+      why: 'Spelfout in de naam. Let op: Sapphire is een stripclub (21+). Was dat niet de plek die je bedoelde? Pas dit dan niet aan en kijk het zelf na.',
+      set: { name: "Sapphire" } },
+    // ── Locaties en spelling (gevonden bij de controle van 27 september)
+    { group: 'Locaties en spelling', coll: 'reviews', id: 'fYdFvqjKS78yznbt0zT6', name: 'Maijard Chicken Smashed Burger',
+      why: 'Als locatie staat alleen "Netherlands" en er is geen kaartpositie. Daardoor staat hij niet op de kaart en niet bij Amsterdam. Hij krijgt dezelfde plek als Maijard Smashburgers: The Original.',
+      set: { city: "Amsterdam", lat: 52.3736633, lng: 4.8823475 } },
+    { coll: 'reviews', id: 'xhGGAu6pxX0khiycmbhP', name: 'Maijard Smashburger: Chicken Smash',
+      why: 'Als locatie staat alleen "Netherlands" en er is geen kaartpositie. Daardoor staat hij niet op de kaart en niet bij Amsterdam. Hij krijgt dezelfde plek als Maijard Smashburgers: The Original.',
+      set: { city: "Amsterdam", lat: 52.3736633, lng: 4.8823475 } },
+    { coll: 'reviews', id: 'kvuNd7tRXXElijrIH6xL', name: 'Maijard Smashburgers: The Original',
+      why: 'Als locatie staat alleen "Netherlands". Daardoor staat hij niet bij Amsterdam op de bestemmingspagina.',
+      set: { city: "Amsterdam" } },
+    { coll: 'reviews', id: 'lmMZhBP91ExJ8hxNVwQV', name: 'Sjefietsh\u00e9: Hotdoctopus',
+      why: 'Als locatie staat alleen "Netherlands". Sjefietsh\u00e9 zit op Van Ostadestraat 1 in Amsterdam.',
+      set: { city: "Van Ostadestraat 1, Amsterdam" } },
+    { coll: 'reviews', id: 'nr46PlxBHPTQAMGJv7hG', name: 'Zorlu Center: Steak Tater with Garlic Sauce',
+      why: 'Als locatie staat alleen "Turkey". Zorlu Center ligt in Istanbul, dus zo komt hij bij Istanbul te staan.',
+      set: { city: "Zorlu Center, Istanbul" } },
+    { coll: 'reviews', id: 'd6J10gQWGlgbejjoBL7S', name: 'Mondi Amsterdam Nieuw-West',
+      why: 'Als locatie staat "Amsterdam, New West". De website leest "New West" als de stad, dus hij staat niet bij Amsterdam.',
+      set: { city: "Transformatorweg 38, Amsterdam" } },
+    { coll: 'reviews', id: 'ps4laEwX5k8iF5B4PD3r', name: 'Fabel Friet: Parmesan Truffle Fries',
+      why: 'Een Nederlands woord op de Engelse site: "locaties".',
+      set: { city: "Amsterdam (5 locations)" } },
+    { coll: 'reviews', id: 'riStQ7BvVWcOX06ycKYm', name: 'Pistoletje Biefstuk Mokum',
+      why: 'Spelfouten: "Gread sandwitch".',
+      set: { review: "Great sandwich in Amsterdam, try this one too." } },
+    { coll: 'reviews', id: 'aV7neu8odXP0dotTMdZz', name: 'Boergeert',
+      why: 'Na "one of the best" hoort een meervoud: sandwiches.',
+      set: { review: "One of the best pastrami sandwiches." } },
+    { coll: 'reviews', id: 'PfqRE8mVWRgLIEiM6Q8p', name: 'Le French Caf\u00e9',
+      why: 'Hoofdletters en zinsbouw: "CROQUE MADAME it\'s good but basic".',
+      set: { review: "The croque madame is good but basic." } },
+    { coll: 'userPlaces', id: 'rTRIU2SAWDm2gftCgePL', name: 'De Librije',
+      why: 'Spelfout in je tip bij deze member spot: "Find dining".',
+      set: { type: "Fine dining restaurant" } },
+  ];
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fold = s => String(s ?? '').trim().toLowerCase();
+
+  function show(which) {
+    for (const id of ['checking', 'loginBox', 'notAdmin', 'panel']) $(id).hidden = id !== which;
+    $('signOutBtn').hidden = which !== 'panel';
+  }
+
+  // ── Loading and matching ──────────────────────────────────────────────
+  async function load() {
+    $('loadErr').hidden = true;
+    const colls = [...new Set(FIXES.map(f => f.coll))];
+    const byColl = {};
+    try {
+      await Promise.all(colls.map(async c => {
+        const snap = await getDocs(collection(db, c));
+        byColl[c] = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+      }));
+    } catch (e) {
+      console.log('Load failed:', e);
+      $('loadErr').textContent = 'De reviews konden niet worden geladen. Controleer je internet en herlaad de pagina.';
+      $('loadErr').hidden = false;
+      return;
+    }
+    for (const f of FIXES) {
+      const rows = byColl[f.coll] || [];
+      let hit = f.id ? rows.find(r => r.id === f.id) : null;
+      if (!hit && f.findName) hit = rows.find(r => fold(r.data.name) === fold(f.findName));
+      f.docId = hit ? hit.id : null;
+      f.current = {};
+      if (hit) for (const k of Object.keys(f.set)) f.current[k] = hit.data[k] ?? '';
+      f.state = !hit ? 'missing' : (isDone(f) ? 'done' : 'todo');
+      f.error = '';
+    }
+    render();
+  }
+
+  const isDone = f => Object.keys(f.set).every(k => String(f.current[k] ?? '').trim() === String(f.set[k]).trim());
+
+  // ── Rendering ─────────────────────────────────────────────────────────
+  function cardHtml(f, i) {
+    const pill = { todo: ['todo', 'Nog doen'], done: ['done', '✓ Aangepast'], missing: ['missing', 'Niet gevonden'], saving: ['todo', 'Bezig...'], error: ['error', 'Mislukt'] }[f.state];
+    let body = `<p class="why">${esc(f.why)}</p>`;
+    if (f.state === 'missing') {
+      body += `<p class="muted">Deze plek staat niet (meer) in ${esc(CAT[f.coll])}. Misschien is hij al verwijderd of hernoemd. Niets aan te doen.</p>`;
+    } else {
+      for (const k of Object.keys(f.set)) {
+        const val = f.draft && f.draft[k] !== undefined ? f.draft[k] : f.set[k];
+        const ro = f.state === 'done' ? ' readonly' : '';
+        const input = k === 'review'
+          ? `<textarea data-i="${i}" data-k="${k}" rows="${Math.max(3, Math.ceil(val.length / 70))}"${ro}>${esc(val)}</textarea>`
+          : `<input data-i="${i}" data-k="${k}" type="text" value="${esc(val)}"${ro}>`;
+        body += `<div class="field was">
+            <div class="field-label">${esc(LABEL[k] || k)}, nu</div>
+            <div class="old">${esc(f.current[k] || '(leeg)')}</div>
+          </div>
+          <div class="field">
+            <div class="field-label">${esc(LABEL[k] || k)}, ${f.state === 'done' ? 'staat nu online' : 'wordt'}</div>
+            ${input}
+          </div>`;
+      }
+      const view = `plek.html?c=${encodeURIComponent(f.coll)}&id=${encodeURIComponent(f.docId)}`;
+      body += `<div class="actions">
+          ${f.state === 'done'
+            ? (f.undo ? `<button class="btn ghost" type="button" data-undo="${i}">Ongedaan maken</button>` : '')
+            : `<button class="btn" type="button" data-apply="${i}" ${f.state === 'saving' || busyAll ? 'disabled' : ''}>Toepassen</button>`}
+          <a class="view" href="${view}" target="_blank" rel="noopener">Bekijk op de site ↗</a>
+        </div>
+        ${f.error ? `<p class="card-err">${esc(f.error)}</p>` : ''}`;
+    }
+    return `<article class="card ${f.state}" id="fix-${i}">
+        <div class="head"><h3>${esc(f.name)}</h3><span class="chip">${esc(CAT[f.coll])}</span><span class="pill ${pill[0]}">${pill[1]}</span></div>
+        ${body}
+      </article>`;
+  }
+
+  function render() {
+    let group = 'Feiten in de teksten';
+    $('list').innerHTML = `<h3 class="group">${group}</h3>` + FIXES.map((f, i) => {
+      const head = f.group && f.group !== group ? `<h3 class="group">${esc(group = f.group)}</h3>` : '';
+      return head + cardHtml(f, i);
+    }).join('');
+    updateProgress();
+  }
+
+  function renderOne(i) {
+    const el = $('fix-' + i);
+    if (el) el.outerHTML = cardHtml(FIXES[i], i);
+    updateProgress();
+  }
+
+  let armed = false, busyAll = false;
+  function updateProgress() {
+    const found = FIXES.filter(f => f.state !== 'missing');
+    const done = found.filter(f => f.state === 'done').length;
+    const todo = found.filter(f => f.state === 'todo' || f.state === 'error').length;
+    $('progressText').textContent = `${done} van ${found.length} aangepast` + (FIXES.length > found.length ? ` (${FIXES.length - found.length} niet gevonden)` : '');
+    $('meter').style.width = found.length ? (100 * done / found.length) + '%' : '0';
+    const btn = $('applyAll');
+    btn.disabled = busyAll || todo === 0;
+    if (!busyAll) btn.textContent = todo === 0 ? 'Alles is aangepast' : (armed ? `Zeker weten? Klik nog een keer voor ${todo}` : `Alles toepassen (${todo})`);
+  }
+
+  // ── Saving ────────────────────────────────────────────────────────────
+  function readDraft(i) {
+    const f = FIXES[i];
+    f.draft = f.draft || {};
+    document.querySelectorAll(`[data-i="${i}"]`).forEach(el => { f.draft[el.dataset.k] = el.value; });
+  }
+
+  async function apply(i) {
+    const f = FIXES[i];
+    if (!f.docId || f.state === 'saving' || f.state === 'done') return false;
+    readDraft(i);
+    const data = {};
+    for (const k of Object.keys(f.set)) {
+      let v = String(f.draft[k] ?? f.set[k]).trim();
+      if (!v) { f.state = 'error'; f.error = `${LABEL[k] || k} mag niet leeg zijn.`; renderOne(i); return false; }
+      if (NUM_FIELDS.has(k)) {
+        const n = parseFloat(v.replace(',', '.'));
+        if (!isFinite(n)) { f.state = 'error'; f.error = `${LABEL[k] || k} moet een getal zijn.`; renderOne(i); return false; }
+        if (String(n) !== String(f.current[k] ?? '')) data[k] = n;
+        continue;
+      }
+      if (v !== String(f.current[k] ?? '').trim()) data[k] = v;
+    }
+    const before = { ...f.current };
+    f.state = 'saving'; f.error = ''; renderOne(i);
+    try {
+      if (Object.keys(data).length) await updateDoc(doc(db, f.coll, f.docId), data);
+      f.undo = {};
+      for (const k of Object.keys(data)) f.undo[k] = NUM_FIELDS.has(k) && before[k] === '' ? null : before[k];
+      if (!Object.keys(f.undo).length) f.undo = null;
+      Object.assign(f.current, data);
+      f.set = { ...f.set, ...data };
+      f.draft = null;
+      f.state = 'done';
+      renderOne(i);
+      return true;
+    } catch (e) {
+      console.log('Update failed:', e);
+      f.state = 'error';
+      f.error = e && e.code === 'permission-denied'
+        ? 'Geen rechten. Ben je ingelogd met het Strong Foodie admin-account?'
+        : 'Opslaan is mislukt. Controleer je internet en probeer het opnieuw.';
+      renderOne(i);
+      return false;
+    }
+  }
+
+  async function undo(i) {
+    const f = FIXES[i];
+    if (!f.undo) return;
+    const data = f.undo;
+    f.state = 'saving'; renderOne(i);
+    try {
+      await updateDoc(doc(db, f.coll, f.docId), data);
+      f.draft = { ...f.current };
+      Object.assign(f.current, data);
+      f.undo = null;
+      f.state = isDone(f) ? 'done' : 'todo';
+      renderOne(i);
+    } catch (e) {
+      console.log('Undo failed:', e);
+      f.state = 'done'; f.undo = data;
+      f.error = 'Ongedaan maken is mislukt. Probeer het opnieuw.';
+      renderOne(i);
+    }
+  }
+
+  $('list').addEventListener('click', e => {
+    const a = e.target.closest('[data-apply]');
+    if (a) { armed = false; apply(+a.dataset.apply); return; }
+    const u = e.target.closest('[data-undo]');
+    if (u) { armed = false; undo(+u.dataset.undo); }
+  });
+  // Keep typed changes when a card is redrawn.
+  $('list').addEventListener('input', e => {
+    const el = e.target.closest('[data-i]');
+    if (!el) return;
+    const f = FIXES[+el.dataset.i];
+    f.draft = f.draft || {};
+    f.draft[el.dataset.k] = el.value;
+  });
+
+  $('applyAll').addEventListener('click', async () => {
+    if (!armed) { armed = true; updateProgress(); setTimeout(() => { if (armed && !busyAll) { armed = false; updateProgress(); } }, 6000); return; }
+    armed = false; busyAll = true;
+    const btn = $('applyAll');
+    const todo = FIXES.map((f, i) => i).filter(i => FIXES[i].state === 'todo' || FIXES[i].state === 'error');
+    // Take everything typed so far before cards are redrawn.
+    todo.forEach(readDraft);
+    let n = 0, failed = 0;
+    for (const i of todo) {
+      btn.textContent = `Bezig... ${++n} van ${todo.length}`;
+      if (!(await apply(i))) failed++;
+    }
+    busyAll = false;
+    updateProgress();
+    if (failed) btn.textContent = `${failed} mislukt, probeer die apart`;
+  });
+
+  // ── Sign-in ───────────────────────────────────────────────────────────
+  $('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = $('loginBtn');
+    $('loginErr').hidden = true;
+    btn.disabled = true; btn.textContent = 'Inloggen...';
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pw').value);
+    } catch (err) {
+      const code = err && err.code || '';
+      $('loginErr').textContent = (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found')
+        ? 'Verkeerd e-mailadres of wachtwoord.'
+        : code === 'auth/too-many-requests' ? 'Te veel pogingen. Probeer het later opnieuw.'
+        : 'Inloggen is mislukt. Probeer het opnieuw.';
+      $('loginErr').hidden = false;
+      $('pw').value = '';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Inloggen';
+    }
+  });
+
+  const doSignOut = async () => { try { await signOut(auth); } catch (e) {} };
+  $('signOutBtn').addEventListener('click', doSignOut);
+  $('notAdminOut').addEventListener('click', doSignOut);
+
+  let loaded = false;
+  onAuthStateChanged(auth, async user => {
+    if (!user) { show('loginBox'); return; }
+    try {
+      const token = await user.getIdTokenResult(true);
+      const isAdmin = (token.claims && token.claims.admin === true) || user.uid === BRAND_UID;
+      if (!isAdmin) {
+        $('notAdminText').textContent = `Je bent ingelogd als ${user.email || 'een ander account'}. Dat account mag de reviews niet aanpassen. Log uit en log in met het Strong Foodie admin-account.`;
+        show('notAdmin');
+        return;
+      }
+      show('panel');
+      if (!loaded) { loaded = true; load(); }
+    } catch (e) {
+      console.log('Admin check failed:', e);
+      show('loginBox');
+      $('loginErr').textContent = 'Je account kon niet worden gecontroleerd. Probeer opnieuw in te loggen.';
+      $('loginErr').hidden = false;
+    }
+  });
+</script>
+</body>
+</html>

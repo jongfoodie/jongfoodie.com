@@ -61,6 +61,8 @@ function injectStyles() {
   .mp-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #8A7A66; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(26,18,8,0.1); margin-bottom: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .mp-label a { color: #D4521A; text-decoration: none; letter-spacing: 0.05em; font-weight: 600; }
   .mp-intro { font-size: 13px; color: #8A7A66; margin: -0.75rem 0 1.25rem; line-height: 1.5; }
+  .mp-add { color: #D4521A; font-weight: 500; text-decoration: none; white-space: nowrap; margin-left: 4px; }
+  .mp-add:hover { text-decoration: underline; }
   .mp-card { display: flex; background: #FFFDF9; border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; border: 1px solid rgba(26,18,8,0.1); }
   .mp-img { width: 180px; min-width: 180px; min-height: 150px; position: relative; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #fff; }
   .mp-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -173,7 +175,7 @@ async function mount(section) {
   section.classList.add('mp-section');
   section.innerHTML = `
     <p class="mp-label"><span>From our members · ${label}</span><a href="${mapLink}">View on the map →</a></p>
-    <p class="mp-intro">Places members added in the Strong Foodie app. Not reviewed by Strong Foodie.</p>
+    <p class="mp-intro">Places members added on Strong Foodie. Not reviewed by Strong Foodie. <a class="mp-add" href="${all ? 'add.html' : 'add.html?cat=' + catKey}">＋ Add a spot</a></p>
     <div class="mp-list"><div class="mp-empty">Loading member spots…</div></div>`;
   const list = section.querySelector('.mp-list');
 
@@ -192,7 +194,7 @@ async function mount(section) {
     if (limit && !t) shown = shown.slice(0, limit);
     section.querySelector('.mp-label span').textContent = `From our members · ${label}` + (places.length ? ` · ${places.length}` : '');
     if (!places.length) {
-      list.innerHTML = `<div class="mp-empty">No member spots${all ? '' : ' in ' + label} yet.<br>Members add places in the Strong Foodie app, and they show up here straight away.</div>`;
+      list.innerHTML = `<div class="mp-empty">No member spots${all ? '' : ' in ' + label} yet.<br>Members add places here and in the Strong Foodie app, and they show up straight away.</div>`;
     } else if (!shown.length) {
       list.innerHTML = `<div class="mp-empty">No member spots match your search.</div>`;
     } else {

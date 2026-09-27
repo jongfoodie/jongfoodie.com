@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="The Strong Foodie community: new spots and reviews that members share in the Strong Foodie app, from Amsterdam to the world.">
+<meta name="description" content="The Strong Foodie community: new spots and reviews that members share on the website and in the Strong Foodie app, from Amsterdam to the world.">
 <title>Community | Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -107,6 +107,9 @@
   .app-block-emoji { font-size: 30px; line-height: 1; }
   .app-block-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; line-height: 1.3; }
   .app-block-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .app-block-cta { display: inline-block; margin-top: 0.75rem; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; padding: 9px 18px; border-radius: 22px; }
+  .app-block-cta:hover { opacity: 0.92; }
+  .grid-empty a { color: var(--accent); }
   .app-block-text a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin-bottom: 1.25rem; }
   a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; line-height: 1.5; }
@@ -222,19 +225,20 @@
 
 <div class="page-hero">
   <h1>Community</h1>
-  <p>What members discover and review in the Strong Foodie app</p>
+  <p>What members discover, add and review</p>
 </div>
 
 <div class="wrapper">
   <main>
-    <!-- The community lives in the Strong Foodie app. Everything members add
-         or review there shows up on this page, the place pages, the destination
-         pages and the map. -->
+    <!-- Members add and review places here on the website or in the app, with
+         one account. Everything shows up on this page, the place pages, the
+         destination pages and the map. -->
     <div class="post-form app-block">
-      <div class="app-block-emoji">📱</div>
+      <div class="app-block-emoji">📍</div>
       <div>
-        <p class="app-block-title">The community lives in the Strong Foodie app</p>
-        <p class="app-block-text">Members add their favourite places and review the spots they visit in the app. It all appears here straight away, on the place page, on its <a href="stad.html">destination page</a> and on the <a href="map.html?source=member">map</a>.</p>
+        <p class="app-block-title">Share your favourite places</p>
+        <p class="app-block-text">Add a spot or review the places you visit, here on the website or in the Strong Foodie app, with the same account. It all appears here straight away, on the place page, on its <a href="stad.html">destination page</a> and on the <a href="map.html?source=member">map</a>.</p>
+        <a class="app-block-cta" href="add.html">＋ Add a spot</a>
       </div>
     </div>
 
@@ -385,7 +389,7 @@
     const [{ all, members }, reviews] = await Promise.all([loadPlaces(db), loadMemberReviews()]);
     newest = members.slice().sort((a, b) => (b.created || 0) - (a.created || 0));
     const grid = document.getElementById('memberGrid');
-    grid.innerHTML = newest.length ? '' : '<p class="grid-empty">No member spots yet. Add the first one in the Strong Foodie app.</p>';
+    grid.innerHTML = newest.length ? '' : '<p class="grid-empty">No member spots yet. <a href="add.html">Add the first one</a>.</p>';
     renderMore();
     renderReviews(reviews);
     renderTopMembers(members, reviews);

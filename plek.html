@@ -401,7 +401,7 @@
       ? `<div class="score"><div class="score-num">${fmt1(p.rating)}</div><div><div class="score-stars">${stars(p.rating)}</div><div class="score-label">Strong Foodie score</div></div></div>` : '';
 
     const reviewBlock = p.member
-      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${esc(p.author)} in the Strong Foodie app. Not reviewed by Strong Foodie.</p></section>` : `<section class="block"><p class="muted">Added by ${esc(p.author)} in the Strong Foodie app. Not reviewed by Strong Foodie.</p></section>`)
+      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.</p></section>` : `<section class="block"><p class="muted">Added by ${esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.</p></section>`)
       : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${esc(p.author === 'Jong Foodie' ? 'Strong Foodie' : p.author)}${p.date ? ' · ' + esc(p.date) : ''}</p></section>` : '');
 
     const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';

@@ -1,7 +1,7 @@
 {
-  "name": "Jong Foodie",
-  "short_name": "Jong Foodie",
-  "description": "Real restaurant reviews by Merdan Koc — discover the best food in Amsterdam and beyond.",
+  "name": "Strong Foodie",
+  "short_name": "Strong Foodie",
+  "description": "Honest reviews by Merdan Koc: the best places to eat, drink, shop and stay, from Amsterdam to the world.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAF7F2",
@@ -19,6 +19,9 @@
       "type": "image/png"
     }
   ],
-  "categories": ["food", "lifestyle"],
+  "categories": [
+    "food",
+    "lifestyle"
+  ],
   "lang": "en"
 }

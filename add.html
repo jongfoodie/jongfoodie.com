@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add a spot | Strong Foodie</title>
+<meta name="description" content="Add a place you love to Strong Foodie. It shows up on the website and in the Strong Foodie app straight away.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Add a spot | Strong Foodie">
+<meta property="og:description" content="Add a place you love to Strong Foodie.">
+<meta property="og:image" content="https://www.strongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://www.strongfoodie.com/add.html">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; overflow-x: hidden; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .wrap { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  .loading { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+  h1 { font-family: 'Playfair Display', serif; font-size: 2rem; line-height: 1.15; }
+  .lead { color: var(--ink-soft); margin: 0.4rem 0 1.25rem; line-height: 1.6; }
+  .small { font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .small a, .lead a { color: var(--accent); }
+  .acct-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; padding: 1.75rem 1.5rem; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+  .tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 14px; font: 500 14px 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; margin-bottom: -1px; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .form { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font: 15px 'DM Sans', sans-serif; color: var(--ink); background: #fff; outline: none; }
+  .field:focus { border-color: var(--accent); }
+  .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
+  .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+  .check-row input { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
+  .check-row a { color: var(--accent); }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); cursor: pointer; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { border-color: var(--accent); opacity: 0.92; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .link-btn { background: none; border: none; padding: 0; font: inherit; font-size: 14px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; align-self: flex-start; }
+  .form-error { background: #FFF1EC; color: #A3300B; border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.45; }
+  .form-error[hidden] { display: none; }
+  .acct-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .acct-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .acct-who { flex: 1; min-width: 0; }
+  .acct-who h1 { font-size: 1.7rem; overflow-wrap: anywhere; }
+  .acct-block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.25rem; margin-top: 1rem; }
+  .acct-block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .count { letter-spacing: 0; }
+  .inline-form { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
+  .inline-form .field { flex: 1; min-width: 0; }
+  .acct-list { list-style: none; display: flex; flex-direction: column; }
+  .acct-list li { padding: 0.75rem 0; border-top: 1px solid var(--border); }
+  .acct-list li:first-child { border-top: none; padding-top: 0; }
+  .acct-list a { color: var(--ink); font-weight: 600; text-decoration: none; }
+  .acct-list a:hover { color: var(--accent); }
+  .acct-list p { font-size: 14px; color: var(--ink-soft); margin-top: 0.2rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .row-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .stars { color: var(--gold); white-space: nowrap; }
+  .wish-form { margin-top: 0.75rem; margin-bottom: 0; }
+  .wish-form[hidden], #wishAddOpen[hidden] { display: none; }
+  .cat-pick { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .cat-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .cat-opt span { display: inline-block; border: 1px solid var(--border); border-radius: 20px; padding: 7px 12px; font-size: 13px; background: #fff; cursor: pointer; }
+  .cat-opt input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .cat-opt input:focus-visible + span { outline: 2px solid var(--accent); }
+  .row-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .sugg { list-style: none; margin-top: 0.35rem; border: 1px solid var(--border); border-radius: 12px; background: #fff; overflow: hidden; box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .sugg[hidden], .picked[hidden], #wCatHint[hidden] { display: none; }
+  .sugg li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--border); cursor: pointer; }
+  .sugg li:first-child { border-top: none; }
+  .sugg li.active, .sugg li:hover { background: var(--accent-pale); }
+  .sugg .s-emoji { font-size: 18px; line-height: 1.25; flex-shrink: 0; }
+  .sugg .s-text { min-width: 0; }
+  .sugg .s-name { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+  .sugg .s-meta { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; }
+  .sugg .s-on { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--green); background: var(--green-light); border-radius: 8px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+  .sugg li.sugg-note { cursor: default; font-size: 12px; color: var(--muted); background: var(--cream); padding: 7px 12px; }
+  .sugg li.sugg-note:hover { background: var(--cream); }
+  .picked { font-size: 13px; line-height: 1.45; color: var(--green); background: var(--green-light); border-radius: 10px; padding: 8px 10px; overflow-wrap: anywhere; }
+  .pill-new { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: #FFF4E5; color: #8A5A10; padding: 2px 8px; border-radius: 8px; margin-top: 4px; }
+  .small-link { font-size: 13px; }
+  .acct-list .small a { color: var(--accent); font-weight: 500; }
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 600px) {
+    .wrap { padding: 1.25rem 1rem 2.5rem; }
+    .acct-card { padding: 1.25rem 1.1rem; }
+    h1 { font-size: 1.7rem; }
+  }
+  .spot-form { gap: 0.55rem; }
+  .spot-form .field-label { margin: 0.55rem 0 -0.2rem; font-weight: 500; color: var(--ink-soft); }
+  .spot-form .field-label:first-of-type { margin-top: 0; }
+  .spot-form .opt { color: var(--muted); font-weight: 400; }
+  .spot-form .field { font-size: 16px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  .two-col .col { display: flex; flex-direction: column; gap: 0.55rem; min-width: 0; }
+  .two-col .field-label { margin-top: 0.55rem; }
+  .picked a, .form-error a { color: var(--accent); font-weight: 500; }
+  .photo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  .photo-btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; }
+  .photo-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .photo-preview { display: flex; align-items: center; gap: 0.75rem; }
+  .photo-preview[hidden] { display: none; }
+  .photo-preview img { width: 88px; height: 88px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+  .wish-note { background: var(--accent-pale); border-radius: 10px; padding: 8px 10px; color: var(--ink-soft); }
+  @media (max-width: 480px) { .two-col { grid-template-columns: 1fr; } .two-col .field-label { margin-top: 0.35rem; } }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see the consent script near the end of the page -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="stad.html">Destinations</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="wrap" id="root">
+  <div class="loading">Loading…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, doc, getDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=1";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const app = getApps().some(a => a.name === '[DEFAULT]') ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const params = new URLSearchParams(location.search);
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const placeLink = (coll, id) => `plek.html?c=${encodeURIComponent(coll)}&id=${encodeURIComponent(id)}`;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function showError(html) { const el = document.getElementById('sError'); el.innerHTML = html; el.hidden = false; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+  const loginHref = () => 'account.html?next=' + encodeURIComponent('add.html' + location.search);
+
+  const COUNTRIES = ['Netherlands', 'Belgium', 'Germany', 'France', 'United Kingdom', 'Spain', 'Portugal', 'Italy', 'Greece', 'Turkey',
+    'United States', 'Aruba', 'Curaçao', 'Morocco', 'United Arab Emirates', 'Thailand', 'Indonesia', 'Japan'];
+
+  function renderSignedOut() {
+    root.innerHTML = `
+      <h1>Add a spot</h1>
+      <p class="lead">Share a place you love with other foodies. It shows up on Strong Foodie and in the app straight away, with your name on it.</p>
+      <div class="acct-card">
+        <p style="margin-bottom:1rem;line-height:1.6;">Log in to add a spot. It is the same account as in the Strong Foodie app, so if you have one there, you can use it here.</p>
+        <a class="btn btn-primary" href="${loginHref()}" style="display:inline-block;text-decoration:none;">Log in or sign up</a>
+      </div>`;
+  }
+
+  function renderForm(user, profile, wish) {
+    root.innerHTML = `
+      <h1>Add a spot</h1>
+      <p class="lead">Share a place you love. It shows up on Strong Foodie and in the app straight away, with your name on it.</p>
+      <form id="spotForm" class="acct-card form spot-form" novalidate>
+        <label class="field-label" for="sName">Name of the place</label>
+        <div>
+          <input class="field" id="sName" type="text" maxlength="120" placeholder="Start typing, e.g. Broodje Popov" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sSugg" required>
+          <ul class="sugg" id="sSugg" role="listbox" aria-label="Suggestions" hidden></ul>
+        </div>
+        <p class="picked" id="sPicked" hidden></p>
+
+        <span class="field-label">Category</span>
+        <div class="cat-pick" role="radiogroup" aria-label="Category">
+          ${CAT_LIST.map(c => `<label class="cat-opt"><input type="radio" name="sCat" value="${c.key}"><span>${c.emoji} ${c.label}</span></label>`).join('')}
+        </div>
+        <p class="small" id="sCatHint" hidden>We picked the category for you. Tap another one to change it.</p>
+
+        <label class="field-label" for="sAddress">Address</label>
+        <input class="field" id="sAddress" type="text" maxlength="160" placeholder="Street and number" autocomplete="off">
+        <div class="two-col">
+          <div class="col">
+            <label class="field-label" for="sCity">City</label>
+            <input class="field" id="sCity" type="text" maxlength="80" placeholder="e.g. Amsterdam" autocomplete="off" required>
+          </div>
+          <div class="col">
+            <label class="field-label" for="sCountry">Country</label>
+            <input class="field" id="sCountry" type="text" maxlength="60" placeholder="e.g. Netherlands" list="sCountries" autocomplete="off" required>
+            <datalist id="sCountries">${COUNTRIES.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+          </div>
+        </div>
+
+        <label class="field-label" for="sTip">Your tip <span class="opt">(optional)</span></label>
+        <textarea class="field" id="sTip" rows="3" maxlength="200" placeholder="What should people order, see or do there?"></textarea>
+
+        <span class="field-label">Photo <span class="opt">(optional)</span></span>
+        <div class="photo-row">
+          <label class="btn photo-btn"><input type="file" id="sPhoto" accept="image/*"><span id="sPhotoLabel">📷 Add a photo</span></label>
+          <div class="photo-preview" id="sPhotoPreview" hidden><img id="sPhotoImg" alt="Your photo"><button type="button" class="link-btn" id="sPhotoRemove">Remove photo</button></div>
+        </div>
+
+        <p class="small">Only add real places that you would recommend. Your spot shows your name, ${esc(profile.displayName || 'Foodie')}. You can remove it later on your <a href="account.html">account page</a>.</p>
+        <p class="form-error" id="sError" hidden></p>
+        <div class="row-btns">
+          <button class="btn btn-primary" type="submit" id="sSubmit">Add spot</button>
+          <a class="btn" href="account.html" style="text-decoration:none;">Cancel</a>
+        </div>
+      </form>`;
+
+    const $ = id => document.getElementById(id);
+    const form = $('spotForm'), city = $('sCity'), country = $('sCountry'), address = $('sAddress');
+    let lastPick = null;
+
+    const finder = placeFinder({
+      db, catName: 'sCat', idPrefix: 'sS',
+      input: $('sName'), list: $('sSugg'), picked: $('sPicked'), hint: $('sCatHint'), address,
+      addressOf: p => p.src === 'sf' ? '' : (p.street || ''),
+      describe: p => p.src === 'sf'
+        ? `✓ <strong>${esc(p.name)}</strong> is already on Strong Foodie. <a href="${placeLink(p.coll, p.id)}">View it →</a> There you can save it or write a review.`
+        : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
+      onPick: p => {
+        if (p && p.src === 'osm') {
+          if (p.town) city.value = p.town;
+          if (p.country) country.value = p.country;
+        } else if (!p && lastPick && lastPick.src === 'osm') {
+          if (city.value === lastPick.town) city.value = '';
+          if (country.value === lastPick.country) country.value = '';
+        }
+        lastPick = p;
+        $('sError').hidden = true;
+      },
+    });
+    finder.warmUp();
+
+    // Coming from a wishlist idea, or from a category page
+    const cat = wish ? wish.category : params.get('cat');
+    const radio = cat && form.querySelector(`input[name="sCat"][value="${CSS.escape(cat)}"]`);
+    if (radio) radio.checked = true;
+    if (wish) {
+      $('sName').value = wish.name || '';
+      if (wish.note) $('sTip').value = String(wish.note).slice(0, 200);
+      if (typeof wish.lat === 'number' && typeof wish.lng === 'number') {
+        // Picked from the suggestions: "Street 1, 1234 AB Town, Country"
+        const parts = String(wish.address || '').split(',').map(x => x.trim()).filter(Boolean);
+        address.value = parts.length >= 3 ? parts[0] : '';
+        city.value = wish.city || '';
+        country.value = wish.country || '';
+        const p = { src: 'osm', name: wish.name, cat: wish.category, type: wish.placeType || '', street: address.value,
+                    town: city.value, country: country.value, address: wish.address || '', lat: wish.lat, lng: wish.lng };
+        finder.setPick(p); lastPick = p;
+      } else {
+        city.value = wish.city || wish.address || '';
+      }
+      const note = document.createElement('p');
+      note.className = 'small wish-note';
+      note.textContent = 'From your wishlist. Once you add it, it moves from your ideas to your saved places.';
+      form.prepend(note);
+    }
+
+    // Photo
+    let photoData = '';
+    $('sPhoto').addEventListener('change', async e => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      $('sPhotoLabel').textContent = 'Preparing photo…';
+      try {
+        photoData = await shrinkPhoto(file);
+        $('sPhotoImg').src = photoData;
+        $('sPhotoPreview').hidden = false;
+        $('sPhotoLabel').textContent = '📷 Change photo';
+      } catch (err) {
+        photoData = '';
+        $('sPhotoLabel').textContent = '📷 Add a photo';
+        showError('This photo could not be read. Try another one, for example a JPG.');
+      }
+      e.target.value = '';
+    });
+    $('sPhotoRemove').addEventListener('click', () => { photoData = ''; $('sPhotoPreview').hidden = true; $('sPhotoLabel').textContent = '📷 Add a photo'; });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      $('sError').hidden = true;
+      const name = $('sName').value.trim();
+      const category = (form.querySelector('input[name="sCat"]:checked') || {}).value || '';
+      const street = address.value.trim(), town = city.value.trim(), land = country.value.trim();
+      const tip = $('sTip').value.trim();
+      const pick = finder.picked();
+      if (name.length < 2) return showError('Fill in the name of the place.');
+      if (pick && pick.src === 'sf') return showError(`<strong>${esc(pick.name)}</strong> is already on Strong Foodie. <a href="${placeLink(pick.coll, pick.id)}">View it →</a>`);
+      if (!category) return showError('Choose a category: Eat, Drink, Shop, Culture, Health or Stay.');
+      if (town.length < 2) return showError('Fill in the city.');
+      if (land.length < 2) return showError('Fill in the country.');
+
+      const btn = $('sSubmit');
+      btn.disabled = true; btn.textContent = 'Adding…';
+      try {
+        // Already on Strong Foodie under the same name in the same city?
+        const all = await strongFoodiePlaces(db);
+        const dup = all.find(p => p.n === foldText(name) && (!p.town || foldText(p.town) === foldText(town) || foldText(p.where).includes(foldText(town))));
+        if (dup) { btn.disabled = false; btn.textContent = 'Add spot'; return showError(`<strong>${esc(dup.name)}</strong> is already on Strong Foodie. <a href="${placeLink(dup.coll, dup.id)}">View it →</a>`); }
+
+        // Map pin: from the picked suggestion, or looked up from the address
+        let lat = null, lng = null;
+        if (pick && pick.src === 'osm' && typeof pick.lat === 'number' && foldText(street) === foldText(pick.street || '') && foldText(town) === foldText(pick.town || '')) {
+          lat = pick.lat; lng = pick.lng;
+        } else if (street) {
+          const g = await geocode(`${street}, ${town}, ${land}`);
+          if (g) { lat = g.lat; lng = g.lng; }
+        }
+
+        // Photo: stored like the app does, as an image document the place points to
+        let photoUrl = '';
+        if (photoData) {
+          const img = await addDoc(collection(db, 'images'), {
+            ownerId: user.uid, contentType: 'image/jpeg', data: photoData.split(',')[1], source: 'web', createdAt: serverTimestamp(),
+          });
+          photoUrl = 'fsimg://' + img.id;
+        }
+
+        const data = {
+          name, category,
+          address: street, city: town, country: foldText(land),
+          type: tip, emoji: catInfo(category).emoji,
+          rating: null, excerpt: '', tags: [], photoUrl,
+          addedByUserId: user.uid, addedByName: profile.displayName || user.displayName || 'A foodie',
+          source: 'web', createdAt: serverTimestamp(),
+        };
+        if (lat != null && lng != null) { data.lat = lat; data.lng = lng; data.geoUpdatedAt = serverTimestamp(); }
+        if (pick && pick.src === 'osm') {
+          if (pick.type) data.placeType = pick.type;
+          if (pick.countryCode) data.countryCode = pick.countryCode;
+        }
+        const ref = await addDoc(collection(db, 'userPlaces'), data);
+
+        // From the wishlist: the idea becomes a saved place
+        if (wish) {
+          try {
+            await addDoc(collection(db, 'profiles', user.uid, 'wishlistItems'), {
+              kind: 'place', placeCollection: 'userPlaces', placeDocId: ref.id, placeName: name, placeCategory: category,
+              city: town, note: wish.note || '', source: 'web', createdAt: serverTimestamp(),
+            });
+            await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', wish.id));
+          } catch (err) { console.log('Wishlist not updated:', err); }
+        }
+
+        toast('Spot added. Thank you!');
+        setTimeout(() => { location.href = placeLink('userPlaces', ref.id); }, 700);
+      } catch (err) {
+        console.error('Spot could not be saved:', err);
+        btn.disabled = false; btn.textContent = 'Add spot';
+        showError(err && err.code === 'permission-denied'
+          ? 'Your spot could not be saved: your account has no permission. Log out and in again, and try once more.'
+          : 'Your spot could not be saved. Check your internet connection and try again.');
+      }
+    });
+  }
+
+  function shrinkPhoto(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let w = img.naturalWidth, h = img.naturalHeight;
+        const max = 1280;
+        if (w > max || h > max) { const f = max / Math.max(w, h); w = Math.round(w * f); h = Math.round(h * f); }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        // A Firestore document holds at most 1 MB, so keep the photo well under that.
+        let q = 0.8, data = c.toDataURL('image/jpeg', q);
+        while (data.length > 600000 && q > 0.3) { q -= 0.1; data = c.toDataURL('image/jpeg', q); }
+        if (data.length > 900000) { reject(new Error('too big')); return; }
+        resolve(data);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable')); };
+      img.src = url;
+    });
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) return renderSignedOut();
+    let profile = null;
+    try { const s = await getDoc(doc(db, 'profiles', user.uid)); profile = s.exists() ? s.data() : null; }
+    catch (e) { profile = {}; }
+    // No profile yet: finish it on the account page first, then come back.
+    if (!profile) { location.href = loginHref(); return; }
+    let wish = null;
+    const wishId = params.get('wish');
+    if (wishId) {
+      try {
+        const s = await getDoc(doc(db, 'profiles', user.uid, 'wishlistItems', wishId));
+        if (s.exists() && s.data().kind === 'idea') wish = { id: wishId, ...s.data() };
+      } catch (e) {}
+    }
+    renderForm(user, profile, wish);
+  });
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module" src="js/sf-account-nav.js?v=1"></script>
+</body>
+</html>

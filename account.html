@@ -86,6 +86,19 @@
   .cat-opt input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
   .cat-opt input:focus-visible + span { outline: 2px solid var(--accent); }
   .row-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .sugg { list-style: none; margin-top: 0.35rem; border: 1px solid var(--border); border-radius: 12px; background: #fff; overflow: hidden; box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .sugg[hidden], .picked[hidden], #wCatHint[hidden] { display: none; }
+  .sugg li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--border); cursor: pointer; }
+  .sugg li:first-child { border-top: none; }
+  .sugg li.active, .sugg li:hover { background: var(--accent-pale); }
+  .sugg .s-emoji { font-size: 18px; line-height: 1.25; flex-shrink: 0; }
+  .sugg .s-text { min-width: 0; }
+  .sugg .s-name { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+  .sugg .s-meta { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; }
+  .sugg .s-on { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--green); background: var(--green-light); border-radius: 8px; padding: 1px 6px; margin-left: 6px; vertical-align: 2px; }
+  .sugg li.sugg-note { cursor: default; font-size: 12px; color: var(--muted); background: var(--cream); padding: 7px 12px; }
+  .sugg li.sugg-note:hover { background: var(--cream); }
+  .picked { font-size: 13px; line-height: 1.45; color: var(--green); background: var(--green-light); border-radius: 10px; padding: 8px 10px; overflow-wrap: anywhere; }
   .pill-new { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: #FFF4E5; color: #8A5A10; padding: 2px 8px; border-radius: 8px; margin-top: 4px; }
   .small-link { font-size: 13px; }
   .acct-list .small a { color: var(--accent); font-weight: 500; }
@@ -97,8 +110,7 @@
     h1 { font-size: 1.7rem; }
   }
 </style>
-<!-- Google Analytics, only loaded after cookie consent, see consent script near <script type="module" src="js/sf-account-nav.js?v=1"></script>
-</body> -->
+<!-- Google Analytics, only loaded after cookie consent, see the consent script near the end of the page -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -154,6 +166,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { placeFinder } from "./js/sf-find.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -396,11 +409,16 @@
         <div id="wishList"><p class="small">Loading…</p></div>
         <button class="btn" id="wishAddOpen" type="button">＋ Add a place you want to visit</button>
         <form id="wishForm" class="form wish-form" novalidate hidden>
-          <input class="field" id="wName" type="text" maxlength="120" placeholder="Name of the place" required>
+          <div>
+            <input class="field" id="wName" type="text" maxlength="120" placeholder="Name of the place, e.g. Ynyshir" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="wSugg" required>
+            <ul class="sugg" id="wSugg" role="listbox" aria-label="Suggestions" hidden></ul>
+          </div>
+          <p class="picked" id="wPicked" hidden></p>
           <div class="cat-pick" role="radiogroup" aria-label="Category">
             ${WISH_CATS.map((c, i) => `<label class="cat-opt"><input type="radio" name="wCat" value="${c.key}"${i === 0 ? ' checked' : ''}><span>${c.emoji} ${c.label}</span></label>`).join('')}
           </div>
-          <input class="field" id="wCity" type="text" maxlength="80" placeholder="City (optional)">
+          <p class="small" id="wCatHint" hidden>We picked the category for you. Tap another one to change it.</p>
+          <input class="field" id="wCity" type="text" maxlength="160" placeholder="Address or city (optional)" autocomplete="off">
           <textarea class="field" id="wNote" rows="2" maxlength="300" placeholder="Why do you want to go? (optional)"></textarea>
           <p class="form-error" id="wishError" hidden></p>
           <div class="row-btns">
@@ -418,6 +436,7 @@
       <section class="acct-block">
         <h2>Your spots <span class="count" id="spotCount"></span></h2>
         <div id="spotList"><p class="small">Loading…</p></div>
+        <a class="btn" href="add.html" style="display:inline-block;text-decoration:none;margin-top:0.25rem;">＋ Add a spot</a>
       </section>
 
       <p class="small" style="margin-top:1.5rem;">To write a review, open any place, for example from the <a href="stad.html">destinations</a> or the <a href="map.html">map</a>, and tap “Write a review”.</p>`;
@@ -438,27 +457,55 @@
     // Wishlist
     const wf = document.getElementById('wishForm');
     const openBtn = document.getElementById('wishAddOpen');
-    openBtn.addEventListener('click', () => { wf.hidden = false; openBtn.hidden = true; document.getElementById('wName').focus(); });
-    document.getElementById('wishCancel').addEventListener('click', () => { wf.hidden = true; openBtn.hidden = false; wf.reset(); document.getElementById('wishError').hidden = true; });
+    const finder = placeFinder({
+      db, catName: 'wCat', idPrefix: 'wS',
+      input: document.getElementById('wName'), list: document.getElementById('wSugg'),
+      picked: document.getElementById('wPicked'), hint: document.getElementById('wCatHint'), address: document.getElementById('wCity'),
+      describe: p => p.src === 'sf'
+        ? `✓ ${esc(p.name)} is already on Strong Foodie. It is saved with a link to its page.`
+        : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
+    });
+    const closeWishForm = () => { wf.reset(); finder.reset(); wf.hidden = true; openBtn.hidden = false; document.getElementById('wishError').hidden = true; };
+    openBtn.addEventListener('click', () => { wf.hidden = false; openBtn.hidden = true; document.getElementById('wName').focus(); finder.warmUp(); });
+    document.getElementById('wishCancel').addEventListener('click', closeWishForm);
     wf.addEventListener('submit', async e => {
       e.preventDefault();
       const name = document.getElementById('wName').value.trim();
       if (name.length < 2) return showError('wishError', 'Fill in the name of the place.');
       const btn = wf.querySelector('[type="submit"]');
       btn.disabled = true;
+      const note = document.getElementById('wNote').value.trim();
+      const address = document.getElementById('wCity').value.trim();
+      const category = (wf.querySelector('input[name="wCat"]:checked') || {}).value || 'eat';
+      const pick = finder.picked();
       try {
-        await addDoc(collection(db, 'profiles', user.uid, 'wishlistItems'), {
-          kind: 'idea',
-          name,
-          category: (wf.querySelector('input[name="wCat"]:checked') || {}).value || 'eat',
-          city: document.getElementById('wCity').value.trim(),
-          note: document.getElementById('wNote').value.trim(),
-          source: 'web',
-          createdAt: serverTimestamp(),
-        });
+        const items = collection(db, 'profiles', user.uid, 'wishlistItems');
+        if (pick && pick.src === 'sf') {
+          // Already on Strong Foodie: save it the same way as the 🔖 button on its page.
+          const dup = await getDocs(query(items, where('placeDocId', '==', pick.id)));
+          if (dup.docs.some(d => (d.data().placeCollection || pick.coll) === pick.coll)) {
+            toast('Already on your wishlist');
+            closeWishForm();
+            btn.disabled = false;
+            return;
+          }
+          await addDoc(items, {
+            kind: 'place', placeCollection: pick.coll, placeDocId: pick.id, placeName: pick.name,
+            placeCategory: pick.cat, city: pick.where || '', note, source: 'web', createdAt: serverTimestamp(),
+          });
+        } else {
+          const data = { kind: 'idea', name, category, city: address, address, note, source: 'web', createdAt: serverTimestamp() };
+          if (pick && pick.src === 'osm') {
+            data.city = pick.town || address;
+            data.country = pick.country || '';
+            if (pick.type) data.placeType = pick.type;
+            // Only keep the map pin while the address is still the one that was picked.
+            if (address === pick.address && typeof pick.lat === 'number' && typeof pick.lng === 'number') { data.lat = pick.lat; data.lng = pick.lng; }
+          }
+          await addDoc(items, data);
+        }
         toast('Added to your wishlist');
-        wf.reset(); wf.hidden = true; openBtn.hidden = false;
-        document.getElementById('wishError').hidden = true;
+        closeWishForm();
         loadWishlist(user);
       } catch (err) {
         console.error('Wishlist could not be saved:', err);
@@ -483,16 +530,41 @@
       }).join('')}</ul>` : '<p class="small">No reviews yet.</p>';
     } catch (e) { document.getElementById('revList').innerHTML = '<p class="small">Your reviews could not load.</p>'; }
 
-    // Your spots (added in the app)
+    // Your spots (added here or in the app)
+    loadSpots(user);
+  }
+
+  async function loadSpots(user) {
+    const box = document.getElementById('spotList');
+    if (!box) return;
+    let rows = [];
     try {
       const snap = await getDocs(query(collection(db, 'userPlaces'), where('addedByUserId', '==', user.uid)));
-      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
-      document.getElementById('spotCount').textContent = rows.length ? `(${rows.length})` : '';
-      document.getElementById('spotList').innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => `<li>
-          <div class="row-top"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(r.id)}">${esc(r.name)}</a></div>
-          <p class="small">${esc([r.address, r.city].filter(Boolean).join(', '))}${r.createdAt ? ' · ' + fmtDate(toDate(r.createdAt)) : ''}</p>
-        </li>`).join('')}</ul>` : '<p class="small">No spots yet. You add spots in the Strong Foodie app.</p>';
-    } catch (e) { document.getElementById('spotList').innerHTML = '<p class="small">Your spots could not load.</p>'; }
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    } catch (e) { box.innerHTML = '<p class="small">Your spots could not load.</p>'; return; }
+    document.getElementById('spotCount').textContent = rows.length ? `(${rows.length})` : '';
+    box.innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => `<li>
+        <div class="row-top"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(r.id)}">${esc(r.name)}</a><span class="small">${catInfo(r.category).emoji} ${catInfo(r.category).label}</span></div>
+        <p class="small">${esc([r.address, r.city].filter(Boolean).join(', '))}${r.createdAt ? ' · ' + fmtDate(toDate(r.createdAt)) : ''}${r.source === 'web' ? ' · on the website' : ''}</p>
+        <p class="small"><button class="link-btn small-link" data-spot-remove="${esc(r.id)}">Remove</button></p>
+      </li>`).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">No spots yet. Add a place you love, here or in the app.</p>';
+    box.querySelectorAll('[data-spot-remove]').forEach(b => b.addEventListener('click', async () => {
+      // Ask once more before removing: the first tap arms the button.
+      if (!b.dataset.armed) {
+        b.dataset.armed = '1'; b.textContent = 'Tap again to remove it for everyone';
+        setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = 'Remove'; } }, 5000);
+        return;
+      }
+      const row = rows.find(r => r.id === b.dataset.spotRemove);
+      try {
+        await deleteDoc(doc(db, 'userPlaces', b.dataset.spotRemove));
+        if (row && typeof row.photoUrl === 'string' && row.photoUrl.startsWith('fsimg://')) {
+          try { await deleteDoc(doc(db, 'images', row.photoUrl.slice(8))); } catch (e) {}
+        }
+        toast('Spot removed');
+        loadSpots(user);
+      } catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
+    }));
   }
 
   const WISH_CATS = [
@@ -501,7 +573,6 @@
     { key: 'health', label: 'Health', emoji: '💪' }, { key: 'stay', label: 'Stay', emoji: '🏨' },
   ];
   const catInfo = k => WISH_CATS.find(c => c.key === k) || WISH_CATS[0];
-
   async function loadWishlist(user) {
     const box = document.getElementById('wishList');
     if (!box) return;
@@ -519,13 +590,14 @@
       const c = catInfo(r.kind === 'place' ? r.placeCategory : r.category);
       const title = r.kind === 'place' ? (r.placeName || 'A place') : (r.name || 'A place');
       const link = r.kind === 'place' && r.placeDocId && r.placeCollection ? `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}` : '';
-      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([title, r.city].filter(Boolean).join(', '))}`;
+      const where = r.address || r.city || '';
+      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([title, where].filter(Boolean).join(', '))}`;
       return `<li>
         <div class="row-top">${link ? `<a href="${link}">${esc(title)}</a>` : `<strong>${esc(title)}</strong>`}<span class="small">${c.emoji} ${c.label}</span></div>
         ${r.kind === 'idea' ? '<span class="pill-new">Not on Strong Foodie yet</span>' : ''}
-        ${r.city ? `<p class="small">📍 ${esc(r.city)}</p>` : ''}
+        ${where ? `<p class="small">📍 ${esc([r.placeType, where].filter(Boolean).join(' · '))}</p>` : ''}
         ${r.note ? `<p>${esc(r.note)}</p>` : ''}
-        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
+        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <a href="add.html?wish=${encodeURIComponent(r.id)}">Add as spot</a> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
       </li>`;
     }).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">Nothing on your wishlist yet.</p>';
     box.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', async () => {
