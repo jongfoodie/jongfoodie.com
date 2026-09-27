@@ -32,7 +32,17 @@
 </script>
 <title>Videos, Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js");</script>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {
+    if (window.__mcLoaded) return;
+    window.__mcLoaded = true;
+    var m = document.createElement('script');
+    m.id = 'mcjs'; m.async = true;
+    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
+    document.head.appendChild(m);
+  }
+</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -262,12 +272,14 @@
     document.getElementById('cookieBanner').style.display = 'flex';
   } else if (c === 'accepted') {
     loadAnalytics();
+    loadMailchimp();
   }
 })();
 function acceptCookies(){
   localStorage.setItem('jf_cookie_consent','accepted');
   document.getElementById('cookieBanner').style.display='none';
   loadAnalytics();
+  loadMailchimp();
 }
 function declineCookies(){
   localStorage.setItem('jf_cookie_consent','declined');
