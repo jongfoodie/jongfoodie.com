@@ -114,7 +114,8 @@ function normalise(coll, id, r, member) {
     photos,
     lat: num(r.lat), lng: num(r.lng),
     closed: !!(r.closedStatus && r.closedStatus !== 'open'),
-    author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
+    // Old reviews still say "Jong Foodie", the brand's former name.
+    author: member ? (r.addedByName || 'a member') : (r.author && r.author !== 'Jong Foodie' ? r.author : 'Strong Foodie'),
     authorId: member ? (r.addedByUserId || '') : '',
     created: toDate(r.createdAt),
   };

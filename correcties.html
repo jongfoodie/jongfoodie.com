@@ -135,7 +135,7 @@
   const db = getFirestore(app);
   const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
 
-  const CAT = { reviews: 'Eat', hotelreviews: 'Stay', drinkspots: 'Drink', userPlaces: 'Member spot' };
+  const CAT = { reviews: 'Eat', drinkspots: 'Drink', shopspots: 'Shop', culturespots: 'Culture', healthspots: 'Health', hotelreviews: 'Stay', userPlaces: 'Member spot' };
   const LABEL = { review: 'Tekst', name: 'Naam', city: 'Locatie', type: 'Tip', lat: 'Kaart: breedtegraad', lng: 'Kaart: lengtegraad' };
   const NUM_FIELDS = new Set(['lat', 'lng']);
 
@@ -244,6 +244,18 @@
     { coll: 'userPlaces', id: 'rTRIU2SAWDm2gftCgePL', name: 'De Librije',
       why: 'Spelfout in je tip bij deze member spot: "Find dining".',
       set: { type: "Fine dining restaurant" } },
+    { coll: 'drinkspots', id: '22xIvvHTFLTUH5VlCYWt', name: 'Sapphire (tekst)',
+      why: 'Grammatica: "when you just turned 21".',
+      set: { review: "Go here when you've just turned 21." } },
+    { coll: 'drinkspots', id: 'eVe2VLI6mZ8CI1jlCLwC', name: 'Zum Barbarossa',
+      why: 'Grammatica: "when you just turn 18".',
+      set: { review: "Perfect for your birthday when you've just turned 18." } },
+    { coll: 'shopspots', id: 'wF4lk1FNhwgOWRD4P9QS', name: 'Laundry Industry',
+      why: 'Er staat geen stad bij. Daardoor zie je geen locatie en staat hij niet bij Amsterdam op de bestemmingspagina.',
+      set: { city: "Amsterdam" } },
+    { coll: 'healthspots', id: 'NLyQLKEyTIimJAtYe8Qj', name: 'Saints & Stars City',
+      why: 'Grammatica: "fine for an influencer or high-end people".',
+      set: { review: "Very expensive for what you get, but fine for influencers or a high-end crowd." } },
   ];
 
   const $ = id => document.getElementById(id);
@@ -267,7 +279,7 @@
       }));
     } catch (e) {
       console.log('Load failed:', e);
-      $('loadErr').textContent = 'De reviews konden niet worden geladen. Controleer je internet en herlaad de pagina.';
+      $('loadErr').textContent = 'De plekken konden niet worden geladen. Controleer je internet en herlaad de pagina.';
       $('loadErr').hidden = false;
       return;
     }
