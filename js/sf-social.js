@@ -9,7 +9,7 @@ import { GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.
 
 const PROVIDERS = [
   { id: 'google', name: 'Google', on: true, icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg' },
-  { id: 'apple', name: 'Apple', on: false, icon: '' },
+  { id: 'apple', name: 'Apple', on: true, icon: '' },
 ];
 
 const CSS = `
