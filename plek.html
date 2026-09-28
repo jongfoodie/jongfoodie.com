@@ -207,6 +207,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { socialHtml, wireSocial } from "./js/sf-social.js?v=1";
   import { locate, destinationUrl } from "./js/sf-places.js?v=1";
 
   const firebaseConfig = {
@@ -695,6 +696,7 @@
       return `<div class="composer-card">
         <p class="composer-title">Create your Strong Foodie account</p>
         <p class="muted" style="margin-bottom:0.75rem;">One account for the website and the app. You need to be 18 or older.</p>
+        ${socialHtml()}
         <form id="signupForm" class="composer-form" novalidate>
           <input class="field" id="suName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" required>
           <input class="field" id="suEmail" type="email" autocomplete="email" placeholder="Email" required>
@@ -712,7 +714,7 @@
     if (me && !me.hasProfile) {
       return `<div class="composer-card">
         <p class="composer-title">Complete your profile</p>
-        <p class="muted" style="margin-bottom:0.75rem;">Your account has no profile yet. Add a name and your date of birth, then you can post reviews here and use the account in the app.</p>
+        <p class="muted" style="margin-bottom:0.75rem;">Almost there. Add the name shown with your reviews and your date of birth, then you can post reviews here and use the account in the app.</p>
         <form id="profileForm" class="composer-form" novalidate>
           <input class="field" id="pfName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" value="${esc(me.authName)}" required>
           ${birthFields('pf')}
@@ -729,6 +731,7 @@
       return `<div class="composer-card">
         <p class="composer-title">Log in to write a review</p>
         <p class="muted" style="margin-bottom:0.75rem;">Use your Strong Foodie account, the same one as in the app. No account yet? <button class="link-btn" type="button" data-act="tosignup">Create one</button></p>
+        ${socialHtml()}
         <form id="loginForm" class="composer-form" novalidate>
           <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
           <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
@@ -772,6 +775,7 @@
 
   function wireComposer(mine) {
     const box = document.getElementById('memberReviewsBody');
+    wireSocial(box, auth);
     box.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async e => {
       const act = b.dataset.act;
       if (act === 'open' || act === 'edit') { composerOpen = true; startDraft(act === 'edit' ? mine : null); renderMemberReviews(); focusComposer(); }

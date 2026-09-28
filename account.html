@@ -167,6 +167,7 @@
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=1";
+  import { socialHtml, wireSocial } from "./js/sf-social.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -263,6 +264,7 @@
       <div class="acct-card">
         <h1>${mode === 'signup' ? 'Create your account' : 'Log in'}</h1>
         <p class="lead">One Strong Foodie account for this website and the app.${n ? ' After logging in you go straight back to the page you came from.' : ''}</p>
+        ${socialHtml()}
         <div class="tabs" role="tablist">
           <button class="tab${mode === 'login' ? ' active' : ''}" data-mode="login" role="tab" aria-selected="${mode === 'login'}">Log in</button>
           <button class="tab${mode === 'signup' ? ' active' : ''}" data-mode="signup" role="tab" aria-selected="${mode === 'signup'}">Create account</button>
@@ -283,9 +285,10 @@
           <p class="form-error" id="signupError" hidden></p>
           <button class="btn btn-primary" type="submit">Create account</button>
         </form>`}
-        <p class="small">Do you log in to the app with Apple or Google? That does not work on the website yet. Try “Forgot password?” with the same email: if a mail arrives, the new password works on the website and in the app.</p>
+        <p class="small">Tip: log in the same way on the website and in the app, then you use one account everywhere. Forgot your password? Fill in your email and tap “Forgot password?”.</p>
       </div>`;
 
+    wireSocial(root, auth);
     root.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
       mode = b.dataset.mode; renderSignedOut();
       const url = new URL(location.href);
@@ -349,7 +352,7 @@
     root.innerHTML = `
       <div class="acct-card">
         <h1>Complete your profile</h1>
-        <p class="lead">Your account has no profile yet. Add a name and your date of birth, then you can post reviews here and use the account in the app.</p>
+        <p class="lead">Almost there. Add the name shown with your reviews and your date of birth, then you can post reviews here and use the account in the app.</p>
         <form id="profileForm" class="form" novalidate>
           <input class="field" id="pfName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" value="${esc(user.displayName || '')}" required>
           ${birthFields('pf')}
