@@ -10,8 +10,8 @@
 
 
 import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf } from "./sf-core.js?v=1";
-export * from "./sf-core.js?v=1";
+import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits } from "./sf-core.js?v=2";
+export * from "./sf-core.js?v=2";
 
 async function readAll(db, coll) {
   try {
@@ -45,6 +45,17 @@ export async function loadPlaces(db) {
   });
   const members = memberDocs.map(r => normalise('userPlaces', r.id, r, true));
   return { catalog, members, all: catalog.concat(members) };
+}
+
+// ── Best-of lists: the automatic ones with Strong Foodie's changes (the `lists` collection)
+export async function loadListEdits(db) {
+  try {
+    const snap = await getDocs(collection(db, 'lists'));
+    return snap.docs.map(d => ({ ...d.data(), slug: d.id }));
+  } catch (e) { console.log('List changes could not load:', e.code || e); return []; }
+}
+export async function loadLists(db, all, opts) {
+  return applyListEdits(all, await loadListEdits(db), opts);
 }
 
 // ── Photos: normal URLs, or "fsimg://<id>" (a base64 image in `images`, from the app)

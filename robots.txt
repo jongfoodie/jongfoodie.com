@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /guide-edit.html
+Disallow: /list-edit.html
 Disallow: /admin.html
 
 Sitemap: https://strongfoodie.com/sitemap.xml

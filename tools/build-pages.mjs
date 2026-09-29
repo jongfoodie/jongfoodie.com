@@ -15,7 +15,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   CATS, SITE, slugOf, placeUrl, destinationUrl, guideUrl, normalise, isPublished,
-  destinations, buildLists, byQuality, LIST_CATS, toDate,
+  destinations, applyListEdits, buildLists, placeKey, byQuality, LIST_CATS, toDate,
 } from '../js/sf-core.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -173,10 +173,12 @@ async function writePage(url, html) {
 // ── Build ─────────────────────────────────────────────────────────────────
 async function main() {
   const now = new Date();
-  const [catalogLists, memberDocs, guideDocs] = await Promise.all([
+  const [catalogLists, memberDocs, guideDocs, listEdits] = await Promise.all([
     Promise.all(CATALOG.map(c => listAll(c))),
     listAll('userPlaces'),
     publishedGuides(),
+    // Strong Foodie's changes to the lists (list-edit.html); none is fine too.
+    listAll('lists').then(ds => ds.map(d => ({ ...d, slug: d.id }))).catch(e => { console.log('List changes not read:', e.message); return []; }),
   ]);
   const privateIds = await privateMembers(memberDocs.map(r => r.addedByUserId).filter(Boolean));
 
@@ -232,17 +234,25 @@ async function main() {
   }
 
   // Best-of lists
-  const lists = buildLists(all);
+  const lists = applyListEdits(all, listEdits);
   for (const l of lists) {
     const top = l.places.slice(0, 10);
     const title = `${l.title} (${now.getFullYear()}) | Strong Foodie`;
-    const what = l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.tag.toLowerCase();
-    const description = oneLine(`The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.name).join(', ')} and more.`);
-    const cover = top.find(p => p.photos.length);
-    const image = cover ? await ogImage(cover.photos[0], `${cover.coll}-${cover.id}`) : '';
+    const what = l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : 'places';
+    const description = l.intro ? oneLine(l.intro) : oneLine(`The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.name).join(', ')} and more.`);
+    const image = l.cover ? await ogImage(l.cover, `list-${l.slug}`) : '';
     if (best) await writePage(l.url, makePage(best, { title, description, canonical: SITE + l.url, image, params: { l: l.slug } }));
     sitemap.push({ loc: SITE + l.url, lastmod: newest(l.places, changed), priority: '0.8' });
   }
+
+  // The automatic lists for the app, before Strong Foodie's changes (the app adds
+  // those itself from the `lists` collection, so a change shows right away).
+  const autoLists = buildLists(all, { min: 1 }).map(l => ({
+    slug: l.slug, url: l.url, kind: l.kind, cat: l.cat || '', tag: l.tag || '', dest: l.dest, destSlug: l.destSlug, country: l.country,
+    title: l.title, places: l.places.map(placeKey),
+  }));
+  await mkdir(path.join(ROOT, 'best'), { recursive: true });
+  await writeFile(path.join(ROOT, 'best', 'lists.json'), JSON.stringify({ version: 1, lists: autoLists }, null, 1) + '\n');
 
   // Guides for a moment (written by Strong Foodie in guide-edit.html)
   // Only plain slugs: a guide's address becomes a folder on the website.

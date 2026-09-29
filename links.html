@@ -109,9 +109,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, starStr, placeUrl, loadPlaces, destinations, buildLists, photoTools } from "./js/sf-places.js?v=4";
-  import { highlightsRow } from "./js/sf-highlights.js?v=4";
-  import { loadGuides, SEASONS } from "./js/sf-guides.js?v=1";
+  import { CATS, esc, starStr, placeUrl, loadPlaces, destinations, loadLists, photoTools } from "./js/sf-places.js?v=5";
+  import { highlightsRow } from "./js/sf-highlights.js?v=5";
+  import { loadGuides, SEASONS } from "./js/sf-guides.js?v=2";
 
   const db = getFirestore(initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -144,7 +144,7 @@
     const dests = destinations(all);
     document.getElementById('destCount').textContent = `${dests.length} cities and islands`;
     // The biggest list goes on top, the one people look for most
-    const top = buildLists(all).find(l => l.dest);
+    const top = (await loadLists(db, all)).find(l => l.dest);
     if (top) {
       const main = document.querySelector('.big.main');
       main.insertAdjacentHTML('beforebegin', `<a class="big" href="${top.url}"><span class="ic">${top.kind === 'cat' ? CATS[top.cat].emoji : '🏆'}</span><span><strong>${esc(top.title)}</strong><small>The top ${Math.min(top.count, 10)}, ranked</small></span><span class="go">→</span></a>`);

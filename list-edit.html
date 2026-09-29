@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lists editor | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; height: 58px; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; margin-left: auto; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+
+  .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .panel { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem; }
+  .panel h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .g-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.75rem; }
+  .g-item { text-align: left; border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: 0.6rem 0.75rem; font: 14px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
+  .g-item:hover { border-color: var(--ink-soft); }
+  .g-item.active { border-color: var(--accent); background: var(--accent-pale); }
+  .g-item small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; vertical-align: 1px; margin-right: 4px; }
+  .pill-pub { background: var(--green-light); color: var(--green); }
+  .pill-draft { background: #EFE8DC; color: var(--ink-soft); }
+
+  .field { margin-bottom: 1rem; }
+  .field label, .field .label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-bottom: 0.35rem; }
+  .field .hint { font-size: 12px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; overflow-wrap: anywhere; }
+  input[type=text], input[type=search], textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 10px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-main:hover { background: #b8401a; border-color: #b8401a; }
+  .btn-danger { color: var(--red); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .status { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .status label { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .status input { accent-color: var(--accent); }
+
+  .picked { display: flex; flex-direction: column; gap: 0.6rem; }
+  .pk { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 0.6rem; align-items: start; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem; }
+  .pk-n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .pk-name { font-weight: 500; overflow-wrap: anywhere; }
+  .pk-where { font-size: 12px; color: var(--muted); margin-bottom: 0.4rem; }
+  .pk textarea { min-height: 54px; font-size: 14px; }
+  .pk-tools { display: flex; flex-direction: column; gap: 0.3rem; }
+  .pk-tools button { width: 32px; height: 30px; border: 1px solid var(--border); background: var(--warm-white); border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .pk-tools button:disabled { opacity: 0.35; cursor: default; }
+  .pk-gone { font-size: 12px; color: var(--red); }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .empty-note { font-size: 13px; color: var(--muted); padding: 0.5rem 0; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+    .wrap { padding: 1rem; }
+  }
+  /* Lists editor */
+  .side-tools { display: flex; flex-direction: column; gap: 0.5rem; }
+  .grp { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 1rem 0 0.1rem; }
+  details.small { margin-top: 0.4rem; font-size: 13px; color: var(--muted); }
+  details.small summary { cursor: pointer; padding: 0.3rem 0; }
+  .pill-own { background: #E4ECF2; color: #2F5D7C; }
+  .pill-hidden { background: #F3E3E3; color: var(--red); }
+  .pill-changed { background: var(--accent-pale); color: var(--accent); }
+  .pill-small { background: #EFE8DC; color: var(--muted); }
+  .ed-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .ed-head h2 { margin: 0; }
+  .pk.fixed { border-color: rgba(212,82,26,0.35); }
+  .pk-name a { color: var(--ink); text-decoration: none; }
+  .pk-name a:hover { color: var(--accent); }
+  .st { color: var(--gold); }
+  .cut { font-size: 12px; color: var(--muted); border-top: 1px dashed var(--border); padding-top: 0.5rem; margin-top: 0.2rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin-top: 0.35rem; }
+  .tag { font-size: 12px; background: #F0EBE3; color: var(--ink-soft); border-radius: 12px; padding: 2px 9px; }
+  .tag-input { flex: 1 1 220px; }
+  .linkbtn { background: none; border: none; color: var(--accent); font: 500 13px 'DM Sans', sans-serif; cursor: pointer; padding: 2px 4px; }
+  .res.off { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; cursor: default; }
+  .res.off .linkbtn { margin-left: auto; }
+  .unsaved { font-size: 13px; color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>LISTS</span></h1><a href="admin.html">← Admin</a></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, esc, fold, slugOf, starStr, loadPlaces, destinations, loadListEdits, applyListEdits, placeKey, listUrl, placeUrl } from "./js/sf-places.js?v=5";
+  import { confirmTap } from "./js/sf-delete.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const TOP = 10;
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+
+  // all = every place; catalog = the ones Strong Foodie reviewed (the only ones lists use)
+  let all = [], catalog = [], byKey = new Map(), edits = new Map(), lists = [], cur = null, dirty = false, filter = '';
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. Sign in on the <a href="admin.html">admin page</a>, then come back here.</p></div>`;
+      return;
+    }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) {
+      root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't change the lists. <a href="best.html">See the lists</a>.</p></div>`;
+      return;
+    }
+    root.innerHTML = '<p class="msg">Loading lists and places…</p>';
+    try {
+      const [loaded, saved] = await Promise.all([loadPlaces(db), loadListEdits(db)]);
+      all = loaded.all; catalog = loaded.catalog;
+      all.forEach(p => byKey.set(placeKey(p), p));
+      saved.forEach(e => edits.set(e.slug, e));
+      shell();
+      recompute();
+      open((lists.find(isShown) || {}).slug || null, true);
+    } catch (e) {
+      console.log('Lists editor error:', e);
+      root.innerHTML = `<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>`;
+    }
+  });
+
+  // ── Lists as the website shows them, plus hidden and small ones for you
+  // The list being edited counts with your unsaved changes; a list you only look at stays as saved.
+  const DRAFT = 'draft-new-list';
+  function recompute() {
+    const use = cur && (dirty || cur.isNew);
+    const list = [...edits.values()].map(e => (use && e.slug === cur.slug) ? cur : e);
+    if (use && !edits.has(cur.slug)) list.push(cur);
+    lists = applyListEdits(all, list, { admin: true });
+  }
+  const isShown = l => l.count > 0 && !l.hidden && (l.edited || l.count >= 3);
+
+  function shell() {
+    const dests = destinations(all).map(d => d.name);
+    root.innerHTML = `
+      <div class="layout">
+        <aside class="panel">
+          <h2>Best-of lists</h2>
+          <div class="side-tools">
+            <button class="btn btn-main btn-sm" id="newBtn" type="button">＋ New list</button>
+            <input type="search" id="listFilter" placeholder="Find a list…" aria-label="Find a list" autocomplete="off">
+          </div>
+          <div id="lList"></div>
+        </aside>
+        <section class="panel" id="editor"></section>
+      </div>
+      <datalist id="dests">${dests.map(d => `<option value="${esc(d)}">`).join('')}</datalist>`;
+    document.getElementById('newBtn').addEventListener('click', () => open(null));
+    document.getElementById('listFilter').addEventListener('input', e => { filter = fold(e.target.value).trim(); drawSide(); });
+  }
+
+  function pill(l) {
+    if (l.kind === 'custom') return '<span class="pill pill-own">Own list</span>';
+    if (l.hidden) return '<span class="pill pill-hidden">Hidden</span>';
+    if (l.edited) return '<span class="pill pill-changed">Changed</span>';
+    return isShown(l) ? '<span class="pill pill-pub">Live</span>' : '<span class="pill pill-small">Too small</span>';
+  }
+  function drawSide() {
+    const groups = new Map();
+    lists.filter(l => l.slug !== DRAFT && (!filter || fold(l.title).includes(filter) || fold(l.dest).includes(filter)))
+      .forEach(l => { const g = l.dest || 'Worldwide'; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(l); });
+    const item = l => `<button class="g-item${cur && cur.slug === l.slug ? ' active' : ''}" type="button" data-slug="${esc(l.slug)}">${pill(l)}${esc(l.title)}<small>${l.count} ${l.count === 1 ? 'place' : 'places'}</small></button>`;
+    document.getElementById('lList').innerHTML = [...groups.entries()].map(([g, ls]) => {
+      const main = ls.filter(l => isShown(l) || l.edited || l.kind === 'custom');
+      const small = ls.filter(l => !main.includes(l));
+      return `<p class="grp">${esc(g)}</p><div class="g-list">${main.map(item).join('')}</div>
+        ${small.length ? `<details class="small"><summary>${small.length} small ${small.length === 1 ? 'list' : 'lists'} (fewer than 3 places, not shown)</summary><div class="g-list">${small.map(item).join('')}</div></details>` : ''}`;
+    }).join('') || '<p class="empty-note">No list found.</p>';
+    document.querySelectorAll('.g-item').forEach(b => b.addEventListener('click', () => open(b.dataset.slug)));
+  }
+
+  // ── Open a list (or a new one) in the editor
+  function blank(slug) {
+    const e = edits.get(slug) || {};
+    const arr = v => Array.isArray(v) ? v.filter(x => typeof x === 'string') : [];
+    return { slug, custom: e.custom === true, hidden: e.hidden === true, title: e.title || '', intro: e.intro || '', cover: e.cover || '', order: arr(e.order), removed: arr(e.removed), dest: e.dest || '', cat: e.cat || '' };
+  }
+  function open(slug, silent = false) {
+    if (dirty && !silent) {
+      const btn = document.getElementById('saveBtn');
+      if (!open.warned) { open.warned = true; toast('You have changes that are not saved. Save them, or click again to throw them away.', true); setTimeout(() => { open.warned = false; }, 4000); return; }
+      open.warned = false;
+    }
+    dirty = false;
+    cur = slug ? blank(slug) : { slug: DRAFT, custom: true, hidden: false, title: '', intro: '', cover: '', order: [], removed: [], dest: '', cat: 'eat', isNew: true };
+    recompute(); drawSide(); drawEditor();
+  }
+  const current = () => lists.find(l => l.slug === cur.slug) || { places: [], count: 0, title: cur.title || 'New list', kind: 'custom', url: '' };
+
+  function drawEditor() {
+    const l = current();
+    const e = document.getElementById('editor');
+    const auto = !cur.custom;
+    e.innerHTML = `
+      <div class="ed-head">
+        <h2>${cur.isNew ? 'New list' : auto ? 'Automatic list' : 'Your own list'}</h2>
+        ${!cur.isNew && l.url ? `<a class="btn btn-sm" href="${esc(l.url)}" target="_blank" rel="noopener">View ↗</a>` : ''}
+      </div>
+      <p class="hint" style="margin-bottom:1rem;">${auto ? 'Made from your reviews. New reviews join by themselves; what you change here stays.' : 'Only the places you add below are in this list.'}</p>
+
+      <div class="field"><span class="label">On the website and in the app</span>
+        <div class="status">
+          <label><input type="radio" name="vis" value="shown"${!cur.hidden ? ' checked' : ''}> Show this list</label>
+          <label><input type="radio" name="vis" value="hidden"${cur.hidden ? ' checked' : ''}> Hide this list</label>
+        </div>
+        ${!cur.hidden && auto && !l.edited && l.count < 3 ? '<p class="hint">It has fewer than 3 places, so it only shows once you change something (for example add a place) and save.</p>' : ''}
+      </div>
+
+      <div class="field"><label for="fTitle">Title</label>
+        <input type="text" id="fTitle" maxlength="90" value="${esc(cur.title)}" placeholder="${esc(auto ? l.autoTitle || l.title : 'Best Brunch in Amsterdam')}">
+        ${auto ? '<p class="hint">Empty: the automatic title.</p>' : ''}</div>
+      ${cur.custom ? `
+      <div class="row">
+        <div class="field"><label for="fSlug">Link</label><input type="text" id="fSlug" maxlength="70" value="${esc(cur.slug)}" placeholder="brunch-amsterdam" ${cur.isNew ? '' : 'readonly'}><p class="hint" id="slugHint"></p></div>
+        <div class="field"><label for="fDest">City</label><input type="text" id="fDest" list="dests" value="${esc(cur.dest)}" placeholder="Amsterdam, or empty for worldwide"></div>
+        <div class="field"><label for="fCat">Icon and colour</label><select id="fCat">${Object.keys(CATS).map(k => `<option value="${k}"${cur.cat === k ? ' selected' : ''}>${CATS[k].emoji} ${CATS[k].label}</option>`).join('')}</select></div>
+      </div>` : ''}
+      <div class="field"><label for="fIntro">Intro (optional)</label>
+        <textarea id="fIntro" maxlength="800" placeholder="A few words above the list, in your own words.">${esc(cur.intro)}</textarea></div>
+      <div class="field"><label for="fCover">Cover photo</label><select id="fCover"></select></div>
+
+      <div class="field"><span class="label">Places, in this order</span>
+        <p class="hint">Use ↑ ↓ to set the order: everything above the place you move then stays fixed, and new reviews come after it by score. ✕ takes a place out of this list only.</p>
+        <div class="picked" id="picked"></div>
+        ${cur.order.length && auto ? '<button class="btn btn-sm" id="resetOrder" type="button" style="margin-top:0.6rem;">Back to score order</button>' : ''}
+        <input type="search" id="find" placeholder="Add a place: type a name or city…" autocomplete="off" style="margin-top:0.75rem;">
+        <div class="results" id="results"></div>
+        <div id="removedBox"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-main" id="saveBtn" type="button">Save</button>
+        <span class="unsaved" id="unsaved" hidden>Not saved yet</span>
+        ${cur.isNew ? '' : auto ? (l.edited ? '<button class="btn btn-danger" id="resetBtn" type="button" style="margin-left:auto;">Undo all my changes</button>' : '')
+          : '<button class="btn btn-danger" id="delBtn" type="button" style="margin-left:auto;">Delete list</button>'}
+      </div>`;
+
+    const $ = id => document.getElementById(id);
+    const change = () => { dirty = true; $('unsaved').hidden = false; };
+    document.querySelectorAll('input[name=vis]').forEach(r => r.addEventListener('change', () => { cur.hidden = document.querySelector('input[name=vis]:checked').value === 'hidden'; change(); recompute(); drawSide(); }));
+    $('fTitle').addEventListener('input', () => { cur.title = $('fTitle').value; change(); });
+    $('fIntro').addEventListener('input', () => { cur.intro = $('fIntro').value; change(); });
+    $('fCover').addEventListener('change', () => { cur.cover = $('fCover').value; change(); });
+    if (cur.custom) {
+      $('fDest').addEventListener('input', () => { cur.dest = $('fDest').value; change(); });
+      $('fCat').addEventListener('change', () => { cur.cat = $('fCat').value; change(); });
+      if (cur.isNew) {
+        $('fTitle').addEventListener('input', () => { if (!$('fSlug').dataset.touched) { $('fSlug').value = slugOf($('fTitle').value).slice(0, 70); slugHint(); } });
+        $('fSlug').addEventListener('input', () => { $('fSlug').dataset.touched = '1'; slugHint(); change(); });
+      }
+      slugHint();
+    }
+    $('find').addEventListener('input', search);
+    $('saveBtn').addEventListener('click', save);
+    if ($('resetOrder')) $('resetOrder').addEventListener('click', () => { cur.order = []; change(); refresh(); });
+    if ($('resetBtn')) $('resetBtn').addEventListener('click', () => reset($('resetBtn')));
+    if ($('delBtn')) $('delBtn').addEventListener('click', () => reset($('delBtn')));
+    if (dirty) $('unsaved').hidden = false;
+    drawPlaces();
+  }
+
+  function slugHint() {
+    const el = document.getElementById('slugHint');
+    if (!el) return;
+    const s = slugOf(document.getElementById('fSlug').value);
+    const taken = cur.isNew && s && s !== DRAFT && (lists.some(l => l.slug === s) || edits.has(s));
+    el.textContent = !s || s === DRAFT ? 'Made from the title.' : taken ? 'This link is already used by another list.' : `strongfoodie.com${listUrl(s)}`;
+    el.style.color = taken ? 'var(--red)' : '';
+  }
+
+  // Redraw after a change to the order, the removed places or tags
+  function refresh() { recompute(); drawSide(); drawPlaces(); }
+
+  function drawPlaces() {
+    const l = current();
+    const keys = l.places.map(placeKey);
+    const box = document.getElementById('picked');
+    box.innerHTML = keys.length ? l.places.map((p, i) => {
+      const fixed = i < (l.pinned || 0);
+      return `${i === TOP ? '<p class="cut">Below here: not in the top 10 on the list page</p>' : ''}
+      <div class="pk${fixed ? ' fixed' : ''}">
+        <span class="pk-n">${i + 1}</span>
+        <div>
+          <div class="pk-name"><a href="${placeUrl(p)}" target="_blank" rel="noopener">${esc(p.emoji)} ${esc(p.name)}</a></div>
+          <div class="pk-where">${p.rating ? `<span class="st">${starStr(p.rating)}</span> ${fmt1(p.rating)} · ` : ''}${esc(p.where)}${fixed ? ' · <strong>fixed spot</strong>' : ''}</div>
+          <div class="tags" data-k="${esc(placeKey(p))}">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('') || '<span class="hint">No tags</span>'}<button class="linkbtn" type="button" data-tags="${esc(placeKey(p))}">✎ Tags</button></div>
+        </div>
+        <div class="pk-tools">
+          <button type="button" data-up="${i}" title="Up" aria-label="Up" ${i === 0 ? 'disabled' : ''}>↑</button>
+          <button type="button" data-down="${i}" title="Down" aria-label="Down" ${i === keys.length - 1 ? 'disabled' : ''}>↓</button>
+          <button type="button" data-del="${i}" title="Take out of this list" aria-label="Take out of this list">✕</button>
+        </div>
+      </div>`;
+    }).join('') : '<p class="empty-note">No places yet. Search below to add them.</p>';
+    const change = () => { dirty = true; document.getElementById('unsaved').hidden = false; };
+    // Moving fixes everything down to the moved place, as it now stands.
+    const move = (i, d) => {
+      const j = i + d;
+      if (j < 0 || j >= keys.length) return;
+      const next = keys.slice();
+      [next[i], next[j]] = [next[j], next[i]];
+      cur.order = next.slice(0, Math.max(i, j, (l.pinned || 0) - 1) + 1);
+      change(); refresh();
+    };
+    box.querySelectorAll('[data-up]').forEach(b => b.addEventListener('click', () => move(Number(b.dataset.up), -1)));
+    box.querySelectorAll('[data-down]').forEach(b => b.addEventListener('click', () => move(Number(b.dataset.down), 1)));
+    box.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => {
+      const k = keys[Number(b.dataset.del)];
+      cur.order = cur.order.filter(x => x !== k);
+      if (!cur.custom && !cur.removed.includes(k)) cur.removed.push(k);
+      change(); refresh();
+    }));
+    box.querySelectorAll('[data-tags]').forEach(b => b.addEventListener('click', () => editTags(b.dataset.tags)));
+    drawRemoved(); drawCover();
+  }
+
+  function drawRemoved() {
+    const box = document.getElementById('removedBox');
+    const gone = cur.removed.map(k => byKey.get(k)).filter(Boolean);
+    box.innerHTML = gone.length ? `<p class="label" style="margin-top:1rem;">Taken out of this list</p><div class="results">${gone.map(p => `<div class="res off">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where)}</small><button class="linkbtn" type="button" data-back="${esc(placeKey(p))}">Put back</button></div>`).join('')}</div>` : '';
+    box.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => {
+      cur.removed = cur.removed.filter(k => k !== b.dataset.back);
+      dirty = true; document.getElementById('unsaved').hidden = false; refresh();
+    }));
+  }
+
+  function drawCover() {
+    const sel = document.getElementById('fCover');
+    const l = current();
+    const withPhoto = l.places.filter(p => p.photos.length).slice(0, 20);
+    const opts = [['', 'Automatic: the first place with a photo']].concat(withPhoto.map(p => [p.photos[0], `Photo of ${p.name}`]));
+    if (cur.cover && !opts.some(([v]) => v === cur.cover)) opts.push([cur.cover, 'The photo chosen before']);
+    sel.innerHTML = opts.map(([v, t]) => `<option value="${esc(v)}"${v === (cur.cover || '') ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  }
+
+  function search() {
+    const q = fold(document.getElementById('find').value).trim();
+    const box = document.getElementById('results');
+    if (q.length < 2) { box.innerHTML = ''; return; }
+    const terms = q.split(/\s+/);
+    const inList = new Set(current().places.map(placeKey));
+    const hits = catalog.filter(p => !inList.has(placeKey(p)) && terms.every(t => p._name.includes(t) || p._place.includes(t) || p._kind.includes(t)))
+      .sort((a, b) => (b._name.startsWith(terms[0]) - a._name.startsWith(terms[0])) || (b.rating || 0) - (a.rating || 0))
+      .slice(0, 8);
+    box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">＋ ${esc(p.emoji)} ${esc(p.name)} <small>${esc([p.where, p.rating ? fmt1(p.rating) + '★' : ''].filter(Boolean).join(' · '))}</small></button>`).join('')
+      : '<p class="empty-note">Nothing found. Only places Strong Foodie reviewed can go in a list.</p>';
+    box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => {
+      const k = b.dataset.k;
+      // A new place goes right after the fixed part, so it is fixed too.
+      const l = current();
+      const fixedNow = l.places.slice(0, l.pinned || 0).map(placeKey);
+      cur.order = fixedNow.concat(k);
+      cur.removed = cur.removed.filter(x => x !== k);
+      document.getElementById('find').value = ''; box.innerHTML = '';
+      dirty = true; document.getElementById('unsaved').hidden = false; refresh();
+    }));
+  }
+
+  // Tags live on the place itself: they decide which automatic lists it is in, everywhere.
+  function editTags(k) {
+    const p = byKey.get(k);
+    const box = document.querySelector(`.tags[data-k="${CSS.escape(k)}"]`);
+    if (!p || !box) return;
+    box.innerHTML = `<input type="text" class="tag-input" value="${esc(p.tags.join(', '))}" aria-label="Tags of ${esc(p.name)}" placeholder="Italian, Pizza, Hidden gem">
+      <button class="btn btn-sm btn-main" type="button" data-save>Save tags</button><button class="btn btn-sm" type="button" data-cancel>Cancel</button>
+      <p class="hint">Separate tags with commas. This changes the place everywhere, also which automatic lists it is in.</p>`;
+    const input = box.querySelector('input');
+    input.focus();
+    box.querySelector('[data-cancel]').addEventListener('click', drawPlaces);
+    box.querySelector('[data-save]').addEventListener('click', async () => {
+      const tags = [...new Set(input.value.split(',').map(t => t.trim()).filter(Boolean))].slice(0, 20);
+      try {
+        await updateDoc(doc(db, p.coll, p.id), { tags });
+        p.tags = tags;
+        p._kind = fold([CATS[p.cat].label, p.type, p.tip, tags.join(' ')].join(' '));
+        toast('Tags saved.');
+        refresh();
+      } catch (e) {
+        console.log('Tags not saved:', e);
+        toast(e.code === 'permission-denied' ? 'The database refused. Are you signed in as the admin?' : 'Could not save the tags. Try again.', true);
+      }
+    });
+  }
+
+  async function save() {
+    const $ = id => document.getElementById(id);
+    let slug = cur.slug;
+    if (cur.custom) {
+      if (!cur.title.trim()) return toast('Give the list a title.', true);
+      if (cur.isNew) {
+        slug = slugOf($('fSlug').value || cur.title).slice(0, 70);
+        if (!slug || slug === DRAFT) return toast('Give the list a link.', true);
+        if (lists.some(l => l.slug === slug) || edits.has(slug)) return toast('This link is already used by another list.', true);
+      }
+      if (!current().count && !cur.isNew && !cur.order.length) return toast('Add at least one place.', true);
+      if (cur.isNew && !cur.order.length) return toast('Add at least one place.', true);
+    }
+    const data = {
+      slug, custom: cur.custom, hidden: cur.hidden, title: cur.title.trim(), intro: cur.intro.trim(), cover: cur.cover,
+      order: cur.order, removed: cur.custom ? [] : cur.removed, updatedAt: serverTimestamp(),
+      ...(cur.custom ? { dest: cur.dest.trim(), cat: cur.cat } : {}),
+    };
+    const btn = $('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await setDoc(doc(db, 'lists', slug), data);
+      edits.set(slug, { ...data, updatedAt: new Date() });
+      dirty = false;
+      cur = blank(slug);
+      recompute(); drawSide(); drawEditor();
+      toast(cur.hidden ? 'Saved. The list is hidden.' : 'Saved. The list page and the app show it right away; the link preview follows with the next automatic update.');
+    } catch (e) {
+      console.log('Save failed:', e);
+      toast(e.code === 'permission-denied' ? 'The database refused: add the lists rule in Firebase first.' : 'Could not save. Try again.', true);
+      btn.disabled = false; btn.textContent = 'Save';
+    }
+  }
+
+  async function reset(btn) {
+    if (!confirmTap(btn, cur.custom ? 'Tap again to delete' : 'Tap again to undo')) return;
+    btn.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'lists', cur.slug));
+      edits.delete(cur.slug);
+      const slug = cur.slug, custom = cur.custom;
+      dirty = false;
+      toast(custom ? 'List deleted.' : 'Back to the automatic list.');
+      if (custom) open(null, true); else open(slug, true);
+    } catch (e) { console.log('Reset failed:', e); toast('That did not work. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

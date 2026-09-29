@@ -232,7 +232,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, buildLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=4";
+  import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=5";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -516,7 +516,7 @@
     if (!slug) renderIndex(dests, all.filter(p => p.destination).length);
     else {
       const d = dests.find(x => x.slug === slug);
-      if (d) renderDestination(d, dests, buildLists(all).filter(l => l.destSlug === d.slug)); else renderNotFound(slug, dests);
+      if (d) renderDestination(d, dests, (await loadLists(db, all)).filter(l => l.destSlug === d.slug)); else renderNotFound(slug, dests);
     }
   } catch (e) {
     console.log('Destinations error:', e);

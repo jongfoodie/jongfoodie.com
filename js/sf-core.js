@@ -201,3 +201,50 @@ export function buildLists(all, { min = 3 } = {}) {
   }
   return lists.sort((a, b) => (a.dest ? 0 : 1) - (b.dest ? 0 : 1) || b.count - a.count || a.title.localeCompare(b.title));
 }
+
+// ── Lists adjusted by Strong Foodie ──────────────────────────────────────
+// The admin (list-edit.html on the website, the admin screen in the app) can
+// change any list without switching the automatic lists off. One document per
+// list in the `lists` collection, its id is the list's slug:
+//   { slug, hidden, title, intro, cover, order: ["reviews/<id>", …],
+//     removed: ["reviews/<id>", …], custom, dest, cat, updatedAt }
+// `order` puts those places first, in that order; the other places of the list
+// follow by score, so new reviews still join by themselves. `removed` keeps a
+// place out of that list. `custom: true` is a list the admin made: only the
+// places in `order`.
+export const placeKey = p => `${p.coll}/${p.id}`;
+const sortLists = (a, b) => (a.dest ? 0 : 1) - (b.dest ? 0 : 1) || b.count - a.count || a.title.localeCompare(b.title);
+
+export function applyListEdits(all, edits = [], { min = 3, admin = false } = {}) {
+  const byKey = new Map(all.map(p => [placeKey(p), p]));
+  const strings = v => Array.isArray(v) ? v.filter(x => typeof x === 'string') : [];
+  const text = v => typeof v === 'string' ? v.trim() : '';
+  const bySlug = new Map();
+  edits.forEach(e => { if (e && typeof e.slug === 'string' && /^[a-z0-9-]{1,80}$/.test(e.slug)) bySlug.set(e.slug, e); });
+  const shape = (base, e) => {
+    if (!e) return { ...base, autoTitle: base.title, cover: base.places.find(p => p.photos.length)?.photos[0] || '', edited: false, hidden: false, pinned: 0 };
+    const removed = new Set(strings(e.removed));
+    const pinned = strings(e.order).filter(k => !removed.has(k)).map(k => byKey.get(k)).filter(Boolean);
+    const pinnedKeys = new Set(pinned.map(placeKey));
+    const places = pinned.concat(base.places.filter(p => !removed.has(placeKey(p)) && !pinnedKeys.has(placeKey(p))));
+    return {
+      ...base, autoTitle: base.title, places, count: places.length, edited: true, hidden: e.hidden === true, pinned: pinned.length,
+      title: text(e.title) || base.title, intro: text(e.intro),
+      cover: text(e.cover) || places.find(p => p.photos.length)?.photos[0] || '',
+      removedKeys: [...removed],
+    };
+  };
+  const lists = buildLists(all, { min: 1 }).map(l => shape(l, bySlug.get(l.slug)));
+  const known = new Set(lists.map(l => l.slug));
+  for (const e of bySlug.values()) {
+    if (e.custom !== true || known.has(e.slug)) continue;
+    const dest = text(e.dest);
+    lists.push(shape({ slug: e.slug, url: listUrl(e.slug), kind: 'custom', cat: CATS[e.cat] ? e.cat : '', dest, destSlug: slugOf(dest), country: '', title: text(e.title) || e.slug, places: [], count: 0 }, e));
+  }
+  // Shown: an untouched list with at least `min` places, or any list the admin
+  // changed, as long as it is not hidden and not empty. The admin sees them all.
+  return lists
+    .filter(l => admin || (l.count && !l.hidden && (l.edited || l.count >= min)))
+    .sort(sortLists);
+}
+

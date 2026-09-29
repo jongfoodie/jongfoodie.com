@@ -8,7 +8,7 @@
 //                  createdAt, updatedAt }
 
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { esc, guideUrl, toDate } from "./sf-core.js?v=1";
+import { esc, guideUrl, toDate } from "./sf-core.js?v=2";
 
 export const SEASONS = {
   spring: { label: 'Spring', emoji: '🌷', color: '#5E8A3A' },

@@ -169,6 +169,7 @@
   .ri-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; overflow-wrap: anywhere; }
   .ri-link { font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; margin-top: auto; }
   .app-note a { color: var(--accent); }
+  .l-intro { max-width: 720px; margin-top: 1.5rem; font-size: 17px; line-height: 1.7; color: var(--ink-soft); white-space: pre-line; }
   @media (max-width: 700px) {
     .list-grid { grid-template-columns: 1fr; }
     .list-card { aspect-ratio: 2 / 1; }
@@ -268,7 +269,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, LIST_CATS, SITE, esc, starStr, placeUrl, destinationUrl, loadPlaces, destinations, buildLists, photoTools } from "./js/sf-places.js?v=4";
+  import { CATS, LIST_CATS, SITE, esc, starStr, placeUrl, destinationUrl, loadPlaces, destinations, loadLists, photoTools } from "./js/sf-places.js?v=5";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -303,8 +304,8 @@
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
   const monthYear = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
-  const catOfList = l => CATS[l.kind === 'cat' ? l.cat : l.places[0].cat];
-  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.tag.toLowerCase();
+  const catOfList = l => CATS[l.kind === 'cat' ? l.cat : (l.cat || (l.places[0] && l.places[0].cat) || 'eat')];
+  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : 'places';
 
   async function share(title) {
     const url = document.querySelector('link[rel="canonical"]').getAttribute('href') || location.href;
@@ -315,10 +316,9 @@
 
   function listCard(l) {
     const cat = catOfList(l);
-    const cover = l.places.find(p => p.photos.length);
     return `<a class="list-card" href="${l.url}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
       <span class="lc-emoji">${l.kind === 'cat' ? cat.emoji : '🏆'}</span>
-      ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+      ${l.cover ? `<img data-photo="${esc(l.cover)}" alt="" loading="lazy" hidden>` : ''}
       <span class="lc-info">
         <span class="lc-count">Top ${Math.min(l.count, TOP)}</span>
         <span class="lc-title">${esc(l.title)}</span>
@@ -363,13 +363,12 @@
     const dest = l.dest ? dests.find(d => d.slug === l.destSlug) : null;
     const allHref = dest ? `${dest.url}${l.kind === 'cat' ? '?cat=' + l.cat : ''}#places` : '';
     const sameDest = lists.filter(x => x !== l && x.dest && x.destSlug === l.destSlug);
-    const sameKind = lists.filter(x => x !== l && x.slug !== l.slug && (l.kind === 'cat' ? x.kind === 'cat' && x.cat === l.cat : x.kind === 'tag' && x.tag.toLowerCase() === l.tag.toLowerCase()) && x.destSlug !== l.destSlug);
-    const cover = top.find(p => p.photos.length);
+    const sameKind = l.kind === 'custom' ? [] : lists.filter(x => x !== l && x.slug !== l.slug && (l.kind === 'cat' ? x.kind === 'cat' && x.cat === l.cat : x.kind === 'tag' && x.tag.toLowerCase() === l.tag.toLowerCase()) && x.destSlug !== l.destSlug);
 
     root.innerHTML = `
       <div class="crumbs"><a href="index.html">Home</a> › <a href="best.html">Best of</a>${dest ? ` › <a href="${dest.url}">${esc(dest.name)}</a>` : ''} › ${esc(l.title)}</div>
       <header class="d-hero" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
-        ${cover ? `<img data-photo="${esc(cover.photos[0])}" data-full alt="" hidden>` : ''}
+        ${l.cover ? `<img data-photo="${esc(l.cover)}" data-full alt="" hidden>` : ''}
         <div class="d-hero-body">
           <p class="d-eyebrow">${l.dest ? 'Best of ' + esc(l.dest) : 'Worldwide'} · ${year}</p>
           <h1>${esc(l.title)}</h1>
@@ -383,6 +382,7 @@
           </div>
         </div>
       </header>
+      ${l.intro ? `<p class="l-intro">${esc(l.intro)}</p>` : ''}
 
       <ol class="rank-list">${top.map((p, i) => {
         const c = CATS[p.cat];
@@ -396,7 +396,7 @@
           </a>
           <div class="ri-body">
             <h2 class="ri-name"><a href="${placeUrl(p)}">${esc(p.name)}</a></h2>
-            <p class="ri-meta"><span class="star">${starStr(p.rating)}</span> <strong>${fmt1(p.rating)}</strong>${bits.length ? ' · ' + esc(bits.join(' · ')) : ''}</p>
+            <p class="ri-meta">${p.rating ? `<span class="star">${starStr(p.rating)}</span> <strong>${fmt1(p.rating)}</strong>${bits.length ? ' · ' : ''}` : ''}${esc(bits.join(' · '))}</p>
             ${text ? `<p class="ri-text">${esc(text.slice(0, 240))}${text.length > 240 ? '…' : ''}</p>` : ''}
             <a class="ri-link" href="${placeUrl(p)}">Read the review →</a>
           </div>
@@ -429,7 +429,7 @@
   // ── Start
   try {
     const { all } = await loadPlaces(db);
-    const lists = buildLists(all);
+    const lists = await loadLists(db, all);
     const slug = String(params.get('l') || '').toLowerCase();
     const l = slug && lists.find(x => x.slug === slug);
     if (l) renderList(l, lists, destinations(all));
