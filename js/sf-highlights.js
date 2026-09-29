@@ -7,6 +7,7 @@
 //   highlightsRow(db, element, { authorId })   // one member's highlights
 //   highlightsRow(db, element, { placeId })    // highlights of one place
 //   highlightsRow(db, element)                 // newest from everyone
+//   ...{ ownerId: uid } adds a Delete button to that member's own highlights
 //
 // Same rules as the app (Instagram Stories):
 // - a highlight is live for 24 hours after createdAt; the homepage shows
@@ -22,6 +23,7 @@
 
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=3";
+import { deleteHighlight, confirmTap } from "./sf-delete.js?v=1";
 
 const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];
 const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
@@ -78,6 +80,9 @@ const CSS = `
 .hl-who a { color: #fff; font-weight: 600; text-decoration: none; }
 .hl-who a:hover { text-decoration: underline; }
 .hl-who span { display: block; font-size: 11px; opacity: 0.8; }
+.hl-del { border: none; background: rgba(0,0,0,0.4); color: #fff; border-radius: 16px; padding: 8px 12px; font: 600 12px 'DM Sans', sans-serif; cursor: pointer; flex-shrink: 0; }
+.hl-del[data-armed] { background: #B3261E; }
+.hl-del:disabled { opacity: 0.6; cursor: default; }
 .hl-x { width: 38px; height: 38px; border-radius: 50%; border: none; background: rgba(0,0,0,0.35); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; flex-shrink: 0; }
 .hl-bottom { position: absolute; left: 16px; right: 16px; bottom: 18px; z-index: 3; }
 .hl-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
@@ -109,7 +114,7 @@ function addStyle() {
 
 // ── Viewer (one per page) ────────────────────────────────────────────────
 let viewer = null;
-function openViewer(list, start, resolvePhoto) {
+function openViewer(list, start, resolvePhoto, ctx = {}) {
   addStyle();
   if (!viewer) {
     viewer = document.createElement('div');
@@ -171,6 +176,7 @@ function openViewer(list, start, resolvePhoto) {
         <div class="hl-top">
           <span class="hl-av" style="background:${colourOf(h.authorId || who)};">${esc(initialsOf(who))}${h.authorPhotoUrl ? '<img id="hlAv" alt="" hidden>' : ''}</span>
           <span class="hl-who">${h.authorId ? `<a href="member.html?u=${encodeURIComponent(h.authorId)}">${esc(who)}</a>` : esc(who)}<span>${isLive(h) ? esc(ago(toDate(h.createdAt))) : '📌 Pinned'}</span></span>
+          ${ctx.ownerId && h.authorId === ctx.ownerId ? '<button class="hl-del" type="button">Delete</button>' : ''}
           <button class="hl-x" type="button" aria-label="Close">×</button>
         </div>
         <div class="hl-bottom">
@@ -184,6 +190,23 @@ function openViewer(list, start, resolvePhoto) {
       </div>
       <button class="hl-arrow next" type="button" aria-label="Next highlight"${i === list.length - 1 ? ' hidden' : ''}>›</button>`;
     viewer.querySelector('.hl-x').addEventListener('click', close);
+    const del = viewer.querySelector('.hl-del');
+    if (del) del.addEventListener('click', async () => {
+      if (!confirmTap(del, 'Tap again to delete')) return;
+      del.disabled = true; del.textContent = 'Deleting…';
+      try {
+        await deleteHighlight(ctx.db, h);
+        list.splice(i, 1);
+        if (ctx.onDeleted) ctx.onDeleted(h);
+        if (!list.length) { close(); return; }
+        if (i >= list.length) i = list.length - 1;
+        draw();
+      } catch (e) {
+        console.log('Highlight not deleted:', e.code || e);
+        delete del.dataset.armed; del.disabled = false;
+        del.textContent = e && e.code === 'permission-denied' ? 'Delete it in the app' : 'Not deleted, try again';
+      }
+    });
     viewer.querySelectorAll('.prev').forEach(b => b.addEventListener('click', () => go(-1)));
     viewer.querySelectorAll('.next').forEach(b => b.addEventListener('click', () => go(1)));
     const img = viewer.querySelector('#hlImg');
@@ -243,6 +266,9 @@ export async function highlightsRow(db, el, opts = {}) {
   if (!list.length) { el.innerHTML = ''; el.hidden = true; return list; }
   addStyle();
   const { resolvePhoto } = photoTools(db);
+  const ctx = { db, ownerId: opts.ownerId || '', onDeleted: () => renderRow() };
+  function renderRow() {
+  if (!list.length) { el.innerHTML = ''; el.hidden = true; return; }
   el.hidden = false;
   el.innerHTML = `<section class="hl-sec" aria-label="${esc(title)}">
     <p class="hl-label">${esc(title)}</p>
@@ -261,6 +287,8 @@ export async function highlightsRow(db, el, opts = {}) {
     img.removeAttribute('data-src');
     resolvePhoto(src).then(url => { if (url) { img.onerror = () => img.remove(); img.src = url; img.hidden = false; } else img.remove(); });
   });
-  el.querySelectorAll('.hl-item').forEach(b => b.addEventListener('click', () => openViewer(list, +b.dataset.k, resolvePhoto)));
+  el.querySelectorAll('.hl-item').forEach(b => b.addEventListener('click', () => openViewer(list, +b.dataset.k, resolvePhoto, ctx)));
+  }
+  renderRow();
   return list;
 }

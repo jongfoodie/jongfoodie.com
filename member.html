@@ -65,6 +65,12 @@
   /* Sections */
   .sec { margin-top: 2.25rem; }
   #pfHighlights .hl-sec { margin-bottom: 0; }
+  .own-item { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+  .rv-own { grid-column: 1 / -1; }
+  .del-btn { align-self: flex-start; background: none; border: none; padding: 4px 0; font: 500 13px 'DM Sans', sans-serif; color: #A3300B; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .del-btn[data-armed] { background: #B3261E; color: #fff; border-radius: 14px; padding: 5px 12px; text-decoration: none; }
+  .del-btn:disabled { opacity: 0.6; cursor: default; }
+  .pf-hint a { font-weight: 500; }
   .sec-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .empty { text-align: center; padding: 2rem 1.25rem; background: var(--warm-white); border-radius: 14px; border: 1px dashed rgba(26,18,8,0.15); color: var(--muted); font-size: 14px; line-height: 1.6; }
   .empty a { color: var(--accent); font-weight: 500; }
@@ -187,7 +193,8 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=3";
-  import { highlightsRow } from "./js/sf-highlights.js?v=1";
+  import { highlightsRow } from "./js/sf-highlights.js?v=2";
+  import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
   // userReviews documents the app uses. Following someone here is the same
@@ -336,7 +343,7 @@
     renderStats();
     renderActions();
     renderBody();
-    if (!state.locked) highlightsRow(db, document.getElementById('pfHighlights'), { authorId: uid, includePrivate: !!(me && me.uid === uid), title: 'Highlights' });
+    if (!state.locked) highlightsRow(db, document.getElementById('pfHighlights'), { authorId: uid, includePrivate: !!(me && me.uid === uid), ownerId: me && me.uid === uid ? uid : '', title: 'Highlights' });
   }
 
   function renderStats() {
@@ -358,7 +365,7 @@
     const here = location.pathname.split('/').pop() + location.search;
     let main;
     if (me && me.uid === uid) {
-      main = `<a class="btn" href="account.html">Edit your profile</a><span class="pf-hint">This is how other members see you.</span>`;
+      main = `<a class="btn" href="account.html">Edit your profile</a><span class="pf-hint">${state.profile.isPrivate === true ? '🔒 Your account is private: only you see your spots, reviews and highlights here. <a href="account.html#privacy" style="color:var(--accent);">Change</a>' : 'This is how other members see you. <a href="account.html#privacy" style="color:var(--accent);">Make your account private</a>'}</span>`;
     } else if (state.locked) {
       main = `<span class="pf-hint">🔒 Follow requests for private accounts work in the Strong Foodie app.</span>`;
     } else if (!me) {
@@ -476,6 +483,7 @@
       <p class="rv-where">${esc([where, shortDate(r.created)].filter(Boolean).join(' · '))}</p>
       ${short ? `<p class="rv-text">${esc(short)}</p>` : ''}
       ${r.photo ? `<div class="rv-photo"><img data-photo="${esc(r.photo)}" alt="" loading="lazy" hidden></div>` : ''}
+      ${isOwn() && !isOfficial ? `<p class="rv-own"><button class="del-btn" type="button" data-del-review="${esc(r.id)}">Delete review</button></p>` : ''}
     </article>`;
   }
 
@@ -491,7 +499,9 @@
     spotsSec.hidden = !spots.length;
     document.getElementById('spotsLabel').textContent = `Spots added · ${spots.length}`;
     const grid = document.getElementById('spotsGrid');
-    grid.innerHTML = spots.slice(0, shownSpots).map(miniCard).join('');
+    grid.innerHTML = spots.slice(0, shownSpots).map(p => isOwn()
+      ? `<div class="own-item">${miniCard(p)}<button class="del-btn" type="button" data-del-spot="${esc(p.id)}">Delete spot</button></div>`
+      : miniCard(p)).join('');
     hydratePhotos(grid);
     document.getElementById('spotsMore').hidden = spots.length <= shownSpots;
 
@@ -508,6 +518,31 @@
     }
     hydratePhotos(listEl);
     document.getElementById('reviewsMore').hidden = revs.length <= shownReviews;
+    wireDeletes();
+  }
+
+  // Your own profile: delete a spot or a review. The first tap asks again.
+  const isOwn = () => !!(me && me.uid === uid);
+  function wireDeletes() {
+    document.querySelectorAll('[data-del-spot], [data-del-review]').forEach(b => b.addEventListener('click', async () => {
+      const spot = b.dataset.delSpot ? state.spots.find(p => p.id === b.dataset.delSpot) : null;
+      const review = b.dataset.delReview ? state.reviews.find(r => r.id === b.dataset.delReview) : null;
+      if (!spot && !review) return;
+      if (!confirmTap(b, spot ? 'Tap again to delete it for everyone' : 'Tap again to delete')) return;
+      b.disabled = true; b.textContent = 'Deleting…';
+      try {
+        if (spot) { await deleteSpot(db, { id: spot.id, photos: spot.photos }); state.spots = state.spots.filter(p => p !== spot); }
+        else { await deleteReview(db, { id: review.id, photoUrl: review.photo }); state.reviews = state.reviews.filter(r => r !== review); }
+        toast(spot ? 'Spot deleted' : 'Review deleted');
+        if (state.city && !state.spots.concat(state.reviews.map(r => r.place).filter(Boolean)).some(p => cityOf(p) === state.city)) state.city = '';
+        renderStats();
+        renderBody();
+      } catch (e) {
+        console.log('Not deleted:', e.code || e);
+        delete b.dataset.armed; b.disabled = false;
+        b.textContent = e && e.code === 'permission-denied' ? 'Delete it in the app' : 'Not deleted, try again';
+      }
+    }));
   }
 
   // ── Start ───────────────────────────────────────────────────────────────

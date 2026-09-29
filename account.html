@@ -66,6 +66,22 @@
   .acct-who { flex: 1; min-width: 0; }
   .acct-who h1 { font-size: 1.7rem; overflow-wrap: anywhere; }
   .acct-block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.25rem; margin-top: 1rem; }
+  .switch-row { display: flex; gap: 0.85rem; align-items: flex-start; cursor: pointer; }
+  .switch-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .switch { flex-shrink: 0; width: 44px; height: 26px; border-radius: 13px; background: #D9D2C7; position: relative; transition: background 0.2s; margin-top: 1px; }
+  .switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: transform 0.2s; }
+  .switch-row input:checked + .switch { background: var(--green); }
+  .switch-row input:checked + .switch::after { transform: translateX(18px); }
+  .switch-row input:focus-visible + .switch { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .switch-row input:disabled + .switch { opacity: 0.6; }
+  .switch-text { font-size: 14px; color: var(--ink); line-height: 1.45; }
+  .danger { border-color: rgba(179,38,30,0.25); }
+  .btn-danger { background: #B3261E; border-color: #B3261E; color: #fff; }
+  .btn-danger:hover { border-color: #B3261E; opacity: 0.92; }
+  .del-panel { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.75rem; }
+  .del-panel[hidden] { display: none; }
+  .del-list { font-size: 13px; color: var(--ink-soft); line-height: 1.55; padding-left: 1.1rem; }
+  .del-status { font-size: 13px; color: var(--muted); }
   .acct-block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
   .count { letter-spacing: 0; }
   .inline-form { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; }
@@ -164,10 +180,11 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithCredential, reauthenticateWithPopup, EmailAuthProvider, GoogleAuthProvider, OAuthProvider, revokeAccessToken } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=1";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
+  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -256,6 +273,33 @@
   // ── Views ─────────────────────────────────────────────────────────────
   let mode = new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login';
   let signingUp = false;
+  let deletingAccount = false;   // while an account is being deleted, ignore sign-in changes
+
+  // ── Deleting an account: log in once more first, as Firebase asks ──────
+  const providersOf = user => (user.providerData || []).map(p => p.providerId);
+  const delNeedsPassword = user => { const p = providersOf(user); return p.includes('password') && !p.includes('apple.com'); };
+  const delProviderName = user => { const p = providersOf(user); return p.includes('apple.com') ? 'Apple' : p.includes('google.com') ? 'Google' : 'your account'; };
+  // Returns the Apple access token when there is one, so Apple can be told to forget the link.
+  async function reauthForDelete(user, password) {
+    const p = providersOf(user);
+    if (p.includes('apple.com')) {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email'); provider.addScope('name');
+      const result = await reauthenticateWithPopup(user, provider);
+      const cred = OAuthProvider.credentialFromResult(result);
+      return cred && cred.accessToken ? cred.accessToken : '';
+    }
+    if (p.includes('password')) {
+      await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
+      return '';
+    }
+    if (p.includes('google.com')) {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      await reauthenticateWithPopup(user, provider);
+    }
+    return '';
+  }
 
   function renderSignedOut() {
     document.title = (mode === 'signup' ? 'Create account' : 'Log in') + ' | Strong Foodie';
@@ -407,6 +451,15 @@
         <p class="form-error" id="nameError" hidden></p>
       </section>
 
+      <section class="acct-block" id="privacy">
+        <h2>Privacy</h2>
+        <label class="switch-row">
+          <input type="checkbox" id="privToggle" role="switch"${profile.isPrivate === true ? ' checked' : ''}>
+          <span class="switch" aria-hidden="true"></span>
+          <span class="switch-text"><strong>Private account</strong><br><span class="small">Your spots, reviews and highlights are then hidden from other people on the website. The app uses the same setting.</span></span>
+        </label>
+      </section>
+
       <section class="acct-block" id="wishlist">
         <h2>Your wishlist <span class="count" id="wishCount"></span></h2>
         <p class="small" style="margin-bottom:0.75rem;">Places you want to go. Save a place with 🔖 on its page, or add one that is not on Strong Foodie yet. Your wishlist is private and the same as in the app.</p>
@@ -443,7 +496,30 @@
         <a class="btn" href="add.html" style="display:inline-block;text-decoration:none;margin-top:0.25rem;">＋ Add a spot</a>
       </section>
 
-      <p class="small" style="margin-top:1.5rem;">To write a review, open any place, for example from the <a href="stad.html">destinations</a> or the <a href="map.html">map</a>, and tap “Write a review”.</p>`;
+      <p class="small" style="margin-top:1.5rem;">To write a review, open any place, for example from the <a href="stad.html">destinations</a> or the <a href="map.html">map</a>, and tap “Write a review”.</p>
+
+      <section class="acct-block danger" id="deleteAccount">
+        <h2>Delete your account</h2>
+        <p class="small">This deletes your Strong Foodie account for good, on the website and in the app. It cannot be undone.</p>
+        <button class="btn" type="button" id="delOpen" style="margin-top:0.75rem;">Delete my account…</button>
+        <div class="del-panel" id="delPanel" hidden>
+          <ul class="del-list">
+            <li>Your profile, spots, reviews and highlights</li>
+            <li>Your wishlist, and who you follow</li>
+            <li>Your login for the website and the app</li>
+          </ul>
+          ${delNeedsPassword(user) ? `<label class="field-label" for="delPw">Your password</label>
+          <input class="field" id="delPw" type="password" autocomplete="current-password">` : `<p class="small">To be sure it is you, you log in with ${delProviderName(user)} once more.</p>`}
+          <label class="field-label" for="delWord">Type DELETE to confirm</label>
+          <input class="field" id="delWord" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <p class="form-error" id="delError" hidden></p>
+          <p class="del-status" id="delStatus" role="status" aria-live="polite"></p>
+          <div class="row-btns">
+            <button class="btn btn-danger" type="button" id="delGo">Delete my account for good</button>
+            <button class="btn" type="button" id="delCancel">Cancel</button>
+          </div>
+        </div>
+      </section>`;
 
     document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); toast('Logged out'); });
     document.getElementById('nameForm').addEventListener('submit', async e => {
@@ -457,6 +533,86 @@
         renderAccount(user, { ...profile, displayName: v });
       } catch (err) { console.error(err); showError('nameError', 'Your name could not be saved. Please try again later.'); }
     });
+
+    // Private account: the same isPrivate field the app uses.
+    const priv = document.getElementById('privToggle');
+    priv.addEventListener('change', async () => {
+      const on = priv.checked;
+      priv.disabled = true;
+      try {
+        await updateDoc(doc(db, 'profiles', user.uid), { isPrivate: on });
+        profile.isPrivate = on;
+        // Highlights carry a copy of this setting (authorIsPrivate), which the app reads.
+        try {
+          const hs = await getDocs(query(collection(db, 'highlights'), where('authorId', '==', user.uid)));
+          await Promise.all(hs.docs.map(d => updateDoc(d.ref, { authorIsPrivate: on }).catch(err => console.log('Highlight not updated:', d.id, err.code || err))));
+        } catch (err) { console.log('Highlights not updated:', err.code || err); }
+        toast(on ? 'Your account is now private' : 'Your account is now public');
+      } catch (err) {
+        console.error(err);
+        priv.checked = !on;
+        toast('Could not change this. Please try again.');
+      }
+      priv.disabled = false;
+    });
+
+    // Delete the account
+    const delPanel = document.getElementById('delPanel');
+    const delOpen = document.getElementById('delOpen');
+    delOpen.addEventListener('click', () => { delPanel.hidden = false; delOpen.hidden = true; (document.getElementById('delPw') || document.getElementById('delWord')).focus(); });
+    document.getElementById('delCancel').addEventListener('click', () => {
+      delPanel.hidden = true; delOpen.hidden = false;
+      document.getElementById('delWord').value = '';
+      const pw = document.getElementById('delPw'); if (pw) pw.value = '';
+      document.getElementById('delError').hidden = true;
+      document.getElementById('delStatus').textContent = '';
+    });
+    document.getElementById('delGo').addEventListener('click', async () => {
+      const go = document.getElementById('delGo');
+      const status = document.getElementById('delStatus');
+      const errEl = document.getElementById('delError');
+      errEl.hidden = true;
+      if (document.getElementById('delWord').value.trim().toUpperCase() !== 'DELETE') return showError('delError', 'Type DELETE in the box to confirm.');
+      const pwEl = document.getElementById('delPw');
+      if (pwEl && !pwEl.value) return showError('delError', 'Fill in your password.');
+      go.disabled = true; document.getElementById('delCancel').disabled = true;
+      deletingAccount = true;
+      let appleToken = '';
+      try {
+        status.textContent = 'Checking it is you…';
+        appleToken = await reauthForDelete(user, pwEl ? pwEl.value : '');
+      } catch (err) {
+        deletingAccount = false; go.disabled = false; document.getElementById('delCancel').disabled = false; status.textContent = '';
+        const c = err && err.code;
+        if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request' || c === 'auth/user-cancelled') return;
+        if (c === 'auth/wrong-password' || c === 'auth/invalid-credential' || c === 'auth/invalid-login-credentials') return showError('delError', 'That password is not right.');
+        if (c === 'auth/user-mismatch') return showError('delError', 'That is a different account. Log in with the account you want to delete.');
+        if (c === 'auth/popup-blocked') return showError('delError', 'Your browser blocked the login window. Allow pop-ups for strongfoodie.com and try again.');
+        if (c === 'auth/too-many-requests') return showError('delError', 'Too many attempts. Wait a moment and try again.');
+        return showError('delError', 'Could not check it is you. Please try again.');
+      }
+      const result = await deleteAllContent(db, user.uid, what => { status.textContent = 'Deleting your ' + what + '…'; });
+      if (!result.ok) {
+        deletingAccount = false; go.disabled = false; document.getElementById('delCancel').disabled = false; status.textContent = '';
+        return showError('delError', `Your ${result.failed.join(', ')} could not be deleted, so your account and profile still exist. Everything else is deleted. Try again later, or email jongfoodie@gmail.com and we delete the rest for you.`);
+      }
+      if (appleToken) { try { await revokeAccessToken(auth, appleToken); } catch (err) { console.log('Apple link not revoked:', err.code || err); } }
+      try {
+        status.textContent = 'Deleting your login…';
+        await deleteUser(user);
+      } catch (err) {
+        console.error(err);
+        deletingAccount = false; go.disabled = false; status.textContent = '';
+        return showError('delError', 'Your data is deleted, but your login could not be. Log out, log in again and delete once more, or email jongfoodie@gmail.com.');
+      }
+      root.innerHTML = `<div class="acct-card"><h1>Your account is deleted</h1><p class="lead">Your profile, spots, reviews, highlights and login are gone, on the website and in the app. Thank you for being part of Strong Foodie.</p><a class="btn" href="index.html" style="display:inline-block;text-decoration:none;">Back to Strong Foodie</a></div>`;
+      document.title = 'Account deleted | Strong Foodie';
+      window.scrollTo(0, 0);
+    });
+
+    // account.html#privacy or #deleteAccount opens at that section
+    const jump = location.hash && document.getElementById(location.hash.slice(1));
+    if (jump) setTimeout(() => jump.scrollIntoView({ block: 'start' }), 50);
 
     // Wishlist
     const wf = document.getElementById('wishForm');
@@ -520,22 +676,38 @@
     loadWishlist(user);
 
     // Your reviews (written here or in the app)
-    try {
-      const snap = await getDocs(query(collection(db, 'userReviews'), where('authorId', '==', user.uid)));
-      const rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
-      document.getElementById('revCount').textContent = rows.length ? `(${rows.length})` : '';
-      document.getElementById('revList').innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => {
-        const link = r.placeDocId && r.placeCollection ? `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}` : '';
-        return `<li>
-          <div class="row-top">${link ? `<a href="${link}">${esc(r.placeName || 'A place')}</a>` : `<strong>${esc(r.placeName || 'A place')}</strong>`}<span class="stars">${stars(r.rating)}</span></div>
-          ${r.text ? `<p>${esc(r.text.slice(0, 160))}${r.text.length > 160 ? '…' : ''}</p>` : ''}
-          <p class="small">${fmtDate(toDate(r.createdAt))}${r.source === 'web' ? ' · on the website' : ' · in the app'}</p>
-        </li>`;
-      }).join('')}</ul>` : '<p class="small">No reviews yet.</p>';
-    } catch (e) { document.getElementById('revList').innerHTML = '<p class="small">Your reviews could not load.</p>'; }
+    loadReviews(user);
 
     // Your spots (added here or in the app)
     loadSpots(user);
+  }
+
+  async function loadReviews(user) {
+    const box = document.getElementById('revList');
+    if (!box) return;
+    let rows = [];
+    try {
+      const snap = await getDocs(query(collection(db, 'userReviews'), where('authorId', '==', user.uid)));
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    } catch (e) { box.innerHTML = '<p class="small">Your reviews could not load.</p>'; return; }
+    document.getElementById('revCount').textContent = rows.length ? `(${rows.length})` : '';
+    box.innerHTML = rows.length ? `<ul class="acct-list">${rows.map(r => {
+      const link = r.placeDocId && r.placeCollection ? `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}` : '';
+      return `<li>
+        <div class="row-top">${link ? `<a href="${link}">${esc(r.placeName || 'A place')}</a>` : `<strong>${esc(r.placeName || 'A place')}</strong>`}<span class="stars">${stars(r.rating)}</span></div>
+        ${r.text ? `<p>${esc(r.text.slice(0, 160))}${r.text.length > 160 ? '…' : ''}</p>` : ''}
+        <p class="small">${fmtDate(toDate(r.createdAt))}${r.source === 'web' ? ' · on the website' : ' · in the app'} · <button class="link-btn small-link" data-review-remove="${esc(r.id)}">Remove</button></p>
+      </li>`;
+    }).join('')}</ul>` : '<p class="small">No reviews yet.</p>';
+    box.querySelectorAll('[data-review-remove]').forEach(b => b.addEventListener('click', async () => {
+      if (!confirmTap(b, 'Tap again to remove it for everyone')) return;
+      const row = rows.find(r => r.id === b.dataset.reviewRemove);
+      try {
+        await deleteReview(db, row);
+        toast('Review removed');
+        loadReviews(user);
+      } catch (e) { console.error(e); delete b.dataset.armed; b.textContent = 'Remove'; toast(e && e.code === 'permission-denied' ? 'Remove it in the app for now.' : 'Could not remove. Please try again.'); }
+    }));
   }
 
   async function loadSpots(user) {
@@ -621,7 +793,7 @@
     renderAccount(user, profile);
   }
 
-  onAuthStateChanged(auth, user => { if (!signingUp) show(user); });
+  onAuthStateChanged(auth, user => { if (!signingUp && !deletingAccount) show(user); });
 </script>
 
 <footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
