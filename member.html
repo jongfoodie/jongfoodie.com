@@ -64,6 +64,7 @@
 
   /* Sections */
   .sec { margin-top: 2.25rem; }
+  #pfHighlights .hl-sec { margin-bottom: 0; }
   .sec-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .empty { text-align: center; padding: 2rem 1.25rem; background: var(--warm-white); border-radius: 14px; border: 1px dashed rgba(26,18,8,0.15); color: var(--muted); font-size: 14px; line-height: 1.6; }
   .empty a { color: var(--accent); font-weight: 500; }
@@ -186,6 +187,7 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=3";
+  import { highlightsRow } from "./js/sf-highlights.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
   // userReviews documents the app uses. Following someone here is the same
@@ -321,6 +323,7 @@
           <div class="pf-actions" id="pfActions"></div>
         </div>
       </section>
+      <div id="pfHighlights" class="sec" hidden></div>
       <div id="pfBody"></div>`;
     if (p.photoUrl) {
       resolvePhoto(p.photoUrl).then(url => {
@@ -333,6 +336,7 @@
     renderStats();
     renderActions();
     renderBody();
+    if (!state.locked) highlightsRow(db, document.getElementById('pfHighlights'), { authorId: uid, includePrivate: !!(me && me.uid === uid), title: 'Highlights' });
   }
 
   function renderStats() {

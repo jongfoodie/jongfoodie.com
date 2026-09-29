@@ -104,6 +104,7 @@
   .facts dd a { color: var(--accent); text-decoration: none; }
   .place-map { height: 260px; border-radius: 12px; overflow: hidden; }
   .member-reviews { display: flex; flex-direction: column; gap: 0.9rem; }
+  #placeHighlights .hl-sec { margin-bottom: 0; }
   .mr { border-top: 1px solid var(--border); padding-top: 0.9rem; }
   .mr:first-child { border-top: none; padding-top: 0; }
   .mr-name { color: inherit; text-decoration: none; }
@@ -211,6 +212,7 @@
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
   import { locate, destinationUrl } from "./js/sf-places.js?v=1";
+  import { highlightsRow } from "./js/sf-highlights.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -445,6 +447,7 @@
       </article>
 
       ${reviewBlock}
+      <section class="block" id="placeHighlights" hidden></section>
       ${tags ? `<section class="block">${tags}</section>` : ''}
       ${facts.length ? `<section class="block"><h2>Details</h2><dl class="facts">${facts.map(([i, k, v]) => `<div><dt>${i} ${k}</dt><dd>${v}</dd></div>`).join('')}</dl></section>` : ''}
       ${hasCoords ? `<section class="block"><h2>Location</h2><div id="placeMap" class="place-map"></div></section>` : ''}
@@ -1038,6 +1041,7 @@
 
     render(p);
     loadMemberReviews(p);
+    highlightsRow(db, document.getElementById('placeHighlights'), { placeId: p.id, title: 'Highlights from members' });
     loadNearby(p).catch(e => console.error('Nearby could not load:', e));
   }
 
