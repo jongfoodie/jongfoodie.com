@@ -2,6 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<base href="/">
+<script>
+  // Pretty addresses whose page is not made yet (a brand-new place, list or
+  // guide): open the page that builds itself from the database.
+  (function () {
+    var p = location.pathname, q = location.search.replace(/^\?/, ''), m, to = '';
+    if ((m = p.match(/^\/p\/([^\/]+)\/?$/))) to = '/plek.html?p=' + m[1];
+    else if ((m = p.match(/^\/stad\/([a-z0-9-]+)\/?$/))) to = '/stad.html?d=' + m[1];
+    else if ((m = p.match(/^\/best\/([a-z0-9-]+)\/?$/))) to = '/best.html?l=' + m[1];
+    else if ((m = p.match(/^\/guide\/([a-z0-9-]+)\/?$/))) to = '/guide.html?g=' + m[1];
+    else if (/^\/(best|links|press|kit|guides)\/?$/.test(p)) to = p.replace(/\/$/, '') + '.html';
+    if (to) location.replace(to + (q ? (to.indexOf('?') < 0 ? '?' : '&') + q : '') + location.hash);
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Page not found | Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -35,12 +49,17 @@
   .links-row a:hover { color: var(--accent); }
 </style>
 <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-PEEXFGGPNH");
+  // Analytics only for visitors who accepted cookies, like on every other page.
+  try {
+    if (localStorage.getItem('jf_cookie_consent') === 'accepted') {
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){dataLayer.push(arguments);};
+      var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+      document.head.appendChild(s);
+      gtag('js', new Date()); gtag('config', 'G-PEEXFGGPNH');
+    }
+  } catch (e) {}
 </script>
 </head>
 <body>
@@ -90,8 +109,8 @@
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
           <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
         </div>
       </div>

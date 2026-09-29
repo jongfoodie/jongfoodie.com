@@ -5,28 +5,16 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Destinations | Strong Foodie</title>
-<meta name="description" content="Every city and island Strong Foodie has reviewed: the best places to eat, drink, shop and stay, with honest ratings.">
+<title>Press and partners | Strong Foodie</title>
+<meta name="description" content="Facts, numbers, a short bio, the logo and contact details of Strong Foodie, the independent food and travel platform by Merdan Koc from Amsterdam.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="Destinations | Strong Foodie">
-<meta property="og:description" content="Every city and island Strong Foodie has reviewed: the best places to eat, drink, shop and stay, with honest ratings.">
+<meta property="og:title" content="Strong Foodie: press and partners">
+<meta property="og:description" content="Facts, numbers, a short bio, the logo and contact details of Strong Foodie, the independent food and travel platform by Merdan Koc from Amsterdam.">
+<meta property="og:url" content="https://strongfoodie.com/press.html">
 <meta property="og:image" content="https://strongfoodie.com/icon-512.png">
-<script>
-  // The canonical address is set here and not in plain HTML, because every
-  // place or destination is its own page: only the parameters that choose it count.
-  (function () {
-    var q = new URLSearchParams(location.search), keep = [];
-    ['d'].forEach(function (k) { if (q.get(k)) keep.push(k + '=' + encodeURIComponent(q.get(k))); });
-    var l = document.createElement('link');
-    l.rel = 'canonical';
-    l.href = 'https://strongfoodie.com/stad.html' + (keep.length ? '?' + keep.join('&') : '');
-    document.head.appendChild(l);
-  })();
-</script>
+<link rel="canonical" href="https://strongfoodie.com/press.html">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -142,6 +130,30 @@
   .others a { text-decoration: none; }
   .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
+  /* Press */
+  .facts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+  .fact { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; text-align: center; }
+  .fact strong { display: block; font-family: 'Playfair Display', serif; font-size: 34px; color: var(--accent); line-height: 1.1; }
+  .fact span { font-size: 13px; color: var(--muted); }
+  .small-note { font-size: 13px; color: var(--muted); margin-top: 0.75rem; line-height: 1.6; }
+  .small-note a, .angles a, .intro a { color: var(--accent); }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .cols.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .box { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start; }
+  .box.center { align-items: center; text-align: center; justify-content: space-between; }
+  .box.center img { max-width: 100%; height: auto; }
+  .box h2 { font-family: 'Playfair Display', serif; font-size: 20px; }
+  .box p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .bio { flex: 1; }
+  .tabs .chip { cursor: default; font-size: 12px; padding: 4px 12px; }
+  .angles { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .angles li { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1.1rem; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+  .angles strong { color: var(--ink); }
+  .contact { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-main:hover { background: #b8401a; border-color: #b8401a; }
+  @media (max-width: 800px) { .facts { grid-template-columns: repeat(2, 1fr); } .cols, .cols.two { grid-template-columns: 1fr; } }
+
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -215,7 +227,7 @@
     <li><a href="index.html">Home</a></li>
     <li><a href="reviews.html">Reviews</a></li>
     <li><a href="drink.html">Drink</a></li>
-    <li><a href="stad.html" class="active">Destinations</a></li>
+    <li><a href="stad.html">Destinations</a></li>
     <li><a href="map.html">Map</a></li>
     <li><a href="community.html">Community</a></li>
     <li><a href="hotel.html">🏨 Stay</a></li>
@@ -224,7 +236,65 @@
 </nav>
 
 <main class="wrap" id="root">
-  <div class="loading">Loading destinations…</div>
+  <div class="crumbs"><a href="index.html">Home</a> › Press</div>
+  <div class="intro">
+    <h1>Press and partners</h1>
+    <p>Strong Foodie is an independent food and travel platform by Merdan Koc from Amsterdam: honest reviews of restaurants, bars, hotels, shops, culture and wellness spots, on the website, on Instagram and YouTube, and soon in its own app.</p>
+  </div>
+
+  <p class="section-label">In numbers</p>
+  <div class="facts" id="facts">
+    <div class="fact"><strong id="fPlaces">…</strong><span>places reviewed</span></div>
+    <div class="fact"><strong id="fDest">…</strong><span>cities and islands</span></div>
+    <div class="fact"><strong id="fCountries">…</strong><span>countries</span></div>
+    <div class="fact"><strong id="fMembers">…</strong><span>spots added by members</span></div>
+    <div class="fact"><strong>0</strong><span>paid reviews</span></div>
+  </div>
+  <p class="small-note">These numbers come straight from the database and are always up to date.</p>
+
+  <p class="section-label">How Strong Foodie works</p>
+  <div class="cols">
+    <div class="box"><h2>🎯 Honest</h2><p>Merdan pays his own bill and visits anonymously. A place can't pay for a review or a score. When something is a paid partnership, it says <strong>AD · Partner</strong>.</p></div>
+    <div class="box"><h2>🌍 Everywhere</h2><p>From a croquette on the corner in Amsterdam to fine dining in Dubai: every review has a score, the address, the route and a map.</p></div>
+    <div class="box"><h2>👥 With members</h2><p>Members add their own spots and reviews on the website and in the app. Those are always marked as member content, apart from the Strong Foodie reviews.</p></div>
+  </div>
+
+  <p class="section-label">Story ideas</p>
+  <ul class="angles">
+    <li><strong>The reviewer who pays his own bill.</strong> Honest reviews in a time of free meals for influencers.</li>
+    <li><strong>The best of Amsterdam, by the numbers.</strong> The <a href="best.html">best-of lists</a> are made from every score, per city and per kind of place.</li>
+    <li><strong>From Instagram account to platform.</strong> How a food account on Instagram grew into Strong Foodie: a website, a map and an app where diners share their own spots.</li>
+  </ul>
+
+  <p class="section-label">Short bio, ready to use</p>
+  <div class="cols two">
+    <div class="box">
+      <div class="tabs"><span class="chip active">English</span></div>
+      <p class="bio" id="bioEn">Strong Foodie is an independent food and travel platform by Merdan Koc from Amsterdam. Merdan visits restaurants, bars, hotels and more, pays his own bill and writes honest reviews with a clear score. Everything is on strongfoodie.com, with best-of lists per city, guides and a map, and on Instagram as @strongfoodie_.</p>
+      <button class="btn" type="button" data-copy="bioEn">Copy</button>
+    </div>
+    <div class="box">
+      <div class="tabs"><span class="chip active">Nederlands</span></div>
+      <p class="bio" id="bioNl">Strong Foodie is een onafhankelijk food- en reisplatform van Merdan Koc uit Amsterdam. Merdan bezoekt restaurants, bars, hotels en meer, betaalt zijn eigen rekening en schrijft eerlijke reviews met een duidelijk cijfer. Alles staat op strongfoodie.com, met best-of lijsten per stad, gidsen en een kaart, en op Instagram als @strongfoodie_.</p>
+      <button class="btn" type="button" data-copy="bioNl">Kopiëren</button>
+    </div>
+  </div>
+
+  <p class="section-label">Logo and badge</p>
+  <div class="cols">
+    <div class="box center"><img src="icon-512.png" alt="Strong Foodie logo" width="140" height="140"><a class="btn" href="icon-512.png" download="strong-foodie-logo.png">Download logo (PNG)</a></div>
+    <div class="box center"><img src="badge.svg" alt="Reviewed on Strong Foodie badge" width="240" height="80"><a class="btn" href="badge.svg" download="strong-foodie-badge.svg">Download badge (SVG)</a></div>
+    <div class="box center"><img src="badge-dark.svg" alt="Reviewed on Strong Foodie badge, dark" width="240" height="80"><a class="btn" href="badge-dark.svg" download="strong-foodie-badge-dark.svg">Download dark badge (SVG)</a></div>
+  </div>
+  <p class="small-note">Photos of Merdan and of the places are available on request. Restaurants that were reviewed can get their own sticker and badge in the <a href="kit.html">restaurant kit</a>.</p>
+
+  <p class="section-label">Contact</p>
+  <div class="contact">
+    <a class="btn btn-main" href="mailto:jongfoodie@gmail.com?subject=Press%3A%20Strong%20Foodie">✉️ jongfoodie@gmail.com</a>
+    <a class="btn" href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">📸 Instagram</a>
+    <a class="btn" href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" rel="noopener">💼 LinkedIn</a>
+    <a class="btn" href="about.html">👤 About Merdan</a>
+  </div>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -232,295 +302,35 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, buildLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=4";
+  import { loadPlaces, destinations } from "./js/sf-places.js?v=4";
 
-  const firebaseConfig = {
+  const db = getFirestore(initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
     authDomain: "jongfoodie.firebaseapp.com",
     projectId: "jongfoodie",
     storageBucket: "jongfoodie.firebasestorage.app",
     messagingSenderId: "1006154240382",
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
-  };
-  const db = getFirestore(initializeApp(firebaseConfig));
-  const { hydratePhotos } = photoTools(db);
-  const root = document.getElementById('root');
-  const params = new URLSearchParams(location.search);
-  // A generated page (strongfoodie.com/stad/amsterdam/) says which destination it is.
-  if (window.SF_PARAMS) Object.entries(window.SF_PARAMS).forEach(([k, v]) => params.set(k, v));
-  const SITE = 'https://strongfoodie.com/';
-
+  }));
   function toast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2600);
   }
-  function setMeta(title, desc, path) {
-    document.title = title;
-    document.querySelector('meta[name="description"]').setAttribute('content', desc);
-    document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', desc);
-    document.querySelector('link[rel="canonical"]').setAttribute('href', SITE + path);
-  }
-  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-  // The best photo of a destination: the highest-rated place that has one.
-  const coverOf = places => places.filter(p => p.photos.length).sort(byQuality)[0];
-  const catCounts = places => Object.keys(CATS).map(k => [k, places.filter(p => p.cat === k).length]).filter(([, n]) => n);
-
-  // ── All destinations ─────────────────────────────────────────────────
-  function renderIndex(dests, total) {
-    setMeta('Destinations | Strong Foodie',
-      `${dests.length} destinations and ${total} places: the best spots to eat, drink, shop and stay, with honest ratings from Strong Foodie.`, 'stad.html');
-    root.innerHTML = `
-      <div class="crumbs"><a href="index.html">Home</a> › Destinations</div>
-      <div class="intro">
-        <h1>Destinations</h1>
-        <p>Every city and island Strong Foodie has reviewed, plus the spots members add in the app. ${plural(dests.length, 'destination', 'destinations')}, ${plural(total, 'place', 'places')}.</p>
-        <p style="margin-top:0.9rem;"><a class="chip" href="best.html" style="text-decoration:none;display:inline-block;">🏆 Best-of lists per city →</a></p>
-      </div>
-      <div class="dest-grid">${dests.map(d => {
-        const cover = coverOf(d.places);
-        const counts = catCounts(d.places).sort((a, b) => b[1] - a[1]);
-        const cats = counts.map(([k]) => CATS[k].emoji).join(' ');
-        const main = CATS[counts[0][0]];
-        return `<a class="dest-card" href="${d.url}" style="background:linear-gradient(135deg, ${main.color} 0%, #1A1208 100%);">
-          <span class="dc-emoji">${main.emoji}</span>
-          ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" loading="lazy" hidden>` : ''}
-          <span class="dc-info">
-            <span class="dc-name">${esc(d.name)}</span>
-            <span class="dc-meta">${esc([d.country, plural(d.count, 'place', 'places')].filter(Boolean).join(' · '))}  ${cats}</span>
-          </span>
-        </a>`;
-      }).join('')}</div>`;
-    hydratePhotos(root);
-  }
-
-  function renderNotFound(slug, dests) {
-    const name = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    setMeta('Destination not found | Strong Foodie', 'Browse every destination Strong Foodie has reviewed.', 'stad.html');
-    root.innerHTML = `
-      <div class="empty">
-        <div style="font-size:42px;margin-bottom:0.75rem;">🧭</div>
-        <h1>No places in ${esc(name)} yet</h1>
-        <p>Strong Foodie hasn't reviewed anything here so far. Pick another destination:</p>
-        <div class="others" style="justify-content:center;margin-top:1.25rem;">${dests.map(d => `<a class="chip" href="${d.url}">${esc(d.name)}<span>${d.count}</span></a>`).join('')}</div>
-      </div>`;
-  }
-
-  // ── One destination ──────────────────────────────────────────────────
-  const PAGE = 12;
-  const state = { cat: 'all', area: 'all', q: '', sort: 'best', shown: PAGE };
-  let D = null, map = null, markerLayer = null;
-
-  function renderDestination(d, dests, lists = []) {
-    D = d;
-    const counts = catCounts(d.places);
-    const reviewed = d.places.filter(p => !p.member).length;
-    const members = d.count - reviewed;
-    const catWords = counts.map(([k, n]) => `${n} ${CATS[k].label.toLowerCase()}`).join(', ');
-    setMeta(`Best places in ${d.name}: where to eat, drink and stay | Strong Foodie`,
-      `${plural(d.count, 'place', 'places')} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''} (${catWords}). Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`,
-      `stad/${d.slug}/`);
-
-    const areas = [...new Set(d.places.map(p => p.area).filter(Boolean))].sort((a, b) => (a === d.name ? -1 : b === d.name ? 1 : a.localeCompare(b)));
-    const cover = coverOf(d.places);
-    const favs = d.places.filter(p => !p.member && !p.closed && p.rating && p.photos.length).sort(byQuality).slice(0, 3);
-    const initialCat = params.get('cat');
-    if (initialCat && CATS[initialCat] && counts.some(([k]) => k === initialCat)) state.cat = initialCat;
-
-    root.innerHTML = `
-      <div class="crumbs"><a href="index.html">Home</a> › <a href="stad.html">Destinations</a> › ${esc(d.name)}</div>
-      <header class="d-hero">
-        ${cover ? `<img data-photo="${esc(cover.photos[0])}" data-full alt="" hidden>` : ''}
-        <div class="d-hero-body">
-          <p class="d-eyebrow">${esc(d.country && d.country !== d.name ? d.country : 'Destination')}</p>
-          <h1>${esc(d.name)}</h1>
-          <p class="d-sub">
-            ${reviewed ? `<span>${plural(reviewed, 'place reviewed', 'places reviewed')}</span>` : ''}
-            ${members ? `<span>${plural(members, 'member spot', 'member spots')}</span>` : ''}
-            <span>${counts.map(([k, n]) => `${CATS[k].emoji} ${n}`).join('&nbsp;&nbsp;')}</span>
-          </p>
-          <div class="d-actions">
-            <a class="btn btn-light" href="${esc(location.pathname + location.search)}#places">See all places</a>
-            <button class="btn btn-light" id="shareBtn" type="button">Share ↗</button>
-          </div>
-        </div>
-      </header>
-
-      ${favs.length ? `
-      <p class="section-label">Strong Foodie's favourites in ${esc(d.name)}</p>
-      <div class="fav-grid">${favs.map((p, i) => `
-        <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">
-          <span class="top-emoji">${esc(p.emoji)}</span>
-          <img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>
-          <span class="top-rank">#${i + 1}</span>
-          <span class="top-info">
-            <span class="top-name">${esc(p.name)}</span>
-            <span class="top-meta"><span class="star">${starStr(p.rating)}</span> · ${esc(CATS[p.cat].label)}${p.area && p.area !== d.name ? ' · ' + esc(p.area) : ''}</span>
-          </span>
-        </a>`).join('')}</div>` : ''}
-
-      ${lists.length ? `
-      <p class="section-label">Best-of lists for ${esc(d.name)}</p>
-      <div class="others">${lists.map(l => `<a class="chip" href="${l.url}">🏆 ${esc(l.title.replace(/ in .*$/, ''))}<span>${l.count}</span></a>`).join('')}</div>` : ''}
-
-      <p class="section-label" id="places" style="scroll-margin-top:80px;">All places in ${esc(d.name)}</p>
-      <div class="toolbar">
-        <div class="tool-row">
-          <input class="search" id="q" type="search" placeholder="Search in ${esc(d.name)}…" aria-label="Search in ${esc(d.name)}" autocomplete="off">
-          <select class="sort" id="sort" aria-label="Sort">
-            <option value="best">Best rated</option>
-            <option value="new">Newest</option>
-            <option value="az">A to Z</option>
-          </select>
-          <button class="chip map-toggle" id="mapToggle" type="button">🗺️ Map</button>
-        </div>
-        ${counts.length > 1 ? `<div class="tool-row" id="catChips">
-          <button class="chip" data-cat="all">All<span>${d.count}</span></button>
-          ${counts.map(([k, n]) => `<button class="chip" data-cat="${k}">${CATS[k].emoji} ${CATS[k].label}<span>${n}</span></button>`).join('')}
-        </div>` : ''}
-        ${areas.length > 1 ? `<div class="tool-row" id="areaChips">
-          <button class="chip chip-sm" data-area="all">All areas</button>
-          ${areas.map(a => `<button class="chip chip-sm" data-area="${esc(a)}">${esc(a)}</button>`).join('')}
-        </div>` : ''}
-        <p class="result-count" id="count"></p>
-      </div>
-      <div class="d-body">
-        <div>
-          <div class="cards-grid" id="grid"></div>
-          <div class="more" id="more" hidden><button class="btn" id="moreBtn" type="button">Show more</button></div>
-        </div>
-        <div class="d-map" id="map"></div>
-      </div>
-
-      <p class="section-label">More destinations</p>
-      <div class="others">${dests.filter(x => x !== d).map(x => `<a class="chip" href="${x.url}">${esc(x.name)}<span>${x.count}</span></a>`).join('')}
-        <a class="chip" href="stad.html">All destinations →</a></div>
-
-      <div class="app-note">📱 Been somewhere in ${esc(d.name)} that is missing? Add it in the <strong>Strong Foodie app</strong>. Places members add there show up on this page too.</div>`;
-
-    hydratePhotos(root.querySelector('.d-hero'));
-    const fav = root.querySelector('.fav-grid');
-    if (fav) hydratePhotos(fav);
-    addJsonLd(d);
-
-    // Controls
-    const q = document.getElementById('q');
-    q.addEventListener('input', () => { state.q = q.value; state.shown = PAGE; update(); });
-    document.getElementById('sort').addEventListener('change', e => { state.sort = e.target.value; state.shown = PAGE; update(); });
-    root.querySelectorAll('[data-cat]').forEach(b => b.addEventListener('click', () => { state.cat = b.dataset.cat; state.shown = PAGE; update(); }));
-    root.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => { state.area = b.dataset.area; state.shown = PAGE; update(); }));
-    document.getElementById('moreBtn').addEventListener('click', () => { state.shown += PAGE; update(false); });
-    document.getElementById('mapToggle').addEventListener('click', () => {
-      const el = document.getElementById('map');
-      el.classList.toggle('open');
-      if (map) setTimeout(() => { map.invalidateSize(); fitMap(); }, 50);
-    });
-    document.getElementById('shareBtn').addEventListener('click', async () => {
-      const url = document.querySelector('link[rel="canonical"]').getAttribute('href') || location.href;
-      try { if (navigator.share) { await navigator.share({ title: document.title, url }); return; } }
-      catch (err) { if (err && err.name === 'AbortError') return; }
-      try { await navigator.clipboard.writeText(url); toast('Link copied!'); } catch { window.prompt('Copy this link:', url); }
-    });
-
-    initMap();
-    update();
-  }
-
-  function filtered() {
-    const terms = fold(state.q).split(/\s+/).filter(Boolean);
-    let list = D.places.filter(p =>
-      (state.cat === 'all' || p.cat === state.cat) &&
-      (state.area === 'all' || p.area === state.area) &&
-      terms.every(t => p._name.includes(t) || p._kind.includes(t) || p._place.includes(t) || (t.length >= 4 && p._text.includes(t))));
-    const sorters = {
-      best: byQuality,
-      new: (a, b) => (b.created || 0) - (a.created || 0),
-      az: (a, b) => a.name.localeCompare(b.name),
-    };
-    return list.sort(sorters[state.sort]);
-  }
-
-  function update(redrawMap = true) {
-    root.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b.dataset.cat === state.cat));
-    root.querySelectorAll('[data-area]').forEach(b => b.classList.toggle('active', b.dataset.area === state.area));
-    const list = filtered();
-    const grid = document.getElementById('grid');
-    grid.innerHTML = list.length
-      ? list.slice(0, state.shown).map(miniCard).join('')
-      : `<p class="grid-empty">Nothing found${state.q ? ` for “${esc(state.q)}”` : ''}. Try another filter.</p>`;
-    hydratePhotos(grid);
-    document.getElementById('count').textContent = plural(list.length, 'place', 'places');
-    const more = document.getElementById('more');
-    more.hidden = state.shown >= list.length;
-    document.getElementById('moreBtn').textContent = `Show more (${list.length - state.shown})`;
-    // Keep the filter in the address, so a filtered page can be shared.
-    const url = new URL(location.href);
-    if (state.cat === 'all') url.searchParams.delete('cat'); else url.searchParams.set('cat', state.cat);
-    history.replaceState(null, '', url);
-    if (redrawMap) drawMarkers(list);
-  }
-
-  // ── Map
-  function initMap() {
-    const el = document.getElementById('map');
-    const withCoords = D.places.filter(p => p.lat != null && p.lng != null);
-    if (typeof L === 'undefined' || !withCoords.length) {
-      el.innerHTML = '<div class="no-map">No map points for this destination yet.</div>';
-      document.getElementById('mapToggle').hidden = true;
-      return;
-    }
-    map = L.map(el, { scrollWheelZoom: false });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
-    markerLayer = L.layerGroup().addTo(map);
-  }
-  let lastPoints = [];
-  function drawMarkers(list) {
-    if (!map) return;
-    markerLayer.clearLayers();
-    lastPoints = [];
-    list.forEach(p => {
-      if (p.lat == null || p.lng == null) return;
-      const cat = CATS[p.cat];
-      const icon = L.divIcon({ className: '', html: `<div style="background:${cat.color};color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`, iconSize: [32, 32], iconAnchor: [16, 16] });
-      L.marker([p.lat, p.lng], { icon, title: p.name }).addTo(markerLayer)
-        .bindPopup(`<strong>${esc(p.name)}</strong><br>${p.rating ? `<span style="color:#C8901A;">${starStr(p.rating)}</span><br>` : ''}<a href="${placeUrl(p)}">View place →</a>`);
-      lastPoints.push([p.lat, p.lng]);
-    });
-    fitMap();
-  }
-  function fitMap() {
-    if (!map) return;
-    if (lastPoints.length === 1) map.setView(lastPoints[0], 15);
-    else if (lastPoints.length) map.fitBounds(lastPoints, { padding: [30, 30], maxZoom: 15 });
-    else if (!map._loaded) map.setView([D.places[0].lat || 52.37, D.places[0].lng || 4.89], 12);
-  }
-
-  // Search engines: the places on this page as a list.
-  function addJsonLd(d) {
-    const s = document.createElement('script');
-    s.type = 'application/ld+json';
-    s.textContent = JSON.stringify({
-      '@context': 'https://schema.org', '@type': 'ItemList',
-      name: `Best places in ${d.name}`,
-      itemListElement: d.places.slice().sort(byQuality).slice(0, 20).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + placeUrl(p), name: p.name })),
-    });
-    document.head.appendChild(s);
-  }
-
-  // ── Start
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const text = document.getElementById(b.dataset.copy).textContent.trim();
+    try { await navigator.clipboard.writeText(text); toast('Copied!'); } catch { window.prompt('Copy this:', text); }
+  }));
   try {
-    const { all } = await loadPlaces(db);
-    const dests = destinations(all);
-    const slug = slugOf(params.get('d') || '');
-    if (!slug) renderIndex(dests, all.filter(p => p.destination).length);
-    else {
-      const d = dests.find(x => x.slug === slug);
-      if (d) renderDestination(d, dests, buildLists(all).filter(l => l.destSlug === d.slug)); else renderNotFound(slug, dests);
-    }
+    const { catalog, members, all } = await loadPlaces(db);
+    const set = (id, n) => { document.getElementById(id).textContent = n.toLocaleString('en-GB'); };
+    set('fPlaces', catalog.length);
+    set('fDest', destinations(all).length);
+    set('fCountries', new Set(catalog.map(p => p.country).filter(Boolean)).size);
+    set('fMembers', members.length);
   } catch (e) {
-    console.log('Destinations error:', e);
-    root.innerHTML = '<div class="empty"><h1>Could not load this page</h1><p>Please refresh, or browse the <a href="map.html">map</a>.</p></div>';
+    console.log('Press numbers error:', e);
+    document.getElementById('facts').querySelectorAll('strong').forEach(s => { if (s.textContent === '…') s.closest('.fact').remove(); });
   }
 </script>
 

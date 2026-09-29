@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "XG99TUL7K7.app.rork.mia79cz0112thtz7aygip",
+        "appIDs": ["XG99TUL7K7.app.rork.mia79cz0112thtz7aygip"],
+        "paths": ["/p/*", "/stad/*", "/best/*", "/guide/*", "/plek.html", "/member.html"],
+        "components": [
+          { "/": "/p/*", "comment": "A place" },
+          { "/": "/stad/*", "comment": "A destination" },
+          { "/": "/best/*", "comment": "A best-of list" },
+          { "/": "/guide/*", "comment": "A guide" },
+          { "/": "/plek.html", "comment": "A place, older address" },
+          { "/": "/member.html", "comment": "A member profile" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["XG99TUL7K7.app.rork.mia79cz0112thtz7aygip"]
+  }
+}

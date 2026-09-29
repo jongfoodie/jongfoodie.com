@@ -26,8 +26,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const page = () => location.pathname.split('/').pop() || 'index.html';
-const loginHref = () => page() === 'account.html' ? 'account.html' : 'account.html?next=' + encodeURIComponent(page() + location.search);
+// The whole path, so pages in folders (strongfoodie.com/p/..., /stad/...) come back after logging in.
+const page = () => location.pathname.replace(/^\//, '') || 'index.html';
+const loginHref = () => page() === 'account.html' ? '/account.html' : '/account.html?next=' + encodeURIComponent('/' + page() + location.search);
 
 const css = `
   .sf-acct { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font: 500 13px 'DM Sans', sans-serif; color: #3D2F1A; border: 1px solid rgba(26,18,8,0.15); border-radius: 20px; padding: 7px 14px; white-space: nowrap; background: #FFFDF9; line-height: 1; }

@@ -129,6 +129,7 @@
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="about.html">👤 About me</a>
   <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
@@ -288,6 +289,8 @@ window.LEGACY_SPOTS = [
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
   };
   const db = getFirestore(initializeApp(firebaseConfig));
+  // Pretty place address, the same rule as js/sf-core.js (placeUrl).
+  const prettyUrl = (name, id) => '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/';
 
   // ── Categories: one Firestore collection each, exactly as the app reads them.
   // Member places all live in userPlaces, with a category field.
@@ -453,7 +456,7 @@ window.LEGACY_SPOTS = [
       ${p.hours ? `<span class="pop-line pop-hours">🕐 ${esc(p.hours)}</span><br>` : ''}
       ${p.rating ? `<span class="pop-stars">${starsHtml(p.rating)}</span><br>` : ''}
       ${by} ${route}
-      ${p.coll !== 'legacy' ? `<br><a class="pop-route pop-view" href="plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">View place →</a>` : ''}
+      ${p.coll !== 'legacy' ? `<br><a class="pop-route pop-view" href="${prettyUrl(p.name, p.id)}">View place →</a>` : ''}
     </div>`;
   }
 
@@ -706,8 +709,8 @@ window.LEGACY_SPOTS = [
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
           <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
         </div>
       </div>
@@ -746,6 +749,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

@@ -904,6 +904,7 @@
   .dest-chip.active span { color: rgba(255,255,255,0.6); }
   .dest-foot { text-align: center; margin: -1rem 0 2.5rem; }
   .dest-foot[hidden] { display: none; }
+  .dest-foot #destBestBtn[hidden] { display: none !important; }
 
   a.mini-card { display: block; text-decoration: none; color: inherit; }
   .mini-img { position: relative; overflow: hidden; }
@@ -1022,6 +1023,7 @@
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
 
@@ -1123,7 +1125,7 @@
     <p class="section-sub">Every city and island we have reviewed. <a href="stad.html" style="color:var(--accent);text-decoration:none;font-weight:500;">All destinations →</a></p>
     <div class="dest-chips" id="destChips"></div>
     <div class="cards-grid" id="destGrid"></div>
-    <div class="dest-foot" id="destFoot" hidden><a class="btn-outline" id="destMoreBtn" href="stad.html" style="display:inline-block;text-decoration:none;">All places →</a></div>
+    <div class="dest-foot" id="destFoot" hidden><a class="btn-outline" id="destMoreBtn" href="stad.html" style="display:inline-block;text-decoration:none;">All places →</a> <a class="btn-outline" id="destBestBtn" href="best.html" style="display:inline-block;text-decoration:none;margin-top:0.5rem;" hidden>🏆 Best of</a></div>
 
     <!-- GRID: newest places, or the result of a tag / search -->
     <p class="section-label" id="latestLabel">Latest on Strong Foodie</p>
@@ -1184,7 +1186,7 @@
       </div>
       <div class="user-actions">
         <a class="btn-white" href="about.html">About me</a>
-        <a class="btn-ghost-white" href="https://www.instagram.com/jongfoodie/" target="_blank" rel="noopener">Instagram ↗</a>
+        <a class="btn-ghost-white" href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">Instagram ↗</a>
       </div>
     </div>
 
@@ -1377,8 +1379,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=1";
-  import { highlightsRow } from "./js/sf-highlights.js?v=1";
+  import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, buildLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=4";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -1527,11 +1529,12 @@
   }
 
   // ── Destinations: chips switch the preview, the button opens the destination page
-  let DESTS = [];
+  let DESTS = [], LISTS = [];
   function renderDestinations() {
     const chips = document.getElementById('destChips');
     if (!chips) return;
     DESTS = destinations(ALL);
+    LISTS = buildLists(ALL);
     if (!DESTS.length) { chips.previousElementSibling.hidden = true; chips.previousElementSibling.previousElementSibling.hidden = true; chips.hidden = true; return; }
     chips.innerHTML = DESTS.map((d, i) =>
       `<button class="dest-chip${i === 0 ? ' active' : ''}" data-slug="${esc(d.slug)}" aria-pressed="${i === 0}">${esc(d.name)}<span>${d.count}</span></button>`).join('');
@@ -1551,6 +1554,10 @@
     const link = document.getElementById('destMoreBtn');
     link.href = d.url;
     link.textContent = d.count > 1 ? `All ${d.count} places in ${d.name} →` : `View ${d.name} →`;
+    // The top list of this destination (js/sf-core.js buildLists), when there is one
+    const best = LISTS.find(l => l.destSlug === d.slug), bb = document.getElementById('destBestBtn');
+    bb.hidden = !best;
+    if (best) { bb.href = best.url; bb.textContent = `🏆 ${best.title}`; }
     document.getElementById('destFoot').hidden = false;
   }
 
@@ -1744,8 +1751,8 @@
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
           <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
         </div>
       </div>
@@ -1786,6 +1793,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

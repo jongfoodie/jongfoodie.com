@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Guides editor | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; height: 58px; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 13px; margin-left: auto; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+
+  .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .panel { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem; }
+  .panel h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .g-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.75rem; }
+  .g-item { text-align: left; border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: 0.6rem 0.75rem; font: 14px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
+  .g-item:hover { border-color: var(--ink-soft); }
+  .g-item.active { border-color: var(--accent); background: var(--accent-pale); }
+  .g-item small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; vertical-align: 1px; margin-right: 4px; }
+  .pill-pub { background: var(--green-light); color: var(--green); }
+  .pill-draft { background: #EFE8DC; color: var(--ink-soft); }
+
+  .field { margin-bottom: 1rem; }
+  .field label, .field .label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-soft); margin-bottom: 0.35rem; }
+  .field .hint { font-size: 12px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; overflow-wrap: anywhere; }
+  input[type=text], input[type=search], textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 10px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-main:hover { background: #b8401a; border-color: #b8401a; }
+  .btn-danger { color: var(--red); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .status { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .status label { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .status input { accent-color: var(--accent); }
+
+  .picked { display: flex; flex-direction: column; gap: 0.6rem; }
+  .pk { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 0.6rem; align-items: start; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem; }
+  .pk-n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .pk-name { font-weight: 500; overflow-wrap: anywhere; }
+  .pk-where { font-size: 12px; color: var(--muted); margin-bottom: 0.4rem; }
+  .pk textarea { min-height: 54px; font-size: 14px; }
+  .pk-tools { display: flex; flex-direction: column; gap: 0.3rem; }
+  .pk-tools button { width: 32px; height: 30px; border: 1px solid var(--border); background: var(--warm-white); border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .pk-tools button:disabled { opacity: 0.35; cursor: default; }
+  .pk-gone { font-size: 12px; color: var(--red); }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .empty-note { font-size: 13px; color: var(--muted); padding: 0.5rem 0; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 800px) {
+    .layout { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+    .wrap { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>GUIDES</span></h1><a href="admin.html">← Admin</a></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, esc, fold, slugOf, loadPlaces, destinations, guideUrl, SITE } from "./js/sf-places.js?v=4";
+  import { SEASONS } from "./js/sf-guides.js?v=1";
+  import { confirmTap } from "./js/sf-delete.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  let guides = [], places = [], byKey = new Map(), current = null, slugTouched = false;
+  const keyOf = (coll, id) => coll + '/' + id;
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. Sign in on the <a href="admin.html">admin page</a>, then come back here.</p></div>`;
+      return;
+    }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) {
+      root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't write guides. <a href="guides.html">See the guides</a>.</p></div>`;
+      return;
+    }
+    root.innerHTML = '<p class="msg">Loading guides and places…</p>';
+    try {
+      const [snap, loaded] = await Promise.all([getDocs(collection(db, 'guides')), loadPlaces(db)]);
+      guides = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      places = loaded.all;
+      places.forEach(p => byKey.set(keyOf(p.coll, p.id), p));
+      shell();
+      open(null);
+    } catch (e) {
+      console.log('Guides editor error:', e);
+      root.innerHTML = `<div class="msg"><h2>Could not load</h2><p>${e.code === 'permission-denied' ? 'The database does not allow this yet: add the guides rule in Firebase (see the instructions).' : 'Please refresh the page.'}</p></div>`;
+    }
+  });
+
+  function shell() {
+    const dests = destinations(places).map(d => d.name);
+    root.innerHTML = `
+      <div class="layout">
+        <aside class="panel">
+          <h2>Your guides</h2>
+          <button class="btn btn-main btn-sm" id="newBtn" type="button">＋ New guide</button>
+          <div class="g-list" id="gList"></div>
+        </aside>
+        <section class="panel" id="editor"></section>
+      </div>
+      <datalist id="dests">${dests.map(d => `<option value="${esc(d)}">`).join('')}</datalist>`;
+    document.getElementById('newBtn').addEventListener('click', () => open(null));
+    drawList();
+  }
+
+  function drawList() {
+    const sorted = guides.slice().sort((a, b) => (b.updatedAt?.toDate?.() || 0) - (a.updatedAt?.toDate?.() || 0));
+    document.getElementById('gList').innerHTML = sorted.length ? sorted.map(g => `
+      <button class="g-item${current && current.id === g.id ? ' active' : ''}" type="button" data-id="${esc(g.id)}">
+        <span class="pill ${g.status === 'published' ? 'pill-pub' : 'pill-draft'}">${g.status === 'published' ? 'Live' : 'Draft'}</span>${esc(g.title || 'Untitled')}
+        <small>${(g.places || []).length} places${g.city ? ' · ' + esc(g.city) : ''}</small>
+      </button>`).join('') : '<p class="empty-note">No guides yet. Make the first one.</p>';
+    document.querySelectorAll('.g-item').forEach(b => b.addEventListener('click', () => open(guides.find(g => g.id === b.dataset.id))));
+  }
+
+  // The guide being edited, as a plain copy.
+  function open(g) {
+    current = g ? { ...g, places: (g.places || []).map(it => ({ ...it })) } : { id: null, title: '', slug: '', city: '', season: '', moment: '', intro: '', cover: '', places: [], status: 'draft' };
+    slugTouched = !!(g && g.slug);
+    drawList();
+    const e = document.getElementById('editor');
+    e.innerHTML = `
+      <h2>${g ? 'Edit guide' : 'New guide'}</h2>
+      <div class="field"><label for="fTitle">Title</label>
+        <input type="text" id="fTitle" maxlength="90" placeholder="Amsterdam in winter: 8 cosy places" value="${esc(current.title)}"></div>
+      <div class="field"><label for="fSlug">Link</label>
+        <input type="text" id="fSlug" maxlength="70" placeholder="amsterdam-in-winter" value="${esc(current.slug)}">
+        <p class="hint" id="slugHint"></p></div>
+      <div class="row">
+        <div class="field"><label for="fCity">City (optional)</label><input type="text" id="fCity" list="dests" placeholder="Amsterdam" value="${esc(current.city)}"></div>
+        <div class="field"><label for="fSeason">Season (optional)</label>
+          <select id="fSeason"><option value="">Any time</option>${Object.entries(SEASONS).map(([k, s]) => `<option value="${k}"${current.season === k ? ' selected' : ''}>${s.emoji} ${s.label}</option>`).join('')}</select></div>
+        <div class="field"><label for="fMoment">Moment (optional)</label><input type="text" id="fMoment" maxlength="40" placeholder="Valentine's Day, rainy Sunday…" value="${esc(current.moment)}"></div>
+      </div>
+      <div class="field"><label for="fIntro">Intro</label>
+        <textarea id="fIntro" maxlength="1500" placeholder="Why this guide, in your own words. An empty line starts a new paragraph.">${esc(current.intro)}</textarea></div>
+
+      <div class="field"><span class="label">Places, in this order</span>
+        <div class="picked" id="picked"></div>
+        <input type="search" id="find" placeholder="Add a place: type a name or city…" autocomplete="off" style="margin-top:0.75rem;">
+        <div class="results" id="results"></div></div>
+
+      <div class="field"><label for="fCover">Cover photo</label><select id="fCover"></select>
+        <p class="hint">The photo on top of the guide and in link previews (WhatsApp, Instagram).</p></div>
+
+      <div class="field"><span class="label">Status</span>
+        <div class="status">
+          <label><input type="radio" name="st" value="draft"${current.status !== 'published' ? ' checked' : ''}> Draft (only you)</label>
+          <label><input type="radio" name="st" value="published"${current.status === 'published' ? ' checked' : ''}> Live on the website and in the app</label>
+        </div></div>
+
+      <div class="actions">
+        <button class="btn btn-main" id="saveBtn" type="button">Save</button>
+        <a class="btn" id="previewBtn" target="_blank" rel="noopener" hidden>Preview ↗</a>
+        ${g ? '<button class="btn btn-danger" id="delBtn" type="button" style="margin-left:auto;">Delete guide</button>' : ''}
+      </div>`;
+
+    const $ = id => document.getElementById(id);
+    $('fTitle').addEventListener('input', () => { if (!slugTouched) { $('fSlug').value = slugOf($('fTitle').value).slice(0, 70); slugHint(); } });
+    $('fSlug').addEventListener('input', () => { slugTouched = true; slugHint(); });
+    $('fSlug').addEventListener('blur', () => { $('fSlug').value = slugOf($('fSlug').value).slice(0, 70); slugHint(); });
+    $('find').addEventListener('input', search);
+    $('saveBtn').addEventListener('click', save);
+    if (g) $('delBtn').addEventListener('click', remove);
+    slugHint(); drawPicked(); updatePreview();
+  }
+
+  function slugHint() {
+    const s = slugOf(document.getElementById('fSlug').value);
+    const taken = s && guides.some(g => g.slug === s && (!current || g.id !== current.id));
+    const h = document.getElementById('slugHint');
+    h.textContent = !s ? 'Made from the title. Only letters, numbers and dashes.' : taken ? 'Another guide already uses this link. Pick a different one.' : `${SITE}${guideUrl(s)}`;
+    h.style.color = taken ? 'var(--red)' : '';
+  }
+  function updatePreview() {
+    const a = document.getElementById('previewBtn');
+    if (!current.id || !current.slug) { a.hidden = true; return; }
+    a.hidden = false;
+    a.href = current.status === 'published' ? guideUrl(current.slug) : `guide.html?g=${encodeURIComponent(current.slug)}&preview=1`;
+    a.textContent = current.status === 'published' ? 'View live ↗' : 'Preview ↗';
+  }
+
+  // Notes typed in the list are kept on the guide right away.
+  function syncNotes() {
+    document.querySelectorAll('#picked textarea').forEach(t => { const it = current.places[Number(t.dataset.i)]; if (it) it.note = t.value; });
+  }
+  function drawPicked() {
+    const box = document.getElementById('picked');
+    box.innerHTML = current.places.length ? current.places.map((it, i) => {
+      const p = byKey.get(keyOf(it.coll, it.id));
+      return `<div class="pk">
+        <span class="pk-n">${i + 1}</span>
+        <div>
+          <div class="pk-name">${p ? `${esc(p.emoji)} ${esc(p.name)}` : esc(it.name || it.id)}</div>
+          <div class="pk-where">${p ? esc([CATS[p.cat].label, p.where, p.member ? 'member spot' : ''].filter(Boolean).join(' · ')) : '<span class="pk-gone">Not online any more: it is skipped on the guide.</span>'}</div>
+          <textarea data-i="${i}" maxlength="300" placeholder="Your tip for this place (what to order, when to go)…">${esc(it.note || '')}</textarea>
+        </div>
+        <div class="pk-tools">
+          <button type="button" data-up="${i}" title="Up" ${i === 0 ? 'disabled' : ''}>↑</button>
+          <button type="button" data-down="${i}" title="Down" ${i === current.places.length - 1 ? 'disabled' : ''}>↓</button>
+          <button type="button" data-del="${i}" title="Remove">✕</button>
+        </div>
+      </div>`;
+    }).join('') : '<p class="empty-note">No places yet. Search below to add them.</p>';
+    box.querySelectorAll('[data-up]').forEach(b => b.addEventListener('click', () => move(Number(b.dataset.up), -1)));
+    box.querySelectorAll('[data-down]').forEach(b => b.addEventListener('click', () => move(Number(b.dataset.down), 1)));
+    box.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => { syncNotes(); current.places.splice(Number(b.dataset.del), 1); drawPicked(); }));
+    drawCover();
+  }
+  function move(i, d) {
+    syncNotes();
+    const j = i + d;
+    if (j < 0 || j >= current.places.length) return;
+    [current.places[i], current.places[j]] = [current.places[j], current.places[i]];
+    drawPicked();
+  }
+  function drawCover() {
+    const sel = document.getElementById('fCover');
+    const withPhoto = current.places.map(it => byKey.get(keyOf(it.coll, it.id))).filter(p => p && p.photos.length);
+    const opts = [['', 'Automatic: the first place with a photo']].concat(withPhoto.map(p => [p.photos[0], `Photo of ${p.name}`]));
+    if (current.cover && !opts.some(([v]) => v === current.cover)) opts.push([current.cover, 'The photo chosen before']);
+    sel.innerHTML = opts.map(([v, t]) => `<option value="${esc(v)}"${v === (current.cover || '') ? ' selected' : ''}>${esc(t)}</option>`).join('');
+  }
+
+  function search() {
+    const q = fold(document.getElementById('find').value).trim();
+    const box = document.getElementById('results');
+    if (q.length < 2) { box.innerHTML = ''; return; }
+    const terms = q.split(/\s+/);
+    const inGuide = new Set(current.places.map(it => keyOf(it.coll, it.id)));
+    const hits = places.filter(p => !inGuide.has(keyOf(p.coll, p.id)) && terms.every(t => p._name.includes(t) || p._place.includes(t) || p._kind.includes(t)))
+      .sort((a, b) => (b._name.startsWith(terms[0]) - a._name.startsWith(terms[0])) || (a.member - b.member) || (b.rating || 0) - (a.rating || 0))
+      .slice(0, 8);
+    box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(keyOf(p.coll, p.id))}">＋ ${esc(p.emoji)} ${esc(p.name)} <small>${esc([p.where, p.member ? 'member spot' : (p.rating ? p.rating + '★' : '')].filter(Boolean).join(' · '))}</small></button>`).join('')
+      : '<p class="empty-note">Nothing found. Only places already on Strong Foodie can go in a guide.</p>';
+    box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => {
+      syncNotes();
+      const p = byKey.get(b.dataset.k);
+      current.places.push({ coll: p.coll, id: p.id, note: '' });
+      document.getElementById('find').value = ''; box.innerHTML = '';
+      drawPicked();
+    }));
+  }
+
+  async function save() {
+    syncNotes();
+    const $ = id => document.getElementById(id);
+    const title = $('fTitle').value.trim();
+    const slug = slugOf($('fSlug').value || title).slice(0, 70);
+    const status = document.querySelector('input[name=st]:checked').value;
+    if (!title) return toast('Give the guide a title.', true);
+    if (!slug) return toast('Give the guide a link.', true);
+    if (guides.some(g => g.slug === slug && g.id !== current.id)) return toast('Another guide already uses this link.', true);
+    if (status === 'published' && !current.places.length) return toast('Add at least one place before it goes live.', true);
+    // Automatic cover: the first place with a photo, saved so link previews and the app use it too.
+    let cover = $('fCover').value;
+    if (!cover) { const p = current.places.map(it => byKey.get(keyOf(it.coll, it.id))).find(p => p && p.photos.length); cover = p ? p.photos[0] : ''; }
+    const data = {
+      title, slug, status, cover,
+      city: $('fCity').value.trim(), season: $('fSeason').value, moment: $('fMoment').value.trim(), intro: $('fIntro').value.trim(),
+      places: current.places.map(it => ({ coll: it.coll, id: it.id, note: String(it.note || '').trim(), name: (byKey.get(keyOf(it.coll, it.id)) || {}).name || it.name || '' })),
+      author: 'Strong Foodie', updatedAt: serverTimestamp(),
+    };
+    const btn = $('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      if (current.id) {
+        await updateDoc(doc(db, 'guides', current.id), data);
+        const i = guides.findIndex(g => g.id === current.id);
+        guides[i] = { ...guides[i], ...data, updatedAt: { toDate: () => new Date() } };
+      } else {
+        const ref = await addDoc(collection(db, 'guides'), { ...data, createdAt: serverTimestamp() });
+        guides.push({ id: ref.id, ...data, updatedAt: { toDate: () => new Date() } });
+        current.id = ref.id;
+      }
+      const wasNew = !guides.find(g => g.id === current.id).createdAt;
+      Object.assign(current, data);
+      slugTouched = true;
+      if (wasNew) { guides.find(g => g.id === current.id).createdAt = { toDate: () => new Date() }; open(guides.find(g => g.id === current.id)); }
+      else { drawList(); updatePreview(); }
+      toast(status === 'published' ? 'Saved. The guide is live; the link preview follows with the next automatic update.' : 'Saved as a draft.');
+    } catch (e) {
+      console.log('Save failed:', e);
+      toast(e.code === 'permission-denied' ? 'The database refused: add the guides rule in Firebase first.' : 'Could not save. Try again.', true);
+    } finally { btn.disabled = false; btn.textContent = 'Save'; }
+  }
+
+  async function remove() {
+    const btn = document.getElementById('delBtn');
+    if (!confirmTap(btn, 'Tap again to delete')) return;
+    btn.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'guides', current.id));
+      guides = guides.filter(g => g.id !== current.id);
+      toast('Guide deleted.');
+      open(null);
+    } catch (e) { console.log('Delete failed:', e); toast('Could not delete. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

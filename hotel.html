@@ -159,6 +159,7 @@
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="about.html">👤 About me</a>
   <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
@@ -191,6 +192,9 @@
 </div>
 
 <div class="main">
+  <!-- HIGHLIGHTS of this category, the same row as in the app (js/sf-highlights.js) -->
+  <div id="hlCat" hidden></div>
+  <p style="margin:0 0 1.25rem;font-size:14px;"><a href="best.html" style="color:#D4521A;text-decoration:none;font-weight:500;">🏆 Best-of lists: the top places per city →</a></p>
   <p class="section-label">Strong Foodie Hotel Reviews</p>
   <div id="hotelList"></div>
 
@@ -210,6 +214,8 @@
 
 <script>
 const hotels = []; // Hotels komen nu allemaal uit Firebase, niet meer hardcoded
+// Pretty place address, the same rule as js/sf-core.js (placeUrl).
+function prettyUrl(name, id) { return '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/'; }
 
 window.__galleryStore = {};
 window.__galleryPhotos = [];
@@ -324,7 +330,7 @@ function renderHotels(list) {
       ${imgHtml}
       <div class="hotel-body">
         <div class="hotel-top">
-          <p class="hotel-name">${h.id ? `<a class="place-link" href="plek.html?c=hotelreviews&id=${h.id}">${h.name}</a>` : h.name}</p>
+          <p class="hotel-name">${h.id ? `<a class="place-link" href="${prettyUrl(h.name, h.id)}">${h.name}</a>` : h.name}</p>
           <span class="hotel-stars">${renderStars(h.stars)}</span>
         </div>
         <div class="hotel-meta">
@@ -333,7 +339,7 @@ function renderHotels(list) {
         </div>
         ${closedNoteHtml}
         <p class="hotel-desc">${h.desc}</p>
-        ${h.id ? `<a class="place-more" href="plek.html?c=hotelreviews&id=${h.id}">View place →</a>` : ''}
+        ${h.id ? `<a class="place-more" href="${prettyUrl(h.name, h.id)}">View place →</a>` : ''}
         <div class="hotel-tags">
           ${h.tags.map(t => `<span class="tag">${t}</span>`).join('')}
           <span class="tag location">${h.location}</span>
@@ -370,6 +376,7 @@ applySearchParam();
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -382,6 +389,7 @@ applySearchParam();
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  highlightsRow(db, document.getElementById('hlCat'), { category: 'stay', title: 'Highlights' });
 
   async function loadFirebaseHotels() {
     try {
@@ -454,8 +462,8 @@ applySearchParam();
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
           <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
         </div>
       </div>
@@ -494,6 +502,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

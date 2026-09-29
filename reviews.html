@@ -152,6 +152,7 @@
 <a href="map.html">🗺️ Map</a>
 <a href="community.html">👥 Community</a>
 <a href="stad.html">🌍 Destinations</a>
+<a href="best.html">🏆 Best of</a>
 <a href="about.html">👤 About me</a>
 <a href="hotel.html" style="color:#D4521A;font-weight:600;">🏨 Stay</a>
 </div>
@@ -200,6 +201,9 @@
 <button class="filter-pill" data-country="turkey" onclick="setCountry(this)">🇹🇷 Turkey</button>
 </div>
 <div class="wrapper">
+  <!-- HIGHLIGHTS of this category, the same row as in the app (js/sf-highlights.js) -->
+  <div id="hlCat" hidden></div>
+  <p style="margin:0 0 1.25rem;font-size:14px;"><a href="best.html" style="color:#D4521A;text-decoration:none;font-weight:500;">🏆 Best-of lists: the top places per city →</a></p>
 <p class="section-label"><span class="reviews-count">…</span> Reviews · Worldwide</p>
 <div class="reviews-list">
 
@@ -322,6 +326,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -334,6 +339,9 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  // Pretty place address, the same rule as js/sf-core.js (placeUrl).
+  const prettyUrl = (name, id) => '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/';
+  highlightsRow(db, document.getElementById('hlCat'), { category: 'eat', title: 'Highlights' });
 
   // ── Photo gallery lightbox (Instagram-style swipe through multiple photos) ──
   window.__galleryPhotos = [];
@@ -487,7 +495,7 @@
               ${r.hours ? `<span class="hours-badge" style="font-size:10px;">🕐 ${r.hours}</span>` : '<span></span>'}
               <span class="stars" style="color:#C8901A;font-size:14px;letter-spacing:1px;">${stars}</span>
             </div>
-            <div class="review-top"><h2 class="review-title"><a class="place-link" href="plek.html?c=reviews&id=${d.id}">${r.name}</a></h2></div>
+            <div class="review-top"><h2 class="review-title"><a class="place-link" href="${prettyUrl(r.name, d.id)}">${r.name}</a></h2></div>
             <div class="review-meta">
               <span>📍 ${r.city || ''}</span>
               <span>${r.type || ''}</span>
@@ -496,7 +504,7 @@
             </div>
             ${closedNoteHtml}
             <p class="review-excerpt">${r.review || ''}</p>
-            <a class="place-more" href="plek.html?c=reviews&id=${d.id}">View place →</a>
+            <a class="place-more" href="${prettyUrl(r.name, d.id)}">View place →</a>
             <div class="review-tags">${tagsHtml}</div>
           </div>`;
 
@@ -574,8 +582,8 @@
 <div>
 <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
 <div style="display:flex;flex-direction:column;gap:0.4rem;">
-<a href="https://www.instagram.com/jongfoodie/" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;" target="_blank">📸 Instagram</a>
-<a href="https://www.youtube.com/@Jongfoodie" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;" target="_blank">▶ YouTube</a>
+<a href="https://www.instagram.com/strongfoodie_/" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;" target="_blank">📸 Instagram</a>
+<a href="https://www.youtube.com/@Strongfoodie" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;" target="_blank">▶ YouTube</a>
 <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;" target="_blank">💼 LinkedIn</a>
 </div>
 </div>
@@ -1319,6 +1327,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

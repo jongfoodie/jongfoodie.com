@@ -154,6 +154,7 @@
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="about.html">👤 About me</a>
@@ -183,7 +184,7 @@
   import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=1";
+  import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=2";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -479,14 +480,15 @@
           <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
           <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="best.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Best of</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
         </div>
       </div>
     </div>
@@ -524,6 +526,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

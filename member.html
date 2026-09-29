@@ -163,6 +163,7 @@
   <a href="guides.html">📖 Guides</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="about.html">👤 About me</a>
@@ -192,8 +193,8 @@
   import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=3";
-  import { highlightsRow } from "./js/sf-highlights.js?v=2";
+  import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=4";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
   import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
@@ -377,10 +378,12 @@
         ? `<button class="btn btn-following" id="followBtn" type="button" aria-pressed="true">✓ Following</button>`
         : `<button class="btn btn-primary" id="followBtn" type="button" aria-pressed="false">Follow</button>`;
     }
-    el.innerHTML = main + `<button class="btn" id="shareBtn" type="button">Share</button>`;
+    const canImage = !state.locked && cities().list.length > 0;
+    el.innerHTML = main + `<button class="btn" id="shareBtn" type="button">Share</button>` + (canImage ? `<button class="btn" id="imgBtn" type="button">📸 Share as image</button>` : '');
     const fb = document.getElementById('followBtn');
     if (fb) fb.addEventListener('click', toggleFollow);
     document.getElementById('shareBtn').addEventListener('click', share);
+    if (canImage) document.getElementById('imgBtn').addEventListener('click', shareImage);
   }
 
   async function share() {
@@ -388,6 +391,87 @@
     const title = state.profile.displayName + ' on Strong Foodie';
     if (navigator.share) { try { await navigator.share({ title, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
     try { await navigator.clipboard.writeText(url); toast('Link copied'); } catch (e) { toast(url); }
+  }
+
+  // ── A picture of someone's places per city, for Instagram stories and WhatsApp (1080 × 1350)
+  const loadImg = src => new Promise(res => { if (!src) return res(null); const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+  function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  function coverImg(ctx, img, x, y, w, h) { const k = Math.max(w / img.naturalWidth, h / img.naturalHeight), sw = w / k, sh = h / k; ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, w, h); }
+  function fitText(ctx, text, max) { let t = String(text); while (t.length > 1 && ctx.measureText(t).width > max) t = t.slice(0, -2) + '…'; return t; }
+  async function drawPlacesImage(canvas, withPhotos) {
+    const W = 1080, H = 1350, ctx = canvas.getContext('2d');
+    canvas.width = W; canvas.height = H;
+    const SERIF = '"Playfair Display", Georgia, serif', SANS = '"DM Sans", Helvetica, Arial, sans-serif';
+    const pr = state.profile, name = pr.displayName;
+    const { list } = cities();
+    const total = list.reduce((a, d) => a + d.count, 0);
+    ctx.fillStyle = '#FAF7F2'; ctx.fillRect(0, 0, W, H);
+    // Brand
+    ctx.textAlign = 'left'; ctx.fillStyle = '#1A1208'; ctx.font = `700 40px ${SERIF}`;
+    ctx.fillText('Strong', 60, 92); const sw = ctx.measureText('Strong ').width;
+    ctx.fillStyle = '#D4521A'; ctx.fillText('Foodie', 60 + sw, 92);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#8A7A66'; ctx.font = `500 28px ${SANS}`; ctx.fillText('strongfoodie.com', W - 60, 90);
+    // Avatar
+    const ax = W / 2, ay = 230, ar = 88;
+    ctx.save(); ctx.beginPath(); ctx.arc(ax, ay, ar, 0, Math.PI * 2); ctx.closePath();
+    ctx.fillStyle = isOfficial ? '#1A1208' : colourOf(uid); ctx.fill(); ctx.clip();
+    const face = withPhotos && pr.photoUrl ? await loadImg(await resolvePhoto(pr.photoUrl)) : null;
+    if (face) coverImg(ctx, face, ax - ar, ay - ar, ar * 2, ar * 2);
+    else { ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = `700 64px ${SANS}`; ctx.fillText(initialsOf(name), ax, ay + 22); }
+    ctx.restore();
+    ctx.textAlign = 'center'; ctx.fillStyle = '#1A1208'; ctx.font = `700 60px ${SERIF}`;
+    ctx.fillText(fitText(ctx, name, W - 160), W / 2, 395);
+    ctx.fillStyle = '#8A7A66'; ctx.font = `500 30px ${SANS}`;
+    ctx.fillText(`${plural(total, 'place', 'places')} in ${plural(list.length, 'city', 'cities')}`, W / 2, 445);
+    // City tiles, 2 × 3
+    const shown = list.slice(0, 6), more = list.length - shown.length;
+    // Fewer cities: bigger tiles, in the middle of the free space.
+    const cols = shown.length === 1 ? 1 : 2, rows = Math.ceil(shown.length / cols), gap = 20, gx = 60, top = 500, room = H - 150 - top;
+    const tw = (W - gx * 2 - gap * (cols - 1)) / cols, th = Math.min(330, (room - gap * (rows - 1)) / rows);
+    const gy = top + (room - (rows * th + gap * (rows - 1))) / 2;
+    for (let i = 0; i < shown.length; i++) {
+      const d = shown[i], x = gx + (i % cols) * (tw + gap), y = gy + Math.floor(i / cols) * (th + gap);
+      ctx.save(); rr(ctx, x, y, tw, th, 22); ctx.clip();
+      const g = ctx.createLinearGradient(x, y, x + tw, y + th); g.addColorStop(0, COLOURS[i % COLOURS.length]); g.addColorStop(1, '#1A1208');
+      ctx.fillStyle = g; ctx.fillRect(x, y, tw, th);
+      const cover = d.places.find(p => p.photos.length);
+      const img = withPhotos && cover ? await loadImg(await resolvePhoto(cover.photos[0])) : null;
+      if (img) coverImg(ctx, img, x, y, tw, th);
+      const shade = ctx.createLinearGradient(0, y + th * 0.3, 0, y + th); shade.addColorStop(0, 'rgba(0,0,0,0)'); shade.addColorStop(1, 'rgba(0,0,0,0.75)');
+      ctx.fillStyle = shade; ctx.fillRect(x, y, tw, th);
+      ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.font = `700 40px ${SERIF}`;
+      const last = more && i === shown.length - 1;
+      ctx.fillText(fitText(ctx, last ? `+ ${plural(more + 1, 'more city', 'more cities')}` : d.name, tw - 48), x + 24, y + th - 56);
+      ctx.font = `500 24px ${SANS}`; ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fillText(last ? 'on strongfoodie.com' : plural(d.count, 'place', 'places'), x + 24, y + th - 22);
+      ctx.restore();
+    }
+    ctx.textAlign = 'center'; ctx.fillStyle = '#1A1208'; ctx.font = `700 34px ${SANS}`;
+    ctx.fillText(me && me.uid === uid ? 'My food map on Strong Foodie' : `${fitText(ctx, name, 600)} on Strong Foodie`, W / 2, H - 70);
+  }
+  async function shareImage() {
+    const btn = document.getElementById('imgBtn');
+    btn.disabled = true;
+    try {
+      try { await Promise.all([document.fonts.load('700 40px "Playfair Display"'), document.fonts.load('500 30px "DM Sans"')]); } catch (e) {}
+      const canvas = document.createElement('canvas');
+      await drawPlacesImage(canvas, true);
+      let blob;
+      try { blob = await new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('empty')), 'image/png')); }
+      catch (e) { await drawPlacesImage(canvas, false); blob = await new Promise(res => canvas.toBlob(res, 'image/png')); } // a photo from another site: without photos
+      const file = new File([blob], `strong-foodie-${(state.profile.displayName || 'places').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`, { type: 'image/png' });
+      const url = location.href.split('#')[0];
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], text: `${state.profile.displayName} on Strong Foodie: ${url}` }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(file); a.download = file.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      toast('Image saved. Share it in your story!');
+    } catch (e) { console.log('Image failed:', e); toast('The image did not work. Try again.'); }
+    finally { btn.disabled = false; }
   }
 
   let busy = false;
@@ -602,14 +686,15 @@
           <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
           <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="best.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Best of</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
         </div>
       </div>
     </div>
@@ -647,6 +732,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
 // Picking one fills in the name and the address and chooses one of the six
 // categories. The app does the same (Rork batch 8), so both save the same fields.
 
-import { CATS, loadPlaces } from './sf-places.js?v=1';
+import { CATS, loadPlaces } from './sf-places.js?v=4';
 
 export const CAT_LIST = Object.keys(CATS).map(key => ({ key, label: CATS[key].label, emoji: CATS[key].emoji }));
 export const catInfo = k => CAT_LIST.find(c => c.key === k) || CAT_LIST[0];

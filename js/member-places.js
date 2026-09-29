@@ -128,7 +128,8 @@ async function loadPlaces(catKey) {
 
 function cardHtml(p) {
   const cat = CATS[p.cat];
-  const placeUrl = `plek.html?c=userPlaces&id=${encodeURIComponent(p.id)}`;
+  // Pretty place address, the same rule as js/sf-core.js (placeUrl).
+  const placeUrl = '/p/' + (String(p.name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + p.id + '/';
   const route = (p.lat != null && p.lng != null)
     ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`
     : (p.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.address)}` : '');

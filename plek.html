@@ -144,6 +144,8 @@
   .near-body { display: flex; flex-direction: column; min-width: 0; }
   .near-body strong { font-size: 14px; overflow-wrap: anywhere; }
   .back { margin-top: 1.5rem; font-size: 14px; }
+  .owner { margin-top: 1.5rem; font-size: 14px; background: var(--warm-white, #FFFDF9); border: 1px dashed rgba(26,18,8,0.18); border-radius: 12px; padding: 0.85rem 1rem; line-height: 1.5; }
+  .owner a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   @media (max-width: 700px) {
@@ -183,6 +185,7 @@
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="about.html">👤 About me</a>
   <a href="hotel.html">🏨 Stay</a>
 </div>
@@ -211,8 +214,8 @@
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
-  import { locate, destinationUrl } from "./js/sf-places.js?v=1";
-  import { highlightsRow } from "./js/sf-highlights.js?v=1";
+  import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=4";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -381,8 +384,11 @@
     document.title = `${p.name}${town ? ', ' + town : ''} | Strong Foodie`;
     const desc = (p.review || p.tip || `${cat.label} spot${p.address ? ' at ' + p.address : ''}`).slice(0, 155);
     document.querySelector('meta[name="description"]').setAttribute('content', desc);
-    const canonical = `https://strongfoodie.com/plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}`;
+    // The pretty address (strongfoodie.com/p/name-id/) is the one to share and to find in Google.
+    const canonical = SITE + placeUrl(p);
     document.querySelector('link[rel="canonical"]').setAttribute('href', canonical);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', canonical);
 
     const hasCoords = p.lat != null && p.lng != null;
     const routeUrl = hasCoords
@@ -427,7 +433,7 @@
 
     document.getElementById('placeRoot').innerHTML = `
       <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › ${dest
-        ? `<a href="${destinationUrl(dest)}">${esc(dest)}</a> › <a href="${destinationUrl(dest)}&cat=${p.cat}">${cat.label}</a>`
+        ? `<a href="${destinationUrl(dest)}">${esc(dest)}</a> › <a href="${destinationUrl(dest)}?cat=${p.cat}#places">${cat.label}</a>`
         : `<a href="${cat.page}">${cat.label}</a>`} › <span>${esc(p.name)}</span></div>
       <article class="place">
         <div class="media">${hero}${thumbs}</div>
@@ -459,6 +465,7 @@
         <h2>Nearby ${cat.label.toLowerCase()} spots</h2>
         <div class="nearby" id="nearbyList"></div>
       </section>
+      ${p.member ? '' : `<p class="owner">🤝 Is this your place? <a href="kit.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">Get your free Strong Foodie badge and QR sticker →</a></p>`}
       <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a>${dest ? ` &nbsp;·&nbsp; <a href="${destinationUrl(dest)}">More in ${esc(dest)} →</a>` : ''}</p>`;
 
     // The hero takes the shape of the photo, so the whole photo is visible.
@@ -487,7 +494,7 @@
     refreshWish();
 
     document.getElementById('shareBtn').addEventListener('click', async () => {
-      const url = location.href;
+      const url = canonical;
       try {
         if (navigator.share) { await navigator.share({ title: p.name, text: `${p.name} on Strong Foodie`, url }); return; }
         await navigator.clipboard.writeText(url);
@@ -573,7 +580,7 @@
     btn.textContent = wishItemId ? '🔖 On your wishlist' : '🔖 Wishlist';
   }
   async function toggleWish() {
-    if (!me) { location.href = 'account.html?next=' + encodeURIComponent(location.pathname.split('/').pop() + location.search); return; }
+    if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
     const btn = document.getElementById('wishBtn');
     btn.disabled = true;
     try {
@@ -1011,7 +1018,7 @@
     const top = list.slice(0, 4);
     if (!top.length) return;
     document.getElementById('nearbyList').innerHTML = top.map(q => `
-      <a class="near" href="plek.html?c=${encodeURIComponent(q.coll)}&id=${encodeURIComponent(q.id)}">
+      <a class="near" href="${placeUrl(q)}">
         <span class="near-emoji">${esc(q.emoji)}</span>
         <span class="near-body"><strong>${esc(q.name)}</strong><span class="muted">${fmtDist(q.dist)}${q.member ? ' · Member spot' : (q.rating ? ' · ' + stars(q.rating) : '')}</span></span>
       </a>`).join('');
@@ -1019,14 +1026,36 @@
   }
 
   async function init() {
-    const qs = new URLSearchParams(location.search);
-    const coll = qs.get('c'), id = qs.get('id');
-    if (!coll || !id || !COLLS[coll]) return notFound();
+    // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
+    const qs = new URLSearchParams(window.SF_PARAMS || location.search);
+    let coll = qs.get('c');
+    let id = qs.get('id');
+    const pretty = qs.get('p');
+    if ((!id && !pretty) || (coll && !COLLS[coll])) return notFound();
 
     let snap;
-    try { snap = await getDoc(doc(db, coll, id)); }
+    try {
+      if (!id) {
+        // A pretty address without its page yet (strongfoodie.com/p/name-of-place-<id>/):
+        // the id is the end of it. Firestore ids have no dashes, older ones might.
+        const parts = pretty.split('-');
+        for (let i = parts.length - 1; i >= 0 && !snap; i--) {
+          const cand = parts.slice(i).join('-');
+          const found = await Promise.all(Object.keys(COLLS).map(c => getDoc(doc(db, c, cand)).then(s => s.exists() ? [c, s] : null).catch(() => null)));
+          const hit = found.find(Boolean);
+          if (hit) { [coll, snap] = hit; id = cand; }
+        }
+      } else if (coll) snap = await getDoc(doc(db, coll, id));
+      else {
+        // Only the id is known (a pretty address without its page yet): find its collection.
+        for (const c of Object.keys(COLLS)) {
+          const s = await getDoc(doc(db, c, id)).catch(() => null);
+          if (s && s.exists()) { coll = c; snap = s; break; }
+        }
+      }
+    }
     catch (e) { console.error(e); return notFound('This place could not load right now'); }
-    if (!snap.exists()) return notFound();
+    if (!snap || !snap.exists()) return notFound();
 
     const r = snap.data();
     if (!COLLS[coll].member && !isPublished(r, new Date())) return notFound();
@@ -1071,8 +1100,8 @@
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
         </div>
       </div>
     </div>
@@ -1110,6 +1139,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

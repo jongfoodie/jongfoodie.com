@@ -163,6 +163,7 @@
   <a href="map.html">🗺️ Map</a>
   <a href="community.html">👥 Community</a>
   <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
   <a href="about.html">👤 About me</a>
   <a href="hotel.html">🏨 Stay</a>
 </div>
@@ -192,6 +193,9 @@
 </div>
 
 <div class="main">
+  <!-- HIGHLIGHTS of this category, the same row as in the app (js/sf-highlights.js) -->
+  <div id="hlCat" hidden></div>
+  <p style="margin:0 0 1.25rem;font-size:14px;"><a href="best.html" style="color:#D4521A;text-decoration:none;font-weight:500;">🏆 Best-of lists: the top places per city →</a></p>
   <p class="section-label">Strong Foodie Culture Reviews</p>
   <div id="spotList">
     <div class="empty-state">
@@ -217,6 +221,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { highlightsRow } from "./js/sf-highlights.js?v=4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -229,6 +234,9 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  // Pretty place address, the same rule as js/sf-core.js (placeUrl).
+  const prettyUrl = (name, id) => '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/';
+  highlightsRow(db, document.getElementById('hlCat'), { category: 'culture', title: 'Highlights' });
 
   // ── Photo gallery lightbox ──
   window.__galleryStore = {};
@@ -348,7 +356,7 @@
         ${imgHtml}
         <div class="spot-body">
           <div class="spot-top">
-            <p class="spot-name">${s.__id ? `<a class="place-link" href="plek.html?c=culturespots&id=${s.__id}">${s.name}</a>` : s.name}</p>
+            <p class="spot-name">${s.__id ? `<a class="place-link" href="${prettyUrl(s.name, s.__id)}">${s.name}</a>` : s.name}</p>
             <span class="spot-stars">${renderStars(s.rating || 0)}</span>
           </div>
           <div class="spot-meta">
@@ -358,7 +366,7 @@
           </div>
           ${closedNoteHtml}
           <p class="spot-desc">${s.review || ''}</p>
-          ${s.__id ? `<a class="place-more" href="plek.html?c=culturespots&id=${s.__id}">View place →</a>` : ''}
+          ${s.__id ? `<a class="place-more" href="${prettyUrl(s.name, s.__id)}">View place →</a>` : ''}
           <div class="spot-tags">
             ${(s.tags || []).map(t => '<span class="spot-tag">' + t + '</span>').join('')}
           </div>
@@ -423,8 +431,8 @@
       <div>
         <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
         <div style="display:flex;flex-direction:column;gap:0.4rem;">
-          <a href="https://www.instagram.com/jongfoodie/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
-          <a href="https://www.youtube.com/@Jongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
         </div>
       </div>
     </div>
@@ -462,6 +470,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=1"></script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 //   import { highlightsRow } from './js/sf-highlights.js?v=1';
 //   highlightsRow(db, element, { authorId })   // one member's highlights
 //   highlightsRow(db, element, { placeId })    // highlights of one place
+//   highlightsRow(db, element, { category })   // one of the six categories, like the app
 //   highlightsRow(db, element)                 // newest from everyone
 //   ...{ ownerId: uid } adds a Delete button to that member's own highlights
 //
@@ -22,7 +23,7 @@
 // Highlights of private accounts are left out, except on your own profile.
 
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=3";
+import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=4";
 import { deleteHighlight, confirmTap } from "./sf-delete.js?v=1";
 
 const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];
@@ -234,11 +235,12 @@ function isPrivate(db, uid) {
   return privateCache.get(uid);
 }
 
-export async function loadHighlights(db, { authorId = '', placeId = '', max = 12, includePrivate = false } = {}) {
+export async function loadHighlights(db, { authorId = '', placeId = '', category = '', max = 12, includePrivate = false } = {}) {
   const feed = !authorId && !placeId;
   const coll = collection(db, 'highlights');
   const q = authorId ? query(coll, where('authorId', '==', authorId))
     : placeId ? query(coll, where('placeId', '==', placeId))
+    : category ? query(coll, where('category', '==', category))
     : query(coll, where('createdAt', '>', new Date(Date.now() - DAY)), orderBy('createdAt', 'desc'), limit(40));
   const snap = await getDocs(q);
   let rows = snap.docs.map(d => ({ id: d.id, ...d.data() }))
