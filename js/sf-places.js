@@ -94,7 +94,7 @@ function isPublished(r, now) {
   return !(pub && pub > now);
 }
 
-function normalise(coll, id, r, member) {
+export function normalise(coll, id, r, member) {
   const cat = member ? catOf(r.category) : Object.keys(CATS).find(k => CATS[k].coll === coll);
   const photos = [];
   if (r.photoUrl) photos.push(r.photoUrl);

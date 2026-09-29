@@ -65,6 +65,8 @@
 
   .member-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .member-item { display: flex; align-items: center; gap: 0.75rem; }
+  a.member-link { text-decoration: none; color: inherit; border-radius: 10px; margin: -4px; padding: 4px; }
+  a.member-link:hover .member-name { color: var(--accent); }
   .member-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #fff; flex-shrink: 0; }
   .member-name { font-size: 13px; font-weight: 500; }
   .member-reviews { font-size: 11px; color: var(--muted); }
@@ -346,7 +348,7 @@
           <span class="review-stars">${starStr(r.rating)}</span>
         </div>
         ${r.text ? `<p class="review-text">${esc(r.text.slice(0, 280))}${r.text.length > 280 ? '…' : ''}</p>` : ''}
-        <p class="review-meta">${esc(r.authorName)}${date ? ' · ' + date : ''} · <a href="${url}">View place →</a></p>
+        <p class="review-meta">${r.authorId ? `<a href="member.html?u=${encodeURIComponent(r.authorId)}">${esc(r.authorName)}</a>` : esc(r.authorName)}${date ? ' · ' + date : ''} · <a href="${url}">View place →</a></p>
       </article>`;
     }).join('');
     document.getElementById('reviewsSection').hidden = false;
@@ -357,7 +359,7 @@
     const people = new Map();
     const add = (id, name, key) => {
       const k = id || 'name:' + name;
-      if (!people.has(k)) people.set(k, { name, spots: 0, reviews: 0 });
+      if (!people.has(k)) people.set(k, { id: id || '', name, spots: 0, reviews: 0 });
       const p = people.get(k);
       if (name && (!p.name || p.name === 'Member' || p.name === 'a member')) p.name = name;
       p[key]++;
@@ -370,10 +372,11 @@
     list.innerHTML = top.map((m, i) => {
       const name = m.name && m.name !== 'a member' ? m.name : 'Member';
       const parts = [m.spots ? `${m.spots} ${m.spots === 1 ? 'spot' : 'spots'}` : '', m.reviews ? `${m.reviews} ${m.reviews === 1 ? 'review' : 'reviews'}` : ''].filter(Boolean).join(' · ');
-      return `<div class="member-item">
-        <div class="member-avatar" style="background:${COLOURS[i % COLOURS.length]};">${esc(name.slice(0, 2).toUpperCase())}</div>
-        <div><p class="member-name">${esc(name)}</p><p class="member-reviews">${parts}</p></div>
-      </div>`;
+      const inner = `<div class="member-avatar" style="background:${COLOURS[i % COLOURS.length]};">${esc(name.slice(0, 2).toUpperCase())}</div>
+        <div><p class="member-name">${esc(name)}</p><p class="member-reviews">${parts}</p></div>`;
+      return m.id
+        ? `<a class="member-item member-link" href="member.html?u=${encodeURIComponent(m.id)}">${inner}</a>`
+        : `<div class="member-item">${inner}</div>`;
     }).join('');
   }
 

@@ -392,6 +392,7 @@
         <div class="acct-who">
           <h1>${esc(name)}</h1>
           <p class="small">${esc(user.email || '')} · one account for the website and the app</p>
+          <p class="small"><a href="member.html?u=${encodeURIComponent(user.uid)}">View your public profile →</a></p>
         </div>
         <button class="btn" id="logoutBtn">Log out</button>
       </div>
