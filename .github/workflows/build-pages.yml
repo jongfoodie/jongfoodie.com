@@ -1,0 +1,59 @@
+name: Share pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'p/**'
+      - 'stad/**'
+      - 'best/**'
+      - 'guide/**'
+      - 'og/**'
+      - 'links/**'
+      - 'press/**'
+      - 'kit/**'
+      - 'sitemap.xml'
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: share-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Make the pages
+        run: node tools/build-pages.mjs
+
+      - name: Save them
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing changed since the last run."
+            exit 0
+          fi
+          git config user.name "Strong Foodie pages"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update share pages"
+          git push
+          echo "CHANGED=1" >> "$GITHUB_ENV"
+
+      - name: Put them online
+        if: env.CHANGED == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || echo "GitHub Pages picks up the new pages by itself."
