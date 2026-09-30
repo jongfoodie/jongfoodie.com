@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In-N-Out Burger Hollywood, Hollywood | Strong Foodie</title>
+<meta name="description" content="Rated 5/5 by Strong Foodie. The California classic. Double-Double animal style with fresh ingredients at an unbeatable price. A rite of passage for any…">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="In-N-Out Burger Hollywood, Hollywood">
+<meta property="og:description" content="Rated 5/5 by Strong Foodie. The California classic. Double-Double animal style with fresh ingredients at an unbeatable price. A rite of passage for any…">
+<meta property="og:image" content="https://strongfoodie.com/images/in-n-out-hollywood.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .newsletter { display: none; }
+
+  .place-wrap { max-width: 880px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+  .place-loading, .place-empty { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+  .place-empty h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .place-empty a, .back a, .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; overflow-wrap: anywhere; }
+  .place { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+  .hero-photo { position: relative; width: 100%; height: 340px; overflow: hidden; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); display: flex; align-items: center; justify-content: center; }
+  .hero-photo.has-photo { height: auto; max-height: min(78vh, 680px); background: var(--ink); }
+  .hero-backdrop { position: absolute; inset: -40px; background-size: cover; background-position: center; filter: blur(28px) brightness(0.75); }
+  .hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; cursor: zoom-in; }
+  .hero-zoom { position: absolute; right: 12px; bottom: 12px; z-index: 2; background: rgba(26,18,8,0.65); color: #fff; border: none; border-radius: 20px; padding: 6px 12px; font: 500 12px 'DM Sans', sans-serif; cursor: pointer; }
+  .hero-zoom[hidden] { display: none; }
+  .lightbox { position: fixed; inset: 0; z-index: 20000; background: rgba(10,7,3,0.94); display: flex; align-items: center; justify-content: center; padding: 1rem; cursor: zoom-out; }
+  .lightbox[hidden] { display: none; }
+  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+  .lightbox-close { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.15); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+  .hero-emoji { font-size: 72px; }
+  .hero-photo img:not([hidden]) + .hero-emoji { display: none; }
+  .thumbs { display: flex; gap: 0.5rem; padding: 0.75rem 1.25rem 0; overflow-x: auto; }
+  .thumb { width: 64px; height: 64px; flex-shrink: 0; border-radius: 10px; overflow: hidden; border: 2px solid transparent; padding: 0; cursor: pointer; background: var(--cream); }
+  .thumb.active { border-color: var(--accent); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .head { padding: 1.25rem 1.5rem 1.5rem; }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+  .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .badge-sf { background: var(--accent-pale); color: var(--accent); }
+  .badge-member { background: #fff; color: var(--accent); border: 1px solid rgba(212,82,26,0.4); }
+  .badge-ad { background: var(--ink); color: #fff; }
+  .head h1 { font-family: 'Playfair Display', serif; font-size: 2.1rem; line-height: 1.15; overflow-wrap: anywhere; }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 0.35rem; overflow-wrap: anywhere; }
+  .closed-banner { margin-top: 0.75rem; background: #FFF4E5; color: #8A5A10; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 500; }
+  .scores { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
+  .score { display: flex; align-items: center; gap: 0.6rem; }
+  .score-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .score-num.member { color: var(--green); }
+  .score-stars { color: var(--gold); font-size: 15px; letter-spacing: 1px; }
+  .score-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+  .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); text-decoration: none; cursor: pointer; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
+  .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
+  .block p { line-height: 1.65; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .block p + p { margin-top: 0.5rem; }
+  .lead { font-size: 16px; color: var(--ink) !important; }
+  .review-text { font-size: 15px; white-space: pre-line; }
+  .muted { color: var(--muted) !important; font-size: 12px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--cream); color: var(--ink-soft); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem 1.5rem; }
+  .facts dt { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .facts dd { font-size: 14px; color: var(--ink); overflow-wrap: anywhere; }
+  .facts dd a { color: var(--accent); text-decoration: none; }
+  .place-map { height: 260px; border-radius: 12px; overflow: hidden; }
+  .member-reviews { display: flex; flex-direction: column; gap: 0.9rem; }
+  #placeHighlights .hl-sec { margin-bottom: 0; }
+  .mr { border-top: 1px solid var(--border); padding-top: 0.9rem; }
+  .mr:first-child { border-top: none; padding-top: 0; }
+  .mr-name { color: inherit; text-decoration: none; }
+  .mr-name:hover { color: var(--accent); text-decoration: underline; }
+  .mr-top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+  .mr-photo img { max-width: 220px; width: 100%; border-radius: 10px; margin-top: 0.4rem; }
+  .mr-own { background: var(--accent-pale); border-radius: 12px; padding: 0.8rem 0.9rem !important; border-top: none !important; }
+  .mr-you { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 2px 7px; border-radius: 8px; margin-left: 4px; vertical-align: 2px; }
+  .link-btn { background: none; border: none; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .composer { margin-top: 1rem; }
+  .composer-card { border: 1px solid var(--border); background: var(--cream); border-radius: 14px; padding: 1rem 1.1rem; }
+  .composer-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--ink) !important; }
+  .composer-form { display: flex; flex-direction: column; gap: 0.6rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; color: var(--ink); background: var(--warm-white); outline: none; }
+  .field:focus { border-color: var(--accent); }
+  textarea.field { resize: vertical; min-height: 96px; line-height: 1.5; }
+  .star-input { display: flex; gap: 2px; }
+  .star { background: none; border: none; font-size: 30px; line-height: 1; color: #D8CDBB; cursor: pointer; padding: 2px; }
+  .star.on { color: var(--gold); }
+  .star:focus-visible { outline: 2px solid var(--accent); border-radius: 6px; }
+  .photo-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .photo-btn { display: inline-flex; align-items: center; gap: 4px; }
+  .photo-preview { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+  .composer-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .form-error { background: #FFF1EC; color: #A3300B !important; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+  .form-error[hidden] { display: none; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .wish-btn.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
+  .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+  .check-row input { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
+  .check-row a { color: var(--accent); }
+  .nearby { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.6rem; }
+  .near { display: flex; gap: 0.75rem; align-items: center; padding: 0.7rem; border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--ink); background: var(--cream); }
+  .near:hover { border-color: var(--accent); }
+  .near-emoji { font-size: 22px; }
+  .near-body { display: flex; flex-direction: column; min-width: 0; }
+  .near-body strong { font-size: 14px; overflow-wrap: anywhere; }
+  .back { margin-top: 1.5rem; font-size: 14px; }
+  .dishes { display: flex; flex-direction: column; gap: 0.75rem; }
+  .dish { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0.85rem; align-items: start; }
+  .dish img, .dish-emoji { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: #F0EBE3; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .dish-name { font-weight: 500; overflow-wrap: anywhere; }
+  .dish-kind { font-size: 11px; font-weight: 500; background: #F0EBE3; color: #3D2F1A; border-radius: 10px; padding: 2px 8px; margin-left: 4px; vertical-align: 1px; }
+  .dish-score { font-size: 13px; color: #8A7A66; margin-top: 2px; }
+  .dish-score .st { color: #C8901A; }
+  .dish-note { font-size: 14px; line-height: 1.55; margin-top: 4px; overflow-wrap: anywhere; }
+  .owner { margin-top: 1.5rem; font-size: 14px; background: var(--warm-white, #FFFDF9); border: 1px dashed rgba(26,18,8,0.18); border-radius: 12px; padding: 0.85rem 1rem; line-height: 1.5; }
+  .owner a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 700px) {
+    .hero-photo { height: 240px; }
+    .hero-photo.has-photo { max-height: 70vh; }
+    .head h1 { font-size: 1.7rem; }
+    .head { padding: 1rem 1.1rem 1.25rem; }
+    .block { padding: 1rem 1.1rem; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<meta property="og:url" content="https://strongfoodie.com/p/in-n-out-burger-hollywood-x9QF2yqsWHnNFYT8xaro/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://strongfoodie.com/p/in-n-out-burger-hollywood-x9QF2yqsWHnNFYT8xaro/">
+<script>window.SF_PARAMS = {"c":"reviews","id":"x9QF2yqsWHnNFYT8xaro"};</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="place-wrap" id="placeRoot">
+  <div class="place-loading">Loading place…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
+  import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=7";
+  import { highlightsRow } from "./js/sf-highlights.js?v=7";
+  import { countView } from "./js/sf-views.js?v=1";
+  import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const firebaseApp = initializeApp(firebaseConfig);
+  const db = getFirestore(firebaseApp);
+
+  // Every place collection the app reads, with the page it belongs to.
+  const COLLS = {
+    reviews:      { cat: 'eat' },
+    drinkspots:   { cat: 'drink' },
+    shopspots:    { cat: 'shop' },
+    culturespots: { cat: 'culture' },
+    healthspots:  { cat: 'health' },
+    hotelreviews: { cat: 'stay' },
+    userPlaces:   { cat: null, member: true },
+  };
+  const CATS = {
+    eat:     { label: 'Eat',     emoji: '🍽️', color: '#D4521A', page: 'reviews.html', coll: 'reviews',      schema: 'Restaurant',     aliases: ['eat', 'food', 'restaurant', 'restaurants'] },
+    drink:   { label: 'Drink',   emoji: '🍸', color: '#6B2A5C', page: 'drink.html',   coll: 'drinkspots',   schema: 'BarOrPub',       aliases: ['drink', 'drinks', 'bar', 'bars', 'cafe'] },
+    shop:    { label: 'Shop',    emoji: '🛍️', color: '#A32323', page: 'shop.html',    coll: 'shopspots',    schema: 'Store',          aliases: ['shop', 'shops', 'store'] },
+    culture: { label: 'Culture', emoji: '🎭', color: '#8A6A0A', page: 'culture.html', coll: 'culturespots', schema: 'TouristAttraction', aliases: ['culture', 'cultuur', 'museum'] },
+    health:  { label: 'Health',  emoji: '💪', color: '#1A5C2E', page: 'health.html',  coll: 'healthspots',  schema: 'HealthClub',     aliases: ['health', 'gym', 'sport', 'spa'] },
+    stay:    { label: 'Stay',    emoji: '🏨', color: '#2F5D7C', page: 'hotel.html',   coll: 'hotelreviews', schema: 'Hotel',          aliases: ['stay', 'stays', 'hotel', 'hotels'] },
+  };
+
+  // ── Helpers
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = v => (typeof v === 'number' && isFinite(v) && v !== 0) ? v : null;
+  const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
+  const catOf = raw => { const c = String(raw || '').toLowerCase().trim(); return Object.keys(CATS).find(k => CATS[k].aliases.includes(c)) || 'eat'; };
+  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+  function distanceM(a, b) {
+    const R = 6371000, t = x => x * Math.PI / 180;
+    const h = Math.sin(t(b.lat - a.lat) / 2) ** 2 + Math.cos(t(a.lat)) * Math.cos(t(b.lat)) * Math.sin(t(b.lng - a.lng) / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  const fmtDist = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${fmt1(m / 1000)} km`;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // Photos: normal URLs, "fsimg://<id>" (base64 in `images`), or base64 stored
+  // directly on a review.
+  const photoCache = new Map();
+  function resolvePhoto(url) {
+    if (!url || typeof url !== 'string') return Promise.resolve('');
+    if (url.startsWith('data:') || /^https?:\/\//.test(url) || url.startsWith('images/') || url.startsWith('/')) return Promise.resolve(url);
+    if (url.startsWith('fsimg://')) {
+      const id = url.slice(8);
+      if (!photoCache.has(id)) {
+        photoCache.set(id, getDoc(doc(db, 'images', id))
+          .then(s => { const d = s.exists() ? s.data() : null; return d && d.data ? `data:${d.contentType || 'image/jpeg'};base64,${d.data}` : ''; })
+          .catch(() => ''));
+      }
+      return photoCache.get(id);
+    }
+    if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
+    return Promise.resolve(url);
+  }
+  function hydratePhotos(root) {
+    root.querySelectorAll('img[data-photo]').forEach(img => {
+      const src = img.getAttribute('data-photo');
+      img.removeAttribute('data-photo');
+      img.onerror = () => { img.hidden = true; if (img.dataset.hideParent) img.parentElement.remove(); };
+      resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else if (img.dataset.hideParent) img.parentElement.remove(); });
+    });
+  }
+
+  function isPublished(r, now) {
+    if (r.status === 'draft' || r.status === 'hidden' || r.hidden === true) return false;
+    const pub = toDate(r.publishAt);
+    return !(pub && pub > now);
+  }
+
+  function normalise(coll, id, r) {
+    const member = !!COLLS[coll].member;
+    const cat = member ? catOf(r.category) : COLLS[coll].cat;
+    const photos = [];
+    if (Array.isArray(r.photos)) r.photos.forEach(p => { if (typeof p === 'string' && p && !photos.includes(p)) photos.push(p); });
+    if (r.photoUrl && !photos.includes(r.photoUrl)) photos.unshift(r.photoUrl);
+    return {
+      coll, id, cat, member,
+      name: r.name || 'Unnamed place',
+      address: member ? [r.address, r.city].filter(Boolean).join(', ') : (r.city || r.address || ''),
+      city: r.city || '',
+      country: r.country || r.countryLabel || '',
+      type: member ? '' : (r.type || ''),
+      tip: member ? (r.type || '') : '',
+      review: r.review || '',
+      rating: typeof r.rating === 'number' ? r.rating : null,
+      price: r.price || '',
+      hours: r.hours || '',
+      phone: r.phone || '',
+      date: r.date || '',
+      tags: Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [],
+      emoji: r.emoji || CATS[cat].emoji,
+      photos,
+      lat: num(r.lat), lng: num(r.lng),
+      closedStatus: r.closedStatus && r.closedStatus !== 'open' ? r.closedStatus : '',
+      closedNote: r.closedNote || '',
+      sponsored: r.sponsored === true,
+      partnerName: r.partnerName || '',
+      author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
+      addedByUserId: r.addedByUserId || '',
+      created: toDate(r.createdAt),
+    };
+  }
+
+  // In the catalogue the "city" field often holds a whole address
+  // ("8361 Beverly Blvd, Los Angeles", "Singel 83, 1012 VE Amsterdam").
+  // Take the town from it for titles.
+  function townOf(p) {
+    const parts = String(p.city || p.address || '').split(',').map(x => x.trim()).filter(Boolean);
+    const country = String(p.country || '').toLowerCase();
+    for (let i = parts.length - 1; i >= 0; i--) {
+      let t = parts[i].replace(/^\d{4}\s?[A-Z]{2}\s+/, '').trim();
+      if (!t || t.toLowerCase() === country || /^[A-Z]{2}$/.test(t) || /\d/.test(t)) continue;
+      return t;
+    }
+    return '';
+  }
+
+  function notFound(msg) {
+    document.title = 'Place not found | Strong Foodie';
+    document.getElementById('placeRoot').innerHTML = `
+      <div class="place-empty">
+        <div style="font-size:42px;margin-bottom:0.75rem;">🗺️</div>
+        <h1>${esc(msg || 'This place could not be found')}</h1>
+        <p>It may have been removed or the link is incomplete. Find it on the <a href="map.html">map</a> or browse <a href="reviews.html">all reviews</a>.</p>
+      </div>`;
+  }
+
+  // Full-screen photo. Closes with a tap, the ✕ or Escape.
+  function openLightbox(src, alt) {
+    let box = document.getElementById('lightbox');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'lightbox';
+      box.className = 'lightbox';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      box.innerHTML = '<button class="lightbox-close" type="button" aria-label="Close">✕</button><img alt="">';
+      box.addEventListener('click', () => { box.hidden = true; });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') box.hidden = true; });
+      document.body.appendChild(box);
+    }
+    const img = box.querySelector('img');
+    img.src = src; img.alt = alt || '';
+    box.hidden = false;
+    box.querySelector('.lightbox-close').focus();
+  }
+
+  // ── Page
+  function render(p) {
+    const cat = CATS[p.cat];
+    const town = townOf(p);
+    document.title = `${p.name}${town ? ', ' + town : ''} | Strong Foodie`;
+    const desc = (p.review || p.tip || `${cat.label} spot${p.address ? ' at ' + p.address : ''}`).slice(0, 155);
+    document.querySelector('meta[name="description"]').setAttribute('content', desc);
+    // The pretty address (strongfoodie.com/p/name-id/) is the one to share and to find in Google.
+    const canonical = SITE + placeUrl(p);
+    document.querySelector('link[rel="canonical"]').setAttribute('href', canonical);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', canonical);
+
+    const hasCoords = p.lat != null && p.lng != null;
+    const routeUrl = hasCoords
+      ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`
+      : (p.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.address)}` : '');
+
+    const hero = p.photos.length
+      ? `<div class="hero-photo" id="heroPhoto"><div class="hero-backdrop" id="heroBackdrop"></div><img id="heroImg" data-photo="${esc(p.photos[0])}" alt="${esc(p.name)}" hidden><span class="hero-emoji">${esc(p.emoji)}</span><button class="hero-zoom" id="heroZoom" type="button" hidden>⤢ Full photo</button></div>`
+      : `<div class="hero-photo"><span class="hero-emoji">${esc(p.emoji)}</span></div>`;
+    const thumbs = p.photos.length > 1
+      ? `<div class="thumbs">${p.photos.map((ph, i) => `<button class="thumb${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Photo ${i + 1}"><img data-photo="${esc(ph)}" data-hide-parent="1" alt="" hidden></button>`).join('')}</div>`
+      : '';
+
+    const closed = p.closedStatus
+      ? `<div class="closed-banner">${p.closedStatus === 'perm' ? '🚪 Permanently closed' : '🚪 Temporarily closed'}${p.closedNote ? ': ' + esc(p.closedNote) : ''}</div>` : '';
+    const partner = p.sponsored
+      ? `<span class="badge badge-ad">AD · Partner${p.partnerName ? ': ' + esc(p.partnerName) : ''}</span>` : '';
+    const sourceBadge = p.member
+      ? `<span class="badge badge-member">Member spot</span>`
+      : `<span class="badge badge-sf">Strong Foodie review</span>`;
+
+    const facts = [
+      p.address && ['📍', 'Address', esc(p.address)],
+      p.hours && ['🕐', 'Opening hours', esc(p.hours)],
+      p.price && ['💰', 'Price', esc(p.price)],
+      p.type && ['🏷️', 'Type', esc(p.type)],
+      p.phone && ['📞', 'Phone', `<a href="tel:${esc(p.phone.replace(/\s/g, ''))}">${esc(p.phone)}</a>`],
+      p.date && ['📅', 'Visited', esc(p.date)],
+    ].filter(Boolean);
+
+    const sfScore = !p.member && p.rating
+      ? `<div class="score"><div class="score-num">${fmt1(p.rating)}</div><div><div class="score-stars">${stars(p.rating)}</div><div class="score-label">Strong Foodie score</div></div></div>` : '';
+
+    const reviewBlock = p.member
+      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>` : `<section class="block"><p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>`)
+      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}${p.date ? ' · ' + esc(p.date) : ''}</p></section>` : '');
+
+    const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+
+    // The destination page this place belongs to (same logic as the homepage and stad.html).
+    const dest = locate(p.address, p.country).destination;
+
+    document.getElementById('placeRoot').innerHTML = `
+      <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › ${dest
+        ? `<a href="${destinationUrl(dest)}">${esc(dest)}</a> › <a href="${destinationUrl(dest)}?cat=${p.cat}#places">${cat.label}</a>`
+        : `<a href="${cat.page}">${cat.label}</a>`} › <span>${esc(p.name)}</span></div>
+      <article class="place">
+        <div class="media">${hero}${thumbs}</div>
+        <div class="head">
+          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}</div>
+          <h1>${esc(p.name)}</h1>
+          ${p.address ? `<p class="sub">📍 ${esc(p.address)}</p>` : ''}
+          ${closed}
+          <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
+          <div class="actions">
+            ${routeUrl ? `<a class="btn btn-primary" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
+            <button class="btn" id="shareBtn">Share</button>
+            <button class="btn wish-btn" id="wishBtn" type="button" aria-pressed="false">🔖 Wishlist</button>
+            ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
+          </div>
+        </div>
+      </article>
+
+      ${reviewBlock}
+      <section class="block" id="dishesBlock" hidden><h2>What to order</h2><div class="dishes" id="dishList"></div></section>
+      <section class="block" id="placeHighlights" hidden></section>
+      ${tags ? `<section class="block">${tags}</section>` : ''}
+      ${facts.length ? `<section class="block"><h2>Details</h2><dl class="facts">${facts.map(([i, k, v]) => `<div><dt>${i} ${k}</dt><dd>${v}</dd></div>`).join('')}</dl></section>` : ''}
+      ${hasCoords ? `<section class="block"><h2>Location</h2><div id="placeMap" class="place-map"></div></section>` : ''}
+      <section class="block" id="memberReviews">
+        <h2>Member reviews</h2>
+        <div id="memberReviewsBody"><p class="muted">Loading…</p></div>
+      </section>
+      <section class="block" id="nearbyBlock" hidden>
+        <h2>Nearby ${cat.label.toLowerCase()} spots</h2>
+        <div class="nearby" id="nearbyList"></div>
+      </section>
+      ${p.member ? '' : `<p class="owner">🤝 Is this your place? <a href="kit.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">Get your free Strong Foodie badge and QR sticker →</a></p>`}
+      <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a>${dest ? ` &nbsp;·&nbsp; <a href="${destinationUrl(dest)}">More in ${esc(dest)} →</a>` : ''}</p>`;
+
+    // The hero takes the shape of the photo, so the whole photo is visible.
+    const heroImg = document.getElementById('heroImg');
+    if (heroImg) {
+      heroImg.addEventListener('load', () => {
+        const box = document.getElementById('heroPhoto');
+        if (heroImg.naturalWidth && heroImg.naturalHeight) box.style.aspectRatio = `${heroImg.naturalWidth} / ${heroImg.naturalHeight}`;
+        box.classList.add('has-photo');
+        document.getElementById('heroBackdrop').style.backgroundImage = `url("${heroImg.src}")`;
+        document.getElementById('heroZoom').hidden = false;
+      });
+      const openFull = () => { if (heroImg.src) openLightbox(heroImg.src, heroImg.alt); };
+      heroImg.addEventListener('click', openFull);
+      document.getElementById('heroZoom').addEventListener('click', openFull);
+    }
+    hydratePhotos(document.getElementById('placeRoot'));
+    document.querySelectorAll('.thumb').forEach(btn => btn.addEventListener('click', () => {
+      const i = +btn.dataset.i;
+      document.querySelectorAll('.thumb').forEach(b => b.classList.toggle('active', b === btn));
+      resolvePhoto(p.photos[i]).then(url => { const h = document.getElementById('heroImg'); if (url && h) { h.hidden = false; h.src = url; } });
+    }));
+
+    wishPlace = p;
+    document.getElementById('wishBtn').addEventListener('click', toggleWish);
+    refreshWish();
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const url = canonical;
+      try {
+        if (navigator.share) { await navigator.share({ title: p.name, text: `${p.name} on Strong Foodie`, url }); return; }
+        await navigator.clipboard.writeText(url);
+        toast('Link copied');
+      } catch (e) { if (e && e.name !== 'AbortError') toast('Copy the link from the address bar'); }
+    });
+
+    if (hasCoords && window.L) {
+      const m = L.map('placeMap', { scrollWheelZoom: false }).setView([p.lat, p.lng], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(m);
+      L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', html: `<div style="background:${cat.color};color:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`, iconSize: [38, 38], iconAnchor: [19, 19] }) }).addTo(m);
+    }
+
+    // Structured data for search engines: a critic review for Strong Foodie
+    // reviews, plain place data for member spots.
+    const ld = { '@context': 'https://schema.org', '@type': cat.schema, name: p.name, url: canonical };
+    if (p.address) ld.address = p.address;
+    if (hasCoords) ld.geo = { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng };
+    if (p.price) ld.priceRange = p.price;
+    if (!p.member && p.rating && p.review) {
+      ld.review = { '@type': 'Review', author: { '@type': 'Person', name: 'Merdan Koc' }, publisher: { '@type': 'Organization', name: 'Strong Foodie' },
+        reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5, worstRating: 1 }, reviewBody: p.review.slice(0, 500) };
+    }
+    const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
+    document.head.appendChild(s);
+  }
+
+  // Member reviews appear here once reviews carry placeDocId (Rork batch Q).
+  // ── Member reviews ─────────────────────────────────────────────────────
+  // Same `userReviews` collection and fields as the app (placeId,
+  // placeCategory, placeName, rating, text, photoUrl, authorId, authorName,
+  // authorPhoto, createdAt), plus placeCollection / placeDocId so the website
+  // knows which place a review belongs to. Writing needs a Strong Foodie
+  // account (the same one as in the app); one review per member per place.
+  const auth = getAuth(firebaseApp);
+  let me = null;            // { uid, name, photo } once signed in
+  let reviewPlace = null;   // the place on this page
+  let reviewRows = [];      // every review of this place
+  let authorInfo = {};      // uid -> { name, priv }
+  let modFlags = null;      // trusted and blocked members (js/sf-moderation.js)
+  let composerOpen = false;
+  let authMode = 'login';   // 'login' | 'signup'
+  let signingUp = false;    // the sign-up flow sets `me` itself
+  let draft = { rating: 0, photo: '' };
+
+  onAuthStateChanged(auth, async user => {
+    if (signingUp) return;
+    if (user) {
+      let name = '', photo = '', hasProfile = false;
+      try {
+        const s = await getDoc(doc(db, 'profiles', user.uid));
+        if (s.exists()) { hasProfile = true; name = s.data().displayName || ''; photo = s.data().photoUrl || ''; }
+      } catch (e) { hasProfile = true; } // could not check: don't block the member
+      me = { uid: user.uid, name: name || user.displayName || 'Foodie', photo, hasProfile, authName: user.displayName || '' };
+    } else {
+      me = null;
+    }
+    if (reviewPlace) {
+      if (composerOpen) startDraft(myReview());
+      renderMemberReviews();
+    }
+    refreshWish();
+  });
+
+  // ── Wishlist ───────────────────────────────────────────────────────────
+  // Private per member: profiles/{uid}/wishlistItems/{id}. The Firestore rules
+  // already keep every profile subcollection owner-only. The app switches to
+  // the same place with Rork batch S, so both show one wishlist.
+  let wishPlace = null;
+  let wishItemId = null;
+  async function refreshWish() {
+    const btn = document.getElementById('wishBtn');
+    if (!btn || !wishPlace) return;
+    wishItemId = null;
+    if (me) {
+      try {
+        const snap = await getDocs(query(collection(db, 'profiles', me.uid, 'wishlistItems'), where('placeDocId', '==', wishPlace.id)));
+        const hit = snap.docs.find(d => (d.data().placeCollection || wishPlace.coll) === wishPlace.coll);
+        if (hit) wishItemId = hit.id;
+      } catch (e) { console.log('Wishlist could not load:', e.code || e); }
+    }
+    btn.classList.toggle('on', !!wishItemId);
+    btn.setAttribute('aria-pressed', String(!!wishItemId));
+    btn.textContent = wishItemId ? '🔖 On your wishlist' : '🔖 Wishlist';
+  }
+  async function toggleWish() {
+    if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+    const btn = document.getElementById('wishBtn');
+    btn.disabled = true;
+    try {
+      if (wishItemId) {
+        await deleteDoc(doc(db, 'profiles', me.uid, 'wishlistItems', wishItemId));
+        toast('Removed from your wishlist');
+      } else {
+        await addDoc(collection(db, 'profiles', me.uid, 'wishlistItems'), {
+          kind: 'place',
+          placeCollection: wishPlace.coll,
+          placeDocId: wishPlace.id,
+          placeName: wishPlace.name,
+          placeCategory: wishPlace.cat,
+          city: locate(wishPlace.address, wishPlace.country).where || '',
+          source: 'web',
+          createdAt: serverTimestamp(),
+        });
+        toast('Saved to your wishlist');
+      }
+    } catch (e) {
+      console.error('Wishlist could not be saved:', e);
+      toast(e && e.code === 'permission-denied' ? 'The wishlist is not switched on yet. Please try again later.' : 'Could not save. Please try again.');
+    }
+    btn.disabled = false;
+    refreshWish();
+  }
+
+  async function loadMemberReviews(p) {
+    reviewPlace = p;
+    let rows = [];
+    try {
+      const snap = await getDocs(query(collection(db, 'userReviews'), where('placeDocId', '==', p.id)));
+      rows = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(r => (!r.placeCollection || r.placeCollection === p.coll) && typeof r.rating === 'number');
+    } catch (e) { console.error('Member reviews could not load:', e); }
+
+    modFlags = await loadFlags(db);
+    const authors = [...new Set(rows.map(r => r.authorId).filter(Boolean))];
+    authorInfo = {};
+    await Promise.all(authors.map(uid => getDoc(doc(db, 'profiles', uid))
+      .then(s => { authorInfo[uid] = s.exists() ? { name: s.data().displayName || '', priv: s.data().isPrivate === true } : { name: '', priv: false }; })
+      .catch(() => { authorInfo[uid] = { name: '', priv: false }; })));
+    reviewRows = rows.sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    renderMemberReviews();
+  }
+
+  const myReview = () => me ? reviewRows.find(r => r.authorId === me.uid) : null;
+
+  function renderMemberReviews() {
+    const box = document.getElementById('memberReviewsBody');
+    if (!box) return;
+    // Reviews by private accounts stay hidden, except your own. Reviews hidden by
+    // Strong Foodie, and everything of a blocked member, are left out for everyone;
+    // the author still sees their own hidden review, marked as hidden.
+    const own = r => !!(me && r.authorId === me.uid);
+    const visible = reviewRows.filter(r => (!(authorInfo[r.authorId] && authorInfo[r.authorId].priv) || own(r))
+      && !isBlocked(modFlags, r.authorId) && (r.hidden !== true || own(r)));
+    const counted = visible.filter(r => r.hidden !== true);
+    const mine = myReview();
+
+    const ms = document.getElementById('memberScore');
+    if (counted.length) {
+      const avg = counted.reduce((s, r) => s + r.rating, 0) / counted.length;
+      ms.innerHTML = `<div class="score-num member">${fmt1(avg)}</div><div><div class="score-stars">${stars(avg)}</div><div class="score-label">Members · ${counted.length} review${counted.length === 1 ? '' : 's'}</div></div>`;
+      ms.hidden = false;
+    } else {
+      ms.hidden = true;
+    }
+
+    const list = visible.length
+      ? `<div class="member-reviews">${visible.map(r => {
+          const d = toDate(r.createdAt);
+          const own = me && r.authorId === me.uid;
+          const name = (authorInfo[r.authorId] && authorInfo[r.authorId].name) || r.authorName || 'Member';
+          return `<div class="mr${own ? ' mr-own' : ''}">
+            <div class="mr-top"><strong>${r.authorId ? `<a class="mr-name" href="member.html?u=${encodeURIComponent(r.authorId)}">${esc(name)}</a>` : esc(name)}${trustedMark(modFlags, r.authorId)}${own ? ' <span class="mr-you">You</span>' : ''}</strong><span class="score-stars">${stars(r.rating)}</span></div>
+            ${own && r.hidden === true ? '<p class="muted"><strong>Hidden by Strong Foodie.</strong> Only you can see this review.</p>' : ''}
+            ${r.text ? `<p>${esc(r.text)}</p>` : ''}
+            ${r.photoUrl ? `<div class="mr-photo"><img data-photo="${esc(r.photoUrl)}" data-hide-parent="1" alt="" hidden></div>` : ''}
+            <p class="muted">${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}${own ? ` · <button class="link-btn" data-act="edit">Edit</button> · <button class="link-btn" data-act="delete">Delete</button>` : ` · ${reportButton('Report', `data-rid="${esc(r.id)}"`)}`}</p>
+          </div>`;
+        }).join('')}</div>`
+      : `<p class="muted">No member reviews yet. Be the first to review ${esc(reviewPlace.name)}.</p>`;
+
+    box.innerHTML = list + `<div class="composer" id="composer">${composerHtml(mine)}</div>`;
+    hydratePhotos(box);
+    wireComposer(mine);
+    wireReports(db, box, b => {
+      const r = reviewRows.find(x => x.id === b.dataset.rid) || {};
+      return { kind: 'review', coll: 'userReviews', targetId: r.id, ownerId: r.authorId || '', label: `${reviewPlace.name}: ${String(r.text || '').slice(0, 150)}` };
+    });
+  }
+
+  // Date of birth + privacy consent, shared by "create account" and "complete profile".
+  function birthFields(prefix) {
+    return `<label class="field-label" for="${prefix}Birth">Date of birth</label>
+      <input class="field" id="${prefix}Birth" type="date" max="${new Date().toISOString().slice(0, 10)}" required>
+      <label class="check-row"><input type="checkbox" id="${prefix}Consent"><span>I am 18 or older and agree to the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>`;
+  }
+  function ageFrom(iso) {
+    const b = new Date(iso + 'T00:00:00');
+    if (isNaN(b)) return -1;
+    const n = new Date();
+    let age = n.getFullYear() - b.getFullYear();
+    if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) age--;
+    return age;
+  }
+  // Returns an error message, or '' when name + date of birth + consent are fine.
+  function checkPerson(prefix) {
+    const name = document.getElementById(prefix + 'Name').value.trim();
+    const birth = document.getElementById(prefix + 'Birth').value;
+    const age = ageFrom(birth);
+    if (name.length < 2) return 'Fill in a name of at least 2 characters.';
+    if (!birth || age < 0 || age > 120) return 'Fill in your date of birth.';
+    if (age < 18) return 'You need to be 18 or older to create an account.';
+    if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
+    return '';
+  }
+  // Same profile fields the app writes when someone signs up there. The date of
+  // birth is checked but not stored: profiles are still public until Rork batch P
+  // moves private details to a place only the owner can read.
+  function newProfile(name) {
+    return {
+      displayName: name, bio: '', city: '', photoUrl: '', birthDate: '', isAdult: true,
+      meetupEnabled: false, meetupMode: 'friends', favouriteCuisines: [], blockedUsers: [],
+      createdAt: serverTimestamp(),
+    };
+  }
+
+  function composerHtml(mine) {
+    if (!composerOpen) {
+      if (mine) return me ? `<p class="muted">Signed in as ${esc(me.name)} · <button class="link-btn" data-act="logout">Log out</button></p>` : '';
+      return `<button class="btn btn-primary" data-act="open">✍️ Write a review</button>`;
+    }
+    if (!me && authMode === 'signup') {
+      return `<div class="composer-card">
+        <p class="composer-title">Create your Strong Foodie account</p>
+        <p class="muted" style="margin-bottom:0.75rem;">One account for the website and the app. You need to be 18 or older.</p>
+        ${socialHtml()}
+        <form id="signupForm" class="composer-form" novalidate>
+          <input class="field" id="suName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" required>
+          <input class="field" id="suEmail" type="email" autocomplete="email" placeholder="Email" required>
+          <input class="field" id="suPassword" type="password" autocomplete="new-password" placeholder="Password (at least 6 characters)" required>
+          ${birthFields('su')}
+          <p class="form-error" id="signupError" hidden></p>
+          <div class="composer-actions">
+            <button class="btn btn-primary" type="submit">Create account</button>
+            <button class="btn" type="button" data-act="cancel">Cancel</button>
+          </div>
+          <p class="muted">Already have an account? <button class="link-btn" type="button" data-act="tologin">Log in</button></p>
+        </form>
+      </div>`;
+    }
+    if (me && !me.hasProfile) {
+      return `<div class="composer-card">
+        <p class="composer-title">Complete your profile</p>
+        <p class="muted" style="margin-bottom:0.75rem;">Almost there. Add the name shown with your reviews and your date of birth, then you can post reviews here and use the account in the app.</p>
+        <form id="profileForm" class="composer-form" novalidate>
+          <input class="field" id="pfName" type="text" autocomplete="nickname" maxlength="30" placeholder="Name shown with your reviews" value="${esc(me.authName)}" required>
+          ${birthFields('pf')}
+          <p class="form-error" id="profileError" hidden></p>
+          <div class="composer-actions">
+            <button class="btn btn-primary" type="submit">Save profile</button>
+            <button class="btn" type="button" data-act="cancel">Cancel</button>
+          </div>
+          <p class="muted">Signed in as ${esc(me.name)} · <button class="link-btn" type="button" data-act="logout">Log out</button></p>
+        </form>
+      </div>`;
+    }
+    if (!me) {
+      return `<div class="composer-card">
+        <p class="composer-title">Log in to write a review</p>
+        <p class="muted" style="margin-bottom:0.75rem;">Use your Strong Foodie account, the same one as in the app. No account yet? <button class="link-btn" type="button" data-act="tosignup">Create one</button></p>
+        ${socialHtml()}
+        <form id="loginForm" class="composer-form" novalidate>
+          <input class="field" id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+          <input class="field" id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+          <p class="form-error" id="loginError" hidden></p>
+          <div class="composer-actions">
+            <button class="btn btn-primary" type="submit">Log in</button>
+            <button class="btn" type="button" data-act="cancel">Cancel</button>
+            <button class="link-btn" type="button" data-act="reset">Forgot password?</button>
+          </div>
+        </form>
+      </div>`;
+    }
+    if (isBlocked(modFlags, me.uid)) return `<p class="muted">Your account can't post reviews on Strong Foodie right now.</p>`;
+    const r = draft.rating;
+    return `<div class="composer-card">
+      <p class="composer-title">${mine ? 'Edit your review' : 'Your review of ' + esc(reviewPlace.name)}</p>
+      <form id="reviewForm" class="composer-form" novalidate>
+        <div class="star-input" role="radiogroup" aria-label="Your rating">
+          ${[1, 2, 3, 4, 5].map(n => `<button type="button" class="star${n <= r ? ' on' : ''}" data-star="${n}" role="radio" aria-checked="${n === r}" aria-label="${n} star${n === 1 ? '' : 's'}">★</button>`).join('')}
+        </div>
+        <textarea class="field" id="reviewText" rows="4" maxlength="1500" placeholder="What did you eat, drink or do? What stood out?">${esc(draft.text || '')}</textarea>
+        <p class="muted" id="reviewCount" style="text-align:right;margin-top:-0.35rem;"></p>
+        <div class="photo-row">
+          <label class="btn photo-btn">📷 ${draft.photo ? 'Change photo' : 'Add a photo'}<input type="file" id="reviewPhoto" accept="image/*" hidden></label>
+          ${draft.photo ? `<img class="photo-preview" src="${esc(draft.photo)}" alt=""><button class="link-btn" type="button" data-act="nophoto">Remove</button>` : ''}
+        </div>
+        <p class="form-error" id="reviewError" hidden></p>
+        <div class="composer-actions">
+          <button class="btn btn-primary" type="submit" id="reviewSubmit">${mine ? 'Save changes' : 'Post review'}</button>
+          <button class="btn" type="button" data-act="cancel">Cancel</button>
+        </div>
+        <p class="muted">Posting as ${esc(me.name)} · <button class="link-btn" type="button" data-act="logout">Log out</button>. Your review also appears in the app.</p>
+      </form>
+    </div>`;
+  }
+
+  function startDraft(mine) {
+    draft = mine
+      ? { rating: mine.rating, text: mine.text || '', photo: mine.photoUrl && mine.photoUrl.startsWith('data:') ? mine.photoUrl : '', keepPhoto: mine.photoUrl || '' }
+      : { rating: 0, text: '', photo: '', keepPhoto: '' };
+  }
+
+  function wireComposer(mine) {
+    const box = document.getElementById('memberReviewsBody');
+    wireSocial(box, auth);
+    box.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async e => {
+      const act = b.dataset.act;
+      if (act === 'open' || act === 'edit') { composerOpen = true; startDraft(act === 'edit' ? mine : null); renderMemberReviews(); focusComposer(); }
+      if (act === 'cancel') { composerOpen = false; authMode = 'login'; renderMemberReviews(); }
+      if (act === 'tosignup') { authMode = 'signup'; renderMemberReviews(); focusComposer(); }
+      if (act === 'tologin') { authMode = 'login'; renderMemberReviews(); focusComposer(); }
+      if (act === 'logout') { await signOut(auth); composerOpen = false; toast('Logged out'); }
+      if (act === 'nophoto') { draft.photo = ''; draft.keepPhoto = ''; keepText(); renderMemberReviews(); }
+      if (act === 'delete') {
+        if (!mine || !window.confirm('Delete your review of ' + reviewPlace.name + '?')) return;
+        try { await deleteDoc(doc(db, 'userReviews', mine.id)); toast('Review deleted'); composerOpen = false; loadMemberReviews(reviewPlace); }
+        catch (err) { console.error(err); toast('Could not delete the review. Please try again.'); }
+      }
+      if (act === 'reset') {
+        const email = (document.getElementById('loginEmail') || {}).value || '';
+        if (!email.trim()) return showError('loginError', 'Fill in your email first, then tap “Forgot password?” again.');
+        try { await sendPasswordResetEmail(auth, email.trim()); showError('loginError', 'If there is an account for this email, a reset link is on its way. Check your spam folder too.'); }
+        catch (err) { showError('loginError', authMessage(err)); }
+      }
+    }));
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!email || !password) return showError('loginError', 'Fill in your email and password.');
+      const btn = loginForm.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Logging in…';
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged redraws the form
+      } catch (err) {
+        btn.disabled = false; btn.textContent = 'Log in';
+        showError('loginError', authMessage(err));
+      }
+    });
+
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) signupForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('su');
+      if (problem) return showError('signupError', problem);
+      const name = document.getElementById('suName').value.trim();
+      const email = document.getElementById('suEmail').value.trim();
+      const password = document.getElementById('suPassword').value;
+      if (!email) return showError('signupError', 'Fill in your email.');
+      if (password.length < 6) return showError('signupError', 'Use a password of at least 6 characters.');
+      const btn = signupForm.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Creating account…';
+      signingUp = true;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
+        let hasProfile = true;
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); }
+        catch (err) { console.error('Profile could not be saved:', err); hasProfile = false; }
+        me = { uid: cred.user.uid, name, photo: '', hasProfile, authName: name };
+        signingUp = false;
+        authMode = 'login';
+        startDraft(null);
+        toast(hasProfile ? 'Welcome, ' + name + '! Your account works in the app too.' : 'Account created. Please complete your profile.');
+        renderMemberReviews();
+        focusComposer();
+      } catch (err) {
+        signingUp = false;
+        btn.disabled = false; btn.textContent = 'Create account';
+        showError('signupError', signupMessage(err));
+      }
+    });
+
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) profileForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const problem = checkPerson('pf');
+      if (problem) return showError('profileError', problem);
+      const name = document.getElementById('pfName').value.trim();
+      const btn = profileForm.querySelector('[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const ref = doc(db, 'profiles', me.uid);
+        const existing = await getDoc(ref);
+        if (!existing.exists()) await setDoc(ref, newProfile(name));
+        try { await updateProfile(auth.currentUser, { displayName: name }); } catch (err) {}
+        me = { ...me, name, hasProfile: true };
+        startDraft(myReview());
+        toast('Profile saved');
+        renderMemberReviews();
+        focusComposer();
+      } catch (err) {
+        console.error('Profile could not be saved:', err);
+        btn.disabled = false; btn.textContent = 'Save profile';
+        showError('profileError', 'Your profile could not be saved. Please try again later.');
+      }
+    });
+
+    const form = document.getElementById('reviewForm');
+    if (!form) return;
+    form.querySelectorAll('[data-star]').forEach(s => s.addEventListener('click', () => {
+      draft.rating = +s.dataset.star;
+      form.querySelectorAll('[data-star]').forEach(x => { const on = +x.dataset.star <= draft.rating; x.classList.toggle('on', on); x.setAttribute('aria-checked', +x.dataset.star === draft.rating); });
+    }));
+    const text = document.getElementById('reviewText');
+    const count = () => { document.getElementById('reviewCount').textContent = `${text.value.length} / 1500`; };
+    text.addEventListener('input', () => { draft.text = text.value; count(); });
+    count();
+    document.getElementById('reviewPhoto').addEventListener('change', async e => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try { draft.photo = await shrinkPhoto(file); draft.keepPhoto = ''; keepText(); renderMemberReviews(); }
+      catch (err) { showError('reviewError', 'This photo could not be read. Try a JPG or PNG.'); }
+    });
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!me) return;
+      if (!draft.rating) return showError('reviewError', 'Tap the stars to give a rating.');
+      const body = text.value.trim();
+      if (body.length > 1500) return showError('reviewError', 'Keep your review under 1500 characters.');
+      const btn = document.getElementById('reviewSubmit');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      const mineNow = myReview();
+      const photoUrl = draft.photo || draft.keepPhoto || '';
+      try {
+        if (mineNow) {
+          await updateDoc(doc(db, 'userReviews', mineNow.id), { rating: draft.rating, text: body, photoUrl, updatedAt: serverTimestamp() });
+        } else {
+          await addDoc(collection(db, 'userReviews'), {
+            placeId: reviewPlace.id,
+            placeCategory: reviewPlace.cat,
+            placeName: reviewPlace.name,
+            placeCollection: reviewPlace.coll,
+            placeDocId: reviewPlace.id,
+            rating: draft.rating,
+            text: body,
+            photoUrl,
+            authorId: me.uid,
+            authorName: me.name,
+            authorPhoto: me.photo,
+            source: 'web',
+            createdAt: serverTimestamp(),
+          });
+        }
+        composerOpen = false;
+        toast(mineNow ? 'Review updated' : 'Thanks! Your review is live');
+        loadMemberReviews(reviewPlace);
+      } catch (err) {
+        console.error('Review could not be saved:', err);
+        btn.disabled = false; btn.textContent = mineNow ? 'Save changes' : 'Post review';
+        showError('reviewError', err && err.code === 'permission-denied'
+          ? 'Your review could not be saved (no permission). Please try again later.'
+          : 'Your review could not be saved. Check your connection and try again.');
+      }
+    });
+  }
+
+  function keepText() { const t = document.getElementById('reviewText'); if (t) draft.text = t.value; }
+  function focusComposer() {
+    const el = document.getElementById('suName') || document.getElementById('pfName') || document.getElementById('loginEmail') || document.querySelector('#reviewForm .star');
+    if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.focus({ preventScroll: true }); }
+  }
+  function showError(id, msg) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.hidden = false; } }
+  function signupMessage(err) {
+    const c = err && err.code;
+    if (c === 'auth/email-already-in-use') return 'There is already an account with this email. Log in instead, with the same password as in the app.';
+    if (c === 'auth/invalid-email') return 'That email address doesn’t look right.';
+    if (c === 'auth/weak-password' || c === 'auth/password-does-not-meet-requirements') return 'Choose a stronger password (at least 6 characters).';
+    if (c === 'auth/network-request-failed') return 'No connection. Check your internet and try again.';
+    if (c === 'auth/operation-not-allowed') return 'Creating accounts is switched off right now.';
+    return 'Your account could not be created. Please try again.';
+  }
+  function authMessage(err) {
+    const c = err && err.code;
+    if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-login-credentials') return 'Wrong email or password.';
+    if (c === 'auth/invalid-email') return 'That email address doesn’t look right.';
+    if (c === 'auth/too-many-requests') return 'Too many attempts. Wait a moment and try again.';
+    if (c === 'auth/user-disabled') return 'This account has been disabled.';
+    if (c === 'auth/network-request-failed') return 'No connection. Check your internet and try again.';
+    return 'Logging in did not work. Please try again.';
+  }
+
+  // Photos are stored like the app does: a JPEG data URL on the review.
+  // Shrunk to at most 1280 px so the review stays well under Firestore's 1 MB limit.
+  function shrinkPhoto(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let w = img.naturalWidth, h = img.naturalHeight;
+        const max = 1280;
+        if (w > max || h > max) { const f = max / Math.max(w, h); w = Math.round(w * f); h = Math.round(h * f); }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        let q = 0.8, data = c.toDataURL('image/jpeg', q);
+        while (data.length > 650000 && q > 0.35) { q -= 0.1; data = c.toDataURL('image/jpeg', q); }
+        resolve(data);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable')); };
+      img.src = url;
+    });
+  }
+
+  // Up to four spots of the same category within 5 km.
+  async function loadNearby(p) {
+    if (p.lat == null || p.lng == null) return;
+    const cat = CATS[p.cat];
+    const now = new Date();
+    const results = await Promise.allSettled([
+      getDocs(collection(db, cat.coll)),
+      getDocs(query(collection(db, 'userPlaces'), where('category', 'in', cat.aliases))),
+    ]);
+    const list = [];
+    results.forEach((res, i) => {
+      if (res.status !== 'fulfilled') return;
+      const coll = i === 0 ? cat.coll : 'userPlaces';
+      res.value.docs.forEach(d => {
+        if (coll === p.coll && d.id === p.id) return;
+        const r = d.data();
+        if (!r.name || (coll !== 'userPlaces' && !isPublished(r, now))) return;
+        const q = normalise(coll, d.id, r);
+        if (q.lat == null || q.lng == null) return;
+        const dist = distanceM(p, q);
+        if (dist <= 5000) list.push({ ...q, dist });
+      });
+    });
+    list.sort((a, b) => a.dist - b.dist);
+    const top = list.slice(0, 4);
+    if (!top.length) return;
+    document.getElementById('nearbyList').innerHTML = top.map(q => `
+      <a class="near" href="${placeUrl(q)}">
+        <span class="near-emoji">${esc(q.emoji)}</span>
+        <span class="near-body"><strong>${esc(q.name)}</strong><span class="muted">${fmtDist(q.dist)}${q.member ? ' · Member spot' : (q.rating ? ' · ' + stars(q.rating) : '')}</span></span>
+      </a>`).join('');
+    document.getElementById('nearbyBlock').hidden = false;
+  }
+
+  // The dishes Strong Foodie rated here (dish-edit.html), best first.
+  async function loadDishes(p) {
+    if (p.member) return;
+    const snap = await getDocs(query(collection(db, 'dishes'), where('placeId', '==', p.id)));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(d => d.placeColl === p.coll && typeof d.name === 'string' && d.name.trim())
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (!list.length) return;
+    document.getElementById('dishList').innerHTML = list.map(d => `
+      <div class="dish">
+        ${d.photo ? `<img data-photo="${esc(d.photo)}" alt="" loading="lazy" hidden>` : `<span class="dish-emoji">🍴</span>`}
+        <div>
+          <p class="dish-name">${esc(d.name)}${d.kind ? ` <span class="dish-kind">${esc(d.kind)}</span>` : ''}</p>
+          ${typeof d.rating === 'number' && d.rating > 0 ? `<p class="dish-score"><span class="st">${stars(d.rating)}</span> ${fmt1(d.rating)}</p>` : ''}
+          ${d.note ? `<p class="dish-note">${esc(d.note)}</p>` : ''}
+        </div>
+      </div>`).join('');
+    hydratePhotos(document.getElementById('dishList'));
+    document.getElementById('dishesBlock').hidden = false;
+  }
+
+  async function init() {
+    // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
+    const qs = new URLSearchParams(window.SF_PARAMS || location.search);
+    let coll = qs.get('c');
+    let id = qs.get('id');
+    const pretty = qs.get('p');
+    if ((!id && !pretty) || (coll && !COLLS[coll])) return notFound();
+
+    let snap;
+    try {
+      if (!id) {
+        // A pretty address without its page yet (strongfoodie.com/p/name-of-place-<id>/):
+        // the id is the end of it. Firestore ids have no dashes, older ones might.
+        const parts = pretty.split('-');
+        for (let i = parts.length - 1; i >= 0 && !snap; i--) {
+          const cand = parts.slice(i).join('-');
+          const found = await Promise.all(Object.keys(COLLS).map(c => getDoc(doc(db, c, cand)).then(s => s.exists() ? [c, s] : null).catch(() => null)));
+          const hit = found.find(Boolean);
+          if (hit) { [coll, snap] = hit; id = cand; }
+        }
+      } else if (coll) snap = await getDoc(doc(db, coll, id));
+      else {
+        // Only the id is known (a pretty address without its page yet): find its collection.
+        for (const c of Object.keys(COLLS)) {
+          const s = await getDoc(doc(db, c, id)).catch(() => null);
+          if (s && s.exists()) { coll = c; snap = s; break; }
+        }
+      }
+    }
+    catch (e) { console.error(e); return notFound('This place could not load right now'); }
+    if (!snap || !snap.exists()) return notFound();
+
+    const r = snap.data();
+    if (!COLLS[coll].member && !isPublished(r, new Date())) return notFound();
+    const p = normalise(coll, id, r);
+
+    if (p.member) {
+      // Hidden by Strong Foodie, or added by a blocked member (js/sf-moderation.js).
+      modFlags = await loadFlags(db);
+      if (r.hidden === true || isBlocked(modFlags, p.addedByUserId)) return notFound('This place is not available');
+    }
+    if (p.member && p.addedByUserId) {
+      try {
+        const owner = await getDoc(doc(db, 'profiles', p.addedByUserId));
+        if (owner.exists() && owner.data().isPrivate === true) return notFound('This place is only visible to followers in the app');
+      } catch (e) {}
+    }
+
+    render(p);
+    const spotWrap = document.getElementById('spotReportWrap');
+    if (spotWrap) wireReports(db, spotWrap, () => ({ kind: 'spot', coll: p.coll, targetId: p.id, ownerId: p.addedByUserId || '', label: p.name }));
+    countView(db, 'place', `${p.coll}/${p.id}`);
+    loadDishes(p).catch(e => console.log('Dishes could not load:', e.code || e));
+    loadMemberReviews(p);
+    highlightsRow(db, document.getElementById('placeHighlights'), { placeId: p.id, title: 'Highlights from members' });
+    loadNearby(p).catch(e => console.error('Nearby could not load:', e));
+  }
+
+  init();
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
+</body>
+</html>

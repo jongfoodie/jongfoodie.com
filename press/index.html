@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Press and partners | Strong Foodie</title>
+<meta name="description" content="Facts, numbers, a short bio, the logo and contact details of Strong Foodie, the independent food and travel platform by Merdan Koc from Amsterdam.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Strong Foodie: press and partners">
+<meta property="og:description" content="Facts, numbers, a short bio, the logo and contact details of Strong Foodie, the independent food and travel platform by Merdan Koc from Amsterdam.">
+<meta property="og:url" content="https://strongfoodie.com/press.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<link rel="canonical" href="https://strongfoodie.com/press.html">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; overflow-x: hidden; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  .loading, .empty { text-align: center; padding: 4rem 1rem; color: var(--muted); line-height: 1.6; }
+  .empty h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .empty a, .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 2.5rem 0 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Index of destinations */
+  .intro h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+  .intro p { color: var(--muted); margin-top: 0.5rem; max-width: 560px; line-height: 1.6; }
+  .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .dest-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; color: #fff; text-decoration: none; background: var(--ink); }
+  .dest-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .dest-card:hover img { transform: scale(1.04); }
+  .dest-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.05) 30%, rgba(26,18,8,0.9) 100%); }
+  .dest-card .dc-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .dest-card .dc-info { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; }
+  .dc-name { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.15; display: block; }
+  .dc-meta { font-size: 12px; color: rgba(255,255,255,0.78); display: block; margin-top: 3px; }
+
+  /* Destination hero */
+  .d-hero { position: relative; border-radius: 20px; overflow: hidden; min-height: 300px; display: flex; align-items: flex-end; color: #fff; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); }
+  .d-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .d-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.1) 20%, rgba(26,18,8,0.88) 100%); }
+  .d-hero-body { position: relative; z-index: 2; padding: 2rem; width: 100%; }
+  .d-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #F5C896; margin-bottom: 0.5rem; }
+  .d-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; overflow-wrap: anywhere; }
+  .d-sub { margin-top: 0.6rem; font-size: 14px; color: rgba(255,255,255,0.8); display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; }
+  .d-actions { display: flex; gap: 0.5rem; margin-top: 1.1rem; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); text-decoration: none; cursor: pointer; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn-light { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
+  .btn-light:hover { border-color: #fff; }
+
+  /* Favourites */
+  .fav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .top-card { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; text-decoration: none; color: #fff; background: var(--ink); }
+  .top-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .top-card:hover img { transform: scale(1.04); }
+  .top-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 44px; }
+  .top-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0) 35%, rgba(26,18,8,0.9) 100%); }
+  .top-rank { position: absolute; top: 10px; left: 10px; z-index: 2; background: var(--accent); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .top-info { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; }
+  .top-name { display: block; font-family: 'Playfair Display', serif; font-size: 17px; line-height: 1.25; margin-bottom: 4px; overflow-wrap: anywhere; }
+  .top-meta { font-size: 12px; color: rgba(255,255,255,0.8); }
+  .top-meta .star { color: #F5C896; }
+
+  /* Toolbar */
+  .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .tool-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .search { flex: 1; min-width: 180px; border: 1px solid var(--border); border-radius: 22px; padding: 9px 16px; font: 14px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); outline: none; }
+  .search:focus { border-color: var(--accent); }
+  .sort { border: 1px solid var(--border); border-radius: 22px; padding: 9px 14px; font: 13px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); cursor: pointer; }
+  .chip { border: 1px solid var(--border); background: var(--warm-white); color: var(--ink-soft); padding: 7px 14px; border-radius: 20px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { border-color: var(--ink-soft); }
+  .chip span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip.active span { color: rgba(255,255,255,0.6); }
+  .chip-sm { padding: 5px 12px; font-size: 12px; }
+  .map-toggle { display: none; }
+  .result-count { font-size: 13px; color: var(--muted); }
+
+  /* List + map */
+  .d-body { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 1.5rem; align-items: start; }
+  .d-map { position: sticky; top: 76px; height: calc(100vh - 100px); max-height: 620px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: #E8E2D8; }
+  .d-map .no-map { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: var(--muted); font-size: 13px; }
+  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 13px; }
+  .leaflet-popup-content a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  a.mini-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .mini-img { position: relative; overflow: hidden; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-body { padding: 1rem; }
+  .mini-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-title { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.3; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+  .mini-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .grid-empty { grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 14px; background: var(--warm-white); border: 1px dashed var(--border); border-radius: 12px; }
+  .more { text-align: center; margin-top: 1.5rem; }
+  .more[hidden] { display: none; }
+
+  .others { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .others a { text-decoration: none; }
+  .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Press */
+  .facts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+  .fact { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; text-align: center; }
+  .fact strong { display: block; font-family: 'Playfair Display', serif; font-size: 34px; color: var(--accent); line-height: 1.1; }
+  .fact span { font-size: 13px; color: var(--muted); }
+  .small-note { font-size: 13px; color: var(--muted); margin-top: 0.75rem; line-height: 1.6; }
+  .small-note a, .angles a, .intro a { color: var(--accent); }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .cols.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .box { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start; }
+  .box.center { align-items: center; text-align: center; justify-content: space-between; }
+  .box.center img { max-width: 100%; height: auto; }
+  .box h2 { font-family: 'Playfair Display', serif; font-size: 20px; }
+  .box p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .bio { flex: 1; }
+  .tabs .chip { cursor: default; font-size: 12px; padding: 4px 12px; }
+  .angles { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .angles li { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1.1rem; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+  .angles strong { color: var(--ink); }
+  .contact { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-main:hover { background: #b8401a; border-color: #b8401a; }
+  @media (max-width: 800px) { .facts { grid-template-columns: repeat(2, 1fr); } .cols, .cols.two { grid-template-columns: 1fr; } }
+
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1000px) {
+    .d-body { grid-template-columns: 1fr; }
+    .d-map { position: relative; top: 0; height: 300px; display: none; order: -1; }
+    .d-map.open { display: block; }
+    .map-toggle { display: inline-block; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 1rem 2.5rem; }
+    .d-hero { min-height: 240px; border-radius: 16px; }
+    .d-hero-body { padding: 1.25rem; }
+    .fav-grid { grid-template-columns: 1fr; }
+    .fav-grid .top-card { aspect-ratio: 16 / 9; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .dest-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .dc-name { font-size: 18px; }
+    .dest-card .dc-emoji { align-items: flex-start; justify-content: flex-end; padding: 12px 14px 0 0; font-size: 30px; }
+  }
+
+  /* Phones: place cards as a compact row (photo left, text right), so lists stay short */
+  @media (max-width: 600px) {
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+    a.mini-card .pill { margin-bottom: 2px; }
+    .cards-grid { gap: 0.75rem; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="stad.html">Destinations</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="wrap" id="root">
+  <div class="crumbs"><a href="index.html">Home</a> › Press</div>
+  <div class="intro">
+    <h1>Press and partners</h1>
+    <p>Strong Foodie is an independent food and travel platform by Merdan Koc from Amsterdam: honest reviews of restaurants, bars, hotels, shops, culture and wellness spots, on the website, on Instagram and YouTube, and soon in its own app.</p>
+  </div>
+
+  <p class="section-label">In numbers</p>
+  <div class="facts" id="facts">
+    <div class="fact"><strong id="fPlaces">…</strong><span>places reviewed</span></div>
+    <div class="fact"><strong id="fDest">…</strong><span>cities and islands</span></div>
+    <div class="fact"><strong id="fCountries">…</strong><span>countries</span></div>
+    <div class="fact"><strong id="fMembers">…</strong><span>spots added by members</span></div>
+    <div class="fact"><strong>0</strong><span>paid reviews</span></div>
+  </div>
+  <p class="small-note">These numbers come straight from the database and are always up to date.</p>
+
+  <p class="section-label">How Strong Foodie works</p>
+  <div class="cols">
+    <div class="box"><h2>🎯 Honest</h2><p>Merdan pays his own bill and visits anonymously. A place can't pay for a review or a score. When something is a paid partnership, it says <strong>AD · Partner</strong>.</p></div>
+    <div class="box"><h2>🌍 Everywhere</h2><p>From a croquette on the corner in Amsterdam to fine dining in Dubai: every review has a score, the address, the route and a map.</p></div>
+    <div class="box"><h2>👥 With members</h2><p>Members add their own spots and reviews on the website and in the app. Those are always marked as member content, apart from the Strong Foodie reviews.</p></div>
+  </div>
+
+  <p class="section-label">Story ideas</p>
+  <ul class="angles">
+    <li><strong>The reviewer who pays his own bill.</strong> Honest reviews in a time of free meals for influencers.</li>
+    <li><strong>The best of Amsterdam, by the numbers.</strong> The <a href="best.html">best-of lists</a> are made from every score, per city and per kind of place.</li>
+    <li><strong>From Instagram account to platform.</strong> How a food account on Instagram grew into Strong Foodie: a website, a map and an app where diners share their own spots.</li>
+  </ul>
+
+  <p class="section-label">Short bio, ready to use</p>
+  <div class="cols two">
+    <div class="box">
+      <div class="tabs"><span class="chip active">English</span></div>
+      <p class="bio" id="bioEn">Strong Foodie is an independent food and travel platform by Merdan Koc from Amsterdam. Merdan visits restaurants, bars, hotels and more, pays his own bill and writes honest reviews with a clear score. Everything is on strongfoodie.com, with best-of lists per city, guides and a map, and on Instagram as @strongfoodie_.</p>
+      <button class="btn" type="button" data-copy="bioEn">Copy</button>
+    </div>
+    <div class="box">
+      <div class="tabs"><span class="chip active">Nederlands</span></div>
+      <p class="bio" id="bioNl">Strong Foodie is een onafhankelijk food- en reisplatform van Merdan Koc uit Amsterdam. Merdan bezoekt restaurants, bars, hotels en meer, betaalt zijn eigen rekening en schrijft eerlijke reviews met een duidelijk cijfer. Alles staat op strongfoodie.com, met best-of lijsten per stad, gidsen en een kaart, en op Instagram als @strongfoodie_.</p>
+      <button class="btn" type="button" data-copy="bioNl">Kopiëren</button>
+    </div>
+  </div>
+
+  <p class="section-label">Logo and badge</p>
+  <div class="cols">
+    <div class="box center"><img src="icon-512.png" alt="Strong Foodie logo" width="140" height="140"><a class="btn" href="icon-512.png" download="strong-foodie-logo.png">Download logo (PNG)</a></div>
+    <div class="box center"><img src="badge.svg" alt="Reviewed on Strong Foodie badge" width="240" height="80"><a class="btn" href="badge.svg" download="strong-foodie-badge.svg">Download badge (SVG)</a></div>
+    <div class="box center"><img src="badge-dark.svg" alt="Reviewed on Strong Foodie badge, dark" width="240" height="80"><a class="btn" href="badge-dark.svg" download="strong-foodie-badge-dark.svg">Download dark badge (SVG)</a></div>
+  </div>
+  <p class="small-note">Photos of Merdan and of the places are available on request. Restaurants that were reviewed can get their own sticker and badge in the <a href="kit.html">restaurant kit</a>.</p>
+
+  <p class="section-label">Contact</p>
+  <div class="contact">
+    <a class="btn btn-main" href="mailto:jongfoodie@gmail.com?subject=Press%3A%20Strong%20Foodie">✉️ jongfoodie@gmail.com</a>
+    <a class="btn" href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">📸 Instagram</a>
+    <a class="btn" href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" rel="noopener">💼 LinkedIn</a>
+    <a class="btn" href="about.html">👤 About Merdan</a>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { loadPlaces, destinations } from "./js/sf-places.js?v=7";
+
+  const db = getFirestore(initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  }));
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const text = document.getElementById(b.dataset.copy).textContent.trim();
+    try { await navigator.clipboard.writeText(text); toast('Copied!'); } catch { window.prompt('Copy this:', text); }
+  }));
+  try {
+    const { catalog, members, all } = await loadPlaces(db);
+    const set = (id, n) => { document.getElementById(id).textContent = n.toLocaleString('en-GB'); };
+    set('fPlaces', catalog.length);
+    set('fDest', destinations(all).length);
+    set('fCountries', new Set(catalog.map(p => p.country).filter(Boolean)).size);
+    set('fMembers', members.length);
+  } catch (e) {
+    console.log('Press numbers error:', e);
+    document.getElementById('facts').querySelectorAll('strong').forEach(s => { if (s.textContent === '…') s.closest('.fact').remove(); });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="best.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Best of</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
+</body>
+</html>

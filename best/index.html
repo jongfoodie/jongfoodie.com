@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best of: the top places per city | Strong Foodie</title>
+<meta name="description" content="Best-of lists made from every place Strong Foodie rated: the best restaurants, bars, hotels and more per city.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Best of: the top places per city">
+<meta property="og:description" content="Best-of lists made from every place Strong Foodie rated: the best restaurants, bars, hotels and more per city.">
+<meta property="og:url" content="https://strongfoodie.com/best.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<script>
+  // The canonical address is set here and not in plain HTML, because every
+  // list is its own page: only the parameter that chooses it counts.
+  (function () {
+    var q = new URLSearchParams(location.search), keep = [];
+    ['l'].forEach(function (k) { if (q.get(k)) keep.push(k + '=' + encodeURIComponent(q.get(k))); });
+    var l = document.createElement('link');
+    l.rel = 'canonical';
+    l.href = 'https://strongfoodie.com/best.html' + (keep.length ? '?' + keep.join('&') : '');
+    document.head.appendChild(l);
+  })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; overflow-x: hidden; }
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 700px) { nav { padding: 0 1rem; } .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  .loading, .empty { text-align: center; padding: 4rem 1rem; color: var(--muted); line-height: 1.6; }
+  .empty h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .empty a, .crumbs a { color: var(--accent); text-decoration: none; }
+  .crumbs { font-size: 12px; color: var(--muted); margin-bottom: 1rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 2.5rem 0 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Index of destinations */
+  .intro h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+  .intro p { color: var(--muted); margin-top: 0.5rem; max-width: 560px; line-height: 1.6; }
+  .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: 2rem; }
+  .dest-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; color: #fff; text-decoration: none; background: var(--ink); }
+  .dest-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .dest-card:hover img { transform: scale(1.04); }
+  .dest-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.05) 30%, rgba(26,18,8,0.9) 100%); }
+  .dest-card .dc-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .dest-card .dc-info { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; }
+  .dc-name { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.15; display: block; }
+  .dc-meta { font-size: 12px; color: rgba(255,255,255,0.78); display: block; margin-top: 3px; }
+
+  /* Destination hero */
+  .d-hero { position: relative; border-radius: 20px; overflow: hidden; min-height: 300px; display: flex; align-items: flex-end; color: #fff; background: linear-gradient(135deg, var(--accent) 0%, var(--ink) 100%); }
+  .d-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .d-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.1) 20%, rgba(26,18,8,0.88) 100%); }
+  .d-hero-body { position: relative; z-index: 2; padding: 2rem; width: 100%; }
+  .d-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #F5C896; margin-bottom: 0.5rem; }
+  .d-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.6rem); line-height: 1.05; overflow-wrap: anywhere; }
+  .d-sub { margin-top: 0.6rem; font-size: 14px; color: rgba(255,255,255,0.8); display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; }
+  .d-actions { display: flex; gap: 0.5rem; margin-top: 1.1rem; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); text-decoration: none; cursor: pointer; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn-light { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.35); backdrop-filter: blur(4px); }
+  .btn-light:hover { border-color: #fff; }
+
+  /* Favourites */
+  .fav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .top-card { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; text-decoration: none; color: #fff; background: var(--ink); }
+  .top-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .top-card:hover img { transform: scale(1.04); }
+  .top-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 44px; }
+  .top-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0) 35%, rgba(26,18,8,0.9) 100%); }
+  .top-rank { position: absolute; top: 10px; left: 10px; z-index: 2; background: var(--accent); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .top-info { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; }
+  .top-name { display: block; font-family: 'Playfair Display', serif; font-size: 17px; line-height: 1.25; margin-bottom: 4px; overflow-wrap: anywhere; }
+  .top-meta { font-size: 12px; color: rgba(255,255,255,0.8); }
+  .top-meta .star { color: #F5C896; }
+
+  /* Toolbar */
+  .toolbar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .tool-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .search { flex: 1; min-width: 180px; border: 1px solid var(--border); border-radius: 22px; padding: 9px 16px; font: 14px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); outline: none; }
+  .search:focus { border-color: var(--accent); }
+  .sort { border: 1px solid var(--border); border-radius: 22px; padding: 9px 14px; font: 13px 'DM Sans', sans-serif; background: var(--warm-white); color: var(--ink); cursor: pointer; }
+  .chip { border: 1px solid var(--border); background: var(--warm-white); color: var(--ink-soft); padding: 7px 14px; border-radius: 20px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .chip:hover { border-color: var(--ink-soft); }
+  .chip span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip.active span { color: rgba(255,255,255,0.6); }
+  .chip-sm { padding: 5px 12px; font-size: 12px; }
+  .map-toggle { display: none; }
+  .result-count { font-size: 13px; color: var(--muted); }
+
+  /* List + map */
+  .d-body { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 1.5rem; align-items: start; }
+  .d-map { position: sticky; top: 76px; height: calc(100vh - 100px); max-height: 620px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: #E8E2D8; }
+  .d-map .no-map { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; color: var(--muted); font-size: 13px; }
+  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 13px; }
+  .leaflet-popup-content a { color: var(--accent); font-weight: 600; text-decoration: none; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  a.mini-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .mini-img { position: relative; overflow: hidden; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-body { padding: 1rem; }
+  .mini-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-title { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.3; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+  .mini-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .grid-empty { grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 14px; background: var(--warm-white); border: 1px dashed var(--border); border-radius: 12px; }
+  .more { text-align: center; margin-top: 1.5rem; }
+  .more[hidden] { display: none; }
+
+  .others { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .others a { text-decoration: none; }
+  .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* Best-of lists */
+  .notice { background: var(--accent-pale); color: var(--accent); border-radius: 12px; padding: 0.75rem 1rem; font-size: 14px; margin-bottom: 1.25rem; }
+  .list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .list-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; color: #fff; text-decoration: none; background: var(--ink); }
+  .list-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .list-card:hover img { transform: scale(1.04); }
+  .list-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.1) 25%, rgba(26,18,8,0.92) 100%); }
+  .lc-emoji { position: absolute; top: 12px; right: 14px; font-size: 30px; z-index: 1; }
+  .lc-info { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; }
+  .lc-count { display: inline-block; background: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-bottom: 6px; }
+  .lc-title { display: block; font-family: 'Playfair Display', serif; font-size: 21px; line-height: 1.15; overflow-wrap: anywhere; }
+  .lc-names { display: block; font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .rank-list { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 1.1rem; }
+  .rank-item { display: grid; grid-template-columns: 280px minmax(0, 1fr); background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .ri-photo { position: relative; display: flex; align-items: center; justify-content: center; font-size: 46px; min-height: 200px; text-decoration: none; }
+  .ri-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ri-rank { position: absolute; top: 12px; left: 12px; background: var(--accent); color: #fff; font: 700 15px 'DM Sans', sans-serif; padding: 5px 11px; border-radius: 8px; z-index: 1; }
+  .ri-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .ri-name { font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.2; overflow-wrap: anywhere; }
+  .ri-name a { color: var(--ink); text-decoration: none; }
+  .ri-name a:hover { color: var(--accent); }
+  .ri-meta { font-size: 13px; color: var(--muted); }
+  .ri-meta .star { color: var(--gold); letter-spacing: 1px; }
+  .ri-meta strong { color: var(--ink); }
+  .ri-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; overflow-wrap: anywhere; }
+  .ri-link { font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; margin-top: auto; }
+  .app-note a { color: var(--accent); }
+  .ri-at { font-size: 14px; color: var(--ink-soft); margin-top: -0.3rem; }
+  .ri-at a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .l-intro { max-width: 720px; margin-top: 1.5rem; font-size: 17px; line-height: 1.7; color: var(--ink-soft); white-space: pre-line; }
+  @media (max-width: 700px) {
+    .list-grid { grid-template-columns: 1fr; }
+    .list-card { aspect-ratio: 2 / 1; }
+    .rank-item { grid-template-columns: 1fr; }
+    .ri-photo { min-height: 0; aspect-ratio: 2 / 1; }
+    .ri-body { padding: 1rem 1.1rem 1.2rem; }
+    .ri-name { font-size: 21px; }
+  }
+
+  .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1000px) {
+    .d-body { grid-template-columns: 1fr; }
+    .d-map { position: relative; top: 0; height: 300px; display: none; order: -1; }
+    .d-map.open { display: block; }
+    .map-toggle { display: inline-block; }
+  }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 1rem 2.5rem; }
+    .d-hero { min-height: 240px; border-radius: 16px; }
+    .d-hero-body { padding: 1.25rem; }
+    .fav-grid { grid-template-columns: 1fr; }
+    .fav-grid .top-card { aspect-ratio: 16 / 9; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .dest-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .dc-name { font-size: 18px; }
+    .dest-card .dc-emoji { align-items: flex-start; justify-content: flex-end; padding: 12px 14px 0 0; font-size: 30px; }
+  }
+
+  /* Phones: place cards as a compact row (photo left, text right), so lists stay short */
+  @media (max-width: 600px) {
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+    a.mini-card .pill { margin-bottom: 2px; }
+    .cards-grid { gap: 0.75rem; }
+  }
+</style>
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="reviews.html">🍽️ Reviews</a>
+  <a href="drink.html">🍸 Drink</a>
+  <a href="shop.html">🛍️ Shop</a>
+  <a href="culture.html">🎭 Culture</a>
+  <a href="health.html">💪 Health</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="community.html">👥 Community</a>
+  <a href="about.html">👤 About me</a>
+  <a href="hotel.html">🏨 Stay</a>
+</div>
+<nav>
+  <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="stad.html">Destinations</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="hotel.html">🏨 Stay</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+<main class="wrap" id="root">
+  <div class="loading">Loading the lists…</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, LIST_CATS, SITE, esc, starStr, placeUrl, destinationUrl, loadPlaces, destinations, loadLists, photoTools } from "./js/sf-places.js?v=7";
+  import { countView } from "./js/sf-views.js?v=1";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  };
+  const db = getFirestore(initializeApp(firebaseConfig));
+  const { hydratePhotos } = photoTools(db);
+  const root = document.getElementById('root');
+  const params = new URLSearchParams(location.search);
+  // A generated page (strongfoodie.com/best/restaurants-amsterdam/) says which list it is.
+  if (window.SF_PARAMS) Object.entries(window.SF_PARAMS).forEach(([k, v]) => params.set(k, v));
+  const TOP = 10;
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  function setMeta(title, desc, path) {
+    document.title = title;
+    document.querySelector('meta[name="description"]').setAttribute('content', desc);
+    document.querySelector('meta[property="og:title"]').setAttribute('content', title.replace(/ \| Strong Foodie$/, ''));
+    document.querySelector('meta[property="og:description"]').setAttribute('content', desc);
+    document.querySelector('link[rel="canonical"]').setAttribute('href', SITE + '/' + path);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', SITE + '/' + path);
+  }
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+  const monthYear = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  const catOfList = l => CATS[l.kind === 'cat' ? l.cat : (l.cat || (l.places[0] && l.places[0].cat) || 'eat')];
+  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
+  // A dish links to the place that serves it.
+  const urlOf = p => placeUrl(p.dish ? p.place : p);
+
+  async function share(title) {
+    const url = document.querySelector('link[rel="canonical"]').getAttribute('href') || location.href;
+    try { if (navigator.share) { await navigator.share({ title, url }); return; } }
+    catch (err) { if (err && err.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url); toast('Link copied!'); } catch { window.prompt('Copy this link:', url); }
+  }
+
+  function listCard(l) {
+    const cat = catOfList(l);
+    return `<a class="list-card" href="${l.url}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
+      <span class="lc-emoji">${l.kind === 'cat' ? cat.emoji : l.kind === 'dish' ? '🍴' : '🏆'}</span>
+      ${l.cover ? `<img data-photo="${esc(l.cover)}" alt="" loading="lazy" hidden>` : ''}
+      <span class="lc-info">
+        <span class="lc-count">Top ${Math.min(l.count, TOP)}</span>
+        <span class="lc-title">${esc(l.title)}</span>
+        <span class="lc-names">${esc(l.places.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(' · '))}</span>
+      </span>
+    </a>`;
+  }
+
+  // ── All lists ────────────────────────────────────────────────────────
+  function renderHub(lists, missing) {
+    setMeta('Best of: the top places per city | Strong Foodie',
+      `${lists.length} best-of lists made from every place Strong Foodie rated: the best restaurants, bars, hotels and more per city.`, 'best.html');
+    const byDest = new Map();
+    lists.filter(l => l.dest).forEach(l => { if (!byDest.has(l.dest)) byDest.set(l.dest, []); byDest.get(l.dest).push(l); });
+    const world = lists.filter(l => !l.dest);
+    root.innerHTML = `
+      <div class="crumbs"><a href="index.html">Home</a> › Best of</div>
+      ${missing ? `<p class="notice">That list is not here (any more). These are the lists right now.</p>` : ''}
+      <div class="intro">
+        <h1>Best of Strong Foodie</h1>
+        <p>Top lists made from every place Merdan rated, per city and per kind of place. They update by themselves when a new review goes online.</p>
+      </div>
+      ${lists.length ? '' : '<div class="empty"><p>No lists yet. Browse the <a href="stad.html">destinations</a> instead.</p></div>'}
+      ${[...byDest.entries()].map(([dest, ls]) => `
+        <p class="section-label">${esc(dest)}</p>
+        <div class="list-grid">${ls.map(listCard).join('')}</div>`).join('')}
+      ${world.length ? `
+        <p class="section-label">Worldwide</p>
+        <div class="list-grid">${world.map(listCard).join('')}</div>` : ''}`;
+    hydratePhotos(root);
+  }
+
+  // ── One list ─────────────────────────────────────────────────────────
+  function renderList(l, lists, dests) {
+    const top = l.places.slice(0, TOP);
+    const cat = catOfList(l);
+    const updated = top.map(p => p.created).filter(Boolean).sort((a, b) => b - a)[0];
+    const year = new Date().getFullYear();
+    setMeta(`${l.title} (${year}) | Strong Foodie`,
+      l.intro || `The ${top.length} best ${what(l)}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(', ')} and more.`,
+      l.url.replace(/^\//, ''));
+    const dest = l.dest ? dests.find(d => d.slug === l.destSlug) : null;
+    const allHref = dest ? `${dest.url}${l.kind === 'cat' ? '?cat=' + l.cat : ''}#places` : '';
+    const sameDest = lists.filter(x => x !== l && x.dest && x.destSlug === l.destSlug);
+    const same = x => l.kind === 'cat' ? x.kind === 'cat' && x.cat === l.cat : l.kind === 'tag' ? x.kind === 'tag' && x.tag.toLowerCase() === l.tag.toLowerCase() : x.kind === 'dish' && x.dishKind.toLowerCase() === l.dishKind.toLowerCase();
+    const sameKind = l.kind === 'custom' ? [] : lists.filter(x => x !== l && x.slug !== l.slug && same(x) && x.destSlug !== l.destSlug);
+
+    root.innerHTML = `
+      <div class="crumbs"><a href="index.html">Home</a> › <a href="best.html">Best of</a>${dest ? ` › <a href="${dest.url}">${esc(dest.name)}</a>` : ''} › ${esc(l.title)}</div>
+      <header class="d-hero" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
+        ${l.cover ? `<img data-photo="${esc(l.cover)}" data-full alt="" hidden>` : ''}
+        <div class="d-hero-body">
+          <p class="d-eyebrow">${l.dest ? 'Best of ' + esc(l.dest) : 'Worldwide'} · ${year}</p>
+          <h1>${esc(l.title)}</h1>
+          <p class="d-sub">
+            <span>Top ${top.length}${l.count > top.length ? ` of ${l.count}` : ''}, rated by Strong Foodie</span>
+            ${updated ? `<span>Updated ${esc(monthYear(updated))}</span>` : ''}
+          </p>
+          <div class="d-actions">
+            <button class="btn btn-light" id="shareBtn" type="button">Share this list ↗</button>
+            ${dest ? `<a class="btn btn-light" href="${dest.url}">All of ${esc(dest.name)}</a>` : ''}
+          </div>
+        </div>
+      </header>
+      ${l.intro ? `<p class="l-intro">${esc(l.intro)}</p>` : ''}
+
+      <ol class="rank-list">${top.map((p, i) => {
+        const c = CATS[p.cat];
+        const text = p.dish ? p.note : (p.review || p.type || '');
+        const bits = p.dish ? [p.area && p.area !== l.dest ? p.area : (l.dest ? '' : p.where)].filter(Boolean)
+          : [l.kind === 'cat' ? p.type : c.label, p.area && p.area !== l.dest ? p.area : (l.dest ? '' : p.where), p.price].filter(Boolean);
+        return `<li class="rank-item">
+          <a class="ri-photo" href="${urlOf(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
+            <span>${esc(p.emoji)}</span>
+            ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+            <span class="ri-rank">#${i + 1}</span>
+          </a>
+          <div class="ri-body">
+            <h2 class="ri-name"><a href="${urlOf(p)}">${esc(p.name)}</a></h2>
+            ${p.dish ? `<p class="ri-at">at <a href="${urlOf(p)}">${esc(p.place.name)}</a></p>` : ''}
+            <p class="ri-meta">${p.rating ? `<span class="star">${starStr(p.rating)}</span> <strong>${fmt1(p.rating)}</strong>${bits.length ? ' · ' : ''}` : ''}${esc(bits.join(' · '))}</p>
+            ${text ? `<p class="ri-text">${esc(text.slice(0, 240))}${text.length > 240 ? '…' : ''}</p>` : ''}
+            <a class="ri-link" href="${urlOf(p)}">${p.dish ? 'View the place →' : 'Read the review →'}</a>
+          </div>
+        </li>`;
+      }).join('')}</ol>
+
+      ${allHref && l.count > top.length ? `<div class="more"><a class="btn" href="${allHref}">See all ${plural(l.count, 'place', 'places')} in ${esc(l.dest)} →</a></div>` : ''}
+
+      <div class="app-note">🤝 Own one of these places? <a href="kit.html">Get your Strong Foodie badge</a> and a QR code for your window. 📱 The Strong Foodie app, to save places like these and find them on the map, is coming soon.</div>
+
+      ${sameDest.length ? `<p class="section-label">More lists for ${esc(l.dest)}</p>
+        <div class="list-grid">${sameDest.slice(0, 6).map(listCard).join('')}</div>` : ''}
+      ${sameKind.length ? `<p class="section-label">${esc(l.kind === 'cat' ? LIST_CATS[l.cat].title : l.kind === 'dish' ? l.dishKind : l.tag)} in other places</p>
+        <div class="others">${sameKind.map(x => `<a class="chip" href="${x.url}">${esc(x.dest || 'Worldwide')}<span>${x.count}</span></a>`).join('')}</div>` : ''}
+      <p class="section-label">Everything</p>
+      <div class="others"><a class="chip" href="best.html">All best-of lists →</a>${dest ? `<a class="chip" href="${dest.url}">${esc(dest.name)}: every place →</a>` : ''}<a class="chip" href="map.html">🗺️ Map</a></div>`;
+
+    hydratePhotos(root);
+    document.getElementById('shareBtn').addEventListener('click', () => share(l.title));
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'ItemList', name: l.title,
+      itemListOrder: 'https://schema.org/ItemListOrderDescending', numberOfItems: top.length,
+      itemListElement: top.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + urlOf(p), name: p.dish ? `${p.name}, ${p.place.name}` : p.name })),
+    });
+    document.head.appendChild(s);
+  }
+
+  // ── Start
+  try {
+    const { all } = await loadPlaces(db);
+    const lists = await loadLists(db, all);
+    const slug = String(params.get('l') || '').toLowerCase();
+    const l = slug && lists.find(x => x.slug === slug);
+    if (l) { renderList(l, lists, destinations(all)); countView(db, 'list', l.slug); }
+    else renderHub(lists, !!slug);
+  } catch (e) {
+    console.log('Best-of error:', e);
+    root.innerHTML = '<div class="empty"><h1>Could not load this page</h1><p>Please refresh, or browse the <a href="stad.html">destinations</a>.</p></div>';
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best spots from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="drink.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Drink</a>
+          <a href="shop.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Shop</a>
+          <a href="culture.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Culture</a>
+          <a href="health.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Health</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
+          <a href="best.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Best of</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module" src="js/sf-account-nav.js?v=2"></script>
+</body>
+</html>
