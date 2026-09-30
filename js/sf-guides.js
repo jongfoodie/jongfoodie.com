@@ -1,14 +1,14 @@
 // Strong Foodie: guides for a moment (Amsterdam in winter, a rainy Sunday,
 // Valentine's Day), written by Strong Foodie in guide-edit.html and stored in
 // the `guides` collection. The website shows them on guides.html and
-// guide.html; the app reads the same collection (Rork batch 13).
+// guide.html; the app reads the same collection (Rork batch 11).
 //
 //   guides/{id}: { slug, title, intro, city, season, moment, cover,
 //                  places: [{ coll, id, note }], status: 'draft' | 'published',
 //                  createdAt, updatedAt }
 
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { esc, guideUrl, toDate } from "./sf-core.js?v=2";
+import { esc, guideUrl, toDate } from "./sf-core.js?v=3";
 
 export const SEASONS = {
   spring: { label: 'Spring', emoji: '🌷', color: '#5E8A3A' },

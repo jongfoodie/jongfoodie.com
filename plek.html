@@ -144,6 +144,14 @@
   .near-body { display: flex; flex-direction: column; min-width: 0; }
   .near-body strong { font-size: 14px; overflow-wrap: anywhere; }
   .back { margin-top: 1.5rem; font-size: 14px; }
+  .dishes { display: flex; flex-direction: column; gap: 0.75rem; }
+  .dish { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0.85rem; align-items: start; }
+  .dish img, .dish-emoji { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: #F0EBE3; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .dish-name { font-weight: 500; overflow-wrap: anywhere; }
+  .dish-kind { font-size: 11px; font-weight: 500; background: #F0EBE3; color: #3D2F1A; border-radius: 10px; padding: 2px 8px; margin-left: 4px; vertical-align: 1px; }
+  .dish-score { font-size: 13px; color: #8A7A66; margin-top: 2px; }
+  .dish-score .st { color: #C8901A; }
+  .dish-note { font-size: 14px; line-height: 1.55; margin-top: 4px; overflow-wrap: anywhere; }
   .owner { margin-top: 1.5rem; font-size: 14px; background: var(--warm-white, #FFFDF9); border: 1px dashed rgba(26,18,8,0.18); border-radius: 12px; padding: 0.85rem 1rem; line-height: 1.5; }
   .owner a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
@@ -214,8 +222,9 @@
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
-  import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=5";
-  import { highlightsRow } from "./js/sf-highlights.js?v=5";
+  import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=6";
+  import { highlightsRow } from "./js/sf-highlights.js?v=6";
+  import { countView } from "./js/sf-views.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -453,6 +462,7 @@
       </article>
 
       ${reviewBlock}
+      <section class="block" id="dishesBlock" hidden><h2>What to order</h2><div class="dishes" id="dishList"></div></section>
       <section class="block" id="placeHighlights" hidden></section>
       ${tags ? `<section class="block">${tags}</section>` : ''}
       ${facts.length ? `<section class="block"><h2>Details</h2><dl class="facts">${facts.map(([i, k, v]) => `<div><dt>${i} ${k}</dt><dd>${v}</dd></div>`).join('')}</dl></section>` : ''}
@@ -1025,6 +1035,27 @@
     document.getElementById('nearbyBlock').hidden = false;
   }
 
+  // The dishes Strong Foodie rated here (dish-edit.html), best first.
+  async function loadDishes(p) {
+    if (p.member) return;
+    const snap = await getDocs(query(collection(db, 'dishes'), where('placeId', '==', p.id)));
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(d => d.placeColl === p.coll && typeof d.name === 'string' && d.name.trim())
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (!list.length) return;
+    document.getElementById('dishList').innerHTML = list.map(d => `
+      <div class="dish">
+        ${d.photo ? `<img data-photo="${esc(d.photo)}" alt="" loading="lazy" hidden>` : `<span class="dish-emoji">🍴</span>`}
+        <div>
+          <p class="dish-name">${esc(d.name)}${d.kind ? ` <span class="dish-kind">${esc(d.kind)}</span>` : ''}</p>
+          ${typeof d.rating === 'number' && d.rating > 0 ? `<p class="dish-score"><span class="st">${stars(d.rating)}</span> ${fmt1(d.rating)}</p>` : ''}
+          ${d.note ? `<p class="dish-note">${esc(d.note)}</p>` : ''}
+        </div>
+      </div>`).join('');
+    hydratePhotos(document.getElementById('dishList'));
+    document.getElementById('dishesBlock').hidden = false;
+  }
+
   async function init() {
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
@@ -1069,6 +1100,8 @@
     }
 
     render(p);
+    countView(db, 'place', `${p.coll}/${p.id}`);
+    loadDishes(p).catch(e => console.log('Dishes could not load:', e.code || e));
     loadMemberReviews(p);
     highlightsRow(db, document.getElementById('placeHighlights'), { placeId: p.id, title: 'Highlights from members' });
     loadNearby(p).catch(e => console.error('Nearby could not load:', e));

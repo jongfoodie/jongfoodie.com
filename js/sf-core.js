@@ -169,7 +169,29 @@ export const LIST_CATS = {
 const TAG_SKIP = new Set(['must try', 'must-try', 'musttry', 'new', 'top', 'favorite', 'favourite', 'recommended']);
 const tagKey = t => fold(t).replace(/[^a-z0-9]+/g, ' ').trim().replace(/s$/, '');
 
-export function buildLists(all, { min = 3 } = {}) {
+// ── Dishes ───────────────────────────────────────────────────────────────
+// The dishes Strong Foodie rated, in the `dishes` collection (dish-edit.html):
+//   dishes/{id}: { placeColl, placeId, name, kind, rating, note, photo, createdAt, updatedAt }
+// `kind` groups them into lists ("Smash burger" → Best Smash Burger in Amsterdam).
+// A dish item has the shape of a place (so the lists can show it) plus
+// `dish: true` and `place`, the place it is served at.
+export function normaliseDish(id, d, place) {
+  if (!place || !d || typeof d.name !== 'string' || !d.name.trim()) return null;
+  const rating = typeof d.rating === 'number' && d.rating > 0 ? Math.min(5, d.rating) : null;
+  const photos = typeof d.photo === 'string' && d.photo ? [d.photo] : place.photos.slice(0, 1);
+  const x = {
+    ...place, coll: 'dishes', id, dish: true, place,
+    name: d.name.trim(), kind: typeof d.kind === 'string' ? d.kind.trim() : '', rating, photos,
+    review: typeof d.note === 'string' ? d.note.trim() : '', note: typeof d.note === 'string' ? d.note.trim() : '',
+    tags: [], type: place.name, created: toDate(d.createdAt) || place.created, member: false,
+  };
+  x._name = fold(x.name + ' ' + place.name);
+  x._kind = fold(x.kind);
+  return x;
+}
+export const dishUrl = x => placeUrl(x.place);
+
+export function buildLists(all, { min = 3, dishes = [] } = {}) {
   const rated = all.filter(p => !p.member && p.rating && !p.closed);
   const lists = [];
   const add = (slug, fields, places) => {
@@ -196,6 +218,27 @@ export function buildLists(all, { min = 3 } = {}) {
       add(`${slugOf(k)}-${d.slug}`, { kind: 'tag', tag: nice, dest: d.name, destSlug: d.slug, country: d.country, title: `Best ${nice} in ${d.name}` }, [...e.places]);
     }
   }
+  // Dishes, per destination and worldwide, grouped by their kind
+  const goodDishes = dishes.filter(x => x && x.rating && x.kind && !x.closed);
+  const dishKinds = list => {
+    const m = new Map();
+    list.forEach(x => { const k = tagKey(x.kind); if (!k) return; if (!m.has(k)) m.set(k, { labels: new Map(), items: [] }); const e = m.get(k); e.labels.set(x.kind, (e.labels.get(x.kind) || 0) + 1); e.items.push(x); });
+    return [...m.entries()].map(([k, e]) => [k, [...e.labels.entries()].sort((a, b) => b[1] - a[1])[0][0].split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' '), e.items]);
+  };
+  const byDishRating = (a, b) => (b.rating || 0) - (a.rating || 0) || (b.created || 0) - (a.created || 0);
+  const addDish = (slug, fields, items) => {
+    if (items.length < min || lists.some(l => l.slug === slug)) return;
+    lists.push({ slug, url: listUrl(slug), count: items.length, places: items.slice().sort(byDishRating), ...fields });
+  };
+  for (const d of destinations(goodDishes)) {
+    for (const [k, label, items] of dishKinds(d.places)) {
+      addDish(`dish-${slugOf(k)}-${d.slug}`, { kind: 'dish', dishKind: label, dest: d.name, destSlug: d.slug, country: d.country, title: `Best ${label} in ${d.name}` }, items);
+    }
+  }
+  for (const [k, label, items] of dishKinds(goodDishes)) {
+    addDish(`dish-${slugOf(k)}-worldwide`, { kind: 'dish', dishKind: label, dest: '', destSlug: '', country: '', title: `Best ${label} Worldwide` }, items);
+  }
+
   for (const cat of Object.keys(LIST_CATS)) {
     add(`${LIST_CATS[cat].slug}-worldwide`, { kind: 'cat', cat, dest: '', destSlug: '', country: '', title: `Best ${LIST_CATS[cat].title} Worldwide` }, rated.filter(p => p.cat === cat));
   }
@@ -215,8 +258,8 @@ export function buildLists(all, { min = 3 } = {}) {
 export const placeKey = p => `${p.coll}/${p.id}`;
 const sortLists = (a, b) => (a.dest ? 0 : 1) - (b.dest ? 0 : 1) || b.count - a.count || a.title.localeCompare(b.title);
 
-export function applyListEdits(all, edits = [], { min = 3, admin = false } = {}) {
-  const byKey = new Map(all.map(p => [placeKey(p), p]));
+export function applyListEdits(all, edits = [], { min = 3, admin = false, dishes = [] } = {}) {
+  const byKey = new Map(all.concat(dishes.filter(Boolean)).map(p => [placeKey(p), p]));
   const strings = v => Array.isArray(v) ? v.filter(x => typeof x === 'string') : [];
   const text = v => typeof v === 'string' ? v.trim() : '';
   const bySlug = new Map();
@@ -234,7 +277,7 @@ export function applyListEdits(all, edits = [], { min = 3, admin = false } = {})
       removedKeys: [...removed],
     };
   };
-  const lists = buildLists(all, { min: 1 }).map(l => shape(l, bySlug.get(l.slug)));
+  const lists = buildLists(all, { min: 1, dishes: dishes.filter(Boolean) }).map(l => shape(l, bySlug.get(l.slug)));
   const known = new Set(lists.map(l => l.slug));
   for (const e of bySlug.values()) {
     if (e.custom !== true || known.has(e.slug)) continue;

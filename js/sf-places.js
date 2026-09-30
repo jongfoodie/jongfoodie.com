@@ -10,8 +10,8 @@
 
 
 import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits } from "./sf-core.js?v=2";
-export * from "./sf-core.js?v=2";
+import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits, normaliseDish, placeKey } from "./sf-core.js?v=3";
+export * from "./sf-core.js?v=3";
 
 async function readAll(db, coll) {
   try {
@@ -54,8 +54,17 @@ export async function loadListEdits(db) {
     return snap.docs.map(d => ({ ...d.data(), slug: d.id }));
   } catch (e) { console.log('List changes could not load:', e.code || e); return []; }
 }
-export async function loadLists(db, all, opts) {
-  return applyListEdits(all, await loadListEdits(db), opts);
+// The dishes Strong Foodie rated (dish-edit.html), each joined to its place.
+export async function loadDishes(db, all) {
+  try {
+    const byKey = new Map(all.map(p => [placeKey(p), p]));
+    const snap = await getDocs(collection(db, 'dishes'));
+    return snap.docs.map(d => { const r = d.data(); return normaliseDish(d.id, r, byKey.get(`${r.placeColl}/${r.placeId}`)); }).filter(Boolean);
+  } catch (e) { console.log('Dishes could not load:', e.code || e); return []; }
+}
+export async function loadLists(db, all, opts = {}) {
+  const [edits, dishes] = await Promise.all([loadListEdits(db), opts.dishes ? opts.dishes : loadDishes(db, all)]);
+  return applyListEdits(all, edits, { ...opts, dishes });
 }
 
 // ── Photos: normal URLs, or "fsimg://<id>" (a base64 image in `images`, from the app)

@@ -279,8 +279,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, query, where, limit, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, SITE, esc, starStr, placeUrl, guideUrl, slugOf, normalise, isPublished, toDate, loadLists, loadPlaces, destinations, photoTools } from "./js/sf-places.js?v=5";
-  import { SEASONS, guideCard, loadGuides } from "./js/sf-guides.js?v=2";
+  import { CATS, SITE, esc, starStr, placeUrl, guideUrl, slugOf, normalise, isPublished, toDate, loadLists, loadPlaces, destinations, photoTools } from "./js/sf-places.js?v=6";
+  import { SEASONS, guideCard, loadGuides } from "./js/sf-guides.js?v=3";
+  import { countView } from "./js/sf-views.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -469,6 +470,7 @@
         const dest = g.city ? destinations(all).find(d => d.slug === slugOf(g.city)) : null;
         const lists = dest ? (await loadLists(db, all)).filter(l => l.destSlug === dest.slug) : [];
         renderGuide(g, places, others.filter(x => x.slug !== g.slug), lists);
+        if (g.status === 'published') countView(db, 'guide', g.slug);
       }
     }
   } catch (e) {

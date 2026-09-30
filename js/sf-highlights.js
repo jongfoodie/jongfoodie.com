@@ -23,7 +23,7 @@
 // Highlights of private accounts are left out, except on your own profile.
 
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=5";
+import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=6";
 import { deleteHighlight, confirmTap } from "./sf-delete.js?v=1";
 
 const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];

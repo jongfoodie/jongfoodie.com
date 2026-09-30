@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Stats | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout: a dark admin bar, then tiles, one chart and one table, all on the site's cream. */
+  :root {
+    --cream: #FAF7F2; --card: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A; --muted: #8A7A66;
+    --border: rgba(26,18,8,0.12); --grid: #ECE5DA; --accent: #D4521A; --accent-pale: #FBF3EF;
+    --good: #2D5A3D; --bad: #A32323;
+    --serif: 'Playfair Display', Georgia, serif; --sans: 'DM Sans', Helvetica, Arial, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1.25rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: var(--serif); font-size: 20px; }
+  .top h1 span { color: var(--accent); font-family: var(--sans); font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; }
+  .top nav a:hover { color: #fff; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: var(--serif); font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+  .tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.75rem; }
+  .tile { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+  .tile .v { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .tile .d { font-size: 12px; color: var(--muted); }
+  .tile .d.up { color: var(--good); }
+  .tile .d.down { color: var(--bad); }
+  .tile.hero .v { font-size: 48px; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+  .card h2 { font-family: var(--serif); font-size: 21px; }
+  .card .sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .btn { font: 500 13px var(--sans); padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--ink); cursor: pointer; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn:focus-visible, select:focus-visible, .hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  select { font: 14px var(--sans); padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--ink); }
+  .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .chart { position: relative; }
+  .chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart text { font-family: var(--sans); font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart text.val { fill: var(--ink); font-weight: 700; }
+  .hit { fill: transparent; cursor: default; }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; font-size: 13px; line-height: 1.45; padding: 8px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); }
+  .tip b { font-variant-numeric: tabular-nums; }
+  .tip[hidden] { display: none; }
+
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--grid); }
+  th { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  td a { color: var(--ink); text-decoration: none; }
+  td a:hover { color: var(--accent); }
+  td .meter { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; margin-right: 8px; }
+  .empty { color: var(--muted); font-size: 14px; padding: 0.5rem 0; line-height: 1.6; }
+  .note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .toggle { display: flex; gap: 0.5rem; align-items: center; font-size: 13px; color: var(--ink-soft); }
+  .toggle input { accent-color: var(--accent); }
+
+  @media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile.hero { grid-column: 1 / -1; } }
+  @media (max-width: 600px) { .wrap { padding: 1rem; } .tile .v { font-size: 26px; } .tile.hero .v { font-size: 40px; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>STATS</span></h1><nav><a href="admin.html">← Admin</a><a href="list-edit.html">🏆 Lists</a><a href="guide-edit.html">📖 Guides</a><a href="dish-edit.html">🍴 Dishes</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, toDate, loadPlaces, loadLists, destinations, placeUrl, destinationUrl, listUrl, guideUrl, placeKey } from "./js/sf-places.js?v=6";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const DAY = 86400000;
+  const nf = n => Number(n || 0).toLocaleString('en-GB');
+  const readAll = async c => { try { return (await getDocs(collection(db, c))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.log('Not read:', c, e.code || e); return null; } };
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. Sign in on the <a href="admin.html">admin page</a>, then come back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't see the numbers.</p></div>`; return; }
+    try { localStorage.setItem('sf_admin_device', '1'); } catch (e) {}
+    root.innerHTML = '<p class="msg">Counting…</p>';
+    try { await start(); }
+    catch (e) { console.log('Stats error:', e); root.innerHTML = '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>'; }
+  });
+
+  // ── Weeks start on Monday; the last one is this week, so far.
+  function weekStart(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  const WEEKS = 12;
+  const shortDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+  async function start() {
+    const [profiles, spots, reviews, highlights, placesData, guides] = await Promise.all([
+      readAll('profiles'), readAll('userPlaces'), readAll('userReviews'), readAll('highlights'), loadPlaces(db), readAll('guides'),
+    ]);
+    const lists = await loadLists(db, placesData.all, { admin: true });
+    const now = new Date(), thisWeek = weekStart(now);
+    const weeks = Array.from({ length: WEEKS }, (_, i) => { const d = new Date(thisWeek); d.setDate(d.getDate() - 7 * (WEEKS - 1 - i)); return d; });
+    const bucket = rows => {
+      const out = weeks.map(() => 0);
+      (rows || []).forEach(r => { const d = toDate(r.createdAt); if (!d) return; const i = Math.round((weekStart(d) - weeks[0]) / (7 * DAY)); if (i >= 0 && i < WEEKS) out[i]++; });
+      return out;
+    };
+    const series = { members: bucket(profiles), spots: bucket(spots), reviews: bucket(reviews), highlights: bucket(highlights) };
+    const last7 = (rows, from, to) => (rows || []).filter(r => { const d = toDate(r.createdAt); return d && d > from && d <= to; }).length;
+    const wk = new Date(now - 7 * DAY), wk2 = new Date(now - 14 * DAY);
+    const tile = (label, rows, hero = false) => {
+      const a = last7(rows, wk, now), b = last7(rows, wk2, wk);
+      const diff = a - b;
+      return `<div class="tile${hero ? ' hero' : ''}"><span class="label">${label}</span><span class="v">${rows ? nf(a) : '?'}</span>
+        <span class="d ${diff > 0 ? 'up' : diff < 0 ? 'down' : ''}">${rows ? `${diff > 0 ? '+' : ''}${nf(diff)} vs the 7 days before` : 'Could not be read'}</span></div>`;
+    };
+
+    root.innerHTML = `
+      <section>
+        <p class="label" style="margin-bottom:0.6rem;">The last 7 days</p>
+        <div class="tiles">
+          ${tile('New members', profiles, true)}
+          ${tile('New spots', spots)}
+          ${tile('New member reviews', reviews)}
+          ${tile('New highlights', highlights)}
+          <div class="tile"><span class="label">Members in total</span><span class="v">${profiles ? nf(profiles.length) : '?'}</span><span class="d">${nf(placesData.catalog.length)} places you reviewed</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div><h2>New members per week</h2><p class="sub">The last ${WEEKS} weeks, Monday to Sunday. The last bar is this week so far.</p></div>
+          <button class="btn" id="tableBtn" type="button" aria-pressed="false">Show as table</button>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="table-wrap" id="weekTable" hidden></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div><h2>Most viewed</h2><p class="sub" id="viewsSub"></p></div>
+          <select id="month" aria-label="Month"></select>
+        </div>
+        <div class="tabs" role="tablist">
+          <button class="btn active" type="button" data-type="place">Places</button>
+          <button class="btn" type="button" data-type="list">Lists</button>
+          <button class="btn" type="button" data-type="city">Cities</button>
+          <button class="btn" type="button" data-type="guide">Guides</button>
+        </div>
+        <div class="table-wrap" id="viewsTable"></div>
+        <p class="note">Views are counted without cookies and without anything personal: one per visitor per page per 30 minutes. Visits on a device where you signed in as admin don't count. The app adds its views once Rork batch 13 is in.</p>
+        <label class="toggle"><input type="checkbox" id="mine" checked> Don't count my visits on this device</label>
+      </section>`;
+
+    drawChart(weeks, series.members);
+    drawWeekTable(weeks, series);
+    const btn = document.getElementById('tableBtn');
+    btn.addEventListener('click', () => {
+      const t = document.getElementById('weekTable'), on = t.hidden;
+      t.hidden = !on; btn.setAttribute('aria-pressed', String(on)); btn.textContent = on ? 'Hide the table' : 'Show as table';
+    });
+    document.getElementById('mine').addEventListener('change', e => { try { if (e.target.checked) localStorage.setItem('sf_admin_device', '1'); else localStorage.removeItem('sf_admin_device'); } catch (err) {} });
+
+    // Names for what was viewed
+    const byKey = new Map(placesData.all.map(p => [placeKey(p), p]));
+    const dests = new Map(destinations(placesData.all).map(d => [d.slug, d]));
+    const listBySlug = new Map(lists.map(l => [l.slug, l]));
+    const guideBySlug = new Map((guides || []).map(g => [g.slug, g]));
+    const nameOf = (type, ref) => {
+      if (type === 'place') { const p = byKey.get(ref); return p ? [p.name + (p.where ? ' · ' + p.where : ''), placeUrl(p)] : [ref + ' (removed)', '']; }
+      if (type === 'list') { const l = listBySlug.get(ref); return [l ? l.title : ref, listUrl(ref)]; }
+      if (type === 'city') { const d = dests.get(ref); return [d ? d.name : ref, d ? d.url : destinationUrl(ref)]; }
+      if (type === 'guide') { const g = guideBySlug.get(ref); return [g ? g.title : ref, guideUrl(ref)]; }
+      return [ref, ''];
+    };
+
+    const months = Array.from({ length: 6 }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); return [d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'), d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })]; });
+    const sel = document.getElementById('month');
+    sel.innerHTML = months.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+    let type = 'place', rows = [];
+    const load = async () => {
+      document.getElementById('viewsTable').innerHTML = '<p class="empty">Loading…</p>';
+      try { rows = (await getDocs(query(collection(db, 'views'), where('month', '==', sel.value)))).docs.map(d => d.data()); }
+      catch (e) { console.log('Views not read:', e.code || e); rows = null; }
+      drawViews();
+    };
+    const drawViews = () => {
+      const box = document.getElementById('viewsTable');
+      if (rows === null) { box.innerHTML = '<p class="empty">The views could not be read. Add the views rule in Firebase (see the instructions).</p>'; return; }
+      const total = rows.reduce((a, r) => a + (r.count || 0), 0);
+      document.getElementById('viewsSub').textContent = `${nf(total)} ${total === 1 ? 'view' : 'views'} in ${sel.options[sel.selectedIndex].text}`;
+      const top = rows.filter(r => r.type === type).sort((a, b) => (b.count || 0) - (a.count || 0)).slice(0, 25);
+      if (!top.length) { box.innerHTML = '<p class="empty">No views counted yet for this month. Counting starts once this update is online.</p>'; return; }
+      const max = top[0].count || 1;
+      box.innerHTML = `<table><thead><tr><th class="n">#</th><th>${{ place: 'Place', list: 'List', city: 'City', guide: 'Guide' }[type]}</th><th class="n">Views</th></tr></thead><tbody>
+        ${top.map((r, i) => { const [name, url] = nameOf(r.type, r.ref); return `<tr><td class="n">${i + 1}</td><td>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a>` : esc(name)}</td><td class="n"><span class="meter" style="width:${Math.max(4, Math.round(80 * (r.count || 0) / max))}px" aria-hidden="true"></span>${nf(r.count)}</td></tr>`; }).join('')}
+      </tbody></table>`;
+    };
+    sel.addEventListener('change', load);
+    document.querySelectorAll('[data-type]').forEach(b => b.addEventListener('click', () => {
+      type = b.dataset.type;
+      document.querySelectorAll('[data-type]').forEach(x => x.classList.toggle('active', x === b));
+      drawViews();
+    }));
+    load();
+  }
+
+  // ── Columns: one series, so no legend; value on the last and on the highest column; tooltip on hover or focus.
+  function drawChart(weeks, values) {
+    const W = 720, H = 250, L = 34, R = 8, T = 22, B = 30;
+    const max = Math.max(1, ...values);
+    const step = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000].find(s => max / s <= 4) || 1000;
+    const top = Math.ceil(max / step) * step;
+    const y = v => T + (H - T - B) * (1 - v / top);
+    const slot = (W - L - R) / values.length, bw = Math.min(24, slot * 0.6);
+    const maxI = values.indexOf(max), lastI = values.length - 1;
+    const ticks = []; for (let v = 0; v <= top; v += step) ticks.push(v);
+    const col = (v, i) => {
+      const x = L + slot * i + (slot - bw) / 2, h = y(0) - y(v), r = Math.min(4, h);
+      if (!v) return '';
+      // Rounded at the data end, square at the baseline
+      return `<path d="M${x},${y(0)} V${y(v) + r} Q${x},${y(v)} ${x + r},${y(v)} H${x + bw - r} Q${x + bw},${y(v)} ${x + bw},${y(v) + r} V${y(0)} Z" fill="#D4521A"${i === lastI ? ' fill-opacity="0.55"' : ''}/>`;
+    };
+    const el = document.getElementById('chart');
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="New members per week, last ${values.length} weeks: ${values.join(', ')}">
+      ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#ECE5DA" stroke-width="1"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${nf(v)}</text>`).join('')}
+      ${values.map(col).join('')}
+      ${values.map((v, i) => (i === lastI || (i === maxI && v)) ? `<text class="val" x="${L + slot * i + slot / 2}" y="${y(v) - 6}" text-anchor="middle">${nf(v)}</text>` : '').join('')}
+      ${weeks.map((w, i) => (i % 2 === (values.length - 1) % 2) ? `<text x="${L + slot * i + slot / 2}" y="${H - 8}" text-anchor="middle">${shortDate(w)}</text>` : '').join('')}
+      ${values.map((v, i) => `<rect class="hit" tabindex="0" data-i="${i}" x="${L + slot * i}" y="${T}" width="${slot}" height="${H - T - B}"><title>${shortDate(weeks[i])}: ${v}</title></rect>`).join('')}
+    </svg><div class="tip" id="tip" hidden></div>`;
+    const tip = document.getElementById('tip'), svg = el.querySelector('svg');
+    const show = i => {
+      const box = svg.getBoundingClientRect(), k = box.width / W;
+      const end = new Date(weeks[i].getTime() + 6 * DAY);
+      tip.innerHTML = `${shortDate(weeks[i])} to ${shortDate(end)}${i === lastI ? ' (so far)' : ''}<br><b>${nf(values[i])}</b> new ${values[i] === 1 ? 'member' : 'members'}`;
+      tip.style.left = ((L + slot * i + slot / 2) * k) + 'px';
+      tip.style.top = (y(values[i]) * k) + 'px';
+      tip.hidden = false;
+    };
+    el.querySelectorAll('.hit').forEach(h => {
+      h.querySelector('title').remove();
+      h.addEventListener('mouseenter', () => show(Number(h.dataset.i)));
+      h.addEventListener('focus', () => show(Number(h.dataset.i)));
+      h.addEventListener('mouseleave', () => { tip.hidden = true; });
+      h.addEventListener('blur', () => { tip.hidden = true; });
+    });
+  }
+
+  function drawWeekTable(weeks, s) {
+    document.getElementById('weekTable').innerHTML = `<table><thead><tr><th>Week of</th><th class="n">Members</th><th class="n">Spots</th><th class="n">Member reviews</th><th class="n">Highlights</th></tr></thead><tbody>
+      ${weeks.map((w, i) => `<tr><td>${shortDate(w)}${i === weeks.length - 1 ? ' (so far)' : ''}</td><td class="n">${nf(s.members[i])}</td><td class="n">${nf(s.spots[i])}</td><td class="n">${nf(s.reviews[i])}</td><td class="n">${nf(s.highlights[i])}</td></tr>`).reverse().join('')}
+    </tbody></table>`;
+  }
+</script>
+</body>
+</html>

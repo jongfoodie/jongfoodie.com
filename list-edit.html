@@ -112,7 +112,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, slugOf, starStr, loadPlaces, destinations, loadListEdits, applyListEdits, placeKey, listUrl, placeUrl } from "./js/sf-places.js?v=5";
+  import { CATS, esc, fold, slugOf, starStr, loadPlaces, destinations, loadListEdits, loadDishes, applyListEdits, placeKey, listUrl, placeUrl } from "./js/sf-places.js?v=6";
   import { confirmTap } from "./js/sf-delete.js?v=1";
 
   const app = initializeApp({
@@ -137,7 +137,8 @@
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
 
   // all = every place; catalog = the ones Strong Foodie reviewed (the only ones lists use)
-  let all = [], catalog = [], byKey = new Map(), edits = new Map(), lists = [], cur = null, dirty = false, filter = '';
+  let all = [], catalog = [], dishItems = [], byKey = new Map(), edits = new Map(), lists = [], cur = null, dirty = false, filter = '';
+  const hrefOf = p => placeUrl(p.dish ? p.place : p);
 
   onAuthStateChanged(auth, async user => {
     if (!user) {
@@ -154,7 +155,8 @@
     try {
       const [loaded, saved] = await Promise.all([loadPlaces(db), loadListEdits(db)]);
       all = loaded.all; catalog = loaded.catalog;
-      all.forEach(p => byKey.set(placeKey(p), p));
+      dishItems = await loadDishes(db, all);
+      all.concat(dishItems).forEach(p => byKey.set(placeKey(p), p));
       saved.forEach(e => edits.set(e.slug, e));
       shell();
       recompute();
@@ -172,7 +174,7 @@
     const use = cur && (dirty || cur.isNew);
     const list = [...edits.values()].map(e => (use && e.slug === cur.slug) ? cur : e);
     if (use && !edits.has(cur.slug)) list.push(cur);
-    lists = applyListEdits(all, list, { admin: true });
+    lists = applyListEdits(all, list, { admin: true, dishes: dishItems });
   }
   const isShown = l => l.count > 0 && !l.hidden && (l.edited || l.count >= 3);
 
@@ -327,9 +329,10 @@
       <div class="pk${fixed ? ' fixed' : ''}">
         <span class="pk-n">${i + 1}</span>
         <div>
-          <div class="pk-name"><a href="${placeUrl(p)}" target="_blank" rel="noopener">${esc(p.emoji)} ${esc(p.name)}</a></div>
+          <div class="pk-name"><a href="${hrefOf(p)}" target="_blank" rel="noopener">${p.dish ? '🍴' : esc(p.emoji)} ${esc(p.name)}</a>${p.dish ? ` <span class="hint">at ${esc(p.place.name)}</span>` : ''}</div>
           <div class="pk-where">${p.rating ? `<span class="st">${starStr(p.rating)}</span> ${fmt1(p.rating)} · ` : ''}${esc(p.where)}${fixed ? ' · <strong>fixed spot</strong>' : ''}</div>
-          <div class="tags" data-k="${esc(placeKey(p))}">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('') || '<span class="hint">No tags</span>'}<button class="linkbtn" type="button" data-tags="${esc(placeKey(p))}">✎ Tags</button></div>
+          ${p.dish ? `<div class="tags"><span class="tag">${esc(p.kind)}</span><a class="linkbtn" href="dish-edit.html?place=${encodeURIComponent(placeKey(p.place))}" target="_blank" rel="noopener">✎ Dish</a></div>`
+            : `<div class="tags" data-k="${esc(placeKey(p))}">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('') || '<span class="hint">No tags</span>'}<button class="linkbtn" type="button" data-tags="${esc(placeKey(p))}">✎ Tags</button></div>`}
         </div>
         <div class="pk-tools">
           <button type="button" data-up="${i}" title="Up" aria-label="Up" ${i === 0 ? 'disabled' : ''}>↑</button>
@@ -363,7 +366,7 @@
   function drawRemoved() {
     const box = document.getElementById('removedBox');
     const gone = cur.removed.map(k => byKey.get(k)).filter(Boolean);
-    box.innerHTML = gone.length ? `<p class="label" style="margin-top:1rem;">Taken out of this list</p><div class="results">${gone.map(p => `<div class="res off">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where)}</small><button class="linkbtn" type="button" data-back="${esc(placeKey(p))}">Put back</button></div>`).join('')}</div>` : '';
+    box.innerHTML = gone.length ? `<p class="label" style="margin-top:1rem;">Taken out of this list</p><div class="results">${gone.map(p => `<div class="res off">${p.dish ? '🍴' : esc(p.emoji)} ${esc(p.name)} <small>${esc(p.dish ? 'at ' + p.place.name : p.where)}</small><button class="linkbtn" type="button" data-back="${esc(placeKey(p))}">Put back</button></div>`).join('')}</div>` : '';
     box.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => {
       cur.removed = cur.removed.filter(k => k !== b.dataset.back);
       dirty = true; document.getElementById('unsaved').hidden = false; refresh();
@@ -385,10 +388,12 @@
     if (q.length < 2) { box.innerHTML = ''; return; }
     const terms = q.split(/\s+/);
     const inList = new Set(current().places.map(placeKey));
-    const hits = catalog.filter(p => !inList.has(placeKey(p)) && terms.every(t => p._name.includes(t) || p._place.includes(t) || p._kind.includes(t)))
+    // A list of dishes gets dishes, every other list gets places.
+    const pool = current().kind === 'dish' ? dishItems : catalog;
+    const hits = pool.filter(p => !inList.has(placeKey(p)) && terms.every(t => p._name.includes(t) || p._place.includes(t) || p._kind.includes(t)))
       .sort((a, b) => (b._name.startsWith(terms[0]) - a._name.startsWith(terms[0])) || (b.rating || 0) - (a.rating || 0))
       .slice(0, 8);
-    box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">＋ ${esc(p.emoji)} ${esc(p.name)} <small>${esc([p.where, p.rating ? fmt1(p.rating) + '★' : ''].filter(Boolean).join(' · '))}</small></button>`).join('')
+    box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">＋ ${p.dish ? '🍴' : esc(p.emoji)} ${esc(p.name)} <small>${esc([p.dish ? 'at ' + p.place.name : '', p.where, p.rating ? fmt1(p.rating) + '★' : ''].filter(Boolean).join(' · '))}</small></button>`).join('')
       : '<p class="empty-note">Nothing found. Only places Strong Foodie reviewed can go in a list.</p>';
     box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => {
       const k = b.dataset.k;

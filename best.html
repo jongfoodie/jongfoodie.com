@@ -169,6 +169,8 @@
   .ri-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; overflow-wrap: anywhere; }
   .ri-link { font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; margin-top: auto; }
   .app-note a { color: var(--accent); }
+  .ri-at { font-size: 14px; color: var(--ink-soft); margin-top: -0.3rem; }
+  .ri-at a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .l-intro { max-width: 720px; margin-top: 1.5rem; font-size: 17px; line-height: 1.7; color: var(--ink-soft); white-space: pre-line; }
   @media (max-width: 700px) {
     .list-grid { grid-template-columns: 1fr; }
@@ -269,7 +271,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, LIST_CATS, SITE, esc, starStr, placeUrl, destinationUrl, loadPlaces, destinations, loadLists, photoTools } from "./js/sf-places.js?v=5";
+  import { CATS, LIST_CATS, SITE, esc, starStr, placeUrl, destinationUrl, loadPlaces, destinations, loadLists, photoTools } from "./js/sf-places.js?v=6";
+  import { countView } from "./js/sf-views.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -305,7 +308,9 @@
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
   const monthYear = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   const catOfList = l => CATS[l.kind === 'cat' ? l.cat : (l.cat || (l.places[0] && l.places[0].cat) || 'eat')];
-  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : 'places';
+  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
+  // A dish links to the place that serves it.
+  const urlOf = p => placeUrl(p.dish ? p.place : p);
 
   async function share(title) {
     const url = document.querySelector('link[rel="canonical"]').getAttribute('href') || location.href;
@@ -317,12 +322,12 @@
   function listCard(l) {
     const cat = catOfList(l);
     return `<a class="list-card" href="${l.url}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
-      <span class="lc-emoji">${l.kind === 'cat' ? cat.emoji : '🏆'}</span>
+      <span class="lc-emoji">${l.kind === 'cat' ? cat.emoji : l.kind === 'dish' ? '🍴' : '🏆'}</span>
       ${l.cover ? `<img data-photo="${esc(l.cover)}" alt="" loading="lazy" hidden>` : ''}
       <span class="lc-info">
         <span class="lc-count">Top ${Math.min(l.count, TOP)}</span>
         <span class="lc-title">${esc(l.title)}</span>
-        <span class="lc-names">${esc(l.places.slice(0, 3).map(p => p.name).join(' · '))}</span>
+        <span class="lc-names">${esc(l.places.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(' · '))}</span>
       </span>
     </a>`;
   }
@@ -358,12 +363,13 @@
     const updated = top.map(p => p.created).filter(Boolean).sort((a, b) => b - a)[0];
     const year = new Date().getFullYear();
     setMeta(`${l.title} (${year}) | Strong Foodie`,
-      `The ${top.length} best ${what(l)}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.name).join(', ')} and more.`,
+      l.intro || `The ${top.length} best ${what(l)}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(', ')} and more.`,
       l.url.replace(/^\//, ''));
     const dest = l.dest ? dests.find(d => d.slug === l.destSlug) : null;
     const allHref = dest ? `${dest.url}${l.kind === 'cat' ? '?cat=' + l.cat : ''}#places` : '';
     const sameDest = lists.filter(x => x !== l && x.dest && x.destSlug === l.destSlug);
-    const sameKind = l.kind === 'custom' ? [] : lists.filter(x => x !== l && x.slug !== l.slug && (l.kind === 'cat' ? x.kind === 'cat' && x.cat === l.cat : x.kind === 'tag' && x.tag.toLowerCase() === l.tag.toLowerCase()) && x.destSlug !== l.destSlug);
+    const same = x => l.kind === 'cat' ? x.kind === 'cat' && x.cat === l.cat : l.kind === 'tag' ? x.kind === 'tag' && x.tag.toLowerCase() === l.tag.toLowerCase() : x.kind === 'dish' && x.dishKind.toLowerCase() === l.dishKind.toLowerCase();
+    const sameKind = l.kind === 'custom' ? [] : lists.filter(x => x !== l && x.slug !== l.slug && same(x) && x.destSlug !== l.destSlug);
 
     root.innerHTML = `
       <div class="crumbs"><a href="index.html">Home</a> › <a href="best.html">Best of</a>${dest ? ` › <a href="${dest.url}">${esc(dest.name)}</a>` : ''} › ${esc(l.title)}</div>
@@ -386,19 +392,21 @@
 
       <ol class="rank-list">${top.map((p, i) => {
         const c = CATS[p.cat];
-        const text = p.review || p.type || '';
-        const bits = [l.kind === 'cat' ? p.type : c.label, p.area && p.area !== l.dest ? p.area : (l.dest ? '' : p.where), p.price].filter(Boolean);
+        const text = p.dish ? p.note : (p.review || p.type || '');
+        const bits = p.dish ? [p.area && p.area !== l.dest ? p.area : (l.dest ? '' : p.where)].filter(Boolean)
+          : [l.kind === 'cat' ? p.type : c.label, p.area && p.area !== l.dest ? p.area : (l.dest ? '' : p.where), p.price].filter(Boolean);
         return `<li class="rank-item">
-          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
+          <a class="ri-photo" href="${urlOf(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
             <span>${esc(p.emoji)}</span>
             ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
             <span class="ri-rank">#${i + 1}</span>
           </a>
           <div class="ri-body">
-            <h2 class="ri-name"><a href="${placeUrl(p)}">${esc(p.name)}</a></h2>
+            <h2 class="ri-name"><a href="${urlOf(p)}">${esc(p.name)}</a></h2>
+            ${p.dish ? `<p class="ri-at">at <a href="${urlOf(p)}">${esc(p.place.name)}</a></p>` : ''}
             <p class="ri-meta">${p.rating ? `<span class="star">${starStr(p.rating)}</span> <strong>${fmt1(p.rating)}</strong>${bits.length ? ' · ' : ''}` : ''}${esc(bits.join(' · '))}</p>
             ${text ? `<p class="ri-text">${esc(text.slice(0, 240))}${text.length > 240 ? '…' : ''}</p>` : ''}
-            <a class="ri-link" href="${placeUrl(p)}">Read the review →</a>
+            <a class="ri-link" href="${urlOf(p)}">${p.dish ? 'View the place →' : 'Read the review →'}</a>
           </div>
         </li>`;
       }).join('')}</ol>
@@ -409,7 +417,7 @@
 
       ${sameDest.length ? `<p class="section-label">More lists for ${esc(l.dest)}</p>
         <div class="list-grid">${sameDest.slice(0, 6).map(listCard).join('')}</div>` : ''}
-      ${sameKind.length ? `<p class="section-label">${esc(l.kind === 'cat' ? LIST_CATS[l.cat].title : l.tag)} in other places</p>
+      ${sameKind.length ? `<p class="section-label">${esc(l.kind === 'cat' ? LIST_CATS[l.cat].title : l.kind === 'dish' ? l.dishKind : l.tag)} in other places</p>
         <div class="others">${sameKind.map(x => `<a class="chip" href="${x.url}">${esc(x.dest || 'Worldwide')}<span>${x.count}</span></a>`).join('')}</div>` : ''}
       <p class="section-label">Everything</p>
       <div class="others"><a class="chip" href="best.html">All best-of lists →</a>${dest ? `<a class="chip" href="${dest.url}">${esc(dest.name)}: every place →</a>` : ''}<a class="chip" href="map.html">🗺️ Map</a></div>`;
@@ -421,7 +429,7 @@
     s.textContent = JSON.stringify({
       '@context': 'https://schema.org', '@type': 'ItemList', name: l.title,
       itemListOrder: 'https://schema.org/ItemListOrderDescending', numberOfItems: top.length,
-      itemListElement: top.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + placeUrl(p), name: p.name })),
+      itemListElement: top.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + urlOf(p), name: p.dish ? `${p.name}, ${p.place.name}` : p.name })),
     });
     document.head.appendChild(s);
   }
@@ -432,7 +440,7 @@
     const lists = await loadLists(db, all);
     const slug = String(params.get('l') || '').toLowerCase();
     const l = slug && lists.find(x => x.slug === slug);
-    if (l) renderList(l, lists, destinations(all));
+    if (l) { renderList(l, lists, destinations(all)); countView(db, 'list', l.slug); }
     else renderHub(lists, !!slug);
   } catch (e) {
     console.log('Best-of error:', e);
