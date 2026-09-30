@@ -126,6 +126,8 @@
   <a href="list-edit.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🏆 Lists</a>
   <a href="guide-edit.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">📖 Guides</a>
   <a href="dish-edit.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🍴 Dishes</a>
+  <a href="admin-reports.html" class="back-link" id="reportsLink" style="color:rgba(255,255,255,0.85);margin-right:16px;">🚩 Reports</a>
+  <a href="admin-members.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">👥 Members</a>
   <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
   <button id="signOutBtn" onclick="adminSignOut()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:12px;">Sign out</button>
 </div>
@@ -1376,7 +1378,19 @@
       panelLoaded = true;
       window.loadLiveStats();
       loadPublished();
+      showOpenReports();
     }
+  }
+
+  // The number of open reports next to 🚩 Reports (admin-reports.html).
+  async function showOpenReports() {
+    try {
+      // Reports from older app versions may have no status yet: those are open too.
+      const snap = await getDocs(collection(db, 'reports'));
+      const open = snap.docs.filter(d => !['done', 'resolved', 'closed', 'handled'].includes(String(d.data().status || '').toLowerCase())).length;
+      const link = document.getElementById('reportsLink');
+      if (link && open) link.innerHTML = `🚩 Reports <span style="background:#D4521A;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:2px;">${open}</span>`;
+    } catch (e) { console.log('Open reports not counted:', e.code || e); }
   }
 
   // Decides what is shown for this account. fresh = the password was just entered here.

@@ -279,6 +279,7 @@ window.LEGACY_SPOTS = [
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { loadFlags, isBlocked } from "./js/sf-moderation.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -572,8 +573,8 @@ window.LEGACY_SPOTS = [
   }
 
   async function loadMemberPlaces(now) {
-    const snap = await getDocs(collection(db, 'userPlaces'));
-    const raw = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name && r.hidden !== true);
+    const [snap, flags] = await Promise.all([getDocs(collection(db, 'userPlaces')), loadFlags(db)]);
+    const raw = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name && r.hidden !== true && !isBlocked(flags, r.addedByUserId));
 
     // Respect private accounts: their places are for followers only.
     const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];

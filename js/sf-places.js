@@ -11,6 +11,7 @@
 
 import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits, normaliseDish, placeKey } from "./sf-core.js?v=3";
+import { loadFlags, isBlocked } from "./sf-moderation.js?v=1";
 export * from "./sf-core.js?v=3";
 
 async function readAll(db, coll) {
@@ -20,9 +21,11 @@ async function readAll(db, coll) {
   } catch (e) { console.log('Could not load ' + coll + ':', e.code || e); return []; }
 }
 
-// Places members added in the app. Members with a private account are left out.
+// Places members added in the app. Members with a private account are left out,
+// and so are spots Strong Foodie hid or added by a blocked member (sf-moderation.js).
 async function readMemberPlaces(db) {
-  const raw = (await readAll(db, 'userPlaces')).filter(r => r.name && r.hidden !== true);
+  const [all, flags] = await Promise.all([readAll(db, 'userPlaces'), loadFlags(db)]);
+  const raw = all.filter(r => r.name && r.hidden !== true && !isBlocked(flags, r.addedByUserId));
   const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];
   const privateOwners = new Set();
   await Promise.all(owners.map(uid => getDoc(doc(db, 'profiles', uid))

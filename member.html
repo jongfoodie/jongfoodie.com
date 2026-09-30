@@ -60,6 +60,7 @@
   .pf-stat strong { display: block; font-size: 1.25rem; color: var(--ink); font-weight: 700; }
   .pf-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.1rem; align-items: center; }
   .pf-hint { font-size: 12.5px; color: var(--muted); }
+  .pf-report { display: inline-flex; align-items: center; padding: 0 0.25rem; }
   .pf-note { margin-top: 1rem; background: var(--cream); border: 1px dashed rgba(26,18,8,0.15); border-radius: 14px; padding: 1.25rem; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
   /* Sections */
@@ -193,9 +194,10 @@
   import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=6";
-  import { highlightsRow } from "./js/sf-highlights.js?v=6";
+  import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=7";
+  import { highlightsRow } from "./js/sf-highlights.js?v=7";
   import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=1";
+  import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
   // userReviews documents the app uses. Following someone here is the same
@@ -256,7 +258,7 @@
   });
 
   // ── Data ────────────────────────────────────────────────────────────────
-  const state = { profile: null, profileLoaded: false, spots: [], reviews: [], followers: null, following: null, isFollowing: false, city: '' };
+  const state = { profile: null, profileLoaded: false, spots: [], reviews: [], followers: null, following: null, isFollowing: false, city: '', flags: null };
 
   async function countFollows(field) {
     try { return (await getCountFromServer(query(collection(db, 'follows'), where(field, '==', uid)))).data().count; }
@@ -324,7 +326,7 @@
           ${p.photoUrl ? `<img id="pfPhoto" alt="" hidden>` : ''}
         </div>
         <div>
-          <h1 class="pf-name">${esc(name)}${isOfficial ? '<span class="pf-badge">Official</span>' : ''}</h1>
+          <h1 class="pf-name">${esc(name)}${isOfficial ? '<span class="pf-badge">Official</span>' : trustedMark(state.flags, uid)}</h1>
           ${meta ? `<p class="pf-meta">${esc(meta)}</p>` : ''}
           ${p.bio ? `<p class="pf-bio">${esc(p.bio)}</p>` : ''}
           <div class="pf-stats" id="pfStats"></div>
@@ -379,7 +381,11 @@
         : `<button class="btn btn-primary" id="followBtn" type="button" aria-pressed="false">Follow</button>`;
     }
     const canImage = !state.locked && cities().list.length > 0;
-    el.innerHTML = main + `<button class="btn" id="shareBtn" type="button">Share</button>` + (canImage ? `<button class="btn" id="imgBtn" type="button">📸 Share as image</button>` : '');
+    const canReport = !isOfficial && !(me && me.uid === uid);
+    el.innerHTML = main + `<button class="btn" id="shareBtn" type="button">Share</button>` + (canImage ? `<button class="btn" id="imgBtn" type="button">📸 Share as image</button>` : '')
+      + (canReport ? `<span class="pf-report">${reportButton('Report member')}</span>` : '')
+      + (me && me.uid === uid && isBlocked(state.flags, uid) ? `<span class="pf-hint">Your account is blocked by Strong Foodie: others don't see your profile.</span>` : '');
+    if (canReport) wireReports(db, el, () => ({ kind: 'member', coll: 'profiles', targetId: uid, ownerId: uid, label: state.profile.displayName }));
     const fb = document.getElementById('followBtn');
     if (fb) fb.addEventListener('click', toggleFollow);
     document.getElementById('shareBtn').addEventListener('click', share);
@@ -568,6 +574,7 @@
       ${short ? `<p class="rv-text">${esc(short)}</p>` : ''}
       ${r.photo ? `<div class="rv-photo"><img data-photo="${esc(r.photo)}" alt="" loading="lazy" hidden></div>` : ''}
       ${isOwn() && !isOfficial ? `<p class="rv-own"><button class="del-btn" type="button" data-del-review="${esc(r.id)}">Delete review</button></p>` : ''}
+      ${!isOwn() && !isOfficial ? `<p class="rv-own">${reportButton('Report', `data-rid="${esc(r.id)}"`)}</p>` : ''}
     </article>`;
   }
 
@@ -603,6 +610,10 @@
     hydratePhotos(listEl);
     document.getElementById('reviewsMore').hidden = revs.length <= shownReviews;
     wireDeletes();
+    wireReports(db, listEl, b => {
+      const r = state.reviews.find(x => x.id === b.dataset.rid) || {};
+      return { kind: 'review', coll: 'userReviews', targetId: r.id, ownerId: uid, label: `${r.placeName || ''}: ${String(r.text || '').slice(0, 150)}` };
+    });
   }
 
   // Your own profile: delete a spot or a review. The first tap asks again.
@@ -651,6 +662,12 @@
     const blocked = Array.isArray(profile.blockedUsers) && me && profile.blockedUsers.includes(me.uid);
     if (blocked) {
       message('Profile not available', 'You cannot view this profile. <a href="community.html">See the community</a>.');
+      return;
+    }
+    // Blocked by Strong Foodie (js/sf-moderation.js): gone for everyone but the member.
+    state.flags = await loadFlags(db);
+    if (!isOfficial && isBlocked(state.flags, uid) && !(me && me.uid === uid)) {
+      message('Profile not available', 'This account is not available. <a href="community.html">See the community</a>.');
       return;
     }
     profile.displayName = String(profile.displayName || '').trim() || 'Member';

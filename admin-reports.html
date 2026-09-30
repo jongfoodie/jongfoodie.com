@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Reports | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323; --red-pale: #FBECEC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .tab { font: 500 14px 'DM Sans', sans-serif; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tab .n { display: inline-block; min-width: 20px; margin-left: 4px; padding: 0 6px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 12px; text-align: center; }
+  .list { display: flex; flex-direction: column; gap: 1rem; }
+  .rep { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem; }
+  .rep-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 13px; color: var(--muted); margin-bottom: 0.8rem; }
+  .rep-head strong { color: var(--ink); font-size: 14px; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .pill-kind { background: #F0EBE3; color: var(--ink-soft); }
+  .pill-hidden { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-blocked { background: var(--red-pale); color: var(--red); }
+  .pill-trusted { background: var(--green-light); color: var(--green); }
+  .target { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; }
+  .target .t-title { font-weight: 700; overflow-wrap: anywhere; }
+  .target .t-text { margin-top: 0.35rem; line-height: 1.55; color: var(--ink-soft); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .target .t-by { margin-top: 0.45rem; font-size: 13px; color: var(--muted); }
+  .target a { color: var(--accent); }
+  .target .gone { color: var(--red); font-weight: 500; }
+  .thumb { width: 72px; height: 96px; border-radius: 10px; overflow: hidden; background: #F0EBE3; position: relative; }
+  .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .st { color: var(--gold); letter-spacing: 1px; }
+  .why { list-style: none; margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.45rem; }
+  .why li { font-size: 14px; line-height: 1.5; padding-left: 0.8rem; border-left: 3px solid var(--accent); }
+  .why li small { color: var(--muted); }
+  .why q { display: block; color: var(--ink-soft); font-style: italic; overflow-wrap: anywhere; }
+  .why a, .row-item a { color: var(--accent); }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .row-item { background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 1rem; display: flex; gap: 0.8rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .row-item p { font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+  .row-item small { color: var(--muted); font-size: 12.5px; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 2rem 1rem; text-align: center; color: var(--muted); line-height: 1.6; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .thumb { width: 56px; height: 76px; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>REPORTS</span></h1><nav><a href="admin-members.html">👥 Members</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, setDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, starStr, toDate, photoTools } from "./js/sf-places.js?v=7";
+  import { REASONS, normReport } from "./js/sf-moderation.js?v=1";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=1";
+  import { deleteReview, deleteHighlight, deleteSpot, confirmTap } from "./js/sf-delete.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const { hydratePhotos } = photoTools(db);
+
+  // What members can report (js/sf-moderation.js) and where it lives.
+  const REASON = Object.fromEntries(REASONS);
+  const KIND = { review: 'Review', highlight: 'Highlight', spot: 'Member spot', member: 'Member' };
+  const COLL = { review: 'userReviews', highlight: 'highlights', spot: 'userPlaces', member: 'profiles' };
+  const ACTION = { hidden: 'Hidden', deleted: 'Deleted', blocked: 'Member blocked', dismissed: 'Nothing wrong', gone: 'Was already gone' };
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+  function ago(d) {
+    if (!d) return '';
+    const s = Math.max(0, (Date.now() - d.getTime()) / 1000);
+    if (s < 3600) return Math.max(1, Math.round(s / 60)) + ' min ago';
+    if (s < 86400) return Math.round(s / 3600) + ' h ago';
+    if (s < 7 * 86400) { const n = Math.round(s / 86400); return n + (n === 1 ? ' day ago' : ' days ago'); }
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  const refused = e => e && e.code === 'permission-denied';
+
+  let reports = [], flags = {}, targets = new Map(), names = new Map(), tab = 'open', hiddenRows = null;
+  // One card per reported item; a report the page can't place gets a card of its own.
+  const keyOf = r => r.coll && r.targetId ? `${r.coll}/${r.targetId}` : `report/${r.id}`;
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't see reports.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading reports…</p>';
+    try { await load(); }
+    catch (e) {
+      console.log('Reports error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rules for <code>reports</code> and <code>memberFlags</code> in Firebase first, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  async function load() {
+    const [rs, fl] = await Promise.all([
+      getDocs(collection(db, 'reports')),
+      getDocs(collection(db, 'memberFlags')).catch(() => ({ docs: [] })),
+    ]);
+    reports = rs.docs.map(d => normReport({ id: d.id, ...d.data() }));
+    flags = {}; fl.docs.forEach(d => { flags[d.id] = d.data(); });
+    const open = reports.filter(r => r.status !== 'done');
+    const keys = [...new Set(open.map(keyOf))];
+    await Promise.all(keys.map(k => {
+      const [c, id] = [k.slice(0, k.indexOf('/')), k.slice(k.indexOf('/') + 1)];
+      if (c === 'report' || !c || !id) { targets.set(k, 'unknown'); return null; }
+      return getDoc(doc(db, c, id)).then(s => targets.set(k, s.exists() ? { id: s.id, ...s.data() } : null)).catch(() => targets.set(k, undefined));
+    }));
+    const uids = [...new Set(reports.flatMap(r => [r.reporterId, r.ownerId]).filter(Boolean))];
+    await Promise.all(uids.filter(u => !names.has(u)).map(u => getDoc(doc(db, 'profiles', u))
+      .then(s => names.set(u, s.exists() ? (s.data().displayName || 'Member') : 'Deleted account'))
+      .catch(() => names.set(u, 'Member'))));
+    draw();
+  }
+
+  function groups() {
+    const map = new Map();
+    reports.filter(r => r.status !== 'done').forEach(r => {
+      const k = keyOf(r);
+      if (!map.has(k)) map.set(k, { key: k, kind: r.kind, coll: r.coll, targetId: r.targetId, ownerId: r.ownerId || '', label: r.label || '', list: [] });
+      map.get(k).list.push(r);
+    });
+    const newest = g => Math.max(...g.list.map(r => (toDate(r.createdAt) || new Date(0)).getTime()));
+    return [...map.values()].sort((a, b) => newest(b) - newest(a));
+  }
+
+  function draw() {
+    const gs = groups();
+    const done = reports.filter(r => r.status === 'done');
+    root.innerHTML = `
+      <p class="lead">Members report reviews, highlights, spots and other members here. Apple asks that reports are handled within 24 hours. Hiding keeps it for you to undo; blocking hides everything of that member on the site, and in the app after Rork batch 14.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="open" aria-selected="${tab === 'open'}">Open${gs.length ? `<span class="n">${gs.length}</span>` : ''}</button>
+        <button class="tab" role="tab" data-tab="done" aria-selected="${tab === 'done'}">Handled · ${done.length}</button>
+        <button class="tab" role="tab" data-tab="hidden" aria-selected="${tab === 'hidden'}">Hidden content</button>
+      </div>
+      <div class="list" id="list"></div>`;
+    root.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; draw(); }));
+    const list = document.getElementById('list');
+    if (tab === 'open') drawOpen(list, gs);
+    else if (tab === 'done') drawDone(list, done);
+    else drawHidden(list);
+  }
+
+  function who(uid) {
+    if (!uid) return 'Unknown';
+    const f = flags[uid] || {};
+    return `<a href="member.html?u=${encodeURIComponent(uid)}" target="_blank" rel="noopener">${esc(names.get(uid) || 'Member')}</a>${f.blocked ? ' <span class="pill pill-blocked">Blocked</span>' : ''}${f.trusted ? ' <span class="pill pill-trusted">Trusted</span>' : ''}`;
+  }
+
+  function preview(g) {
+    const t = targets.get(g.key);
+    if (t === 'unknown') {
+      // Reported in the app with fields this page doesn't know: show what is there.
+      const r = g.list[0];
+      const skip = new Set(['id', 'kind', 'coll', 'targetId', 'ownerId', 'reporterId', 'reportedBy', 'note', 'label', 'reason', 'status', 'createdAt', 'updatedAt', 'details', 'description', 'comment', 'message']);
+      const extra = Object.entries(r).filter(([k, v]) => !skip.has(k) && v !== '' && v !== null && typeof v !== 'object').slice(0, 8)
+        .map(([k, v]) => `<br><small>${esc(k)}: ${esc(String(v).slice(0, 160))}</small>`).join('');
+      return `<div class="target"><div><p class="t-title">${esc(g.label || 'Reported in the app')}</p><p class="t-text">Type: ${esc(g.kind)}${g.ownerId ? ' · about ' + who(g.ownerId) : ''}${extra}</p></div></div>`;
+    }
+    if (t === undefined) return `<div class="target"><p class="t-text">Could not load this ${esc(KIND[g.kind] || 'item').toLowerCase()}. ${esc(g.label)}</p></div>`;
+    if (t === null) return `<div class="target"><div><p class="t-title">${esc(g.label || KIND[g.kind] || 'Item')}</p><p class="gone">Already deleted.</p></div></div>`;
+    const hidden = t.hidden === true ? ' <span class="pill pill-hidden">Hidden</span>' : '';
+    if (g.kind === 'review') {
+      const url = t.placeDocId && t.placeCollection ? `plek.html?c=${encodeURIComponent(t.placeCollection)}&id=${encodeURIComponent(t.placeDocId)}` : '';
+      return `<div class="target"><div>
+        <p class="t-title">${url ? `<a href="${url}" target="_blank" rel="noopener">${esc(t.placeName || 'A place')}</a>` : esc(t.placeName || 'A place')} <span class="st">${starStr(t.rating || 0)}</span>${hidden}</p>
+        ${t.text ? `<p class="t-text">${esc(t.text)}</p>` : ''}
+        <p class="t-by">Review by ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.createdAt)))}</p></div>
+        ${t.photoUrl ? `<div class="thumb"><img data-photo="${esc(t.photoUrl)}" alt="" hidden></div>` : ''}</div>`;
+    }
+    if (g.kind === 'highlight') {
+      return `<div class="target"><div>
+        <p class="t-title">${esc(t.title || 'Highlight')}${hidden}</p>
+        ${t.placeName ? `<p class="t-text">📍 ${esc(t.placeName)}</p>` : ''}
+        <p class="t-by">Highlight by ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.createdAt)))}${t.mediaType === 'video' ? ' · video' : ''}</p></div>
+        ${t.photoUrl ? `<div class="thumb"><img data-photo="${esc(t.photoUrl)}" alt="" hidden></div>` : ''}</div>`;
+    }
+    if (g.kind === 'spot') {
+      return `<div class="target"><div>
+        <p class="t-title"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(g.targetId)}" target="_blank" rel="noopener">${esc(t.name || 'Spot')}</a>${hidden}</p>
+        ${t.tip || t.review ? `<p class="t-text">${esc(t.tip || t.review)}</p>` : ''}
+        <p class="t-by">${esc([t.city, t.address].filter(Boolean).join(' · '))}${t.city || t.address ? ' · ' : ''}added by ${who(t.addedByUserId || g.ownerId)}</p></div>
+        ${Array.isArray(t.photos) && t.photos[0] ? `<div class="thumb"><img data-photo="${esc(t.photos[0])}" alt="" hidden></div>` : ''}</div>`;
+    }
+    return `<div class="target"><div>
+      <p class="t-title">${who(g.targetId)}</p>
+      ${t.bio ? `<p class="t-text">${esc(t.bio)}</p>` : ''}
+      <p class="t-by">${esc(t.city || '')}${t.city ? ' · ' : ''}member since ${esc((toDate(t.createdAt) || new Date()).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }))}</p></div></div>`;
+  }
+
+  function drawOpen(list, gs) {
+    if (!gs.length) { list.innerHTML = '<div class="empty">No open reports. 🎉<br>When a member reports something, it shows up here.</div>'; return; }
+    list.innerHTML = gs.map((g, i) => {
+      const t = targets.get(g.key);
+      const owner = g.kind === 'member' ? g.targetId : ((t && (t.authorId || t.addedByUserId)) || g.ownerId);
+      const blocked = !!(owner && flags[owner] && flags[owner].blocked);
+      const exists = !!t && t !== 'unknown';
+      const buttons = [];
+      if (g.kind !== 'member' && exists && ['review', 'highlight', 'spot'].includes(g.kind)) {
+        buttons.push(t.hidden === true
+          ? `<button class="btn" data-act="keep" data-g="${i}">Keep hidden, close</button>`
+          : `<button class="btn btn-main" data-act="hide" data-g="${i}">Hide</button>`);
+        buttons.push(`<button class="btn btn-danger" data-act="delete" data-g="${i}">Delete</button>`);
+      }
+      if (owner && owner !== BRAND_UID) buttons.push(blocked
+        ? `<button class="btn" data-act="unblock" data-g="${i}">Unblock member</button>`
+        : `<button class="btn btn-danger" data-act="block" data-g="${i}">Block member</button>`);
+      buttons.push(exists || g.kind === 'member' || t === 'unknown'
+        ? `<button class="btn" data-act="dismiss" data-g="${i}">Nothing wrong</button>`
+        : `<button class="btn" data-act="gone" data-g="${i}">Close</button>`);
+      const newest = g.list.map(r => toDate(r.createdAt)).filter(Boolean).sort((a, b) => b - a)[0];
+      return `<article class="rep">
+        <div class="rep-head"><span class="pill pill-kind">${esc(KIND[g.kind] || g.kind || 'Report')}</span><strong>${g.list.length} ${g.list.length === 1 ? 'report' : 'reports'}</strong>${newest ? ' · newest ' + esc(ago(newest)) : ''}</div>
+        ${preview(g)}
+        <ul class="why">${g.list.map(r => `<li><b>${esc(REASON[r.reason] || r.reason || 'Report')}</b> <small>· by ${who(r.reporterId)} · ${esc(ago(toDate(r.createdAt)))}</small>${r.note ? `<q>${esc(r.note)}</q>` : ''}</li>`).join('')}</ul>
+        <div class="actions">${buttons.join('')}</div>
+      </article>`;
+    }).join('');
+    hydratePhotos(list);
+    list.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => act(b, gs[+b.dataset.g])));
+  }
+
+  async function closeReports(g, action) {
+    await Promise.all(g.list.map(r => updateDoc(doc(db, 'reports', r.id), { status: 'done', action, handledAt: serverTimestamp() })
+      .then(() => { r.status = 'done'; r.action = action; r.handledAt = new Date(); })));
+  }
+
+  async function setFlag(uid, data) {
+    await setDoc(doc(db, 'memberFlags', uid), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+    flags[uid] = { ...(flags[uid] || {}), ...data };
+  }
+
+  async function act(btn, g) {
+    const a = btn.dataset.act;
+    const t = targets.get(g.key);
+    const owner = g.kind === 'member' ? g.targetId : ((t && (t.authorId || t.addedByUserId)) || g.ownerId);
+    if (a === 'delete' && !confirmTap(btn, 'Tap again to delete for good')) return;
+    if (a === 'block' && !confirmTap(btn, 'Tap again: hides all their content')) return;
+    btn.disabled = true;
+    try {
+      if (a === 'hide') {
+        await updateDoc(doc(db, g.coll, g.targetId), { hidden: true, hiddenBy: 'admin', hiddenAt: serverTimestamp() });
+        t.hidden = true;
+        await closeReports(g, 'hidden');
+        toast('Hidden. It stays under Hidden content, where you can show it again.');
+      } else if (a === 'keep') {
+        await closeReports(g, 'hidden');
+        toast('Closed.');
+      } else if (a === 'delete') {
+        if (g.kind === 'review') await deleteReview(db, { id: g.targetId, photoUrl: t.photoUrl });
+        else if (g.kind === 'highlight') await deleteHighlight(db, { id: g.targetId, photoUrl: t.photoUrl });
+        else await deleteSpot(db, { id: g.targetId, photoUrl: t.photoUrl, photos: t.photos || [] });
+        targets.set(g.key, null);
+        await closeReports(g, 'deleted');
+        toast('Deleted.');
+      } else if (a === 'block') {
+        await setFlag(owner, { blocked: true, blockedAt: serverTimestamp() });
+        await closeReports(g, 'blocked');
+        toast('Member blocked. Their spots, reviews and highlights are gone from the site.');
+      } else if (a === 'unblock') {
+        await setFlag(owner, { blocked: false });
+        toast('Member unblocked.');
+      } else if (a === 'dismiss' || a === 'gone') {
+        await closeReports(g, a === 'gone' ? 'gone' : 'dismissed');
+        toast('Closed.');
+      }
+      hiddenRows = null;
+      draw();
+    } catch (e) {
+      console.log('Action failed:', e);
+      toast(refused(e) ? 'The database refused. Check the Firebase rules for this.' : 'Did not work. Try again.', true);
+      btn.disabled = false;
+    }
+  }
+
+  function drawDone(list, done) {
+    if (!done.length) { list.innerHTML = '<div class="empty">Nothing handled yet.</div>'; return; }
+    const at = r => toDate(r.handledAt) || toDate(r.createdAt) || new Date(0);
+    list.innerHTML = done.sort((a, b) => at(b) - at(a)).slice(0, 100).map(r => `
+      <div class="row-item"><div>
+        <p><span class="pill pill-kind">${esc(KIND[r.kind] || r.kind)}</span> ${esc(r.label || '')}</p>
+        <small>${esc(REASON[r.reason] || r.reason || '')} · reported ${esc(ago(toDate(r.createdAt)))} · ${esc(ACTION[r.action] || r.action || 'Closed')}${toDate(r.handledAt) ? ' ' + esc(ago(toDate(r.handledAt))) : ''}</small>
+      </div></div>`).join('');
+  }
+
+  async function drawHidden(list) {
+    list.innerHTML = '<p class="msg">Loading hidden content…</p>';
+    if (!hiddenRows) {
+      const colls = [['userReviews', 'review'], ['highlights', 'highlight'], ['userPlaces', 'spot']];
+      const snaps = await Promise.all(colls.map(([c]) => getDocs(query(collection(db, c), where('hidden', '==', true))).catch(() => ({ docs: [] }))));
+      hiddenRows = snaps.flatMap((s, i) => s.docs.map(d => ({ id: d.id, coll: colls[i][0], kind: colls[i][1], ...d.data() })));
+      const uids = [...new Set(hiddenRows.map(r => r.authorId || r.addedByUserId).filter(u => u && !names.has(u)))];
+      await Promise.all(uids.map(u => getDoc(doc(db, 'profiles', u)).then(s => names.set(u, s.exists() ? (s.data().displayName || 'Member') : 'Deleted account')).catch(() => names.set(u, 'Member'))));
+    }
+    if (tab !== 'hidden') return;
+    const rows = hiddenRows.filter(r => r.hidden === true);
+    if (!rows.length) { list.innerHTML = '<div class="empty">Nothing is hidden.</div>'; return; }
+    list.innerHTML = rows.map((r, i) => {
+      const title = r.kind === 'review' ? `${r.placeName || 'A place'}: ${String(r.text || '').slice(0, 120)}` : (r.title || r.name || 'Item');
+      return `<div class="row-item"><div>
+        <p><span class="pill pill-kind">${esc(KIND[r.kind])}</span> ${esc(title)}</p>
+        <small>by ${who(r.authorId || r.addedByUserId)}${toDate(r.hiddenAt) ? ' · hidden ' + esc(ago(toDate(r.hiddenAt))) : ''}</small>
+      </div><button class="btn" data-show="${i}" type="button">Show again</button></div>`;
+    }).join('');
+    list.querySelectorAll('[data-show]').forEach(b => b.addEventListener('click', async () => {
+      const r = rows[+b.dataset.show];
+      b.disabled = true;
+      try {
+        await updateDoc(doc(db, r.coll, r.id), { hidden: false });
+        r.hidden = false;
+        toast('Visible again.');
+        drawHidden(list);
+      } catch (e) {
+        console.log('Unhide failed:', e);
+        toast(refused(e) ? 'The database refused. Check the Firebase rules for this.' : 'Did not work. Try again.', true);
+        b.disabled = false;
+      }
+    }));
+  }
+</script>
+</body>
+</html>

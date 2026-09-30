@@ -7,10 +7,11 @@
 //
 // It reads the same userPlaces collection as the app, so a place a member adds
 // in the app appears here straight away. Places of members with a private
-// account are left out.
+// account are left out, and so are hidden spots and blocked members.
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { loadFlags, isBlocked } from "./sf-moderation.js?v=1";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -98,7 +99,8 @@ async function loadPlaces(catKey) {
     ? collection(db, 'userPlaces')
     : query(collection(db, 'userPlaces'), where('category', 'in', CATS[catKey].aliases));
   const snap = await getDocs(q);
-  const raw = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name && r.hidden !== true);
+  const flags = await loadFlags(db);   // blocked members are left out (sf-moderation.js)
+  const raw = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.name && r.hidden !== true && !isBlocked(flags, r.addedByUserId));
 
   const owners = [...new Set(raw.map(r => r.addedByUserId).filter(Boolean))];
   const privateOwners = new Set();

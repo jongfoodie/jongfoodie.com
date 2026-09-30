@@ -21,10 +21,13 @@
 // "fsvid://<id>", stored in pieces that a web page cannot play yet, so a
 // video shows its cover photo with "Watch it in the app".
 // Highlights of private accounts are left out, except on your own profile.
+// Hidden highlights and those of members blocked by Strong Foodie are left out
+// too; anyone can report a highlight from the viewer (js/sf-moderation.js).
 
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=6";
+import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=7";
 import { deleteHighlight, confirmTap } from "./sf-delete.js?v=1";
+import { loadFlags, isBlocked, openReport } from "./sf-moderation.js?v=1";
 
 const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];
 const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
@@ -83,6 +86,8 @@ const CSS = `
 .hl-who span { display: block; font-size: 11px; opacity: 0.8; }
 .hl-del { border: none; background: rgba(0,0,0,0.4); color: #fff; border-radius: 16px; padding: 8px 12px; font: 600 12px 'DM Sans', sans-serif; cursor: pointer; flex-shrink: 0; }
 .hl-del[data-armed] { background: #B3261E; }
+.hl-rep { border: none; background: rgba(0,0,0,0.35); color: #fff; border-radius: 16px; padding: 8px 12px; font: 600 12px 'DM Sans', sans-serif; cursor: pointer; flex-shrink: 0; }
+.hl-rep:disabled { opacity: 0.7; cursor: default; }
 .hl-del:disabled { opacity: 0.6; cursor: default; }
 .hl-x { width: 38px; height: 38px; border-radius: 50%; border: none; background: rgba(0,0,0,0.35); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; flex-shrink: 0; }
 .hl-bottom { position: absolute; left: 16px; right: 16px; bottom: 18px; z-index: 3; }
@@ -177,7 +182,7 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
         <div class="hl-top">
           <span class="hl-av" style="background:${colourOf(h.authorId || who)};">${esc(initialsOf(who))}${h.authorPhotoUrl ? '<img id="hlAv" alt="" hidden>' : ''}</span>
           <span class="hl-who">${h.authorId ? `<a href="member.html?u=${encodeURIComponent(h.authorId)}">${esc(who)}</a>` : esc(who)}<span>${isLive(h) ? esc(ago(toDate(h.createdAt))) : '📌 Pinned'}</span></span>
-          ${ctx.ownerId && h.authorId === ctx.ownerId ? '<button class="hl-del" type="button">Delete</button>' : ''}
+          ${ctx.ownerId && h.authorId === ctx.ownerId ? '<button class="hl-del" type="button">Delete</button>' : '<button class="hl-rep" type="button" aria-label="Report this highlight">Report</button>'}
           <button class="hl-x" type="button" aria-label="Close">×</button>
         </div>
         <div class="hl-bottom">
@@ -207,6 +212,13 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
         delete del.dataset.armed; del.disabled = false;
         del.textContent = e && e.code === 'permission-denied' ? 'Delete it in the app' : 'Not deleted, try again';
       }
+    });
+    const rep = viewer.querySelector('.hl-rep');
+    if (rep) rep.addEventListener('click', async () => {
+      document.removeEventListener('keydown', onKey);
+      const sent = await openReport(ctx.db, { kind: 'highlight', coll: 'highlights', targetId: h.id, ownerId: h.authorId || '', label: h.title || h.placeName || 'Highlight' });
+      document.addEventListener('keydown', onKey);
+      if (sent && rep.isConnected) { rep.textContent = 'Reported'; rep.disabled = true; }
     });
     viewer.querySelectorAll('.prev').forEach(b => b.addEventListener('click', () => go(-1)));
     viewer.querySelectorAll('.next').forEach(b => b.addEventListener('click', () => go(1)));
@@ -246,6 +258,8 @@ export async function loadHighlights(db, { authorId = '', placeId = '', category
   let rows = snap.docs.map(d => ({ id: d.id, ...d.data() }))
     .filter(h => h.active !== false && h.hidden !== true && (h.photoUrl || h.videoUrl))
     .filter(h => isLive(h) || (!feed && h.pinned === true));
+  const flags = await loadFlags(db);
+  rows = rows.filter(h => !isBlocked(flags, h.authorId));
   if (!includePrivate) {
     rows = rows.filter(h => h.authorIsPrivate !== true);
     const priv = await Promise.all(rows.map(h => isPrivate(db, h.authorId)));

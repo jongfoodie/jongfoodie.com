@@ -173,7 +173,7 @@ async function writePage(url, html) {
 // ── Build ─────────────────────────────────────────────────────────────────
 async function main() {
   const now = new Date();
-  const [catalogLists, memberDocs, guideDocs, listEdits, dishDocs] = await Promise.all([
+  const [catalogLists, memberDocs, guideDocs, listEdits, dishDocs, flagDocs] = await Promise.all([
     Promise.all(CATALOG.map(c => listAll(c))),
     listAll('userPlaces'),
     publishedGuides(),
@@ -181,7 +181,10 @@ async function main() {
     listAll('lists').then(ds => ds.map(d => ({ ...d, slug: d.id }))).catch(e => { console.log('List changes not read:', e.message); return []; }),
     // The dishes Strong Foodie rated (dish-edit.html); none is fine too.
     listAll('dishes').catch(e => { console.log('Dishes not read:', e.message); return []; }),
+    // Members Strong Foodie blocked (admin-members.html); none is fine too.
+    listAll('memberFlags').catch(e => { console.log('Member flags not read:', e.message); return []; }),
   ]);
+  const blockedIds = new Set(flagDocs.filter(d => d.blocked === true).map(d => d.id));
   const privateIds = await privateMembers(memberDocs.map(r => r.addedByUserId).filter(Boolean));
 
   const catalog = [];
@@ -189,7 +192,7 @@ async function main() {
     .filter(r => r.name && isPublished(r, now))
     .forEach(r => catalog.push({ place: normalise(coll, r.id, r, false), raw: r })));
   const members = memberDocs
-    .filter(r => r.name && r.hidden !== true && !privateIds.has(r.addedByUserId))
+    .filter(r => r.name && r.hidden !== true && !privateIds.has(r.addedByUserId) && !blockedIds.has(r.addedByUserId))
     .map(r => ({ place: normalise('userPlaces', r.id, r, true), raw: r }));
   const entries = catalog.concat(members);
   const all = entries.map(e => e.place);
