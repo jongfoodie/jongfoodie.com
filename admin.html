@@ -13,9 +13,15 @@
   .admin-nav { background: var(--ink); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
   .admin-nav h1 { font-family: 'Playfair Display', serif; color: #fff; font-size: 20px; }
   .admin-nav span { color: var(--accent); font-size: 12px; font-weight: 500; }
+  @media (max-width: 760px) {
+    .admin-nav { flex-wrap: wrap; justify-content: flex-start; padding: 0.8rem 16px; row-gap: 0.6rem; }
+    .admin-nav h1 { flex-basis: 100%; }
+    .admin-nav .back-link { margin-left: 0 !important; margin-right: 14px !important; white-space: nowrap; }
+  }
   .login-box { max-width: 400px; margin: 6rem auto; background: #fff; border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
   .login-box h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 0.5rem; }
   .login-box p { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
+  @media (max-width: 760px) { .login-box { margin: 3rem 16px; padding: 1.75rem 1.25rem; } }
   .admin-panel { max-width: 700px; margin: 3rem auto; padding: 0 1rem; }
   .admin-panel h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 0.5rem; }
   .admin-panel p { color: var(--muted); font-size: 14px; margin-bottom: 2rem; }
@@ -126,8 +132,8 @@
 
 <!-- LOGIN -->
 <div id="loginBox" class="login-box" style="display:none;">
-  <h2>Admin Access</h2>
-  <p>This page is only for Strong Foodie. Sign in with your admin account to continue.</p>
+  <h2 id="loginTitle">Admin Access</h2>
+  <p id="loginText">This page is only for Strong Foodie. Sign in with your admin account to continue.</p>
   <div class="form-group">
     <label class="form-label">Email</label>
     <input class="form-input" type="email" id="adminEmail" autocomplete="username" placeholder="you@example.com" onkeydown="if(event.key==='Enter')adminSignIn()">
@@ -997,7 +1003,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, deleteDoc, doc, setDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=1";
 
 
   const firebaseConfig = {
@@ -1319,16 +1326,43 @@
 
   // ── ADMIN AUTHENTICATION ──────────────────────────────────────────────
   // Real Firebase Auth sign-in. Access is granted by the "admin" custom claim
-  // on the ID token, set by the setAdminClaim Cloud Function. There is no
-  // shared password: a claim lives on the token, which the user cannot edit.
+  // on the ID token, set by the setAdminClaim Cloud Function, or by the brand
+  // account's uid. There is no shared password: a claim lives on the token,
+  // which the user cannot edit.
+  // On top of that, the admin lock (js/sf-admin.js): the site remembers who is
+  // signed in, so the admin asks for the password again after an hour without
+  // use, and after signing out. Otherwise anyone holding this device could open it.
 
   let panelLoaded = false;
+  let signingIn = false;
+  let stopWatch = null;
+  const LOGIN_TITLE = 'Admin Access';
+  const LOGIN_TEXT = 'This page is only for Strong Foodie. Sign in with your admin account to continue.';
 
   function showLogin() {
+    if (stopWatch) { stopWatch(); stopWatch = null; }
+    document.getElementById('loginTitle').textContent = LOGIN_TITLE;
+    document.getElementById('loginText').textContent = LOGIN_TEXT;
     document.getElementById('authChecking').style.display = 'none';
     document.getElementById('loginBox').style.display = 'block';
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('signOutBtn').style.display = 'none';
+  }
+
+  // Signed in, but the admin is locked: the same box, asking only for the password.
+  // The panel is hidden, not cleared, so a half-filled form is still there after unlocking.
+  function showLocked(user) {
+    if (stopWatch) { stopWatch(); stopWatch = null; }
+    document.getElementById('loginTitle').textContent = 'Enter your password';
+    document.getElementById('loginText').textContent = 'The admin locks after an hour without use, so nobody else can open it on this device.';
+    const em = document.getElementById('adminEmail');
+    if (user.email && !em.value) em.value = user.email;
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('authChecking').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('signOutBtn').style.display = 'inline-block';
+    setTimeout(() => document.getElementById(em.value ? 'adminPassword' : 'adminEmail').focus(), 50);
   }
 
   function showPanel() {
@@ -1345,6 +1379,39 @@
     }
   }
 
+  // Decides what is shown for this account. fresh = the password was just entered here.
+  async function gate(user, fresh = false) {
+    if (!user) { showLogin(); return; }
+    try {
+      // Force a refresh so a claim that was just granted is picked up.
+      const token = await user.getIdTokenResult(true);
+      // Admin is the custom claim on the token, or the brand account by uid.
+      // A uid comes from Firebase Auth and cannot be faked, so it is just as
+      // safe as the claim.
+      const hasClaim = token.claims && token.claims.admin === true;
+      if (!(hasClaim || user.uid === BRAND_UID)) {
+        showToast('This account is not an admin.');
+        await signOut(auth);
+        showLogin();
+        return;
+      }
+      if (fresh) markUnlocked(user.uid);
+      if (!isUnlocked(user.uid)) { showLocked(user); return; }
+      markUnlocked(user.uid);
+      // Came here from another admin page that asked you to sign in: go back there.
+      const next = safeNext(new URLSearchParams(location.search).get('next'));
+      if (next) { location.replace(next); return; }
+      showPanel();
+      if (stopWatch) stopWatch();
+      stopWatch = watchAdminLock(user.uid, () => { stopWatch = null; showLocked(user); });
+    } catch (err) {
+      console.error('Could not verify admin claim:', err);
+      showToast('Could not verify your account. Try again.');
+      await signOut(auth);
+      showLogin();
+    }
+  }
+
   window.adminSignIn = async function() {
     const email = document.getElementById('adminEmail').value.trim();
     const pw = document.getElementById('adminPassword').value;
@@ -1357,31 +1424,25 @@
 
     btn.disabled = true;
     btn.textContent = 'Signing in...';
+    signingIn = true;
 
     try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithEmailAndPassword(auth, email, pw);
-      // onAuthStateChanged does the claim check and opens the panel.
+      // Still remembered: confirms the password on that account. Otherwise: signs in.
+      const user = await passwordUnlock(auth, email, pw);
+      await gate(user, true);
     } catch (err) {
       console.error('Sign in failed:', err);
-      const code = err && err.code ? err.code : '';
-      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
-        showToast('Wrong email or password.');
-      } else if (code === 'auth/too-many-requests') {
-        showToast('Too many attempts. Try again later.');
-      } else if (code === 'auth/network-request-failed') {
-        showToast('No connection. Check your internet.');
-      } else {
-        showToast('Sign in failed. Try again.');
-      }
+      showToast(unlockError(err));
       document.getElementById('adminPassword').value = '';
     } finally {
+      signingIn = false;
       btn.disabled = false;
       btn.textContent = 'Sign in';
     }
   };
 
   window.adminSignOut = async function() {
+    lockAdmin();
     try {
       await signOut(auth);
     } catch (err) {
@@ -1394,33 +1455,10 @@
   };
 
   // Keeps the session across page reloads and decides what is shown.
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      showLogin();
-      return;
-    }
-    try {
-      // Force a refresh so a claim that was just granted is picked up.
-      const token = await user.getIdTokenResult(true);
-      // Admin is the custom claim on the token, or the brand account by uid.
-      // A uid comes from Firebase Auth and cannot be faked, so it is just as
-      // safe as the claim. Once setAdminClaim has run for this account, the
-      // uid check below can be removed.
-      const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
-      const hasClaim = token.claims && token.claims.admin === true;
-      if (hasClaim || user.uid === BRAND_UID) {
-        showPanel();
-      } else {
-        showToast('This account is not an admin.');
-        await signOut(auth);
-        showLogin();
-      }
-    } catch (err) {
-      console.error('Could not verify admin claim:', err);
-      showToast('Could not verify your account. Try again.');
-      await signOut(auth);
-      showLogin();
-    }
+  // While a sign-in from the box is busy, adminSignIn handles it.
+  onAuthStateChanged(auth, (user) => {
+    if (signingIn) return;
+    gate(user);
   });
 
   // ── MULTI-LOCATION HELPERS (used by Eat & Shop forms) ──

@@ -79,8 +79,8 @@
   <p id="checking" class="muted">Even kijken of je bent ingelogd...</p>
 
   <div id="loginBox" class="box login" hidden>
-    <h2>Inloggen</h2>
-    <p class="muted">Log in met het Strong Foodie admin-account (hetzelfde als op admin.html).</p>
+    <h2 id="loginTitle">Inloggen</h2>
+    <p class="muted" id="loginText">Log in met het Strong Foodie admin-account (hetzelfde als op admin.html).</p>
     <form id="loginForm">
       <label for="email">E-mail</label>
       <input id="email" type="email" autocomplete="username" required>
@@ -118,7 +118,8 @@
 
 <script type="module">
   import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { isUnlocked, markUnlocked, lockAdmin, passwordUnlock, watchAdminLock } from "./js/sf-admin.js?v=1";
   import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -462,33 +463,56 @@
   });
 
   // ── Sign-in ───────────────────────────────────────────────────────────
+  // With the admin lock (js/sf-admin.js): being remembered by the site is not
+  // enough, the password is asked again after an hour without use.
+  let signingIn = false, stopWatch = null;
+
+  function showLocked(user) {
+    if (stopWatch) { stopWatch(); stopWatch = null; }
+    $('loginTitle').textContent = 'Wachtwoord invullen';
+    $('loginText').textContent = 'De admin gaat op slot na een uur niet gebruiken, zodat niemand anders er op dit apparaat in kan.';
+    if (user.email && !$('email').value) $('email').value = user.email;
+    $('pw').value = '';
+    show('loginBox');
+    $('signOutBtn').hidden = false;
+    setTimeout(() => $($('email').value ? 'pw' : 'email').focus(), 50);
+  }
+
   $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     const btn = $('loginBtn');
     $('loginErr').hidden = true;
     btn.disabled = true; btn.textContent = 'Inloggen...';
+    signingIn = true;
     try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pw').value);
+      const user = await passwordUnlock(auth, $('email').value.trim(), $('pw').value);
+      await gate(user, true);
     } catch (err) {
       const code = err && err.code || '';
-      $('loginErr').textContent = (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found')
+      $('loginErr').textContent = (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'auth/user-mismatch')
         ? 'Verkeerd e-mailadres of wachtwoord.'
         : code === 'auth/too-many-requests' ? 'Te veel pogingen. Probeer het later opnieuw.'
         : 'Inloggen is mislukt. Probeer het opnieuw.';
       $('loginErr').hidden = false;
       $('pw').value = '';
     } finally {
+      signingIn = false;
       btn.disabled = false; btn.textContent = 'Inloggen';
     }
   });
 
-  const doSignOut = async () => { try { await signOut(auth); } catch (e) {} };
+  const doSignOut = async () => {
+    lockAdmin();
+    if (stopWatch) { stopWatch(); stopWatch = null; }
+    $('loginTitle').textContent = 'Inloggen';
+    $('loginText').textContent = 'Log in met het Strong Foodie admin-account (hetzelfde als op admin.html).';
+    try { await signOut(auth); } catch (e) {}
+  };
   $('signOutBtn').addEventListener('click', doSignOut);
   $('notAdminOut').addEventListener('click', doSignOut);
 
   let loaded = false;
-  onAuthStateChanged(auth, async user => {
+  async function gate(user, fresh = false) {
     if (!user) { show('loginBox'); return; }
     try {
       const token = await user.getIdTokenResult(true);
@@ -498,7 +522,12 @@
         show('notAdmin');
         return;
       }
+      if (fresh) markUnlocked(user.uid);
+      if (!isUnlocked(user.uid)) { showLocked(user); return; }
+      markUnlocked(user.uid);
       show('panel');
+      if (stopWatch) stopWatch();
+      stopWatch = watchAdminLock(user.uid, () => { stopWatch = null; showLocked(user); });
       if (!loaded) { loaded = true; load(); }
     } catch (e) {
       console.log('Admin check failed:', e);
@@ -506,7 +535,8 @@
       $('loginErr').textContent = 'Je account kon niet worden gecontroleerd. Probeer opnieuw in te loggen.';
       $('loginErr').hidden = false;
     }
-  });
+  }
+  onAuthStateChanged(auth, user => { if (!signingIn) gate(user); });
 </script>
 </body>
 </html>

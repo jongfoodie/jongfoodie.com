@@ -83,6 +83,7 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, toDate, loadPlaces, loadLists, destinations, placeUrl, destinationUrl, listUrl, guideUrl, placeKey } from "./js/sf-places.js?v=6";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=1";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -101,10 +102,12 @@
   const readAll = async c => { try { return (await getDocs(collection(db, c))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.log('Not read:', c, e.code || e); return null; } };
 
   onAuthStateChanged(auth, async user => {
-    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. Sign in on the <a href="admin.html">admin page</a>, then come back here.</p></div>`; return; }
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
     let admin = user.uid === BRAND_UID;
     try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
     if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't see the numbers.</p></div>`; return; }
+    // Signed in is not enough: the password has to be entered again after an hour without use (js/sf-admin.js).
+    if (!(await requireUnlock(auth, user))) return;
     try { localStorage.setItem('sf_admin_device', '1'); } catch (e) {}
     root.innerHTML = '<p class="msg">Counting…</p>';
     try { await start(); }
