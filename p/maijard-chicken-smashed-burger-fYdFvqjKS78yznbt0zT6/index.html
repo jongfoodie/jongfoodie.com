@@ -168,6 +168,27 @@
     gtag('config', 'G-PEEXFGGPNH');
   }
 </script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
 <meta property="og:url" content="https://strongfoodie.com/p/maijard-chicken-smashed-burger-fYdFvqjKS78yznbt0zT6/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://strongfoodie.com/p/maijard-chicken-smashed-burger-fYdFvqjKS78yznbt0zT6/">
@@ -175,31 +196,29 @@
 </head>
 <body>
 <div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
   <a href="index.html">🏠 Home</a>
-  <a href="reviews.html">🍽️ Reviews</a>
-  <a href="drink.html">🍸 Drink</a>
-  <a href="shop.html">🛍️ Shop</a>
-  <a href="culture.html">🎭 Culture</a>
-  <a href="health.html">💪 Health</a>
-  <a href="guides.html">📖 Guides</a>
-  <a href="videos.html">🎬 Videos</a>
-  <a href="map.html">🗺️ Map</a>
-  <a href="community.html">👥 Community</a>
-  <a href="stad.html">🌍 Destinations</a>
   <a href="best.html">🏆 Best of</a>
-  <a href="about.html">👤 About me</a>
-  <a href="hotel.html">🏨 Stay</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="about.html">👤 About</a>
 </div>
 
 <nav>
   <a class="nav-logo" href="index.html">Strong <span>Foodie</span></a>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="reviews.html">Reviews</a></li>
+    <li><a href="reviews.html">Eat</a></li>
     <li><a href="drink.html">Drink</a></li>
+    <li><a href="hotel.html">Stay</a></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="hotel.html">🏨 Stay</a></li>
   </ul>
   <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
 </nav>
