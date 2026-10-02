@@ -6,6 +6,9 @@ Disallow: /dish-edit.html
 Disallow: /admin-stats.html
 Disallow: /admin-reports.html
 Disallow: /admin-members.html
+Disallow: /admin-home.html
+Disallow: /admin-ads.html
+Disallow: /admin-report.html
 Disallow: /admin.html
 
 Sitemap: https://strongfoodie.com/sitemap.xml

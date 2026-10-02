@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ads | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>ADS</span></h1><nav><a href="admin-report.html">📊 Reports per place</a><a href="admin-home.html">🏠 Homepage</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, fold, toDate, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
+  import { confirmTap } from "./js/sf-delete.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const DAY = 24 * 60 * 60 * 1000;
+  const WHERE = [['home', 'Homepage'], ['city', 'City page'], ['place', 'Its own page']];
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+  const ymd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+  const startOfDay = v => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
+  const endOfDay = v => { const d = new Date(v + 'T23:59:59'); return isNaN(d) ? null : d; };
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '?';
+  const refused = e => e && e.code === 'permission-denied';
+
+  let places = [], byKey = new Map(), ads = [], editing = null, chosen = null;
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't manage ads.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading ads…</p>';
+    try {
+      const [loaded, snap] = await Promise.all([loadPlaces(db), getDocs(collection(db, 'promos')).catch(e => { if (refused(e)) throw e; return { docs: [] }; })]);
+      places = loaded.all.filter(p => !p.closed);
+      loaded.all.forEach(p => byKey.set(placeKey(p), p));
+      ads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      draw();
+    } catch (e) {
+      console.log('Ads error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rule for <code>promos</code> in Firebase first, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  function state(a, now = new Date()) {
+    const s = toDate(a.start), e = toDate(a.end);
+    if (e && e <= now) return 'ended';
+    if (s && s > now) return 'soon';
+    return 'live';
+  }
+
+  function draw() {
+    const now = new Date();
+    const groups = { live: [], soon: [], ended: [] };
+    ads.forEach(a => groups[state(a, now)].push(a));
+    groups.live.sort((a, b) => toDate(a.end) - toDate(b.end));
+    groups.soon.sort((a, b) => toDate(a.start) - toDate(b.start));
+    groups.ended.sort((a, b) => toDate(b.end) - toDate(a.end));
+    const row = a => {
+      const p = byKey.get(a.placeKey);
+      const s = state(a, now), e = toDate(a.end);
+      const left = s === 'live' ? Math.max(0, Math.ceil((e - now) / DAY)) : 0;
+      const where = WHERE.filter(([k]) => (a.where || []).includes(k)).map(([, t]) => t).join(', ') || 'Nowhere';
+      return `<div class="ad"><div>
+          <p class="ad-name">${p ? `<a href="${placeUrl(p)}" target="_blank" rel="noopener" style="color:inherit;">${esc(p.name)}</a>` : esc(a.placeName || 'Removed place')}<span class="pill pill-ad">Ad</span>${s === 'live' ? '<span class="pill pill-live">Live</span>' : s === 'soon' ? '<span class="pill pill-soon">Starts soon</span>' : ''}</p>
+          <p class="ad-meta">${nice(toDate(a.start))} to ${nice(e)}${s === 'live' ? ` · ${left} ${left === 1 ? 'day' : 'days'} left` : ''} · ${esc(where)}${p && p.where ? ' · ' + esc(p.where) : ''}</p>
+        </div>
+        <div class="ad-tools">
+          <a class="btn btn-sm" href="admin-report.html?place=${encodeURIComponent(a.placeKey)}">📊 Report</a>
+          ${s !== 'ended' ? `<button class="btn btn-sm" type="button" data-edit="${esc(a.id)}">Edit</button>` : ''}
+          ${s === 'live' ? `<button class="btn btn-sm btn-danger" type="button" data-stop="${esc(a.id)}">End now</button>` : ''}
+          <button class="btn btn-sm btn-danger" type="button" data-del="${esc(a.id)}">Delete</button>
+        </div></div>`;
+    };
+    root.innerHTML = `
+      <p class="lead">A featured place shows on the homepage, on its city page and on its own page, always with an <b>Ad</b> label, as the Dutch advertising code asks. Its review and score never change. Keep the price and the invoice in your own records: everyone can read this list.</p>
+      <section class="card" id="form"></section>
+      ${['live', 'soon', 'ended'].map(k => groups[k].length ? `<p class="grp">${{ live: 'Live now', soon: 'Starting later', ended: 'Ended' }[k]} · ${groups[k].length}</p>${groups[k].slice(0, k === 'ended' ? 20 : 99).map(row).join('')}` : '').join('')}
+      ${ads.length ? '' : '<div class="empty">No ads yet. Add the first one above.</div>'}`;
+    drawForm();
+    root.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => { editing = ads.find(a => a.id === b.dataset.edit); chosen = byKey.get(editing.placeKey) || null; drawForm(); document.getElementById('form').scrollIntoView({ behavior: 'smooth' }); }));
+    root.querySelectorAll('[data-stop]').forEach(b => b.addEventListener('click', () => stop(b)));
+    root.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => remove(b)));
+  }
+
+  function drawForm() {
+    const f = document.getElementById('form');
+    const a = editing || {};
+    const w = editing ? (a.where || []) : WHERE.map(([k]) => k);
+    const start = editing ? toDate(a.start) : new Date();
+    const end = editing ? toDate(a.end) : new Date(Date.now() + 30 * DAY);
+    f.innerHTML = `
+      <h2>${editing ? 'Edit ad' : 'New ad'}</h2>
+      <p class="sub">Pick the place, where it shows and for how long.</p>
+      <div id="pickedBox">${chosen ? `<div class="picked"><span>${esc(chosen.emoji)} <b>${esc(chosen.name)}</b> <small style="color:var(--muted)">${esc(chosen.where || '')}</small></span><button class="btn btn-sm" type="button" id="unpick">Change</button></div>` : `
+        <input type="search" id="find" placeholder="Find the place…" aria-label="Find the place" autocomplete="off"><div class="results" id="res"></div>`}</div>
+      <label class="lab">Where it shows</label>
+      <div class="checks">${WHERE.map(([k, t]) => `<label><input type="checkbox" value="${k}"${w.includes(k) ? ' checked' : ''}> ${t}</label>`).join('')}</div>
+      <p class="hint">Homepage: at most three ads at once, under "Featured partners". City page: the same, for places in that city.</p>
+      <div class="row2">
+        <div><label class="lab" for="start">From</label><input type="date" id="start" value="${ymd(start)}"></div>
+        <div><label class="lab" for="end">Until (the end of that day)</label><input type="date" id="end" value="${ymd(end)}"></div>
+      </div>
+      <div class="actions"><button class="btn btn-main" id="saveBtn" type="button">${editing ? 'Save' : 'Add ad'}</button>${editing ? '<button class="btn" id="cancelBtn" type="button">Cancel</button>' : ''}</div>`;
+    const find = document.getElementById('find');
+    if (find) find.addEventListener('input', () => {
+      const q = fold(find.value).trim(), box = document.getElementById('res');
+      if (q.length < 2) { box.innerHTML = ''; return; }
+      const terms = q.split(/\s+/);
+      const hits = places.filter(p => terms.every(t => p._name.includes(t) || p._place.includes(t))).slice(0, 8);
+      box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where || '')}${p.member ? ' · member spot' : ''}</small></button>`).join('') : '<p class="hint">No place found.</p>';
+      box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => { chosen = byKey.get(b.dataset.k); drawForm(); }));
+    });
+    const un = document.getElementById('unpick');
+    if (un) un.addEventListener('click', () => { chosen = null; drawForm(); });
+    document.getElementById('saveBtn').addEventListener('click', save);
+    const c = document.getElementById('cancelBtn');
+    if (c) c.addEventListener('click', () => { editing = null; chosen = null; drawForm(); });
+  }
+
+  async function save() {
+    if (!chosen) return toast('Pick the place first.', true);
+    const where = [...document.querySelectorAll('.checks input:checked')].map(i => i.value);
+    if (!where.length) return toast('Pick at least one spot where it shows.', true);
+    const start = startOfDay(document.getElementById('start').value), end = endOfDay(document.getElementById('end').value);
+    if (!start || !end) return toast('Fill in both dates.', true);
+    if (end <= start) return toast('The end date must be after the start date.', true);
+    const data = { placeKey: placeKey(chosen), placeName: chosen.name, where, start, end, updatedAt: serverTimestamp() };
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    try {
+      if (editing) { await updateDoc(doc(db, 'promos', editing.id), data); Object.assign(editing, data); }
+      else { const ref = await addDoc(collection(db, 'promos'), { ...data, createdAt: serverTimestamp() }); ads.push({ id: ref.id, ...data }); }
+      toast(editing ? 'Ad saved.' : `Ad added: ${chosen.name} shows with an Ad label from ${nice(start)}.`);
+      editing = null; chosen = null;
+      draw();
+    } catch (e) {
+      console.log('Ad not saved:', e);
+      toast(refused(e) ? 'The database refused: add the promos rule in Firebase first.' : 'Could not save. Try again.', true);
+      btn.disabled = false;
+    }
+  }
+
+  async function stop(btn) {
+    if (!confirmTap(btn, 'Tap again to end it')) return;
+    const a = ads.find(x => x.id === btn.dataset.stop);
+    btn.disabled = true;
+    try { const end = new Date(); await updateDoc(doc(db, 'promos', a.id), { end, updatedAt: serverTimestamp() }); a.end = end; toast('Ended. It is off the site within a few minutes.'); draw(); }
+    catch (e) { console.log('Not ended:', e); toast('Could not end it. Try again.', true); btn.disabled = false; }
+  }
+
+  async function remove(btn) {
+    if (!confirmTap(btn, 'Tap again to delete')) return;
+    btn.disabled = true;
+    try { await deleteDoc(doc(db, 'promos', btn.dataset.del)); ads = ads.filter(a => a.id !== btn.dataset.del); toast('Deleted.'); draw(); }
+    catch (e) { console.log('Not deleted:', e); toast('Could not delete. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

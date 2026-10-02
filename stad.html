@@ -234,6 +234,8 @@
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=7";
   import { countView } from "./js/sf-views.js?v=1";
+  import { loadPromos, adsFor, adCard } from "./js/sf-promos.js?v=1";
+  import { placeKey } from "./js/sf-places.js?v=7";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -313,7 +315,7 @@
   const state = { cat: 'all', area: 'all', q: '', sort: 'best', shown: PAGE };
   let D = null, map = null, markerLayer = null;
 
-  function renderDestination(d, dests, lists = []) {
+  function renderDestination(d, dests, lists = [], ads = []) {
     D = d;
     const counts = catCounts(d.places);
     const reviewed = d.places.filter(p => !p.member).length;
@@ -361,6 +363,11 @@
           </span>
         </a>`).join('')}</div>` : ''}
 
+      ${ads.length ? `
+      <p class="section-label">Featured partners in ${esc(d.name)}</p>
+      <p class="ad-note">Paid placements, marked Ad. Our reviews and scores are never for sale.</p>
+      <div class="cards-grid" id="adGrid">${ads.map(x => adCard(miniCard(x.place))).join('')}</div>` : ''}
+
       ${lists.length ? `
       <p class="section-label">Best-of lists for ${esc(d.name)}</p>
       <div class="others">${lists.map(l => `<a class="chip" href="${l.url}">🏆 ${esc(l.title.replace(/ in .*$/, ''))}<span>${l.count}</span></a>`).join('')}</div>` : ''}
@@ -403,6 +410,8 @@
     hydratePhotos(root.querySelector('.d-hero'));
     const fav = root.querySelector('.fav-grid');
     if (fav) hydratePhotos(fav);
+    const adGrid = document.getElementById('adGrid');
+    if (adGrid) hydratePhotos(adGrid);
     addJsonLd(d);
 
     // Controls
@@ -517,7 +526,14 @@
     if (!slug) renderIndex(dests, all.filter(p => p.destination).length);
     else {
       const d = dests.find(x => x.slug === slug);
-      if (d) { renderDestination(d, dests, (await loadLists(db, all)).filter(l => l.destSlug === d.slug)); countView(db, 'city', d.slug); } else renderNotFound(slug, dests);
+      if (d) {
+        const [lists, promos] = await Promise.all([loadLists(db, all), loadPromos(db)]);
+        // Paid placements for this destination (admin-ads.html), at most three.
+        const inCity = new Map(d.places.map(p => [placeKey(p), p]));
+        const ads = adsFor(promos, 'city', inCity).filter(x => !x.place.closed).slice(0, 3);
+        renderDestination(d, dests, lists.filter(l => l.destSlug === d.slug), ads);
+        countView(db, 'city', d.slug);
+      } else renderNotFound(slug, dests);
     }
   } catch (e) {
     console.log('Destinations error:', e);
@@ -589,6 +605,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=2"></script>
+<script type="module" src="js/sf-account-nav.js?v=3"></script>
 </body>
 </html>

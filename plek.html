@@ -223,9 +223,10 @@
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
   import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=7";
-  import { highlightsRow } from "./js/sf-highlights.js?v=7";
+  import { highlightsRow } from "./js/sf-highlights.js?v=8";
   import { countView } from "./js/sf-views.js?v=1";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+  import { loadPromos } from "./js/sf-promos.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -414,8 +415,10 @@
 
     const closed = p.closedStatus
       ? `<div class="closed-banner">${p.closedStatus === 'perm' ? '🚪 Permanently closed' : '🚪 Temporarily closed'}${p.closedNote ? ': ' + esc(p.closedNote) : ''}</div>` : '';
+    // A paid collaboration on the review itself, or a paid placement (promos, admin-ads.html).
     const partner = p.sponsored
-      ? `<span class="badge badge-ad">AD · Partner${p.partnerName ? ': ' + esc(p.partnerName) : ''}</span>` : '';
+      ? `<span class="badge badge-ad">AD · Partner${p.partnerName ? ': ' + esc(p.partnerName) : ''}</span>`
+      : p.promoLive ? `<span class="badge badge-ad" title="Paid placement. Our review and score are independent.">AD · Featured partner</span>` : '';
     const sourceBadge = p.member
       ? `<span class="badge badge-member">Member spot</span>`
       : `<span class="badge badge-sf">Strong Foodie review</span>`;
@@ -1071,6 +1074,7 @@
   }
 
   async function init() {
+    const promosP = loadPromos(db);
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
     let coll = qs.get('c');
@@ -1118,6 +1122,7 @@
       } catch (e) {}
     }
 
+    p.promoLive = (await promosP).some(x => x.placeKey === `${p.coll}/${p.id}` && Array.isArray(x.where) && x.where.includes('place'));
     render(p);
     const spotWrap = document.getElementById('spotReportWrap');
     if (spotWrap) wireReports(db, spotWrap, () => ({ kind: 'spot', coll: p.coll, targetId: p.id, ownerId: p.addedByUserId || '', label: p.name }));
@@ -1193,6 +1198,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=2"></script>
+<script type="module" src="js/sf-account-nav.js?v=3"></script>
 </body>
 </html>

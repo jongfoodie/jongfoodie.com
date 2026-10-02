@@ -81,9 +81,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, query, where, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, toDate, loadPlaces, loadLists, destinations, placeUrl, destinationUrl, listUrl, guideUrl, placeKey } from "./js/sf-places.js?v=7";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=1";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -119,10 +119,30 @@
   const WEEKS = 12;
   const shortDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
+  // The public reach on the press page (site/stats): refreshed every time you open this page.
+  async function publishReach(profiles, reviews, placesData) {
+    if (!profiles || !reviews) return;
+    const now = new Date();
+    const m = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    const label = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    const thisM = new Date(now.getFullYear(), now.getMonth(), 1), lastM = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const total = async month => (await getDocs(query(collection(db, 'views'), where('month', '==', month)))).docs.reduce((a, d) => a + (Number(d.data().count) || 0), 0);
+    try {
+      const [monthViews, lastMonthViews] = await Promise.all([total(m(thisM)), total(m(lastM))]);
+      await setDoc(doc(db, 'site', 'stats'), {
+        monthViews, monthLabel: label(thisM), lastMonthViews, lastMonthLabel: label(lastM),
+        members: profiles.length, memberReviews: reviews.filter(r => r.hidden !== true).length,
+        places: placesData.all.length, destinations: destinations(placesData.all).length,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (e) { console.log('Reach not saved:', e.code || e); }
+  }
+
   async function start() {
     const [profiles, spots, reviews, highlights, placesData, guides] = await Promise.all([
       readAll('profiles'), readAll('userPlaces'), readAll('userReviews'), readAll('highlights'), loadPlaces(db), readAll('guides'),
     ]);
+    publishReach(profiles, reviews, placesData);
     const lists = await loadLists(db, placesData.all, { admin: true });
     const now = new Date(), thisWeek = weekStart(now);
     const weeks = Array.from({ length: WEEKS }, (_, i) => { const d = new Date(thisWeek); d.setDate(d.getDate() - 7 * (WEEKS - 1 - i)); return d; });

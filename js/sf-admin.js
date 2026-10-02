@@ -79,7 +79,7 @@ export function watchAdminLock(uid, onLock) {
   return stop;
 }
 
-// For the admin tool pages (stats, reports, members, lists, guides, dishes). Waits until the
+// For the admin tool pages (stats, reports, members, homepage, ads, lists, guides, dishes). Waits until the
 // admin is unlocked, asking for the password over the page when needed, and
 // locks the page again after an hour without use. Resolves false when you
 // sign out from the lock screen instead.
@@ -189,7 +189,7 @@ export function lockScreen(auth, user) {
 
 // Only admin pages on this site may be a ?next= target of admin.html.
 export function safeNext(raw) {
-  return raw && /^(admin-stats|admin-reports|admin-members|list-edit|guide-edit|dish-edit|correcties)\.html(\?[^#]*)?$/.test(raw) ? raw : null;
+  return raw && /^(admin-stats|admin-reports|admin-members|admin-home|admin-ads|admin-report|list-edit|guide-edit|dish-edit|correcties)\.html(\?[^#]*)?$/.test(raw) ? raw : null;
 }
 
 export function nextLink(page = location.pathname.split('/').pop() + location.search) {

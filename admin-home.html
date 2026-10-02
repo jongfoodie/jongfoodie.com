@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Homepage | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=text], input[type=url], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .chosen { display: flex; align-items: center; gap: 0.6rem; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.75rem; margin-bottom: 0.45rem; }
+  .chosen .n { width: 26px; height: 26px; border-radius: 50%; background: #F0EBE3; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .chosen .t { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .chosen .t small { display: block; color: var(--muted); font-size: 12px; }
+  .chosen button { width: 32px; height: 30px; border: 1px solid var(--border); background: var(--warm-white); border-radius: 8px; cursor: pointer; font-size: 14px; flex-shrink: 0; }
+  .chosen button:disabled { opacity: 0.35; cursor: default; }
+  .auto { font-size: 14px; color: var(--muted); padding: 0.6rem 0; }
+  .hl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.6rem; }
+  .hl-pick { position: relative; aspect-ratio: 9 / 14; border-radius: 12px; overflow: hidden; border: 3px solid transparent; background: #3D2F1A; cursor: pointer; padding: 0; color: #fff; font: 600 11px 'DM Sans', sans-serif; text-align: left; }
+  .hl-pick img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hl-pick span { position: absolute; left: 6px; right: 6px; bottom: 6px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); line-height: 1.25; }
+  .hl-pick[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+  .bar-preview { background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 16px; text-align: center; font-size: 14px; font-weight: 500; margin-top: 0.8rem; }
+  .bar-preview a { color: #fff; font-weight: 700; margin-left: 6px; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .savebar { position: sticky; bottom: 0; background: rgba(250,247,242,0.96); border-top: 1px solid var(--border); padding: 0.8rem 0; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .savebar .hint { margin: 0; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>HOMEPAGE</span></h1><nav><a href="admin-ads.html">📣 Ads</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, fold, toDate, loadPlaces, placeKey, placeUrl, photoTools } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const { resolvePhoto } = photoTools(db);
+  const DAY = 24 * 60 * 60 * 1000;
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+  const ymd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+  // A date field means "until the end of that day".
+  const endOfDay = v => { if (!v) return null; const d = new Date(v + 'T23:59:59'); return isNaN(d) ? null : d; };
+
+  let catalog = [], byKey = new Map(), highlights = [];
+  // What the page edits: the site/home document.
+  const st = { featuredKey: '', topPicks: [], highlightId: '', highlightUntil: null, ann: { text: '', link: '', until: null } };
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't change the homepage.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const [places, homeSnap, hlSnap] = await Promise.all([
+        loadPlaces(db),
+        getDoc(doc(db, 'site', 'home')).catch(() => null),
+        getDocs(collection(db, 'highlights')).catch(() => ({ docs: [] })),
+      ]);
+      catalog = places.catalog.filter(p => !p.closed);
+      places.all.forEach(p => byKey.set(placeKey(p), p));
+      const h = homeSnap && homeSnap.exists() ? homeSnap.data() : {};
+      st.featuredKey = h.featuredKey || '';
+      st.topPicks = Array.isArray(h.topPicks) ? h.topPicks.slice(0, 4) : [];
+      st.highlightId = h.highlightId || '';
+      st.highlightUntil = toDate(h.highlightUntil);
+      const a = h.announcement || {};
+      st.ann = { text: a.text || '', link: a.link || '', until: toDate(a.until) };
+      const since = Date.now() - 30 * DAY;
+      highlights = hlSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .filter(x => x.hidden !== true && x.active !== false && (x.photoUrl || x.videoUrl) && ((toDate(x.createdAt) || 0) > since || x.id === st.highlightId))
+        .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0)).slice(0, 24);
+      draw();
+    } catch (e) {
+      console.log('Homepage settings error:', e);
+      root.innerHTML = '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  const placeLine = p => `${esc(p.emoji)} ${esc(p.name)}<small>${esc(p.where || '')}${p.rating ? ' · ' + p.rating.toFixed(1) : ''}</small>`;
+
+  function draw() {
+    root.innerHTML = `
+      <p class="lead">What visitors see first on strongfoodie.com, and in the app after Rork batch 15. Nothing changes until you press Save.</p>
+
+      <section class="card">
+        <h2>Featured review</h2>
+        <p class="sub">The big card at the top of the homepage. Empty: your newest review.</p>
+        <div id="featBox"></div>
+        <input type="search" id="featFind" placeholder="Find a review to feature…" aria-label="Find a review to feature" autocomplete="off">
+        <div class="results" id="featRes"></div>
+      </section>
+
+      <section class="card">
+        <h2>Top picks</h2>
+        <p class="sub">Pin up to four places, in this order. Open spots fill themselves with a monthly choice from your best-rated places.</p>
+        <div id="pickBox"></div>
+        <input type="search" id="pickFind" placeholder="Find a place to pin…" aria-label="Find a place to pin" autocomplete="off">
+        <div class="results" id="pickRes"></div>
+      </section>
+
+      <section class="card">
+        <h2>Featured highlight</h2>
+        <p class="sub">Goes first in the highlights on the homepage, with a gold ring, also after its 24 hours. Tap one to feature it, tap it again to stop.</p>
+        <div class="hl-grid" id="hlGrid"></div>
+        <label class="lab" for="hlUntil">Featured until (the end of that day)</label>
+        <input type="date" id="hlUntil" value="${ymd(st.highlightUntil)}">
+      </section>
+
+      <section class="card">
+        <h2>Announcement bar</h2>
+        <p class="sub">An orange bar at the top of every page, until the end date. Visitors can close it. Empty text: no bar.</p>
+        <label class="lab" for="annText">Text</label>
+        <input type="text" id="annText" maxlength="160" placeholder="New: the Best Burgers in Amsterdam list for 2026" value="${esc(st.ann.text)}">
+        <div class="row2">
+          <div><label class="lab" for="annLink">Link (optional)</label><input type="text" id="annLink" placeholder="best/burger-amsterdam/ or https://…" value="${esc(st.ann.link)}"></div>
+          <div><label class="lab" for="annUntil">Show until</label><input type="date" id="annUntil" value="${ymd(st.ann.until)}"></div>
+        </div>
+        <p class="hint">A page on the site (like <code>best/burger-amsterdam/</code>) or a full web address starting with https://.</p>
+        <div class="bar-preview" id="barPrev"></div>
+      </section>
+
+      <div class="savebar"><button class="btn btn-main" id="saveBtn" type="button">Save</button><p class="hint" id="saveHint">The site shows the change within a few minutes.</p></div>`;
+    drawFeat(); drawPicks(); drawHl(); drawBar();
+    search('featFind', 'featRes', p => { st.featuredKey = placeKey(p); drawFeat(); });
+    search('pickFind', 'pickRes', p => {
+      const k = placeKey(p);
+      if (st.topPicks.includes(k)) return toast('Already pinned.');
+      if (st.topPicks.length >= 4) return toast('Four places are pinned. Remove one first.', true);
+      st.topPicks.push(k); drawPicks();
+    });
+    ['annText', 'annLink', 'annUntil'].forEach(id => document.getElementById(id).addEventListener('input', drawBar));
+    document.getElementById('saveBtn').addEventListener('click', save);
+  }
+
+  function search(inputId, boxId, pick) {
+    const input = document.getElementById(inputId), box = document.getElementById(boxId);
+    input.addEventListener('input', () => {
+      const q = fold(input.value).trim();
+      if (q.length < 2) { box.innerHTML = ''; return; }
+      const terms = q.split(/\s+/);
+      const hits = catalog.filter(p => terms.every(t => p._name.includes(t) || p._place.includes(t))).slice(0, 8);
+      box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where || '')}</small></button>`).join('') : '<p class="hint">No review found.</p>';
+      box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => { input.value = ''; box.innerHTML = ''; pick(byKey.get(b.dataset.k)); }));
+    });
+  }
+
+  function drawFeat() {
+    const p = st.featuredKey ? byKey.get(st.featuredKey) : null;
+    document.getElementById('featBox').innerHTML = p
+      ? `<div class="chosen"><span class="n">★</span><span class="t">${placeLine(p)}</span><a class="btn btn-sm" href="${placeUrl(p)}" target="_blank" rel="noopener">View ↗</a><button type="button" id="featClear" aria-label="Back to automatic">✕</button></div>`
+      : `<p class="auto">${st.featuredKey ? 'The chosen review no longer exists: ' : ''}Automatic: your newest review.</p>`;
+    const c = document.getElementById('featClear');
+    if (c) c.addEventListener('click', () => { st.featuredKey = ''; drawFeat(); });
+  }
+
+  function drawPicks() {
+    const box = document.getElementById('pickBox');
+    st.topPicks = st.topPicks.filter(k => byKey.has(k));
+    box.innerHTML = st.topPicks.length ? st.topPicks.map((k, i) => `
+      <div class="chosen"><span class="n">${i + 1}</span><span class="t">${placeLine(byKey.get(k))}</span>
+        <button type="button" data-up="${i}" aria-label="Move up"${i === 0 ? ' disabled' : ''}>↑</button>
+        <button type="button" data-down="${i}" aria-label="Move down"${i === st.topPicks.length - 1 ? ' disabled' : ''}>↓</button>
+        <button type="button" data-rm="${i}" aria-label="Remove">✕</button></div>`).join('')
+      : '<p class="auto">Nothing pinned: all four are chosen automatically every month.</p>';
+    const swap = (a, b) => { [st.topPicks[a], st.topPicks[b]] = [st.topPicks[b], st.topPicks[a]]; drawPicks(); };
+    box.querySelectorAll('[data-up]').forEach(b => b.addEventListener('click', () => swap(+b.dataset.up, +b.dataset.up - 1)));
+    box.querySelectorAll('[data-down]').forEach(b => b.addEventListener('click', () => swap(+b.dataset.down, +b.dataset.down + 1)));
+    box.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => { st.topPicks.splice(+b.dataset.rm, 1); drawPicks(); }));
+  }
+
+  function drawHl() {
+    const grid = document.getElementById('hlGrid');
+    if (!highlights.length) { grid.outerHTML = '<p class="auto" id="hlGrid">No highlights in the last 30 days.</p>'; return; }
+    grid.innerHTML = highlights.map(h => `<button class="hl-pick" type="button" data-id="${esc(h.id)}" aria-pressed="${h.id === st.highlightId}" aria-label="${esc((h.title || 'Highlight') + (h.authorName ? ' by ' + h.authorName : ''))}">
+      ${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}<span>${esc(h.title || 'Highlight')}${h.authorName ? '<br>' + esc(h.authorName) : ''}</span></button>`).join('');
+    grid.querySelectorAll('img[data-src]').forEach(img => resolvePhoto(img.dataset.src).then(u => { if (u) { img.src = u; img.hidden = false; } }));
+    grid.querySelectorAll('.hl-pick').forEach(b => b.addEventListener('click', () => {
+      st.highlightId = st.highlightId === b.dataset.id ? '' : b.dataset.id;
+      const until = document.getElementById('hlUntil');
+      if (st.highlightId && !until.value) until.value = ymd(new Date(Date.now() + 7 * DAY));
+      grid.querySelectorAll('.hl-pick').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.id === st.highlightId)));
+    }));
+  }
+
+  function drawBar() {
+    const text = document.getElementById('annText').value.trim();
+    const link = document.getElementById('annLink').value.trim();
+    const until = endOfDay(document.getElementById('annUntil').value);
+    const prev = document.getElementById('barPrev');
+    prev.hidden = !text;
+    prev.innerHTML = text ? `${esc(text)}${link ? '<a href="#" tabindex="-1">More →</a>' : ''}` : '';
+    if (text && (!until || until < new Date())) prev.innerHTML += '<br><small>Pick a date in the future, or the bar stays hidden.</small>';
+  }
+
+  const okLink = l => !l || /^https:\/\/[^\s"<>]+$/.test(l) || /^\/?[a-z0-9][a-z0-9\-_/.]*(\.html)?([?#][^\s"<>]*)?$/i.test(l);
+
+  async function save() {
+    const text = document.getElementById('annText').value.trim();
+    const link = document.getElementById('annLink').value.trim();
+    const annUntil = endOfDay(document.getElementById('annUntil').value);
+    const hlUntil = endOfDay(document.getElementById('hlUntil').value);
+    if (text && !annUntil) return toast('Give the announcement an end date.', true);
+    if (!okLink(link)) return toast('The link should be a page on the site or start with https://', true);
+    if (st.highlightId && !hlUntil) return toast('Give the featured highlight an end date.', true);
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await setDoc(doc(db, 'site', 'home'), {
+        featuredKey: st.featuredKey,
+        topPicks: st.topPicks,
+        highlightId: st.highlightId,
+        highlightUntil: st.highlightId ? hlUntil : null,
+        announcement: { text, link, until: text ? annUntil : null },
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      try { sessionStorage.removeItem('sf_ann'); } catch (e) {}
+      toast('Saved. The homepage shows it now; visitors see it within a few minutes.');
+    } catch (e) {
+      console.log('Not saved:', e);
+      toast(e && e.code === 'permission-denied' ? 'The database refused: add the site rule in Firebase first.' : 'Could not save. Try again.', true);
+    }
+    btn.disabled = false; btn.textContent = 'Save';
+  }
+</script>
+</body>
+</html>

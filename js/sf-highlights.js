@@ -9,6 +9,8 @@
 //   highlightsRow(db, element, { category })   // one of the six categories, like the app
 //   highlightsRow(db, element)                 // newest from everyone
 //   ...{ ownerId: uid } adds a Delete button to that member's own highlights
+//   ...{ featuredId } puts the highlight Strong Foodie features (admin-home.html) first,
+//      also when it is older than 24 hours
 //
 // Same rules as the app (Instagram Stories):
 // - a highlight is live for 24 hours after createdAt; the homepage shows
@@ -67,6 +69,8 @@ const CSS = `
 .hl-cap { display: block; font-size: 12px; line-height: 1.3; margin-top: 0.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hl-by { display: block; font-size: 11px; color: #8A7A66; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hl-item:focus-visible .hl-ring { outline: 3px solid #1A1208; outline-offset: 2px; }
+.hl-item.hl-feat .hl-ring { background: linear-gradient(135deg, #C8901A 0%, #F5C896 50%, #C8901A 100%); }
+.hl-star { position: absolute; left: -2px; top: -2px; width: 24px; height: 24px; border-radius: 50%; background: #C8901A; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; border: 2px solid #FAF7F2; z-index: 1; }
 
 .hl-view { position: fixed; inset: 0; z-index: 20000; background: rgba(10,7,3,0.94); display: flex; align-items: center; justify-content: center; }
 .hl-view[hidden] { display: none; }
@@ -181,7 +185,7 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
         <div class="hl-bars" aria-hidden="true">${list.map((_, k) => `<span class="${k <= i ? 'on' : ''}"></span>`).join('')}</div>
         <div class="hl-top">
           <span class="hl-av" style="background:${colourOf(h.authorId || who)};">${esc(initialsOf(who))}${h.authorPhotoUrl ? '<img id="hlAv" alt="" hidden>' : ''}</span>
-          <span class="hl-who">${h.authorId ? `<a href="member.html?u=${encodeURIComponent(h.authorId)}">${esc(who)}</a>` : esc(who)}<span>${isLive(h) ? esc(ago(toDate(h.createdAt))) : '📌 Pinned'}</span></span>
+          <span class="hl-who">${h.authorId ? `<a href="member.html?u=${encodeURIComponent(h.authorId)}">${esc(who)}</a>` : esc(who)}<span>${h._featured ? '★ Featured by Strong Foodie' : isLive(h) ? esc(ago(toDate(h.createdAt))) : '📌 Pinned'}</span></span>
           ${ctx.ownerId && h.authorId === ctx.ownerId ? '<button class="hl-del" type="button">Delete</button>' : '<button class="hl-rep" type="button" aria-label="Report this highlight">Report</button>'}
           <button class="hl-x" type="button" aria-label="Close">×</button>
         </div>
@@ -279,6 +283,19 @@ export async function highlightsRow(db, el, opts = {}) {
   let list = [];
   try { list = await loadHighlights(db, opts); }
   catch (e) { console.log('Highlights could not load:', e.code || e); }
+  if (opts.featuredId) {
+    try {
+      let f = list.find(h => h.id === opts.featuredId);
+      if (!f) {
+        const s = await getDoc(doc(db, 'highlights', opts.featuredId));
+        const h = s.exists() ? { id: s.id, ...s.data() } : null;
+        const flags = await loadFlags(db);
+        if (h && h.active !== false && h.hidden !== true && (h.photoUrl || h.videoUrl) && !isBlocked(flags, h.authorId)
+            && h.authorIsPrivate !== true && !(await isPrivate(db, h.authorId))) f = h;
+      }
+      if (f) { f._featured = true; list = [f].concat(list.filter(h => h !== f)).slice(0, Math.max(opts.max || 12, 1)); }
+    } catch (e) { console.log('Featured highlight could not load:', e.code || e); }
+  }
   if (!list.length) { el.innerHTML = ''; el.hidden = true; return list; }
   addStyle();
   const { resolvePhoto } = photoTools(db);
@@ -291,8 +308,8 @@ export async function highlightsRow(db, el, opts = {}) {
     <div class="hl-row">${list.map((h, k) => {
       const cat = CATS[String(h.category || '').toLowerCase()];
       const label = [h.title || 'Highlight', h.mediaType === 'video' ? 'video' : '', showAuthor && h.authorName ? 'by ' + h.authorName : ''].filter(Boolean).join(', ');
-      return `<button class="hl-item" type="button" data-k="${k}" aria-label="${esc(label)}">
-        <span class="hl-ring"><span class="hl-thumb" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">${cat ? cat.emoji : '✨'}${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}</span>${h.mediaType === 'video' ? '<span class="hl-play" aria-hidden="true">▶</span>' : ''}</span>
+      return `<button class="hl-item${h._featured ? ' hl-feat' : ''}" type="button" data-k="${k}" aria-label="${esc((h._featured ? 'Featured: ' : '') + label)}">
+        <span class="hl-ring">${h._featured ? '<span class="hl-star" aria-hidden="true">★</span>' : ''}<span class="hl-thumb" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">${cat ? cat.emoji : '✨'}${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}</span>${h.mediaType === 'video' ? '<span class="hl-play" aria-hidden="true">▶</span>' : ''}</span>
         <span class="hl-cap">${esc(h.title || 'Highlight')}</span>
         ${showAuthor && h.authorName ? `<span class="hl-by">${esc(h.authorName)}</span>` : ''}
       </button>`;

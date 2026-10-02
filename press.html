@@ -132,6 +132,7 @@
 
   /* Press */
   .facts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+  .facts.facts-3 { grid-template-columns: repeat(3, 1fr); }
   .fact { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; text-align: center; }
   .fact strong { display: block; font-family: 'Playfair Display', serif; font-size: 34px; color: var(--accent); line-height: 1.1; }
   .fact span { font-size: 13px; color: var(--muted); }
@@ -152,7 +153,7 @@
   .contact { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
   .btn-main:hover { background: #b8401a; border-color: #b8401a; }
-  @media (max-width: 800px) { .facts { grid-template-columns: repeat(2, 1fr); } .cols, .cols.two { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) { .facts, .facts.facts-3 { grid-template-columns: repeat(2, 1fr); } .cols, .cols.two { grid-template-columns: 1fr; } }
 
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -252,6 +253,22 @@
   </div>
   <p class="small-note">These numbers come straight from the database and are always up to date.</p>
 
+  <div id="reach" hidden>
+    <p class="section-label">Reach</p>
+    <div class="facts facts-3">
+      <div class="fact"><strong id="rViews">…</strong><span id="rViewsLabel">page views last month</span></div>
+      <div class="fact"><strong id="rMembers">…</strong><span>members</span></div>
+      <div class="fact"><strong id="rReviews">…</strong><span>member reviews</span></div>
+    </div>
+    <p class="small-note" id="reachNote">Counted on strongfoodie.com without cookies: one view per visitor per page per 30 minutes.</p>
+  </div>
+
+  <p class="section-label">For restaurants and brands</p>
+  <div class="cols two">
+    <div class="box"><h2>📣 Featured partner</h2><p>Your place on the Strong Foodie homepage and its city page for a set period, always marked <strong>Ad</strong>. Your review and score stay exactly as they are: those are never for sale.</p></div>
+    <div class="box"><h2>📊 Monthly report</h2><p>Every partner gets a report per month: how often the page was viewed, the best-of lists it is in, how many members saved it and what members wrote. Ask for an example.</p></div>
+  </div>
+
   <p class="section-label">How Strong Foodie works</p>
   <div class="cols">
     <div class="box"><h2>🎯 Honest</h2><p>Merdan pays his own bill and visits anonymously. A place can't pay for a review or a score. When something is a paid partnership, it says <strong>AD · Partner</strong>.</p></div>
@@ -303,6 +320,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { loadPlaces, destinations } from "./js/sf-places.js?v=7";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const db = getFirestore(initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -321,6 +339,21 @@
     const text = document.getElementById(b.dataset.copy).textContent.trim();
     try { await navigator.clipboard.writeText(text); toast('Copied!'); } catch { window.prompt('Copy this:', text); }
   }));
+  // Reach: site/stats, refreshed each time Strong Foodie opens admin-stats.html.
+  getDoc(doc(db, 'site', 'stats')).then(s => {
+    const r = s.exists() ? s.data() : null;
+    if (!r || typeof r.members !== 'number') return;
+    const n = v => Number(v || 0).toLocaleString('en-GB');
+    const views = r.lastMonthViews || r.monthViews || 0;
+    document.getElementById('rViews').textContent = n(views);
+    document.getElementById('rViewsLabel').textContent = r.lastMonthViews ? `page views in ${r.lastMonthLabel || 'the last month'}` : `page views in ${r.monthLabel || 'this month'} so far`;
+    document.getElementById('rMembers').textContent = n(r.members);
+    document.getElementById('rReviews').textContent = n(r.memberReviews);
+    const upd = r.updatedAt && r.updatedAt.toDate ? r.updatedAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    if (upd) document.getElementById('reachNote').textContent += ` Updated ${upd}.`;
+    document.getElementById('reach').hidden = false;
+  }).catch(e => console.log('Reach could not load:', e.code || e));
+
   try {
     const { catalog, members, all } = await loadPlaces(db);
     const set = (id, n) => { document.getElementById(id).textContent = n.toLocaleString('en-GB'); };
@@ -398,6 +431,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=2"></script>
+<script type="module" src="js/sf-account-nav.js?v=3"></script>
 </body>
 </html>

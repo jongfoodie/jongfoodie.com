@@ -6,6 +6,8 @@
 // One account for the website and the app (the same Firebase Authentication).
 // Signed out: "Log in" goes to account.html and back to this page afterwards.
 // Signed in: a round badge with your initials goes to your account page.
+// It also shows the announcement bar Strong Foodie sets in admin-home.html
+// (site/home.announcement: text, link, until), at the top of every page.
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -84,6 +86,47 @@ function mount() {
 }
 
 const els = mount();
+
+// ── Announcement bar ──────────────────────────────────────────────────────
+// Read once per visit (then cached for 5 minutes), hidden after its end date,
+// and a visitor can close it: then that announcement stays away on this device.
+async function announcement() {
+  let a = null;
+  try {
+    const c = JSON.parse(sessionStorage.getItem('sf_ann') || 'null');
+    if (c && Date.now() - c.t < 5 * 60 * 1000) a = c.a;
+  } catch (e) {}
+  if (!a) {
+    try {
+      const s = await getDoc(doc(db, 'site', 'home'));
+      const x = s.exists() && s.data().announcement ? s.data().announcement : {};
+      const until = x.until && typeof x.until.toDate === 'function' ? x.until.toDate().getTime() : 0;
+      a = { text: String(x.text || '').slice(0, 160), link: String(x.link || ''), until };
+      try { sessionStorage.setItem('sf_ann', JSON.stringify({ t: Date.now(), a })); } catch (e) {}
+    } catch (e) { return; }
+  }
+  if (!a.text || !a.until || a.until < Date.now()) return;
+  const key = 'sf_ann_closed_' + [...(a.text + a.until)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  try { if (localStorage.getItem(key)) return; } catch (e) {}
+  const link = /^https:\/\/[^\s"<>]+$/.test(a.link) || /^\/?[a-z0-9][a-z0-9\-_/.]*(\.html)?([?#][^\s"<>]*)?$/i.test(a.link) ? a.link : '';
+  const style = document.createElement('style');
+  style.textContent = `
+    .sf-ann { position: relative; background: #D4521A; color: #fff; font: 500 14px/1.45 'DM Sans', system-ui, sans-serif; padding: 10px 48px 10px 16px; text-align: center; }
+    .sf-ann a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; margin-left: 6px; white-space: nowrap; }
+    .sf-ann button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(0,0,0,0.15); color: #fff; font-size: 18px; line-height: 1; cursor: pointer; }
+    .sf-ann button:hover { background: rgba(0,0,0,0.3); }`;
+  document.head.appendChild(style);
+  const bar = document.createElement('div');
+  bar.className = 'sf-ann';
+  bar.setAttribute('role', 'region');
+  bar.setAttribute('aria-label', 'Announcement');
+  bar.innerHTML = `<span>${esc(a.text)}</span>${link ? `<a href="${esc(link)}"${link.startsWith('https://') && !link.startsWith('https://strongfoodie.com') ? ' target="_blank" rel="noopener"' : ''}>More →</a>` : ''}<button type="button" aria-label="Close this announcement">×</button>`;
+  bar.querySelector('button').addEventListener('click', () => { bar.remove(); try { localStorage.setItem(key, '1'); } catch (e) {} });
+  const nav = document.querySelector('nav');
+  if (nav && nav.parentNode === document.body) document.body.insertBefore(bar, nav);
+  else document.body.insertBefore(bar, document.body.firstChild);
+}
+announcement();
 
 onAuthStateChanged(auth, async user => {
   if (!els) return;
