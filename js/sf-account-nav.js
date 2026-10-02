@@ -128,6 +128,16 @@ async function announcement() {
 }
 announcement();
 
+// ── The "More" menu in the top bar (a <details>, so it also works without this):
+// close it when clicking somewhere else or pressing Escape.
+document.addEventListener('click', e => {
+  document.querySelectorAll('.nav-more details[open]').forEach(d => { if (!d.contains(e.target)) d.removeAttribute('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.nav-more details[open]').forEach(d => { d.removeAttribute('open'); const s = d.querySelector('summary'); if (s) s.focus(); });
+});
+
 onAuthStateChanged(auth, async user => {
   if (!els) return;
   const { a, m } = els;
