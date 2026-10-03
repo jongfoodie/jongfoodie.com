@@ -79,6 +79,11 @@
   .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); text-decoration: none; cursor: pointer; }
   .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .book-note { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 0.6rem; }
+  .badge-new { background: #2D5A3D; color: #fff; }
+  .open-note { font-size: 13px; color: #2D5A3D; font-weight: 600; margin-top: 0.35rem; }
+  .battle-note { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; background: var(--ink); color: #fff; text-decoration: none; border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 14px; line-height: 1.35; }
+  .battle-note b { color: #F5C896; }
+  .battle-note span:last-child { white-space: nowrap; font-weight: 600; }
   .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
   .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
   .block p { line-height: 1.65; color: var(--ink-soft); overflow-wrap: anywhere; }
@@ -207,6 +212,7 @@
   <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
   <p class="mnav-h">Community</p>
   <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="about.html">👤 About</a>
 </div>
@@ -217,7 +223,7 @@
     <li><a href="reviews.html">Eat</a></li>
     <li><a href="drink.html">Drink</a></li>
     <li><a href="hotel.html">Stay</a></li>
-    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
     <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
   </ul>
@@ -239,6 +245,8 @@
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
   import { countView } from "./js/sf-views.js?v=2";
   import { loadPartners, loadBooking, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=1";
+  import { loadOpenings, openingLabel, isUpcoming } from "./js/sf-openings.js?v=1";
+  import { loadBattles, liveBattles } from "./js/sf-battles.js?v=1";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
   import { loadPromos } from "./js/sf-promos.js?v=1";
 
@@ -465,9 +473,10 @@
       <article class="place">
         <div class="media">${hero}${thumbs}</div>
         <div class="head">
-          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}</div>
+          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}${p.opening ? `<span class="badge badge-new">${isUpcoming(p.opening) ? '🆕 Opening soon' : '🆕 Just opened'}</span>` : ''}</div>
           <h1>${esc(p.name)}</h1>
           ${p.address ? `<p class="sub">📍 ${esc(p.address)}</p>` : ''}
+          ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
           <div class="actions">
@@ -478,6 +487,7 @@
             ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
           </div>
           ${partnerNoteHtml(p.book)}
+          ${p.battle ? `<a class="battle-note" href="battle.html"><span>⚔️ In a battle: <b>${esc(p.battle.title || 'Battle')}</b></span><span>Vote →</span></a>` : ''}
         </div>
       </article>
 
@@ -1096,6 +1106,8 @@
   async function init() {
     const promosP = loadPromos(db);
     const partnersP = loadPartners(db);
+    const openingsP = loadOpenings(db);
+    const battlesP = loadBattles(db);
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
     let coll = qs.get('c');
@@ -1146,8 +1158,12 @@
 
     p.promoLive = (await promosP).some(x => x.placeKey === `${p.coll}/${p.id}` && Array.isArray(x.where) && x.where.includes('place'));
     // Reserve or Book (js/sf-booking.js): the link Strong Foodie set, a partner search, or Call to reserve.
-    const [booking, partners] = await Promise.all([bookingP, partnersP]);
+    const [booking, partners, openings, battles] = await Promise.all([bookingP, partnersP, openingsP, battlesP]);
     p.book = bookingButton(p, booking, partners, townOf(p));
+    // Just opened (admin-openings.html) and a live battle with this place (battle.html).
+    const key = `${p.coll}/${p.id}`;
+    p.opening = p.closedStatus ? null : (openings.find(o => o.placeKey === key) || null);
+    p.battle = liveBattles(battles).find(b => b.a === key || b.b === key) || null;
     render(p);
     const spotWrap = document.getElementById('spotReportWrap');
     if (spotWrap) wireReports(db, spotWrap, () => ({ kind: 'spot', coll: p.coll, targetId: p.id, ownerId: p.addedByUserId || '', label: p.name }));

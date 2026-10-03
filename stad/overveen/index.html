@@ -218,6 +218,7 @@
   <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
   <p class="mnav-h">Community</p>
   <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="about.html">👤 About</a>
 </div>
@@ -227,7 +228,7 @@
     <li><a href="reviews.html">Eat</a></li>
     <li><a href="drink.html">Drink</a></li>
     <li><a href="hotel.html">Stay</a></li>
-    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
     <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
   </ul>
@@ -246,6 +247,8 @@
   import { CATS, esc, fold, starStr, placeUrl, slugOf, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=7";
   import { countView } from "./js/sf-views.js?v=2";
   import { loadPromos, adsFor, adCard } from "./js/sf-promos.js?v=1";
+  import { openSurprise, surprisePool } from "./js/sf-surprise.js?v=1";
+  import { loadOpenings, openingsWithPlaces, openingCard } from "./js/sf-openings.js?v=1";
   import { placeKey } from "./js/sf-places.js?v=7";
 
   const firebaseConfig = {
@@ -326,7 +329,7 @@
   const state = { cat: 'all', area: 'all', q: '', sort: 'best', shown: PAGE };
   let D = null, map = null, markerLayer = null;
 
-  function renderDestination(d, dests, lists = [], ads = []) {
+  function renderDestination(d, dests, lists = [], ads = [], opened = []) {
     D = d;
     const counts = catCounts(d.places);
     const reviewed = d.places.filter(p => !p.member).length;
@@ -357,6 +360,7 @@
           <div class="d-actions">
             <a class="btn btn-light" href="${esc(location.pathname + location.search)}#places">See all places</a>
             <button class="btn btn-light" id="shareBtn" type="button">Share ↗</button>
+            ${surprisePool(d.places).length ? '<button class="btn btn-light" id="surpriseBtn" type="button">🎲 Surprise me</button>' : ''}
           </div>
         </div>
       </header>
@@ -373,6 +377,10 @@
             <span class="top-meta"><span class="star">${starStr(p.rating)}</span> · ${esc(CATS[p.cat].label)}${p.area && p.area !== d.name ? ' · ' + esc(p.area) : ''}</span>
           </span>
         </a>`).join('')}</div>` : ''}
+
+      ${opened.length ? `
+      <p class="section-label">Just opened in ${esc(d.name)}</p>
+      <div class="cards-grid" id="openGrid">${opened.map(x => openingCard(miniCard(x.place), x.o)).join('')}</div>` : ''}
 
       ${ads.length ? `
       <p class="section-label">Featured partners in ${esc(d.name)}</p>
@@ -423,6 +431,10 @@
     if (fav) hydratePhotos(fav);
     const adGrid = document.getElementById('adGrid');
     if (adGrid) hydratePhotos(adGrid);
+    const openGrid = document.getElementById('openGrid');
+    if (openGrid) hydratePhotos(openGrid);
+    const sb = document.getElementById('surpriseBtn');
+    if (sb) sb.addEventListener('click', () => openSurprise({ places: d.places, where: d.name, hydratePhotos }));
     addJsonLd(d);
 
     // Controls
@@ -538,11 +550,13 @@
     else {
       const d = dests.find(x => x.slug === slug);
       if (d) {
-        const [lists, promos] = await Promise.all([loadLists(db, all), loadPromos(db)]);
+        const [lists, promos, openings] = await Promise.all([loadLists(db, all), loadPromos(db), loadOpenings(db)]);
         // Paid placements for this destination (admin-ads.html), at most three.
         const inCity = new Map(d.places.map(p => [placeKey(p), p]));
         const ads = adsFor(promos, 'city', inCity).filter(x => !x.place.closed).slice(0, 3);
-        renderDestination(d, dests, lists.filter(l => l.destSlug === d.slug), ads);
+        // Just opened in this destination (admin-openings.html), at most six.
+        const opened = openingsWithPlaces(openings, inCity).slice(0, 6);
+        renderDestination(d, dests, lists.filter(l => l.destSlug === d.slug), ads, opened);
         countView(db, 'city', d.slug);
       } else renderNotFound(slug, dests);
     }
