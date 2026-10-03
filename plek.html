@@ -139,6 +139,7 @@
   .form-error[hidden] { display: none; }
   .btn:disabled { opacity: 0.6; cursor: default; }
   .wish-btn.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .been-btn.on { background: #E8F2EC; border-color: var(--green); color: var(--green); }
   .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
   .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
   .check-row input { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
@@ -256,6 +257,7 @@
   import { loadBattles, liveBattles } from "./js/sf-battles.js?v=1";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
   import { loadPromos } from "./js/sf-promos.js?v=1";
+  import { isBeen, markBeen, unmarkBeen } from "./js/sf-been.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -491,6 +493,7 @@
             ${routeUrl ? `<a class="btn${p.book ? '' : ' btn-primary'}" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
             <button class="btn" id="shareBtn">Share</button>
             <button class="btn wish-btn" id="wishBtn" type="button" aria-pressed="false">🔖 Wishlist</button>
+            <button class="btn been-btn" id="beenBtn" type="button" aria-pressed="false">✓ Been there</button>
             ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
           </div>
           ${partnerNoteHtml(p.book)}
@@ -542,7 +545,9 @@
 
     wishPlace = p;
     document.getElementById('wishBtn').addEventListener('click', toggleWish);
+    document.getElementById('beenBtn').addEventListener('click', toggleBeen);
     refreshWish();
+    refreshBeen();
 
     document.getElementById('shareBtn').addEventListener('click', async () => {
       const url = canonical;
@@ -608,6 +613,7 @@
       renderMemberReviews();
     }
     refreshWish();
+    refreshBeen();
   });
 
   // ── Wishlist ───────────────────────────────────────────────────────────
@@ -657,6 +663,48 @@
       toast(e && e.code === 'permission-denied' ? 'The wishlist is not switched on yet. Please try again later.' : 'Could not save. Please try again.');
     }
     btn.disabled = false;
+    refreshWish();
+  }
+
+  // ── Been there (js/sf-been.js) ─────────────────────────────────────────
+  // Private per member: profiles/{uid}/beenThere/{collection}_{id}. Ticking a
+  // place off also takes it off the wishlist: you have been there now.
+  let been = false;
+  async function refreshBeen() {
+    const btn = document.getElementById('beenBtn');
+    if (!btn || !wishPlace) return;
+    been = false;
+    if (me) {
+      try { been = await isBeen(db, me.uid, wishPlace.coll, wishPlace.id); }
+      catch (e) { console.log('Been there could not load:', e.code || e); }
+    }
+    btn.classList.toggle('on', been);
+    btn.setAttribute('aria-pressed', String(been));
+    btn.textContent = been ? "✓ You've been here" : '✓ Been there';
+  }
+  async function toggleBeen() {
+    if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+    const btn = document.getElementById('beenBtn');
+    btn.disabled = true;
+    try {
+      if (been) {
+        await unmarkBeen(db, me.uid, wishPlace.coll, wishPlace.id);
+        toast('Taken off your Been there list');
+      } else {
+        await markBeen(db, me.uid, { coll: wishPlace.coll, id: wishPlace.id, name: wishPlace.name, cat: wishPlace.cat, city: locate(wishPlace.address, wishPlace.country).where || '' });
+        let moved = false;
+        if (wishItemId) {
+          try { await deleteDoc(doc(db, 'profiles', me.uid, 'wishlistItems', wishItemId)); moved = true; }
+          catch (e) { console.log('Not taken off the wishlist:', e.code || e); }
+        }
+        toast(moved ? 'Been there! Taken off your wishlist' : 'Been there! You can find it on your account');
+      }
+    } catch (e) {
+      console.error('Been there could not be saved:', e);
+      toast('Could not save. Please try again.');
+    }
+    btn.disabled = false;
+    refreshBeen();
     refreshWish();
   }
 
@@ -1246,6 +1294,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=3"></script>
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
 </body>
 </html>

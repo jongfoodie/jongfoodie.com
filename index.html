@@ -491,6 +491,7 @@
 
   /* SIDEBAR */
   .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+  .sidebar > * { min-width: 0; }
 
   .sidebar-widget {
     background: var(--warm-white);
@@ -638,6 +639,8 @@
   .newsletter-widget .widget-title { color: var(--green); }
   .newsletter-widget p { font-size: 13px; color: var(--green); opacity: 0.8; margin-bottom: 1rem; }
   .nl-input-row { display: flex; gap: 0.5rem; }
+  .nl-input-row .nl-input { min-width: 0; }
+  .nl-input-row .btn-green { flex-shrink: 0; }
   .nl-input {
     flex: 1;
     border: 1px solid rgba(45,90,61,0.3);
@@ -822,6 +825,12 @@
     color: var(--ink);
   }
 
+  /* Tablets: the full menu doesn't fit the bar yet, so the ☰ menu instead */
+  @media (max-width: 860px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none !important; }
+    .hamburger { display: flex !important; }
+  }
   @media (max-width: 600px) {
     nav { padding: 0 1rem; }
     .nav-links { display: none !important; }
@@ -955,6 +964,15 @@
   @media (max-width: 600px) {
     .nav-app-long { display: none; }
     .nav-app-short { display: inline; }
+  }
+  /* Signed in, the bell needs the room: the app button keeps only 📱 */
+  .nav-logo { white-space: nowrap; }
+  @media (max-width: 440px) {
+    nav:has(.sf-bell) .nav-app-short { display: none; }
+    nav:has(.sf-bell) .nav-actions { gap: 0.5rem; }
+  }
+  @media (max-width: 385px) {
+    nav:has(.sf-bell) .nav-app { display: none; }
   }
   #memberGrid:empty { display: none; }
 
@@ -1896,6 +1914,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=3"></script>
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
 </body>
 </html>

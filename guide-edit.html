@@ -92,7 +92,7 @@
   import { CATS, esc, fold, slugOf, loadPlaces, destinations, guideUrl, SITE } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=4";
   import { SEASONS } from "./js/sf-guides.js?v=3";
-  import { confirmTap } from "./js/sf-delete.js?v=1";
+  import { confirmTap } from "./js/sf-delete.js?v=3";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -317,6 +317,8 @@
       places: current.places.map(it => ({ coll: it.coll, id: it.id, note: String(it.note || '').trim(), name: (byKey.get(keyOf(it.coll, it.id)) || {}).name || it.name || '' })),
       author: 'Strong Foodie', updatedAt: serverTimestamp(),
     };
+    // The moment it first goes live: the notification bell (js/sf-notify.js) and the app use it.
+    if (status === 'published' && !current.publishedAt) data.publishedAt = serverTimestamp();
     const btn = $('saveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {

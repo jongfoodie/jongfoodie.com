@@ -8,6 +8,8 @@
 // Signed in: a round badge with your initials goes to your account page.
 // It also shows the announcement bar Strong Foodie sets in admin-home.html
 // (site/home.announcement: text, link, until), at the top of every page.
+// Signed in, a bell 🔔 with notifications sits next to it (js/sf-notify.js,
+// loaded only for members).
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -138,10 +140,12 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.nav-more details[open]').forEach(d => { d.removeAttribute('open'); const s = d.querySelector('summary'); if (s) s.focus(); });
 });
 
+let bellLoaded = false;
 onAuthStateChanged(auth, async user => {
   if (!els) return;
   const { a, m } = els;
   if (!user) {
+    if (bellLoaded) import('./sf-notify.js?v=1').then(n => n.unmountBell()).catch(() => {});
     a.className = 'sf-acct';
     a.href = loginHref();
     a.innerHTML = '👤<span class="sf-acct-label"> Log in</span>';
@@ -154,6 +158,8 @@ onAuthStateChanged(auth, async user => {
     const s = await getDoc(doc(db, 'profiles', user.uid));
     if (s.exists() && s.data().displayName) name = s.data().displayName;
   } catch (e) {}
+  // Signed out (or someone else signed in) while the name was loading.
+  if (!auth.currentUser || auth.currentUser.uid !== user.uid) return;
   const initials = (name || user.email || '?').trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
   a.className = 'sf-acct sf-acct-avatar';
   a.href = 'account.html';
@@ -161,4 +167,9 @@ onAuthStateChanged(auth, async user => {
   a.title = (name || 'My account') + ' · My account';
   a.setAttribute('aria-label', 'My account');
   if (m) { m.href = 'account.html'; m.textContent = '👤 My account' + (name ? ' (' + name + ')' : ''); }
+  try {
+    const n = await import('./sf-notify.js?v=1');
+    bellLoaded = true;
+    if (auth.currentUser && auth.currentUser.uid === user.uid) n.mountBell({ db, uid: user.uid, anchor: a });
+  } catch (e) { console.log('Notifications not available:', e.message || e); }
 });

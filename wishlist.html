@@ -5,14 +5,14 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Strong Foodie Battle: two places, one winner. Vote for your favourite and see who wins.">
-<title>Battle | Strong Foodie</title>
-<link rel="canonical" href="https://strongfoodie.com/battle.html">
+<meta name="description" content="A Strong Foodie wishlist: places this member wants to go.">
+<meta name="robots" content="noindex, follow">
+<title>Wishlist | Strong Foodie</title>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="Strong Foodie Battle: two places, one winner">
-<meta property="og:description" content="Vote for your favourite. Members vote once per battle; the score shows after you vote.">
-<meta property="og:url" content="https://strongfoodie.com/battle.html">
+<meta property="og:title" content="A Strong Foodie wishlist">
+<meta property="og:description" content="Places this member wants to go. Save the ones you like to your own wishlist.">
+<meta property="og:url" content="https://strongfoodie.com/wishlist.html">
 <meta property="og:image" content="https://strongfoodie.com/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -42,57 +42,57 @@
   .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
   .msg a { color: var(--accent); }
 
-  /* One battle */
-  .bt { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; }
-  .bt-when { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
-  .bt-when.soon { color: var(--muted); }
-  .bt-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.15; margin: 0.3rem 0 1.2rem; overflow-wrap: anywhere; }
-  .bt-pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; }
-  .bt-vs { align-self: center; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem; color: var(--accent); }
-  .bt-side { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; position: relative; }
-  .bt-side.win { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
-  .bt-side.mine { border-color: var(--accent); }
-  .bt-img { position: relative; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; font-size: 54px; color: #fff; }
-  .bt-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .bt-crown { position: absolute; top: 8px; left: 8px; background: var(--gold); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 6px; z-index: 1; }
-  .bt-body { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
-  .bt-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
-  .bt-name a { color: inherit; text-decoration: none; }
-  .bt-meta { font-size: 13px; color: var(--muted); line-height: 1.4; }
-  .bt-vote { margin-top: auto; border: 0; background: var(--accent); color: #fff; border-radius: 22px; padding: 10px 14px; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; text-align: center; text-decoration: none; }
-  .bt-vote:disabled { opacity: 0.6; cursor: default; }
-  .bt-bar { margin-top: auto; }
-  .bt-bar-track { height: 10px; border-radius: 6px; background: #EFE8DC; overflow: hidden; }
-  .bt-bar-fill { height: 100%; background: var(--accent); border-radius: 6px; }
-  .bt-side.win .bt-bar-fill { background: var(--gold); }
-  .bt-pct { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 0.5rem; font-size: 13px; line-height: 1.35; margin-top: 4px; color: var(--ink-soft); }
-  .bt-pct b { font-size: 18px; color: var(--ink); }
-  .bt-foot { margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-soft); }
-  .bt-foot a { color: var(--accent); }
-  .bt-share { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
-  .bt-err { color: #A32323; font-weight: 600; font-size: 13.5px; margin-top: 0.6rem; }
-
-  /* Past battles */
-  .past { display: flex; flex-direction: column; gap: 0.6rem; }
-  .past-row { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.8rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.6rem; align-items: center; }
-  .past-title { font-weight: 700; overflow-wrap: anywhere; }
-  .past-meta { font-size: 13px; color: var(--muted); }
-  .past-win { font-size: 13.5px; text-align: right; }
-  .past-win b { color: var(--gold); }
+  /* The wishlist */
+  .wl-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .wl-count { color: var(--ink-soft); font-size: 14px; }
+  .wl-own { background: var(--green-light); color: var(--green); border-radius: 12px; padding: 0.7rem 1rem; font-size: 14px; margin-bottom: 1.25rem; }
+  .wl-own a { color: var(--green); font-weight: 700; }
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin-bottom: 2rem; }
+  .wl-item { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+  a.mini-card { display: block; text-decoration: none; color: inherit; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  a.mini-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .mini-img { position: relative; overflow: hidden; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
+  .mini-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .mini-body { padding: 1rem; }
+  .mini-meta { font-size: 12px; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-title { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.3; margin-bottom: 0.4rem; overflow-wrap: anywhere; }
+  .mini-text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+  .mini-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+  .mini-rating { font-size: 12px; color: var(--gold); font-weight: 500; }
+  .mini-read { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; vertical-align: 1px; }
+  .pill-cat { background: var(--accent-pale); color: var(--accent); }
+  .pill-member { background: var(--green-light); color: var(--green); }
+  .pill-closed { background: #F3E3E3; color: #A32323; }
+  .wl-note { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; padding: 0 0.2rem; overflow-wrap: anywhere; }
+  .wl-note::before { content: '💬 '; }
+  .wl-save { align-self: flex-start; border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); text-decoration: none; }
+  .wl-save:hover { border-color: var(--accent); color: var(--accent); }
+  .wl-save.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .wl-save:disabled { opacity: 0.6; cursor: default; }
+  .ideas { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+  .idea { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.85rem 1rem; }
+  .idea-name { font-weight: 700; overflow-wrap: anywhere; }
+  .idea-meta { font-size: 13px; color: var(--muted); }
+  .idea a { color: var(--accent); font-size: 13.5px; }
+  .wl-cta { background: var(--ink); color: #fff; border-radius: 18px; padding: 1.5rem; text-align: center; }
+  .wl-cta h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .wl-cta p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 0.9rem; }
+  .wl-cta a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; border-radius: 24px; padding: 10px 20px; font-weight: 600; font-size: 14.5px; }
 
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 640px) {
     .wrapper { padding: 1.5rem 16px; }
-    .bt { padding: 1rem; }
-    .bt-pair { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-    .bt-vs { display: none; }
-    .bt-name { font-size: 1.02rem; }
-    .bt-body { padding: 0.7rem; }
-    .bt-vote { padding: 9px 8px; font-size: 13px; }
-    .past-row { grid-template-columns: 1fr; }
-    .past-win { text-align: left; }
+    .cards-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
   }
 
   @media (max-width: 700px) {
@@ -175,7 +175,7 @@
   <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
   <p class="mnav-h">Community</p>
   <a href="community.html">👥 Community</a>
-  <a href="battle.html" class="active" aria-current="page">⚔️ Battle</a>
+  <a href="battle.html">⚔️ Battle</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="about.html">👤 About</a>
 </div>
@@ -194,7 +194,7 @@
     <li><a href="reviews.html">Eat</a></li>
     <li><a href="drink.html">Drink</a></li>
     <li><a href="hotel.html">Stay</a></li>
-    <li class="nav-more"><details><summary class="active">More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html" class="active" aria-current="page">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
     <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
   </ul>
@@ -203,11 +203,11 @@
 
 
 <div class="page-hero">
-  <h1>⚔️ Battle</h1>
-  <p>Two places, one winner. Vote for your favourite.</p>
+  <h1 id="wlTitle">🔖 Wishlist</h1>
+  <p id="wlSub">Places a Strong Foodie member wants to go.</p>
 </div>
 
-<main class="wrapper" id="root"><p class="msg">Loading the battle…</p></main>
+<main class="wrapper" id="root"><p class="msg">Loading the wishlist…</p></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -283,10 +283,14 @@ function declineCookies(){
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, addDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { CATS, esc, loadPlaces, placeKey, placeUrl, photoTools } from "./js/sf-places.js?v=7";
-  import { loadBattles, liveBattles, endedBattles, battleState, score, myVote, castVote } from "./js/sf-battles.js?v=1";
+  import { CATS, esc, toDate, loadPlaces, placeKey, miniCard, photoTools } from "./js/sf-places.js?v=7";
+  import { loadFlags, isBlocked } from "./js/sf-moderation.js?v=1";
+
+  // A shared wishlist: wishlist.html?u=<uid>. Readable only while the member
+  // has "Share my wishlist" on (wishlistShared on their profile, account.html);
+  // the Firestore rules check that, so turning it off closes it at once.
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -300,154 +304,120 @@ function declineCookies(){
   const auth = getAuth(app);
   const root = document.getElementById('root');
   const { hydratePhotos } = photoTools(db);
-  const DAY = 864e5;
-  const toDate = v => (v && typeof v.toDate === 'function') ? v.toDate() : (v ? new Date(v) : null);
-  const nf = n => Number(n || 0).toLocaleString('en-GB');
+  const uid = (new URLSearchParams(location.search).get('u') || '').trim();
+  const firstName = n => String(n || '').trim().split(/\s+/)[0] || 'This member';
 
   function toast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
     clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), 2800);
   }
-
-  let byKey = new Map(), battles = [], user = null, votes = new Map(), ready = false, failed = false;
-
-  // Counted in calendar days: voting closes at the end of the last day.
-  function endsIn(b) {
-    const mid = v => { const d = new Date(v); d.setHours(0, 0, 0, 0); return d; };
-    const d = Math.round((mid(toDate(b.end)) - mid(Date.now())) / DAY);
-    if (d <= 0) return 'Ends today';
-    return d === 1 ? 'Ends tomorrow' : `Ends in ${d} days`;
+  function closed(title, text) {
+    document.getElementById('wlTitle').textContent = '🔖 Wishlist';
+    document.getElementById('wlSub').textContent = 'Places a Strong Foodie member wants to go.';
+    root.innerHTML = `<div class="msg"><h2>${esc(title)}</h2><p>${text}</p></div>${cta()}`;
   }
+  const cta = () => `<div class="wl-cta"><h2>Make your own wishlist</h2><p>Save places you want to go, tick them off when you have been, and share the list with friends. On the website and in the app.</p><a href="account.html#wishlist">Start my wishlist →</a></div>`;
 
-  function side(b, k, opts) {
-    const key = b[k], p = byKey.get(key);
-    const name = p ? p.name : (k === 'a' ? b.aName : b.bName) || 'Removed place';
-    const s = score(b), pct = k === 'a' ? s.pa : s.pb, n = k === 'a' ? s.a : s.b;
-    const cat = p ? CATS[p.cat] : null;
-    const win = opts.showScore && opts.ended && s.winner === k;
-    const mine = opts.mine === k;
-    const meta = p ? [p.where, cat ? cat.label : '', p.rating && !p.member ? `★\u00a0${p.rating.toFixed(1)}` : ''].filter(Boolean).join(' · ') : '';
-    let action = '';
-    if (opts.showScore) {
-      action = `<div class="bt-bar" aria-label="${pct}% of the votes"><div class="bt-bar-track"><div class="bt-bar-fill" style="width:${pct}%"></div></div>
-        <div class="bt-pct"><b>${pct}%</b><span>${nf(n)} ${n === 1 ? 'vote' : 'votes'}${mine ? ' · your vote' : ''}</span></div></div>`;
-    } else if (opts.live) {
-      action = user
-        ? `<button class="bt-vote" type="button" data-vote="${k}" data-battle="${esc(b.id)}" aria-label="${esc('Vote for ' + name)}">Vote</button>`
-        : `<a class="bt-vote" href="account.html?next=${encodeURIComponent('battle.html')}">Log in to vote</a>`;
+  let me = null, items = [], byKey = new Map(), mine = new Set(), owner = null, ready = false;
+
+  async function load() {
+    if (!/^[A-Za-z0-9_-]{1,128}$/.test(uid)) return closed('Wishlist not found', 'Check the link you were sent.');
+    let profile = null;
+    try { const s = await getDoc(doc(db, 'profiles', uid)); profile = s.exists() ? s.data() : null; }
+    catch (e) { console.log('Profile not read:', e.code || e); }
+    if (!profile) return closed('Wishlist not found', 'Check the link you were sent.');
+    const flags = await loadFlags(db);
+    if (isBlocked(flags, uid)) return closed('This wishlist is not available', 'It can no longer be shown.');
+    if (profile.wishlistShared !== true) return closed('This wishlist is private', 'Its owner has not shared it, or stopped sharing it.');
+    owner = { name: profile.displayName || '' };
+    try {
+      const [snap, loaded] = await Promise.all([getDocs(collection(db, 'profiles', uid, 'wishlistItems')), loadPlaces(db)]);
+      items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+      loaded.all.forEach(p => byKey.set(placeKey(p), p));
+    } catch (e) {
+      console.log('Wishlist not read:', e.code || e);
+      return closed('This wishlist is private', 'Its owner has not shared it, or stopped sharing it.');
     }
-    return `<div class="bt-side${win ? ' win' : ''}${mine ? ' mine' : ''}">
-      <div class="bt-img" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">
-        ${win ? '<span class="bt-crown">👑 Winner</span>' : ''}
-        <span>${esc(p ? p.emoji : '🍽️')}</span>
-        ${p && p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
-      </div>
-      <div class="bt-body">
-        <p class="bt-name">${p ? `<a href="${esc(placeUrl(p))}">${esc(name)}</a>` : esc(name)}</p>
-        ${meta ? `<p class="bt-meta">${esc(meta)}</p>` : ''}
-        ${action}
-      </div>
-    </div>`;
+    ready = true;
+    draw();
   }
 
-  function battleHtml(b) {
-    const state = battleState(b);
-    const mine = votes.get(b.id) || '';
-    const ended = state === 'ended', live = state === 'live';
-    const showScore = ended || !!mine;
-    const s = score(b);
-    const when = live ? `Live · ${endsIn(b)}` : state === 'soon' ? `Starts ${toDate(b.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : `Ended ${toDate(b.end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`;
-    const foot = live
-      ? (mine ? `You voted. ${nf(s.total)} ${s.total === 1 ? 'vote' : 'votes'} so far.` : user ? 'One vote per member. The score shows after you vote.' : `<a href="account.html?next=${encodeURIComponent('battle.html')}">Log in</a> to vote. One vote per member.`)
-      : state === 'soon' ? 'Voting opens when the battle starts.' : `${nf(s.total)} ${s.total === 1 ? 'vote' : 'votes'} in total.`;
-    return `<article class="bt" id="b-${esc(b.id)}">
-      <p class="bt-when${state === 'soon' ? ' soon' : ''}">${esc(when)}</p>
-      <h2 class="bt-title">${esc(b.title || 'Battle')}</h2>
-      <div class="bt-pair">${side(b, 'a', { showScore, ended, live, mine })}<span class="bt-vs" aria-hidden="true">VS</span>${side(b, 'b', { showScore, ended, live, mine })}</div>
-      <div class="bt-foot"><span>${foot}</span><button class="bt-share" type="button" data-share="${esc(b.id)}">Share ↗</button></div>
-      <p class="bt-err" hidden></p>
-    </article>`;
+  function saveBtn(key) {
+    if (me && me.uid === uid) return '';
+    const on = mine.has(key);
+    return `<button class="wl-save${on ? ' on' : ''}" type="button" data-save="${esc(key)}"${on ? ' disabled' : ''}>${on ? '🔖 On your wishlist' : '🔖 Save to my wishlist'}</button>`;
   }
 
   function draw() {
-    const now = new Date();
-    const live = liveBattles(battles, now);
-    const soon = battles.filter(b => battleState(b, now) === 'soon').sort((x, y) => toDate(x.start) - toDate(y.start)).slice(0, 1);
-    const past = endedBattles(battles, now).slice(0, 12);
-    const top = live.length ? live : soon;
+    const name = firstName(owner.name);
+    document.title = `${name}'s wishlist | Strong Foodie`;
+    document.getElementById('wlTitle').textContent = `🔖 ${name}'s wishlist`;
+    document.getElementById('wlSub').textContent = `Places ${name} wants to go.`;
+    const places = [], ideas = [];
+    items.forEach(r => {
+      const p = r.kind === 'place' && r.placeCollection && r.placeDocId ? byKey.get(`${r.placeCollection}/${r.placeDocId}`) : null;
+      if (p) places.push({ r, p }); else ideas.push(r);
+    });
+    const total = places.length + ideas.length;
     root.innerHTML = `
-      ${top.length ? top.map(battleHtml).join('') : `<div class="msg"><h2>No battle right now</h2><p>The next one is coming soon. Follow <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">@strongfoodie_</a> on Instagram so you don't miss it.</p></div>`}
-      ${past.length ? `<p class="section-label">Past battles</p>
-        <div class="past">${past.map(b => {
-          const s = score(b), w = s.winner ? (s.winner === 'a' ? (byKey.get(b.a) || {}).name || b.aName : (byKey.get(b.b) || {}).name || b.bName) : '';
-          return `<div class="past-row"><div><p class="past-title">${esc(b.title || 'Battle')}</p><p class="past-meta">${esc(((byKey.get(b.a) || {}).name || b.aName || '?') + ' vs ' + ((byKey.get(b.b) || {}).name || b.bName || '?'))} · ${nf(s.total)} votes</p></div>
-            <p class="past-win">${w ? `👑 <b>${esc(w)}</b> ${Math.max(s.pa, s.pb)}%` : 'A draw'}</p></div>`;
-        }).join('')}</div>` : ''}`;
+      ${me && me.uid === uid ? `<p class="wl-own">This is how others see your wishlist. <a href="account.html#wishlist">Change it or stop sharing →</a></p>` : ''}
+      <div class="wl-head"><span class="wl-count">${total} ${total === 1 ? 'place' : 'places'}</span></div>
+      ${total ? '' : `<div class="msg"><h2>Nothing on it yet</h2><p>${esc(name)} hasn't saved any places yet.</p></div>`}
+      ${places.length ? `<div class="cards-grid">${places.map(({ r, p }) => `<div class="wl-item">${miniCard(p)}${r.note ? `<p class="wl-note">${esc(String(r.note).slice(0, 300))}</p>` : ''}${saveBtn(placeKey(p))}</div>`).join('')}</div>` : ''}
+      ${ideas.length ? `<p class="section-label">Not on Strong Foodie yet</p><div class="ideas">${ideas.map(r => {
+        const title = r.kind === 'place' ? (r.placeName || 'A place') : (r.name || 'A place');
+        const cat = CATS[r.kind === 'place' ? r.placeCategory : r.category];
+        const where = r.address || r.city || '';
+        const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([title, where].filter(Boolean).join(', '))}`;
+        return `<div class="idea"><p class="idea-name">${cat ? cat.emoji + ' ' : ''}${esc(title)}</p>
+          ${where ? `<p class="idea-meta">📍 ${esc(where)}</p>` : ''}
+          ${r.note ? `<p class="wl-note">${esc(String(r.note).slice(0, 300))}</p>` : ''}
+          <a href="${esc(maps)}" target="_blank" rel="noopener">Find on Google Maps ↗</a></div>`;
+      }).join('')}</div>` : ''}
+      ${me && me.uid === uid ? '' : cta()}`;
     hydratePhotos(root);
-    root.querySelectorAll('[data-vote]').forEach(btn => btn.addEventListener('click', () => vote(btn)));
-    root.querySelectorAll('[data-share]').forEach(btn => btn.addEventListener('click', () => share(btn.dataset.share)));
+    root.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => save(b)));
   }
 
-  async function vote(btn) {
-    const b = battles.find(x => x.id === btn.dataset.battle), pick = btn.dataset.vote;
-    if (!b || !user) return;
-    const card = document.getElementById('b-' + b.id);
-    card.querySelectorAll('[data-vote]').forEach(x => { x.disabled = true; });
+  // 🔖 Save: onto the visitor's own wishlist, the same way as on the place itself.
+  async function save(btn) {
+    if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+    const p = byKey.get(btn.dataset.save);
+    if (!p) return;
+    btn.disabled = true;
     try {
-      await castVote(db, b.id, user.uid, pick);
-      if (pick === 'a') b.votesA = (Number(b.votesA) || 0) + 1; else b.votesB = (Number(b.votesB) || 0) + 1;
-      votes.set(b.id, pick);
-      toast('Thanks for voting!');
+      const own = collection(db, 'profiles', me.uid, 'wishlistItems');
+      const dup = await getDocs(query(own, where('placeDocId', '==', p.id)));
+      if (!dup.docs.some(d => (d.data().placeCollection || p.coll) === p.coll)) {
+        await addDoc(own, { kind: 'place', placeCollection: p.coll, placeDocId: p.id, placeName: p.name, placeCategory: p.cat, city: p.where || '', source: 'web', createdAt: serverTimestamp() });
+      }
+      mine.add(placeKey(p));
+      toast('Saved to your wishlist');
       draw();
     } catch (e) {
-      console.log('Vote not saved:', e.code || e);
-      // Voted already (other device), or the battle just ended: show where it stands.
-      const before = await myVote(db, b.id, user.uid);
-      if (before) { votes.set(b.id, before); toast('You had already voted in this battle.'); draw(); return; }
-      const err = card.querySelector('.bt-err');
-      err.textContent = 'Your vote could not be saved. Refresh the page and try again.'; err.hidden = false;
-      card.querySelectorAll('[data-vote]').forEach(x => { x.disabled = false; });
+      console.log('Not saved:', e.code || e);
+      toast('Could not save. Please try again.');
+      btn.disabled = false;
     }
   }
 
-  async function share(id) {
-    const b = battles.find(x => x.id === id);
-    if (!b) return;
-    const a = (byKey.get(b.a) || {}).name || b.aName, c = (byKey.get(b.b) || {}).name || b.bName;
-    const url = 'https://strongfoodie.com/battle.html';
-    const text = `${b.title || 'Battle'}: ${a} vs ${c}. Who wins? Vote on Strong Foodie.`;
+  // Which of these places the visitor already has on their own wishlist.
+  async function loadMine() {
+    mine = new Set();
+    if (!me || me.uid === uid) return;
     try {
-      if (navigator.share) { await navigator.share({ title: 'Strong Foodie Battle', text, url }); return; }
-      await navigator.clipboard.writeText(text + ' ' + url);
-      toast('Link copied');
-    } catch (e) { if (e && e.name !== 'AbortError') window.prompt('Copy this:', text + ' ' + url); }
+      const s = await getDocs(collection(db, 'profiles', me.uid, 'wishlistItems'));
+      s.docs.forEach(d => { const x = d.data(); if (x.placeCollection && x.placeDocId) mine.add(`${x.placeCollection}/${x.placeDocId}`); });
+    } catch (e) { console.log('Own wishlist not read:', e.code || e); }
   }
 
-  async function loadMyVotes() {
-    votes = new Map();
-    if (!user) return;
-    const mine = battles.filter(b => battleState(b) !== 'soon');
-    const picks = await Promise.all(mine.map(b => myVote(db, b.id, user.uid)));
-    mine.forEach((b, i) => { if (picks[i]) votes.set(b.id, picks[i]); });
-  }
-
-  try {
-    const [loaded, list] = await Promise.all([loadPlaces(db), loadBattles(db)]);
-    loaded.all.forEach(p => byKey.set(placeKey(p), p));
-    battles = list;
-    ready = true;
-    draw();
-  } catch (e) {
-    console.log('Battle error:', e);
-    failed = true; ready = true;
-    root.innerHTML = '<div class="msg"><h2>Could not load the battle</h2><p>Please refresh the page.</p></div>';
-  }
+  const loaded = load();
   onAuthStateChanged(auth, async u => {
-    user = u;
-    if (!ready) await new Promise(r => { const t = setInterval(() => { if (ready) { clearInterval(t); r(); } }, 50); });
-    if (failed) return;
-    await loadMyVotes();
+    me = u ? { uid: u.uid } : null;
+    await loaded;
+    if (!ready) return;
+    await loadMine();
     draw();
   });
 </script>

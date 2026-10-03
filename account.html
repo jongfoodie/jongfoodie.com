@@ -95,6 +95,12 @@
   .row-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
   .stars { color: var(--gold); white-space: nowrap; }
   .wish-form { margin-top: 0.75rem; margin-bottom: 0; }
+  .share-row { margin-bottom: 0.9rem; }
+  .share-box { display: flex; gap: 0.5rem; margin: -0.3rem 0 0.9rem; flex-wrap: wrap; }
+  .share-box[hidden] { display: none; }
+  .share-box .field { flex: 1 1 220px; min-width: 0; font-size: 13px; color: var(--ink-soft); }
+  .been-stat { font-size: 15px; color: var(--ink); margin-bottom: 0.6rem; }
+  .been-stat b { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--green); margin: 0 2px; }
   .wish-form[hidden], #wishAddOpen[hidden] { display: none; }
   .cat-pick { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .cat-opt input { position: absolute; opacity: 0; pointer-events: none; }
@@ -204,7 +210,8 @@
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=4";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
-  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=1";
+  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=3";
+  import { markBeen, loadBeen } from "./js/sf-been.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -223,6 +230,7 @@
   const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
   const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
   const fmtDate = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const shareLink = uid => 'https://strongfoodie.com/wishlist.html?u=' + encodeURIComponent(uid);
   function toast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -482,7 +490,16 @@
 
       <section class="acct-block" id="wishlist">
         <h2>Your wishlist <span class="count" id="wishCount"></span></h2>
-        <p class="small" style="margin-bottom:0.75rem;">Places you want to go. Save a place with 🔖 on its page, or add one that is not on Strong Foodie yet. Your wishlist is private and the same as in the app.</p>
+        <p class="small" style="margin-bottom:0.75rem;">Places you want to go. Save a place with 🔖 on its page, or add one that is not on Strong Foodie yet. Been there? Tick it off with ✓. Your wishlist is the same as in the app.</p>
+        <label class="switch-row share-row">
+          <input type="checkbox" id="shareToggle" role="switch"${profile.wishlistShared === true ? ' checked' : ''}>
+          <span class="switch" aria-hidden="true"></span>
+          <span class="switch-text"><strong>Share my wishlist</strong><br><span class="small">Off: only you see it. On: your wishlist and your notes on it are public, so you can send the link to friends. Turn it off to make it private again.</span></span>
+        </label>
+        <div class="share-box" id="shareBox"${profile.wishlistShared === true ? '' : ' hidden'}>
+          <input class="field" id="shareUrl" type="text" readonly value="${esc(shareLink(user.uid))}" aria-label="Link to your wishlist">
+          <button class="btn" type="button" id="shareLinkBtn">Share link</button>
+        </div>
         <div id="wishList"><p class="small">Loading…</p></div>
         <button class="btn" id="wishAddOpen" type="button">＋ Add a place you want to visit</button>
         <form id="wishForm" class="form wish-form" novalidate hidden>
@@ -505,6 +522,12 @@
         </form>
       </section>
 
+      <section class="acct-block" id="been">
+        <h2>Been there <span class="count" id="beenCount"></span></h2>
+        <p class="small" style="margin-bottom:0.75rem;">Places you have been to. Tick a place off with ✓ Been there on its page, or from your wishlist above. Only you see this list, here and in the app.</p>
+        <div id="beenList"><p class="small">Loading…</p></div>
+      </section>
+
       <section class="acct-block">
         <h2>Your reviews <span class="count" id="revCount"></span></h2>
         <div id="revList"><p class="small">Loading…</p></div>
@@ -525,7 +548,7 @@
         <div class="del-panel" id="delPanel" hidden>
           <ul class="del-list">
             <li>Your profile, spots, reviews and highlights</li>
-            <li>Your wishlist, and who you follow</li>
+            <li>Your wishlist, your Been there list, and who you follow</li>
             <li>Your login for the website and the app</li>
           </ul>
           ${delNeedsPassword(user) ? `<label class="field-label" for="delPw">Your password</label>
@@ -574,6 +597,37 @@
         toast('Could not change this. Please try again.');
       }
       priv.disabled = false;
+    });
+
+    // Share the wishlist: wishlistShared on the profile. The Firestore rules let
+    // anyone read the wishlist only while it is true (wishlist.html?u=<uid>).
+    const share = document.getElementById('shareToggle');
+    share.addEventListener('change', async () => {
+      const on = share.checked;
+      share.disabled = true;
+      try {
+        await updateDoc(doc(db, 'profiles', user.uid), { wishlistShared: on });
+        profile.wishlistShared = on;
+        document.getElementById('shareBox').hidden = !on;
+        toast(on ? 'Your wishlist can now be shared' : 'Your wishlist is private again');
+      } catch (err) {
+        console.error(err);
+        share.checked = !on;
+        toast('Could not change this. Please try again.');
+      }
+      share.disabled = false;
+    });
+    document.getElementById('shareLinkBtn').addEventListener('click', async () => {
+      const url = shareLink(user.uid);
+      try {
+        if (navigator.share) { await navigator.share({ title: 'My Strong Foodie wishlist', text: 'Places I want to go', url }); return; }
+        await navigator.clipboard.writeText(url);
+        toast('Link copied');
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        const f = document.getElementById('shareUrl'); f.focus(); f.select();
+        toast('Copy the link from the box');
+      }
     });
 
     // Delete the account
@@ -694,6 +748,7 @@
       btn.disabled = false;
     });
     loadWishlist(user);
+    loadBeenList(user);
 
     // Your reviews (written here or in the app)
     loadReviews(user);
@@ -793,11 +848,56 @@
         ${r.kind === 'idea' ? '<span class="pill-new">Not on Strong Foodie yet</span>' : ''}
         ${where ? `<p class="small">📍 ${esc([r.placeType, where].filter(Boolean).join(' · '))}</p>` : ''}
         ${r.note ? `<p>${esc(r.note)}</p>` : ''}
-        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <a href="add.html?wish=${encodeURIComponent(r.id)}">Add as spot</a> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
+        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <a href="add.html?wish=${encodeURIComponent(r.id)}">Add as spot</a> · ` : ''}${link ? `<button class="link-btn small-link" data-been="${esc(r.id)}">✓ Been there</button> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
       </li>`;
     }).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">Nothing on your wishlist yet.</p>';
     box.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', async () => {
       try { await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', b.dataset.remove)); toast('Removed from your wishlist'); loadWishlist(user); }
+      catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
+    }));
+    // ✓ Been there: onto the Been there list, off the wishlist.
+    box.querySelectorAll('[data-been]').forEach(b => b.addEventListener('click', async () => {
+      const r = rows.find(x => x.id === b.dataset.been);
+      if (!r) return;
+      b.disabled = true;
+      try {
+        await markBeen(db, user.uid, { coll: r.placeCollection, id: r.placeDocId, name: r.placeName, cat: r.placeCategory, city: r.city });
+        await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', r.id));
+        toast('Been there! Moved from your wishlist');
+      } catch (e) { console.error(e); toast('Could not save. Please try again.'); b.disabled = false; return; }
+      loadWishlist(user);
+      loadBeenList(user);
+    }));
+  }
+
+  // ── Been there (js/sf-been.js): newest first
+  async function loadBeenList(user) {
+    const box = document.getElementById('beenList');
+    if (!box) return;
+    let rows = [];
+    try { rows = await loadBeen(db, user.uid); }
+    catch (e) {
+      console.log('Been there could not load:', e.code || e);
+      box.innerHTML = '<p class="small">Your Been there list could not load right now.</p>';
+      return;
+    }
+    document.getElementById('beenCount').textContent = rows.length ? `(${rows.length})` : '';
+    if (!rows.length) { box.innerHTML = '<p class="small">Nothing ticked off yet. Open a place you have been to and tap ✓ Been there.</p>'; return; }
+    box.innerHTML = `<p class="been-stat">✓ Been to<b>${rows.length}</b>${rows.length === 1 ? 'place' : 'places'}</p>
+      <ul class="acct-list">${rows.map(r => {
+        const c = catInfo(r.placeCategory);
+        const link = `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}`;
+        const when = fmtDate(toDate(r.createdAt));
+        return `<li>
+          <div class="row-top"><a href="${link}">${esc(r.placeName || 'A place')}</a><span class="small">${c.emoji} ${c.label}</span></div>
+          <p class="small">${[r.city ? '📍 ' + esc(r.city) : '', when ? 'Ticked off ' + esc(when) : ''].filter(Boolean).join(' · ')}</p>
+          <p class="small"><button class="link-btn small-link" data-unbeen="${esc(r.id)}">Remove</button></p>
+        </li>`;
+      }).join('')}</ul>`;
+    box.querySelectorAll('[data-unbeen]').forEach(b => b.addEventListener('click', async () => {
+      const r = rows.find(x => x.id === b.dataset.unbeen);
+      if (!r) return;
+      try { await deleteDoc(doc(db, 'profiles', user.uid, 'beenThere', r.id)); toast('Taken off your Been there list'); loadBeenList(user); }
       catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
     }));
   }
@@ -880,6 +980,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=3"></script>
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
 </body>
 </html>

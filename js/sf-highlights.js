@@ -28,7 +28,7 @@
 
 import { collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { CATS, esc, toDate, photoTools } from "./sf-places.js?v=7";
-import { deleteHighlight, confirmTap } from "./sf-delete.js?v=1";
+import { deleteHighlight, confirmTap } from "./sf-delete.js?v=3";
 import { loadFlags, isBlocked, openReport } from "./sf-moderation.js?v=1";
 
 const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];

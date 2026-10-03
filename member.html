@@ -215,7 +215,7 @@
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
-  import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=1";
+  import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=3";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
@@ -768,6 +768,6 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
-<script type="module" src="js/sf-account-nav.js?v=3"></script>
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
 </body>
 </html>

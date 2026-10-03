@@ -57,6 +57,8 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('reviews', query(collection(db, 'userReviews'), where('authorId', '==', uid)), d => deleteReview(db, { id: d.id, ...d.data() }));
   await each('spots', query(collection(db, 'userPlaces'), where('addedByUserId', '==', uid)), d => deleteSpot(db, { id: d.id, ...d.data() }));
   await each('wishlist', collection(db, 'profiles', uid, 'wishlistItems'), d => deleteDoc(d.ref));
+  await each('been there', collection(db, 'profiles', uid, 'beenThere'), d => deleteDoc(d.ref));
+  await each('settings', collection(db, 'profiles', uid, 'settings'), d => deleteDoc(d.ref));
   await each('follows', query(collection(db, 'follows'), where('followerId', '==', uid)), d => deleteDoc(d.ref));
   await each('followers', query(collection(db, 'follows'), where('followingId', '==', uid)), d => deleteDoc(d.ref), true);
   // The profile goes last: while anything above failed it stays, so the member can try again.
