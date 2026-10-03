@@ -208,10 +208,10 @@
   // ── Partner accounts (site/partners)
   function bookingState(raw) {
     if (!String(raw || '').trim()) return ['off', 'Not set: hotels show no Booking.com button.'];
-    if (/tidd\.ly|bit\.ly/.test(raw)) return ['bad', 'This is a short link. Paste the long link that starts with https://www.awin1.com/cread.php'];
-    if (/^\s*https?:\/\/([a-z0-9-]+\.)*booking\.com\//i.test(raw)) return ['bad', 'This is a normal Booking.com address: its aid is Booking\'s own. Paste your Awin or CJ link. Only with a direct Booking.com partner number, type aid= and that number.'];
+    if (/tidd\.ly|bit\.ly/.test(raw)) return ['bad', 'This is a short link. Paste the long link from CJ or Awin.'];
+    if (/^\s*https?:\/\/([a-z0-9-]+\.)*booking\.com\//i.test(raw)) return ['bad', 'This is a normal Booking.com address: its aid is Booking\'s own. Paste your link from CJ or Awin. Only with a direct Booking.com partner number, type aid= and that number.'];
     const s = readBookingSetting(raw);
-    return s ? ['ok', `✓ Recognised: ${s.label}. Hotels without their own link show "Check prices on Booking.com".`] : ['bad', 'Not recognised. Paste a link from Awin (awin1.com/cread.php?awinmid=…&awinaffid=…) or from CJ. A direct Booking.com partner number: type aid= and the number.'];
+    return s ? ['ok', `✓ Recognised: ${s.label}. Hotels without their own link show "Check prices on Booking.com".`] : ['bad', 'Not recognised. Paste a deep link from CJ (for example dpbolvw.net/click-…), or from Awin (awin1.com/cread.php?awinmid=…&awinaffid=…). A direct Booking.com partner number: type aid= and the number.'];
   }
   function gygState(raw) {
     if (!String(raw || '').trim()) return ['off', 'Not set: culture spots show no GetYourGuide button.'];
@@ -223,11 +223,11 @@
     const f = document.getElementById('partners');
     f.innerHTML = `
       <h2>Partner accounts</h2>
-      <p class="sub">Fill these in once a partner program has accepted you: Booking.com through Awin, GetYourGuide through its partner program. Everyone can read these codes: they are in every partner link anyway.</p>
+      <p class="sub">Fill these in once a partner program has accepted you: Booking.com through CJ (Europe), GetYourGuide through its partner program. Everyone can read these codes: they are in every partner link anyway.</p>
       <label class="lab" for="pBooking">Booking.com: one partner link</label>
-      <input type="url" id="pBooking" placeholder="https://www.awin1.com/cread.php?awinmid=…&awinaffid=…" value="${esc(partners.booking || '')}" autocomplete="off" spellcheck="false">
+      <input type="url" id="pBooking" placeholder="https://www.dpbolvw.net/click-…-…?url=https%3A%2F%2Fwww.booking.com" value="${esc(partners.booking || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pBookingState"></p>
-      <p class="hint">In Awin: Toolbox, Link builder, choose Booking.com, make a link to www.booking.com and paste it here. The site turns it into a link for every hotel.</p>
+      <p class="hint">In CJ: make a deep link for Booking.com to www.booking.com and paste it here. A link from Awin works too. The site turns it into a link for every hotel.</p>
       <label class="lab" for="pGyg">GetYourGuide: partner ID</label>
       <input type="text" id="pGyg" placeholder="e.g. ABC1DEF" value="${esc(partners.getyourguide || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pGygState"></p>

@@ -7,7 +7,7 @@
 //   partner: true when Strong Foodie earns a commission on the link. The page
 //   then says so under the button (Dutch advertising code, ACM).
 // site/partners: the partner accounts, also set in admin-booking.html.
-//   { booking: "<one partner link to booking.com from Awin or CJ, or aid=<number>>",
+//   { booking: "<one partner link to booking.com from CJ (Europe) or Awin, or aid=<number>>",
 //     getyourguide: "<partner ID>", updatedAt }
 //   With these, hotels without their own link get "Check prices on Booking.com"
 //   and culture spots get "Tickets and tours" (GetYourGuide).
@@ -63,8 +63,11 @@ export function readBookingSetting(raw) {
   }
   const cj = CJ_HOSTS.find(h => isHost(url, h));
   if (cj) {
+    // Two CJ link shapes: /click-<website id>-<link id>?url=… and /links/<website id>/type/dlg/…
     const m = u.pathname.match(/^\/click-(\d+)-(\d+)/);
-    return m ? { type: 'cj', base: `https://www.${cj}/click-${m[1]}-${m[2]}`, label: `CJ, website ${m[1]}` } : null;
+    if (m) return { type: 'cj', base: `https://www.${cj}/click-${m[1]}-${m[2]}`, label: `CJ, website ${m[1]}` };
+    const d = u.pathname.match(/^\/links\/(\d+)\/type\/dlg\//);
+    return d ? { type: 'cjdlg', base: `https://www.${cj}/links/${d[1]}/type/dlg`, label: `CJ, website ${d[1]}` } : null;
   }
   return null;
 }
@@ -94,6 +97,7 @@ export function bookingComLink(setting, target, key) {
   const ref = refOf(key);
   if (s.type === 'awin') return `https://www.awin1.com/cread.php?awinmid=${s.mid}&awinaffid=${s.affid}&clickref=web&clickref2=${encodeURIComponent(ref)}&ued=${encodeURIComponent(url)}`;
   if (s.type === 'cj') return `${s.base}?sid=${encodeURIComponent(ref)}&url=${encodeURIComponent(url)}`;
+  if (s.type === 'cjdlg') return `${s.base}/sid/${encodeURIComponent(ref)}/${url}`;
   const u = new URL(url);
   u.searchParams.set('aid', s.aid);
   u.searchParams.set('label', 'sf-' + ref);
