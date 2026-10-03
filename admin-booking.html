@@ -29,6 +29,11 @@
   .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
   .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
   label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.9rem 0 0.35rem; }
+  textarea.bulk { width: 100%; min-height: 150px; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 13px/1.5 ui-monospace, Menlo, monospace; background: #fff; color: var(--ink); outline: none; resize: vertical; }
+  textarea.bulk:focus { border-color: var(--accent); }
+  .bulk-table td.bad { color: var(--red); font-weight: 600; }
+  .bulk-table td.ok { color: var(--green); }
+  .bulk-table td { overflow-wrap: anywhere; }
   input[type=search], input[type=url], input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
   input:focus { border-color: var(--accent); }
   .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
@@ -186,6 +191,7 @@
       <p class="lead">A <b>Reserve</b> or <b>Book</b> button on a place page, on the site and in the app. Hotels and culture spots get a partner button automatically once your partner accounts are filled in. Restaurants and bars without a link get <b>Call to reserve</b> when their phone number is known. Every link where you earn a commission shows a short partner note, as the Dutch advertising code asks.</p>
       <section class="card" id="partners"></section>
       <section class="card" id="form"></section>
+      <section class="card" id="bulk"></section>
       ${own.length ? `<p class="grp">Places with their own link · ${own.length}</p>${own.map(row).join('')}` : ''}
       ${off.length ? `<p class="grp">No button · ${off.length}</p>${off.map(row).join('')}` : ''}
       ${bookings.length ? '' : '<div class="empty">No place has its own link yet. Add the first one above.</div>'}
@@ -196,6 +202,7 @@
       </section>`;
     drawPartners();
     drawForm();
+    drawBulk();
     root.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
       editing = bookings.find(x => x.id === b.dataset.edit);
       chosen = byKey.get(editing.placeKey) || null;
@@ -267,6 +274,92 @@
       toast(refused(e) ? 'The database refused. Check that you are signed in as admin.' : 'Could not save. Try again.', true);
       btn.disabled = false;
     }
+  }
+
+  // ── Many places at once: one line per place, "reviews/<id> | table | https://… | name".
+  let bulkText = '', bulkRows = null;
+  const KEY_RE = /^(reviews|drinkspots|shopspots|culturespots|healthspots|hotelreviews|userPlaces)\/[A-Za-z0-9_-]{1,100}$/;
+
+  function parseBulk(text) {
+    const rows = String(text || '').split(/\r?\n/)
+      .map((line, i) => ({ line: line.trim(), n: i + 1 }))
+      .filter(x => x.line && !x.line.startsWith('#'))
+      .map(({ line, n }) => {
+        const [key = '', kindRaw = '', url = '', name = ''] = line.split(/\s*[|\t]\s*/);
+        const kind = kindRaw.trim().toLowerCase();
+        const r = { n, key: key.trim(), kind, url: '', name: name.trim(), place: null, error: '' };
+        r.place = byKey.get(r.key) || null;
+        if (!KEY_RE.test(r.key)) r.error = 'Unknown place code';
+        else if (!r.place) r.error = 'Place not found (not published?)';
+        else if (!Object.prototype.hasOwnProperty.call(KINDS, kind)) r.error = 'Button must be table, room, tickets, book or none';
+        else if (kind !== 'none') { r.url = safeUrl(url.trim()); if (!r.url) r.error = 'The link must start with https://'; }
+        return r;
+      });
+    // The same place twice: the last line wins.
+    const last = new Map();
+    rows.forEach((r, i) => { if (!r.error) last.set(r.key, i); });
+    rows.forEach((r, i) => { if (!r.error && last.get(r.key) !== i) r.error = 'Same place again further down: skipped'; });
+    rows.forEach(r => { r.replaces = !r.error && bookings.some(b => b.placeKey === r.key); });
+    return rows;
+  }
+
+  function drawBulk() {
+    const f = document.getElementById('bulk');
+    const good = bulkRows ? bulkRows.filter(r => !r.error) : [];
+    f.innerHTML = `
+      <h2>Paste a list</h2>
+      <p class="sub">Many places at once. One place per line: <code>reviews/&lt;id&gt; | table | https://… | name</code>. The button is table, room, tickets, book or none. The name is only there to help you read the list. Lines that start with # are skipped.</p>
+      <textarea class="bulk" id="bulkText" spellcheck="false" placeholder="reviews/abc123 | table | https://www.opentable.com/… | Restaurant name">${esc(bulkText)}</textarea>
+      <div class="actions"><button class="btn" id="bulkCheck" type="button">Check list</button>${good.length ? `<button class="btn btn-main" id="bulkSave" type="button">Save all (${good.length})</button>` : ''}</div>
+      <div id="bulkResult">${bulkRows ? bulkTable(bulkRows) : ''}</div>`;
+    const ta = document.getElementById('bulkText');
+    ta.addEventListener('input', () => { bulkText = ta.value; });
+    document.getElementById('bulkCheck').addEventListener('click', () => { bulkText = ta.value; bulkRows = parseBulk(bulkText); drawBulk(); });
+    const sv = document.getElementById('bulkSave');
+    if (sv) sv.addEventListener('click', saveBulk);
+  }
+
+  function bulkTable(rows) {
+    if (!rows.length) return '<p class="hint">The list is empty.</p>';
+    const bad = rows.filter(r => r.error).length;
+    return `<p class="hint">${rows.length - bad} ready to save${bad ? `, ${bad} with a problem (these are skipped)` : ''}.</p>
+      <table class="bulk-table"><thead><tr><th class="n">Line</th><th>Place</th><th>Button</th><th>Status</th></tr></thead><tbody>
+      ${rows.map(r => `<tr><td class="n">${r.n}</td><td>${r.place ? esc(r.place.name) + (r.place.where ? ` <small style="color:var(--muted)">${esc(r.place.where)}</small>` : '') : esc(r.name || r.key)}</td>
+        <td>${r.error ? '' : r.kind === 'none' ? 'No button' : `${esc(KINDS[r.kind])} · ${esc(hostOf(r.url))}`}</td>
+        <td class="${r.error ? 'bad' : 'ok'}">${r.error ? esc(r.error) : r.replaces ? 'Replaces the old link' : 'New'}</td></tr>`).join('')}
+      </tbody></table>`;
+  }
+
+  async function saveBulk() {
+    const rows = (bulkRows || []).filter(r => !r.error);
+    if (!rows.length) return;
+    const btn = document.getElementById('bulkSave');
+    btn.disabled = true;
+    let done = 0, failed = 0;
+    for (const r of rows) {
+      btn.textContent = `Saving ${done + failed + 1} of ${rows.length}…`;
+      const key = r.key, id = bookingId(key);
+      const data = {
+        placeKey: key, placeName: r.place.name, kind: r.kind,
+        url: r.kind === 'none' ? '' : r.url,
+        partner: r.kind === 'none' ? false : (looksAffiliate(r.url) && !withPartner(r.url, partners, key).partner),
+        partnerName: '', updatedAt: serverTimestamp(),
+      };
+      try {
+        await setDoc(doc(db, 'bookings', id), data);
+        const i = bookings.findIndex(b => b.id === id);
+        if (i >= 0) bookings[i] = { id, ...data }; else bookings.push({ id, ...data });
+        done++;
+      } catch (e) {
+        console.log('Not saved:', key, e.code || e);
+        failed++;
+        if (refused(e)) break;
+      }
+    }
+    if (!failed) { bulkText = ''; bulkRows = null; }
+    else bulkRows = parseBulk(bulkText);
+    toast(failed ? `Saved ${done}, ${failed} could not be saved. Try again.` : `Saved ${done} ${done === 1 ? 'place' : 'places'}.`, failed > 0);
+    draw();
   }
 
   // ── The link for one place (bookings/{coll}_{id})
