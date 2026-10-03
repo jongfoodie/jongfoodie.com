@@ -866,6 +866,17 @@
   .hero { overflow: visible; }
   .hero-search-wrap { position: relative; max-width: 480px; margin: 0 auto; z-index: 30; }
   .hero-search-wrap .hero-search { margin: 0; }
+  /* Surprise me (js/sf-surprise.js) */
+  .surprise-btn { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.4rem; margin: 1rem auto 0; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 22px; padding: 9px 18px; font: 500 14px 'DM Sans', sans-serif; cursor: pointer; }
+  .surprise-btn:hover { border-color: #F5C896; color: #F5C896; }
+  .surprise-btn:disabled { opacity: 0.5; cursor: default; }
+  /* Battle on the homepage (battle.html) */
+  .battle-home { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: center; background: var(--ink); color: #fff; border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 2.5rem; text-decoration: none; }
+  .battle-home .bh-when { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #F5C896; font-weight: 700; }
+  .battle-home .bh-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; line-height: 1.2; margin: 0.2rem 0; overflow-wrap: anywhere; }
+  .battle-home .bh-pair { font-size: 14px; color: rgba(255,255,255,0.75); overflow-wrap: anywhere; }
+  .battle-home .bh-go { background: var(--accent); color: #fff; border-radius: 22px; padding: 10px 18px; font-weight: 600; font-size: 14px; white-space: nowrap; }
+  @media (max-width: 600px) { .battle-home { grid-template-columns: 1fr; } .battle-home .bh-go { justify-self: start; } }
   .hero-search input[type="search"] { -webkit-appearance: none; appearance: none; }
   .hero-search input::-webkit-search-cancel-button { display: none; }
   .search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--warm-white); color: var(--ink); border-radius: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.35); text-align: left; max-height: min(430px, 62vh); overflow-y: auto; }
@@ -1043,6 +1054,7 @@
   <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
   <p class="mnav-h">Community</p>
   <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
   <a href="videos.html">🎬 Videos</a>
   <a href="about.html">👤 About</a>
 </div>
@@ -1063,7 +1075,7 @@
     <li><a href="reviews.html">Eat</a></li>
     <li><a href="drink.html">Drink</a></li>
     <li><a href="hotel.html">Stay</a></li>
-    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
     <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
   </ul>
@@ -1084,6 +1096,7 @@
     </div>
     <div class="search-results" id="heroResults" role="listbox" aria-label="Search results" hidden></div>
   </div>
+  <button class="surprise-btn" id="surpriseBtn" type="button" disabled>🎲 Surprise me</button>
   <div class="hero-stats">
     <div class="stat">
       <div class="stat-num" id="heroReviews">…</div>
@@ -1137,6 +1150,16 @@
       <p class="section-label">Featured partners</p>
       <p class="section-sub">Paid placements, marked Ad. Our reviews and scores are never for sale.</p>
       <div class="cards-grid" id="adGrid"></div>
+    </div>
+
+    <!-- BATTLE: two places, members vote (battle.html, js/sf-battles.js) -->
+    <div id="battleBlock" hidden></div>
+
+    <!-- JUST OPENED: places Strong Foodie marked as new (admin-openings.html, js/sf-openings.js) -->
+    <div id="openBlock" hidden>
+      <p class="section-label">Just opened</p>
+      <p class="section-sub">New places we've marked as just opened.</p>
+      <div class="cards-grid" id="openGrid"></div>
     </div>
 
     <!-- TOP PICKS: a new selection of top-rated places every month -->
@@ -1406,6 +1429,9 @@
   import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
   import { loadHome, loadPromos, adsFor, adCard } from "./js/sf-promos.js?v=1";
+  import { openSurprise } from "./js/sf-surprise.js?v=1";
+  import { loadOpenings, openingsWithPlaces, openingCard } from "./js/sf-openings.js?v=1";
+  import { loadBattles, liveBattles } from "./js/sf-battles.js?v=1";
   import { placeKey } from "./js/sf-places.js?v=7";
 
   const firebaseConfig = {
@@ -1435,11 +1461,15 @@
 
   async function loadAll() {
     ({ catalog: CATALOG, members: MEMBERS, all: ALL } = await loadPlaces(db));
-    let home, promos;
-    [LISTS, home, promos] = await Promise.all([loadLists(db, ALL), loadHome(db), loadPromos(db)]);
+    let home, promos, openings, battles;
+    [LISTS, home, promos, openings, battles] = await Promise.all([loadLists(db, ALL), loadHome(db), loadPromos(db), loadOpenings(db), loadBattles(db)]);
     const byKey = new Map(ALL.map(p => [placeKey(p), p]));
     renderStats();
     renderAds(promos, byKey);
+    renderBattle(battles, byKey);
+    renderOpenings(openings, byKey);
+    const sb = document.getElementById('surpriseBtn');
+    if (sb) { sb.disabled = false; sb.addEventListener('click', () => openSurprise({ places: ALL, hydratePhotos })); }
     const featured = renderFeatured(home, byKey);
     renderTopPicks(featured, home, byKey);
     renderDestinations();
@@ -1486,6 +1516,31 @@
     if (!block || !ads.length) return;
     const grid = document.getElementById('adGrid');
     grid.innerHTML = ads.map(x => adCard(miniCard(x.place))).join('');
+    hydratePhotos(grid);
+    block.hidden = false;
+  }
+
+  // ── Battle: the live battle that ends first, as a link to battle.html
+  function renderBattle(battles, byKey) {
+    const b = liveBattles(battles)[0];
+    const box = document.getElementById('battleBlock');
+    if (!box || !b) return;
+    const name = (k, fallback) => (byKey.get(b[k]) || {}).name || fallback || '?';
+    box.innerHTML = `<a class="battle-home" href="battle.html">
+      <span><span class="bh-when">⚔️ Battle · vote now</span>
+        <span class="bh-title" style="display:block">${esc(b.title || 'Battle')}</span>
+        <span class="bh-pair" style="display:block">${esc(name('a', b.aName))} vs ${esc(name('b', b.bName))}</span></span>
+      <span class="bh-go">Vote →</span></a>`;
+    box.hidden = false;
+  }
+
+  // ── Just opened: up to six, the newest opening first
+  function renderOpenings(openings, byKey) {
+    const list = openingsWithPlaces(openings, byKey).slice(0, 6);
+    const block = document.getElementById('openBlock');
+    if (!block || !list.length) return;
+    const grid = document.getElementById('openGrid');
+    grid.innerHTML = list.map(x => openingCard(miniCard(x.place), x.o)).join('');
     hydratePhotos(grid);
     block.hidden = false;
   }

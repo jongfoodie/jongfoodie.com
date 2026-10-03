@@ -5,7 +5,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Ads | Strong Foodie</title>
+<title>New openings | Strong Foodie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -70,20 +70,23 @@
     .ad { grid-template-columns: 1fr; }
     .ad-tools { justify-content: flex-start; }
   }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
 </style>
 </head>
 <body>
-<div class="top"><h1>Strong Foodie <span>ADS</span></h1><nav><a href="admin-report.html">📊 Reports per place</a><a href="admin-booking.html">🛎️ Booking</a><a href="admin-home.html">🏠 Homepage</a><a href="admin.html">← Admin</a></nav></div>
+<div class="top"><h1>Strong Foodie <span>NEW OPENINGS</span></h1><nav><a href="admin-battles.html">⚔️ Battles</a><a href="admin-home.html">🏠 Homepage</a><a href="admin.html">← Admin</a></nav></div>
 <main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, fold, toDate, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=4";
   import { confirmTap } from "./js/sf-delete.js?v=1";
+  import { SHOW_DAYS, isShown, isUpcoming } from "./js/sf-openings.js?v=1";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -98,102 +101,96 @@
   const root = document.getElementById('root');
   const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
   const DAY = 24 * 60 * 60 * 1000;
-  const WHERE = [['home', 'Homepage'], ['city', 'City page'], ['place', 'Its own page']];
+  const refused = e => e && e.code === 'permission-denied';
+  const ymd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+  const startOfDay = v => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
+  const endOfDay = v => { const d = new Date(v + 'T23:59:59'); return isNaN(d) ? null : d; };
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '?';
+  const idOf = key => key.replace('/', '_');
 
   function toast(msg, error = false) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
     clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
   }
-  const ymd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
-  const startOfDay = v => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
-  const endOfDay = v => { const d = new Date(v + 'T23:59:59'); return isNaN(d) ? null : d; };
-  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '?';
-  const refused = e => e && e.code === 'permission-denied';
 
-  let places = [], byKey = new Map(), ads = [], editing = null, chosen = null;
+  let places = [], byKey = new Map(), items = [], editing = null, chosen = null;
 
   onAuthStateChanged(auth, async user => {
     if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
     let admin = user.uid === BRAND_UID;
     try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
-    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't manage ads.</p></div>`; return; }
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't manage new openings.</p></div>`; return; }
     if (!(await requireUnlock(auth, user))) return;
-    root.innerHTML = '<p class="msg">Loading ads…</p>';
+    root.innerHTML = '<p class="msg">Loading…</p>';
     try {
-      const [loaded, snap] = await Promise.all([loadPlaces(db), getDocs(collection(db, 'promos')).catch(e => { if (refused(e)) throw e; return { docs: [] }; })]);
+      const [loaded, snap] = await Promise.all([loadPlaces(db), getDocs(collection(db, 'openings'))]);
       places = loaded.all.filter(p => !p.closed);
       loaded.all.forEach(p => byKey.set(placeKey(p), p));
-      ads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       draw();
     } catch (e) {
-      console.log('Ads error:', e);
+      console.log('Openings error:', e);
       root.innerHTML = refused(e)
-        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rule for <code>promos</code> in Firebase first, then refresh.</p></div>'
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rule for <code>openings</code> in Firebase first, then refresh.</p></div>'
         : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
     }
   });
 
-  function state(a, now = new Date()) {
-    const s = toDate(a.start), e = toDate(a.end);
-    if (e && e <= now) return 'ended';
-    if (s && s > now) return 'soon';
-    return 'live';
+  // A closed place is never shown as new, whatever the dates say.
+  function state(o, now = new Date()) {
+    const p = byKey.get(o.placeKey);
+    if (p && p.closed) return 'ended';
+    if (isShown(o, now)) return isUpcoming(o, now) ? 'soon' : 'live';
+    return toDate(o.openedOn) > now ? 'later' : 'ended';
   }
 
   function draw() {
     const now = new Date();
-    const groups = { live: [], soon: [], ended: [] };
-    ads.forEach(a => groups[state(a, now)].push(a));
-    groups.live.sort((a, b) => toDate(a.end) - toDate(b.end));
-    groups.soon.sort((a, b) => toDate(a.start) - toDate(b.start));
-    groups.ended.sort((a, b) => toDate(b.end) - toDate(a.end));
-    const row = a => {
-      const p = byKey.get(a.placeKey);
-      const s = state(a, now), e = toDate(a.end);
-      const left = s === 'live' ? Math.max(0, Math.ceil((e - now) / DAY)) : 0;
-      const where = WHERE.filter(([k]) => (a.where || []).includes(k)).map(([, t]) => t).join(', ') || 'Nowhere';
+    const groups = { live: [], soon: [], later: [], ended: [] };
+    items.forEach(o => groups[state(o, now)].push(o));
+    Object.values(groups).forEach(g => g.sort((a, b) => toDate(b.openedOn) - toDate(a.openedOn)));
+    const row = o => {
+      const p = byKey.get(o.placeKey);
+      const until = toDate(o.until) || new Date(toDate(o.openedOn).getTime() + SHOW_DAYS * DAY);
       return `<div class="ad"><div>
-          <p class="ad-name">${p ? `<a href="${placeUrl(p)}" target="_blank" rel="noopener" style="color:inherit;">${esc(p.name)}</a>` : esc(a.placeName || 'Removed place')}<span class="pill pill-ad">Ad</span>${s === 'live' ? '<span class="pill pill-live">Live</span>' : s === 'soon' ? '<span class="pill pill-soon">Starts soon</span>' : ''}</p>
-          <p class="ad-meta">${nice(toDate(a.start))} to ${nice(e)}${s === 'live' ? ` · ${left} ${left === 1 ? 'day' : 'days'} left` : ''} · ${esc(where)}${p && p.where ? ' · ' + esc(p.where) : ''}</p>
+          <p class="ad-name">${p ? `<a href="${esc(placeUrl(p))}" target="_blank" rel="noopener" style="color:inherit;">${esc(p.name)}</a>` : esc(o.placeName || 'Removed place')}${state(o, now) === 'live' ? '<span class="pill pill-new">New</span>' : state(o, now) === 'soon' ? '<span class="pill pill-soon">Opening soon</span>' : ''}</p>
+          <p class="ad-meta">Opened ${nice(toDate(o.openedOn))} · shown until ${nice(until)}${o.note ? ' · ' + esc(o.note) : ''}${p && p.where ? ' · ' + esc(p.where) : ''}${p && p.closed ? ' · <b>place closed</b>' : ''}</p>
         </div>
         <div class="ad-tools">
-          <a class="btn btn-sm" href="admin-report.html?place=${encodeURIComponent(a.placeKey)}">📊 Report</a>
-          ${s !== 'ended' ? `<button class="btn btn-sm" type="button" data-edit="${esc(a.id)}">Edit</button>` : ''}
-          ${s === 'live' ? `<button class="btn btn-sm btn-danger" type="button" data-stop="${esc(a.id)}">End now</button>` : ''}
-          <button class="btn btn-sm btn-danger" type="button" data-del="${esc(a.id)}">Delete</button>
+          <button class="btn btn-sm" type="button" data-edit="${esc(o.id)}">Edit</button>
+          <button class="btn btn-sm btn-danger" type="button" data-del="${esc(o.id)}">Delete</button>
         </div></div>`;
     };
+    const titles = { live: 'Shown now', soon: 'Opening soon (shown now)', later: 'Shown later', ended: 'No longer shown' };
     root.innerHTML = `
-      <p class="lead">A featured place shows on the homepage, on its city page and on its own page, always with an <b>Ad</b> label, as the Dutch advertising code asks. Its review and score never change. Keep the price and the invoice in your own records: everyone can read this list.</p>
+      <p class="lead">Mark a place as <b>just opened</b>. It then shows with a green <b>New</b> label on the homepage, on its city page and on its own page, for ${SHOW_DAYS} days after the opening or until the date you set. A date in the future shows as <b>Opening soon</b>, from 30 days before.</p>
       <section class="card" id="form"></section>
-      ${['live', 'soon', 'ended'].map(k => groups[k].length ? `<p class="grp">${{ live: 'Live now', soon: 'Starting later', ended: 'Ended' }[k]} · ${groups[k].length}</p>${groups[k].slice(0, k === 'ended' ? 20 : 99).map(row).join('')}` : '').join('')}
-      ${ads.length ? '' : '<div class="empty">No ads yet. Add the first one above.</div>'}`;
+      ${['live', 'soon', 'later', 'ended'].map(k => groups[k].length ? `<p class="grp">${titles[k]} · ${groups[k].length}</p>${groups[k].slice(0, k === 'ended' ? 20 : 99).map(row).join('')}` : '').join('')}
+      ${items.length ? '' : '<div class="empty">Nothing marked as new yet. Add the first one above.</div>'}`;
     drawForm();
-    root.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => { editing = ads.find(a => a.id === b.dataset.edit); chosen = byKey.get(editing.placeKey) || null; drawForm(); document.getElementById('form').scrollIntoView({ behavior: 'smooth' }); }));
-    root.querySelectorAll('[data-stop]').forEach(b => b.addEventListener('click', () => stop(b)));
+    root.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => { editing = items.find(o => o.id === b.dataset.edit); chosen = byKey.get(editing.placeKey) || null; drawForm(); document.getElementById('form').scrollIntoView({ behavior: 'smooth' }); }));
     root.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => remove(b)));
   }
 
   function drawForm() {
     const f = document.getElementById('form');
-    const a = editing || {};
-    const w = editing ? (a.where || []) : WHERE.map(([k]) => k);
-    const start = editing ? toDate(a.start) : new Date();
-    const end = editing ? toDate(a.end) : new Date(Date.now() + 30 * DAY);
+    const o = editing || {};
+    const opened = editing ? toDate(o.openedOn) : new Date();
+    const until = editing && o.until ? toDate(o.until) : null;
     f.innerHTML = `
-      <h2>${editing ? 'Edit ad' : 'New ad'}</h2>
-      <p class="sub">Pick the place, where it shows and for how long.</p>
-      <div id="pickedBox">${chosen ? `<div class="picked"><span>${esc(chosen.emoji)} <b>${esc(chosen.name)}</b> <small style="color:var(--muted)">${esc(chosen.where || '')}</small></span><button class="btn btn-sm" type="button" id="unpick">Change</button></div>` : `
+      <h2>${editing ? 'Edit' : 'Mark a place as new'}</h2>
+      <p class="sub">Pick the place, when it opened and, if you like, a short note such as "Second location".</p>
+      <div id="pickedBox">${chosen ? `<div class="picked"><span>${esc(chosen.emoji)} <b>${esc(chosen.name)}</b> <small style="color:var(--muted)">${esc(chosen.where || '')}</small></span>${editing ? '' : '<button class="btn btn-sm" type="button" id="unpick">Change</button>'}</div>` : `
         <input type="search" id="find" placeholder="Find the place…" aria-label="Find the place" autocomplete="off"><div class="results" id="res"></div>`}</div>
-      <label class="lab">Where it shows</label>
-      <div class="checks">${WHERE.map(([k, t]) => `<label><input type="checkbox" value="${k}"${w.includes(k) ? ' checked' : ''}> ${t}</label>`).join('')}</div>
-      <p class="hint">Homepage: at most three ads at once, under "Featured partners". City page: the same, for places in that city.</p>
       <div class="row2">
-        <div><label class="lab" for="start">From</label><input type="date" id="start" value="${ymd(start)}"></div>
-        <div><label class="lab" for="end">Until (the end of that day)</label><input type="date" id="end" value="${ymd(end)}"></div>
+        <div><label class="lab" for="opened">Opened on</label><input type="date" id="opened" value="${ymd(opened)}"></div>
+        <div><label class="lab" for="until">Show as new until (optional)</label><input type="date" id="until" value="${ymd(until)}"></div>
       </div>
-      <div class="actions"><button class="btn btn-main" id="saveBtn" type="button">${editing ? 'Save' : 'Add ad'}</button>${editing ? '<button class="btn" id="cancelBtn" type="button">Cancel</button>' : ''}</div>`;
+      <p class="hint">Leave "until" empty to show it for ${SHOW_DAYS} days after the opening.</p>
+      <label class="lab" for="note">Note (optional)</label>
+      <input type="text" id="note" maxlength="60" placeholder="e.g. Second location, now in De Pijp" value="${esc(o.note || '')}">
+      <div class="actions"><button class="btn btn-main" id="saveBtn" type="button">${editing ? 'Save' : 'Mark as new'}</button>${editing || chosen ? '<button class="btn" id="cancelBtn" type="button">Cancel</button>' : ''}</div>`;
     const find = document.getElementById('find');
     if (find) find.addEventListener('input', () => {
       const q = fold(find.value).trim(), box = document.getElementById('res');
@@ -201,7 +198,11 @@
       const terms = q.split(/\s+/);
       const hits = places.filter(p => terms.every(t => p._name.includes(t) || p._place.includes(t))).slice(0, 8);
       box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where || '')}${p.member ? ' · member spot' : ''}</small></button>`).join('') : '<p class="hint">No place found.</p>';
-      box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => { chosen = byKey.get(b.dataset.k); drawForm(); }));
+      box.querySelectorAll('.res').forEach(b => b.addEventListener('click', () => {
+        chosen = byKey.get(b.dataset.k);
+        editing = items.find(o => o.placeKey === b.dataset.k) || null;
+        drawForm();
+      }));
     });
     const un = document.getElementById('unpick');
     if (un) un.addEventListener('click', () => { chosen = null; drawForm(); });
@@ -212,39 +213,33 @@
 
   async function save() {
     if (!chosen) return toast('Pick the place first.', true);
-    const where = [...document.querySelectorAll('.checks input:checked')].map(i => i.value);
-    if (!where.length) return toast('Pick at least one spot where it shows.', true);
-    const start = startOfDay(document.getElementById('start').value), end = endOfDay(document.getElementById('end').value);
-    if (!start || !end) return toast('Fill in both dates.', true);
-    if (end <= start) return toast('The end date must be after the start date.', true);
-    const data = { placeKey: placeKey(chosen), placeName: chosen.name, where, start, end, updatedAt: serverTimestamp() };
+    const opened = startOfDay(document.getElementById('opened').value);
+    if (!opened) return toast('Fill in the opening date.', true);
+    const untilRaw = document.getElementById('until').value;
+    const until = untilRaw ? endOfDay(untilRaw) : null;
+    if (until && until <= opened) return toast('"Until" must be after the opening date.', true);
+    const key = placeKey(chosen);
+    const data = { placeKey: key, placeName: chosen.name, openedOn: opened, until, note: document.getElementById('note').value.trim().slice(0, 60), updatedAt: serverTimestamp() };
     const btn = document.getElementById('saveBtn');
     btn.disabled = true;
     try {
-      if (editing) { await updateDoc(doc(db, 'promos', editing.id), data); Object.assign(editing, data); }
-      else { const ref = await addDoc(collection(db, 'promos'), { ...data, createdAt: serverTimestamp() }); ads.push({ id: ref.id, ...data }); }
-      toast(editing ? 'Ad saved.' : `Ad added: ${chosen.name} shows with an Ad label from ${nice(start)}.`);
+      await setDoc(doc(db, 'openings', idOf(key)), data);
+      const i = items.findIndex(o => o.id === idOf(key));
+      if (i >= 0) items[i] = { id: idOf(key), ...data }; else items.push({ id: idOf(key), ...data });
+      toast(`Saved: ${chosen.name} shows as ${opened > new Date() ? 'opening soon' : 'new'}.`);
       editing = null; chosen = null;
       draw();
     } catch (e) {
-      console.log('Ad not saved:', e);
-      toast(refused(e) ? 'The database refused: add the promos rule in Firebase first.' : 'Could not save. Try again.', true);
+      console.log('Not saved:', e);
+      toast(refused(e) ? 'The database refused: add the openings rule in Firebase first.' : 'Could not save. Try again.', true);
       btn.disabled = false;
     }
-  }
-
-  async function stop(btn) {
-    if (!confirmTap(btn, 'Tap again to end it')) return;
-    const a = ads.find(x => x.id === btn.dataset.stop);
-    btn.disabled = true;
-    try { const end = new Date(); await updateDoc(doc(db, 'promos', a.id), { end, updatedAt: serverTimestamp() }); a.end = end; toast('Ended. It is off the site within a few minutes.'); draw(); }
-    catch (e) { console.log('Not ended:', e); toast('Could not end it. Try again.', true); btn.disabled = false; }
   }
 
   async function remove(btn) {
     if (!confirmTap(btn, 'Tap again to delete')) return;
     btn.disabled = true;
-    try { await deleteDoc(doc(db, 'promos', btn.dataset.del)); ads = ads.filter(a => a.id !== btn.dataset.del); toast('Deleted.'); draw(); }
+    try { await deleteDoc(doc(db, 'openings', btn.dataset.del)); items = items.filter(o => o.id !== btn.dataset.del); toast('Deleted.'); draw(); }
     catch (e) { console.log('Not deleted:', e); toast('Could not delete. Try again.', true); btn.disabled = false; }
   }
 </script>

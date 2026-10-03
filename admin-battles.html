@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Battles | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
+  .vs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .res-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #EFE8DC; margin-top: 6px; max-width: 360px; gap: 2px; }
+  .res-bar span { display: block; height: 100%; }
+  .res-a { background: var(--accent); }
+  .res-b { background: var(--ink-soft); }
+  .score { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .score b { color: var(--ink); }
+  .pill-end { background: #EFE8DC; color: var(--muted); }
+  @media (max-width: 700px) { .vs-row { grid-template-columns: 1fr; gap: 0; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>BATTLES</span></h1><nav><a href="battle.html" target="_blank" rel="noopener">⚔️ Battle page ↗</a><a href="admin-openings.html">🆕 Openings</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, fold, toDate, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=4";
+  import { confirmTap } from "./js/sf-delete.js?v=1";
+  import { battleState, score } from "./js/sf-battles.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const DAY = 24 * 60 * 60 * 1000;
+  const refused = e => e && e.code === 'permission-denied';
+  const ymd = d => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+  const startOfDay = v => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
+  const endOfDay = v => { const d = new Date(v + 'T23:59:59'); return isNaN(d) ? null : d; };
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '?';
+  const nf = n => Number(n || 0).toLocaleString('en-GB');
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  // editing: the battle being edited. chosen: { a, b } picked places.
+  let places = [], byKey = new Map(), items = [], editing = null, chosen = { a: null, b: null };
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't manage battles.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const [loaded, snap] = await Promise.all([loadPlaces(db), getDocs(collection(db, 'battles'))]);
+      places = loaded.all.filter(p => !p.closed);
+      loaded.all.forEach(p => byKey.set(placeKey(p), p));
+      items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      draw();
+    } catch (e) {
+      console.log('Battles error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rule for <code>battles</code> in Firebase first, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  const nameOf = (b, k) => (byKey.get(b[k]) || {}).name || (k === 'a' ? b.aName : b.bName) || 'Removed place';
+
+  function draw() {
+    const now = new Date();
+    const groups = { live: [], soon: [], ended: [] };
+    items.forEach(b => groups[battleState(b, now)].push(b));
+    groups.live.sort((x, y) => toDate(x.end) - toDate(y.end));
+    groups.soon.sort((x, y) => toDate(x.start) - toDate(y.start));
+    groups.ended.sort((x, y) => toDate(y.end) - toDate(x.end));
+    const row = b => {
+      const st = battleState(b, now), s = score(b);
+      const win = st === 'ended' && s.winner ? nameOf(b, s.winner) : '';
+      const pill = st === 'live' ? '<span class="pill pill-live">Live</span>' : st === 'soon' ? '<span class="pill pill-soon">Starts soon</span>' : '<span class="pill pill-end">Ended</span>';
+      const bar = s.total ? `<div class="res-bar" aria-hidden="true"><span class="res-a" style="width:${s.pa}%"></span><span class="res-b" style="width:${s.pb}%"></span></div>` : '';
+      return `<div class="ad"><div>
+          <p class="ad-name">${esc(b.title || 'Battle')}${pill}</p>
+          <p class="ad-meta">${esc(nameOf(b, 'a'))} vs ${esc(nameOf(b, 'b'))} · ${nice(toDate(b.start))} to ${nice(toDate(b.end))}</p>
+          ${st === 'soon' ? '' : `<p class="score"><b>${esc(nameOf(b, 'a'))}</b> ${s.pa}% (${nf(s.a)}) · <b>${esc(nameOf(b, 'b'))}</b> ${s.pb}% (${nf(s.b)}) · ${nf(s.total)} ${s.total === 1 ? 'vote' : 'votes'}${st === 'ended' ? (win ? ` · 👑 ${esc(win)} won` : ' · a draw') : ''}</p>${bar}`}
+        </div>
+        <div class="ad-tools">
+          ${st === 'ended' ? '' : `<button class="btn btn-sm" type="button" data-edit="${esc(b.id)}">Edit</button>`}
+          ${st === 'live' ? `<button class="btn btn-sm" type="button" data-end="${esc(b.id)}">End now</button>` : ''}
+          <button class="btn btn-sm btn-danger" type="button" data-del="${esc(b.id)}">Delete</button>
+        </div></div>`;
+    };
+    const titles = { live: 'Live now', soon: 'Starting soon', ended: 'Ended' };
+    root.innerHTML = `
+      <p class="lead">Put two places head to head, for example <b>Best smash burger in Amsterdam</b>. Members vote once per battle on the <a href="battle.html" target="_blank" rel="noopener" style="color:var(--accent);">battle page</a> and in the app. The score shows to a member after they vote, and to everyone when the battle ends. A live battle also shows on the homepage and on both places.</p>
+      <section class="card" id="form"></section>
+      ${['live', 'soon', 'ended'].map(k => groups[k].length ? `<p class="grp">${titles[k]} · ${groups[k].length}</p>${groups[k].slice(0, k === 'ended' ? 20 : 99).map(row).join('')}` : '').join('')}
+      ${items.length ? '' : '<div class="empty">No battles yet. Start the first one above.</div>'}`;
+    drawForm();
+    root.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
+      editing = items.find(b => b.id === btn.dataset.edit);
+      chosen = { a: byKey.get(editing.a) || null, b: byKey.get(editing.b) || null };
+      drawForm();
+      document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+    }));
+    root.querySelectorAll('[data-end]').forEach(btn => btn.addEventListener('click', () => endNow(btn)));
+    root.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => remove(btn)));
+  }
+
+  // With votes in, the two places stay as they are; only the title and dates can change.
+  const locked = () => !!editing && score(editing).total > 0;
+
+  function pickerHtml(k) {
+    const p = chosen[k];
+    const lab = k === 'a' ? 'Place A' : 'Place B';
+    if (p) return `<label class="lab">${lab}</label><div class="picked"><span>${esc(p.emoji)} <b>${esc(p.name)}</b> <small style="color:var(--muted)">${esc(p.where || '')}</small></span>${locked() ? '' : `<button class="btn btn-sm" type="button" data-unpick="${k}">Change</button>`}</div>`;
+    return `<label class="lab" for="find-${k}">${lab}</label><input type="search" id="find-${k}" placeholder="Find the place…" autocomplete="off"><div class="results" id="res-${k}"></div>`;
+  }
+
+  function drawForm() {
+    const f = document.getElementById('form');
+    const b = editing || {};
+    const start = editing ? toDate(b.start) : new Date();
+    const end = editing ? toDate(b.end) : new Date(Date.now() + 7 * DAY);
+    f.innerHTML = `
+      <h2>${editing ? 'Edit battle' : 'Start a battle'}</h2>
+      <p class="sub">${locked() ? 'Votes are in, so the two places stay as they are. You can still change the title and the dates.' : 'Give it a title, pick two places and set when voting opens and closes.'}</p>
+      <label class="lab" for="title">Title</label>
+      <input type="text" id="title" maxlength="70" placeholder="e.g. Best smash burger in Amsterdam" value="${esc(b.title || '')}">
+      <div class="vs-row"><div>${pickerHtml('a')}</div><div>${pickerHtml('b')}</div></div>
+      <div class="row2">
+        <div><label class="lab" for="start">Voting opens</label><input type="date" id="start" value="${ymd(start)}"></div>
+        <div><label class="lab" for="end">Voting closes (end of the day)</label><input type="date" id="end" value="${ymd(end)}"></div>
+      </div>
+      <p class="hint">A week works well. Opening today means members can vote straight away.</p>
+      <div class="actions"><button class="btn btn-main" id="saveBtn" type="button">${editing ? 'Save' : 'Start battle'}</button>${editing || chosen.a || chosen.b ? '<button class="btn" id="cancelBtn" type="button">Cancel</button>' : ''}</div>`;
+    ['a', 'b'].forEach(k => {
+      const find = document.getElementById('find-' + k);
+      if (!find) return;
+      find.addEventListener('input', () => {
+        const q = fold(find.value).trim(), box = document.getElementById('res-' + k);
+        if (q.length < 2) { box.innerHTML = ''; return; }
+        const terms = q.split(/\s+/);
+        const other = chosen[k === 'a' ? 'b' : 'a'];
+        const hits = places.filter(p => p !== other && terms.every(t => p._name.includes(t) || p._place.includes(t))).slice(0, 8);
+        box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where || '')}${p.member ? ' · member spot' : ''}</small></button>`).join('') : '<p class="hint">No place found.</p>';
+        box.querySelectorAll('.res').forEach(r => r.addEventListener('click', () => { keepInputs(); chosen[k] = byKey.get(r.dataset.k); drawForm(); }));
+      });
+    });
+    f.querySelectorAll('[data-unpick]').forEach(btn => btn.addEventListener('click', () => { keepInputs(); chosen[btn.dataset.unpick] = null; drawForm(); }));
+    document.getElementById('saveBtn').addEventListener('click', save);
+    const c = document.getElementById('cancelBtn');
+    if (c) c.addEventListener('click', () => { editing = null; chosen = { a: null, b: null }; draft = null; drawForm(); });
+    if (draft) { document.getElementById('title').value = draft.title; document.getElementById('start').value = draft.start; document.getElementById('end').value = draft.end; draft = null; }
+  }
+
+  // Keeps what was typed while the form redraws after picking a place.
+  let draft = null;
+  function keepInputs() {
+    draft = { title: document.getElementById('title').value, start: document.getElementById('start').value, end: document.getElementById('end').value };
+  }
+
+  async function save() {
+    const title = document.getElementById('title').value.trim().slice(0, 70);
+    if (!title) return toast('Give the battle a title.', true);
+    if (!chosen.a || !chosen.b) return toast('Pick both places.', true);
+    const a = placeKey(chosen.a), b = placeKey(chosen.b);
+    if (a === b) return toast('Pick two different places.', true);
+    const start = startOfDay(document.getElementById('start').value);
+    const end = endOfDay(document.getElementById('end').value);
+    if (!start || !end) return toast('Fill in both dates.', true);
+    if (end <= start) return toast('Voting must close after it opens.', true);
+    if (end <= new Date()) return toast('The closing date is in the past.', true);
+    const clash = items.find(x => x.id !== (editing && editing.id) && battleState(x) !== 'ended' && [x.a, x.b].some(k => k === a || k === b));
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    try {
+      if (editing) {
+        // Votes may have come in since this page loaded: check before changing the places.
+        const wasLocked = locked();
+        const fresh = await getDoc(doc(db, 'battles', editing.id));
+        if (fresh.exists()) { const f = fresh.data(); editing.votesA = f.votesA || 0; editing.votesB = f.votesB || 0; }
+        const placesChanged = a !== editing.a || b !== editing.b;
+        if (!wasLocked && locked() && placesChanged) {
+          toast('Votes came in meanwhile, so the two places stay as they are. Check and save again.', true);
+          chosen = { a: byKey.get(editing.a) || null, b: byKey.get(editing.b) || null };
+          keepInputs(); drawForm();
+          return;
+        }
+        const data = locked()
+          ? { title, start, end, updatedAt: serverTimestamp() }
+          : { title, a, b, aName: chosen.a.name, bName: chosen.b.name, start, end, updatedAt: serverTimestamp() };
+        await updateDoc(doc(db, 'battles', editing.id), data);
+        Object.assign(editing, data);
+        toast('Saved.');
+      } else {
+        const ref = doc(collection(db, 'battles'));
+        const data = { title, a, b, aName: chosen.a.name, bName: chosen.b.name, start, end, votesA: 0, votesB: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+        await setDoc(ref, data);
+        items.push({ id: ref.id, ...data });
+        toast(start > new Date() ? `Saved. Voting opens ${nice(start)}.` : 'Battle is live.');
+      }
+      if (clash) setTimeout(() => toast(`Note: ${clash.title || 'another battle'} has one of these places too.`), 3000);
+      editing = null; chosen = { a: null, b: null };
+      draw();
+    } catch (e) {
+      console.log('Not saved:', e);
+      toast(refused(e) ? 'The database refused: add the battles rule in Firebase first.' : 'Could not save. Try again.', true);
+      btn.disabled = false;
+    }
+  }
+
+  async function endNow(btn) {
+    if (!confirmTap(btn, 'Tap again to end')) return;
+    btn.disabled = true;
+    const b = items.find(x => x.id === btn.dataset.end);
+    const end = new Date();
+    try { await updateDoc(doc(db, 'battles', b.id), { end, updatedAt: serverTimestamp() }); b.end = end; toast('Battle ended. The result is now public.'); draw(); }
+    catch (e) { console.log('Not ended:', e); toast('Could not end it. Try again.', true); btn.disabled = false; }
+  }
+
+  // The votes go first, then the battle itself.
+  async function remove(btn) {
+    if (!confirmTap(btn, 'Tap again to delete')) return;
+    btn.disabled = true;
+    const id = btn.dataset.del;
+    try {
+      const votes = await getDocs(collection(db, 'battles', id, 'votes'));
+      for (let i = 0; i < votes.docs.length; i += 400) {
+        const batch = writeBatch(db);
+        votes.docs.slice(i, i + 400).forEach(v => batch.delete(v.ref));
+        await batch.commit();
+      }
+      await deleteDoc(doc(db, 'battles', id));
+      items = items.filter(b => b.id !== id);
+      if (editing && editing.id === id) { editing = null; chosen = { a: null, b: null }; }
+      toast('Deleted.');
+      draw();
+    } catch (e) { console.log('Not deleted:', e); toast('Could not delete. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

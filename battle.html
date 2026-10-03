@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Strong Foodie Battle: two places, one winner. Vote for your favourite and see who wins.">
+<title>Battle | Strong Foodie</title>
+<link rel="canonical" href="https://strongfoodie.com/battle.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Strong Foodie Battle: two places, one winner">
+<meta property="og:description" content="Vote for your favourite. Members vote once per battle; the score shows after you vote.">
+<meta property="og:url" content="https://strongfoodie.com/battle.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .msg a { color: var(--accent); }
+
+  /* One battle */
+  .bt { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; }
+  .bt-when { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--accent); }
+  .bt-when.soon { color: var(--muted); }
+  .bt-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.15; margin: 0.3rem 0 1.2rem; overflow-wrap: anywhere; }
+  .bt-pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+  .bt-vs { align-self: center; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem; color: var(--accent); }
+  .bt-side { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; position: relative; }
+  .bt-side.win { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+  .bt-side.mine { border-color: var(--accent); }
+  .bt-img { position: relative; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; font-size: 54px; color: #fff; }
+  .bt-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .bt-crown { position: absolute; top: 8px; left: 8px; background: var(--gold); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 6px; z-index: 1; }
+  .bt-body { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+  .bt-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .bt-name a { color: inherit; text-decoration: none; }
+  .bt-meta { font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .bt-vote { margin-top: auto; border: 0; background: var(--accent); color: #fff; border-radius: 22px; padding: 10px 14px; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; text-align: center; text-decoration: none; }
+  .bt-vote:disabled { opacity: 0.6; cursor: default; }
+  .bt-bar { margin-top: auto; }
+  .bt-bar-track { height: 10px; border-radius: 6px; background: #EFE8DC; overflow: hidden; }
+  .bt-bar-fill { height: 100%; background: var(--accent); border-radius: 6px; }
+  .bt-side.win .bt-bar-fill { background: var(--gold); }
+  .bt-pct { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 0.5rem; font-size: 13px; line-height: 1.35; margin-top: 4px; color: var(--ink-soft); }
+  .bt-pct b { font-size: 18px; color: var(--ink); }
+  .bt-foot { margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-soft); }
+  .bt-foot a { color: var(--accent); }
+  .bt-share { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
+  .bt-err { color: #A32323; font-weight: 600; font-size: 13.5px; margin-top: 0.6rem; }
+
+  /* Past battles */
+  .past { display: flex; flex-direction: column; gap: 0.6rem; }
+  .past-row { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.8rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.6rem; align-items: center; }
+  .past-title { font-weight: 700; overflow-wrap: anywhere; }
+  .past-meta { font-size: 13px; color: var(--muted); }
+  .past-win { font-size: 13.5px; text-align: right; }
+  .past-win b { color: var(--gold); }
+
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .wrapper { padding: 1.5rem 16px; }
+    .bt { padding: 1rem; }
+    .bt-pair { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .bt-vs { display: none; }
+    .bt-name { font-size: 1.02rem; }
+    .bt-body { padding: 0.7rem; }
+    .bt-vote { padding: 9px 8px; font-size: 13px; }
+    .past-row { grid-template-columns: 1fr; }
+    .past-win { text-align: left; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+</style>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {
+    if (window.__mcLoaded) return;
+    window.__mcLoaded = true;
+    var m = document.createElement('script');
+    m.id = 'mcjs'; m.async = true;
+    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
+    document.head.appendChild(m);
+  }
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
+  <a href="index.html">🏠 Home</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="battle.html" class="active" aria-current="page">⚔️ Battle</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="about.html">👤 About</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Strong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Eat</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="hotel.html">Stay</a></li>
+    <li class="nav-more"><details><summary class="active">More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html" class="active" aria-current="page">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
+    <li><a href="map.html">Map</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+
+<div class="page-hero">
+  <h1>⚔️ Battle</h1>
+  <p>Two places, one winner. Vote for your favourite.</p>
+</div>
+
+<main class="wrapper" id="root"><p class="msg">Loading the battle…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Strong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+    loadMailchimp();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+  loadMailchimp();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { CATS, esc, loadPlaces, placeKey, placeUrl, photoTools } from "./js/sf-places.js?v=7";
+  import { loadBattles, liveBattles, endedBattles, battleState, score, myVote, castVote } from "./js/sf-battles.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const root = document.getElementById('root');
+  const { hydratePhotos } = photoTools(db);
+  const DAY = 864e5;
+  const toDate = v => (v && typeof v.toDate === 'function') ? v.toDate() : (v ? new Date(v) : null);
+  const nf = n => Number(n || 0).toLocaleString('en-GB');
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  let byKey = new Map(), battles = [], user = null, votes = new Map(), ready = false, failed = false;
+
+  // Counted in calendar days: voting closes at the end of the last day.
+  function endsIn(b) {
+    const mid = v => { const d = new Date(v); d.setHours(0, 0, 0, 0); return d; };
+    const d = Math.round((mid(toDate(b.end)) - mid(Date.now())) / DAY);
+    if (d <= 0) return 'Ends today';
+    return d === 1 ? 'Ends tomorrow' : `Ends in ${d} days`;
+  }
+
+  function side(b, k, opts) {
+    const key = b[k], p = byKey.get(key);
+    const name = p ? p.name : (k === 'a' ? b.aName : b.bName) || 'Removed place';
+    const s = score(b), pct = k === 'a' ? s.pa : s.pb, n = k === 'a' ? s.a : s.b;
+    const cat = p ? CATS[p.cat] : null;
+    const win = opts.showScore && opts.ended && s.winner === k;
+    const mine = opts.mine === k;
+    const meta = p ? [p.where, cat ? cat.label : '', p.rating && !p.member ? `★\u00a0${p.rating.toFixed(1)}` : ''].filter(Boolean).join(' · ') : '';
+    let action = '';
+    if (opts.showScore) {
+      action = `<div class="bt-bar" aria-label="${pct}% of the votes"><div class="bt-bar-track"><div class="bt-bar-fill" style="width:${pct}%"></div></div>
+        <div class="bt-pct"><b>${pct}%</b><span>${nf(n)} ${n === 1 ? 'vote' : 'votes'}${mine ? ' · your vote' : ''}</span></div></div>`;
+    } else if (opts.live) {
+      action = user
+        ? `<button class="bt-vote" type="button" data-vote="${k}" data-battle="${esc(b.id)}" aria-label="${esc('Vote for ' + name)}">Vote</button>`
+        : `<a class="bt-vote" href="account.html?next=${encodeURIComponent('battle.html')}">Log in to vote</a>`;
+    }
+    return `<div class="bt-side${win ? ' win' : ''}${mine ? ' mine' : ''}">
+      <div class="bt-img" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">
+        ${win ? '<span class="bt-crown">👑 Winner</span>' : ''}
+        <span>${esc(p ? p.emoji : '🍽️')}</span>
+        ${p && p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+      </div>
+      <div class="bt-body">
+        <p class="bt-name">${p ? `<a href="${esc(placeUrl(p))}">${esc(name)}</a>` : esc(name)}</p>
+        ${meta ? `<p class="bt-meta">${esc(meta)}</p>` : ''}
+        ${action}
+      </div>
+    </div>`;
+  }
+
+  function battleHtml(b) {
+    const state = battleState(b);
+    const mine = votes.get(b.id) || '';
+    const ended = state === 'ended', live = state === 'live';
+    const showScore = ended || !!mine;
+    const s = score(b);
+    const when = live ? `Live · ${endsIn(b)}` : state === 'soon' ? `Starts ${toDate(b.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}` : `Ended ${toDate(b.end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}`;
+    const foot = live
+      ? (mine ? `You voted. ${nf(s.total)} ${s.total === 1 ? 'vote' : 'votes'} so far.` : user ? 'One vote per member. The score shows after you vote.' : `<a href="account.html?next=${encodeURIComponent('battle.html')}">Log in</a> to vote. One vote per member.`)
+      : state === 'soon' ? 'Voting opens when the battle starts.' : `${nf(s.total)} ${s.total === 1 ? 'vote' : 'votes'} in total.`;
+    return `<article class="bt" id="b-${esc(b.id)}">
+      <p class="bt-when${state === 'soon' ? ' soon' : ''}">${esc(when)}</p>
+      <h2 class="bt-title">${esc(b.title || 'Battle')}</h2>
+      <div class="bt-pair">${side(b, 'a', { showScore, ended, live, mine })}<span class="bt-vs" aria-hidden="true">VS</span>${side(b, 'b', { showScore, ended, live, mine })}</div>
+      <div class="bt-foot"><span>${foot}</span><button class="bt-share" type="button" data-share="${esc(b.id)}">Share ↗</button></div>
+      <p class="bt-err" hidden></p>
+    </article>`;
+  }
+
+  function draw() {
+    const now = new Date();
+    const live = liveBattles(battles, now);
+    const soon = battles.filter(b => battleState(b, now) === 'soon').sort((x, y) => toDate(x.start) - toDate(y.start)).slice(0, 1);
+    const past = endedBattles(battles, now).slice(0, 12);
+    const top = live.length ? live : soon;
+    root.innerHTML = `
+      ${top.length ? top.map(battleHtml).join('') : `<div class="msg"><h2>No battle right now</h2><p>The next one is coming soon. Follow <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">@strongfoodie_</a> on Instagram so you don't miss it.</p></div>`}
+      ${past.length ? `<p class="section-label">Past battles</p>
+        <div class="past">${past.map(b => {
+          const s = score(b), w = s.winner ? (s.winner === 'a' ? (byKey.get(b.a) || {}).name || b.aName : (byKey.get(b.b) || {}).name || b.bName) : '';
+          return `<div class="past-row"><div><p class="past-title">${esc(b.title || 'Battle')}</p><p class="past-meta">${esc(((byKey.get(b.a) || {}).name || b.aName || '?') + ' vs ' + ((byKey.get(b.b) || {}).name || b.bName || '?'))} · ${nf(s.total)} votes</p></div>
+            <p class="past-win">${w ? `👑 <b>${esc(w)}</b> ${Math.max(s.pa, s.pb)}%` : 'A draw'}</p></div>`;
+        }).join('')}</div>` : ''}`;
+    hydratePhotos(root);
+    root.querySelectorAll('[data-vote]').forEach(btn => btn.addEventListener('click', () => vote(btn)));
+    root.querySelectorAll('[data-share]').forEach(btn => btn.addEventListener('click', () => share(btn.dataset.share)));
+  }
+
+  async function vote(btn) {
+    const b = battles.find(x => x.id === btn.dataset.battle), pick = btn.dataset.vote;
+    if (!b || !user) return;
+    const card = document.getElementById('b-' + b.id);
+    card.querySelectorAll('[data-vote]').forEach(x => { x.disabled = true; });
+    try {
+      await castVote(db, b.id, user.uid, pick);
+      if (pick === 'a') b.votesA = (Number(b.votesA) || 0) + 1; else b.votesB = (Number(b.votesB) || 0) + 1;
+      votes.set(b.id, pick);
+      toast('Thanks for voting!');
+      draw();
+    } catch (e) {
+      console.log('Vote not saved:', e.code || e);
+      // Voted already (other device), or the battle just ended: show where it stands.
+      const before = await myVote(db, b.id, user.uid);
+      if (before) { votes.set(b.id, before); toast('You had already voted in this battle.'); draw(); return; }
+      const err = card.querySelector('.bt-err');
+      err.textContent = 'Your vote could not be saved. Refresh the page and try again.'; err.hidden = false;
+      card.querySelectorAll('[data-vote]').forEach(x => { x.disabled = false; });
+    }
+  }
+
+  async function share(id) {
+    const b = battles.find(x => x.id === id);
+    if (!b) return;
+    const a = (byKey.get(b.a) || {}).name || b.aName, c = (byKey.get(b.b) || {}).name || b.bName;
+    const url = 'https://strongfoodie.com/battle.html';
+    const text = `${b.title || 'Battle'}: ${a} vs ${c}. Who wins? Vote on Strong Foodie.`;
+    try {
+      if (navigator.share) { await navigator.share({ title: 'Strong Foodie Battle', text, url }); return; }
+      await navigator.clipboard.writeText(text + ' ' + url);
+      toast('Link copied');
+    } catch (e) { if (e && e.name !== 'AbortError') window.prompt('Copy this:', text + ' ' + url); }
+  }
+
+  async function loadMyVotes() {
+    votes = new Map();
+    if (!user) return;
+    const mine = battles.filter(b => battleState(b) !== 'soon');
+    const picks = await Promise.all(mine.map(b => myVote(db, b.id, user.uid)));
+    mine.forEach((b, i) => { if (picks[i]) votes.set(b.id, picks[i]); });
+  }
+
+  try {
+    const [loaded, list] = await Promise.all([loadPlaces(db), loadBattles(db)]);
+    loaded.all.forEach(p => byKey.set(placeKey(p), p));
+    battles = list;
+    ready = true;
+    draw();
+  } catch (e) {
+    console.log('Battle error:', e);
+    failed = true; ready = true;
+    root.innerHTML = '<div class="msg"><h2>Could not load the battle</h2><p>Please refresh the page.</p></div>';
+  }
+  onAuthStateChanged(auth, async u => {
+    user = u;
+    if (!ready) await new Promise(r => { const t = setInterval(() => { if (ready) { clearInterval(t); r(); } }, 50); });
+    if (failed) return;
+    await loadMyVotes();
+    draw();
+  });
+</script>
+<script type="module" src="js/sf-account-nav.js?v=3"></script>
+</body>
+</html>
