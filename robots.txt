@@ -8,6 +8,7 @@ Disallow: /admin-reports.html
 Disallow: /admin-members.html
 Disallow: /admin-home.html
 Disallow: /admin-ads.html
+Disallow: /admin-booking.html
 Disallow: /admin-report.html
 Disallow: /admin.html
 

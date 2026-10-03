@@ -89,6 +89,7 @@
   .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
   .btn { font-family: inherit; font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 22px; border: 1px solid var(--border); background: var(--cream); color: var(--ink); text-decoration: none; cursor: pointer; }
   .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .book-note { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 0.6rem; }
   .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
   .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
   .block p { line-height: 1.65; color: var(--ink-soft); overflow-wrap: anywhere; }
@@ -243,7 +244,8 @@
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
   import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
-  import { countView } from "./js/sf-views.js?v=1";
+  import { countView } from "./js/sf-views.js?v=2";
+  import { loadPartners, loadBooking, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=1";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
   import { loadPromos } from "./js/sf-promos.js?v=1";
 
@@ -476,11 +478,13 @@
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
           <div class="actions">
-            ${routeUrl ? `<a class="btn btn-primary" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
+            ${bookingButtonHtml(p.book)}
+            ${routeUrl ? `<a class="btn${p.book ? '' : ' btn-primary'}" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
             <button class="btn" id="shareBtn">Share</button>
             <button class="btn wish-btn" id="wishBtn" type="button" aria-pressed="false">🔖 Wishlist</button>
             ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
           </div>
+          ${partnerNoteHtml(p.book)}
         </div>
       </article>
 
@@ -521,6 +525,10 @@
       document.querySelectorAll('.thumb').forEach(b => b.classList.toggle('active', b === btn));
       resolvePhoto(p.photos[i]).then(url => { const h = document.getElementById('heroImg'); if (url && h) { h.hidden = false; h.src = url; } });
     }));
+
+    // A click on Reserve or Book counts for the numbers (views, type "book"): nothing personal.
+    const bookBtn = document.getElementById('bookBtn');
+    if (bookBtn) bookBtn.addEventListener('click', () => countView(db, 'book', `${p.coll}/${p.id}`));
 
     wishPlace = p;
     document.getElementById('wishBtn').addEventListener('click', toggleWish);
@@ -1094,6 +1102,7 @@
 
   async function init() {
     const promosP = loadPromos(db);
+    const partnersP = loadPartners(db);
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
     let coll = qs.get('c');
@@ -1128,6 +1137,7 @@
     const r = snap.data();
     if (!COLLS[coll].member && !isPublished(r, new Date())) return notFound();
     const p = normalise(coll, id, r);
+    const bookingP = loadBooking(db, `${coll}/${id}`);
 
     if (p.member) {
       // Hidden by Strong Foodie, or added by a blocked member (js/sf-moderation.js).
@@ -1142,6 +1152,9 @@
     }
 
     p.promoLive = (await promosP).some(x => x.placeKey === `${p.coll}/${p.id}` && Array.isArray(x.where) && x.where.includes('place'));
+    // Reserve or Book (js/sf-booking.js): the link Strong Foodie set, a partner search, or Call to reserve.
+    const [booking, partners] = await Promise.all([bookingP, partnersP]);
+    p.book = bookingButton(p, booking, partners, townOf(p));
     render(p);
     const spotWrap = document.getElementById('spotReportWrap');
     if (spotWrap) wireReports(db, spotWrap, () => ({ kind: 'spot', coll: p.coll, targetId: p.id, ownerId: p.addedByUserId || '', label: p.name }));

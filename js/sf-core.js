@@ -21,7 +21,8 @@ export const slugOf = name => fold(name).replace(/[^a-z0-9]+/g, '-').replace(/^-
 export const SITE = 'https://strongfoodie.com';
 // Pretty addresses. The pages behind them are made by tools/build-pages.mjs;
 // a place or list that has no page yet is sent on by 404.html.
-export const placeUrl = p => `/p/${slugOf(p.name) || 'place'}-${p.id}/`;
+// The id is encoded: a member chooses it, so it may hold any character.
+export const placeUrl = p => `/p/${slugOf(p.name) || 'place'}-${encodeURIComponent(p.id)}/`;
 export const destinationUrl = name => `/stad/${slugOf(name)}/`;
 export const listUrl = slug => `/best/${slug}/`;
 export const guideUrl = slug => `/guide/${slug}/`;

@@ -73,7 +73,7 @@
 </style>
 </head>
 <body>
-<div class="top"><h1>Strong Foodie <span>ADS</span></h1><nav><a href="admin-report.html">📊 Reports per place</a><a href="admin-home.html">🏠 Homepage</a><a href="admin.html">← Admin</a></nav></div>
+<div class="top"><h1>Strong Foodie <span>ADS</span></h1><nav><a href="admin-report.html">📊 Reports per place</a><a href="admin-booking.html">🛎️ Booking</a><a href="admin-home.html">🏠 Homepage</a><a href="admin.html">← Admin</a></nav></div>
 <main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -82,7 +82,7 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, fold, toDate, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=3";
   import { confirmTap } from "./js/sf-delete.js?v=1";
 
   const app = initializeApp({

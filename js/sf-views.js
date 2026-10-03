@@ -4,10 +4,12 @@
 // `views` collection, e.g. views/2026-09_place_reviews-abc123 { type, ref, month, count }.
 // A visitor counts once per page per 30 minutes; the admin's own visits don't count.
 // The app counts the same way (Rork batch 13).
+// Type "book" counts clicks on the Reserve or Book button of a place
+// (js/sf-booking.js): not a page view, so admin-stats.html keeps it apart.
 
 import { doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const TYPES = ['place', 'list', 'city', 'guide'];
+const TYPES = ['place', 'list', 'city', 'guide', 'book'];
 
 export function viewId(type, ref, month = new Date().toISOString().slice(0, 7)) {
   return `${month}_${type}_${String(ref).replace(/[^A-Za-z0-9_-]/g, '-')}`.slice(0, 200);

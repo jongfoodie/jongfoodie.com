@@ -83,7 +83,7 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, query, where, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, toDate, loadPlaces, loadLists, destinations, placeUrl, destinationUrl, listUrl, guideUrl, placeKey } from "./js/sf-places.js?v=7";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=3";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -126,7 +126,8 @@
     const m = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
     const label = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
     const thisM = new Date(now.getFullYear(), now.getMonth(), 1), lastM = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const total = async month => (await getDocs(query(collection(db, 'views'), where('month', '==', month)))).docs.reduce((a, d) => a + (Number(d.data().count) || 0), 0);
+    // Clicks on Reserve or Book (type "book") are not page views: left out here.
+    const total = async month => (await getDocs(query(collection(db, 'views'), where('month', '==', month)))).docs.reduce((a, d) => a + (d.data().type === 'book' ? 0 : Number(d.data().count) || 0), 0);
     try {
       const [monthViews, lastMonthViews] = await Promise.all([total(m(thisM)), total(m(lastM))]);
       await setDoc(doc(db, 'site', 'stats'), {
@@ -192,9 +193,10 @@
           <button class="btn" type="button" data-type="list">Lists</button>
           <button class="btn" type="button" data-type="city">Cities</button>
           <button class="btn" type="button" data-type="guide">Guides</button>
+          <button class="btn" type="button" data-type="book">Book clicks</button>
         </div>
         <div class="table-wrap" id="viewsTable"></div>
-        <p class="note">Views are counted without cookies and without anything personal: one per visitor per page per 30 minutes. Visits on a device where you signed in as admin don't count. The app adds its views once Rork batch 13 is in.</p>
+        <p class="note">Views are counted without cookies and without anything personal: one per visitor per page per 30 minutes. Visits on a device where you signed in as admin don't count. The app adds its views once Rork batch 13 is in. Book clicks: taps on Reserve or Book on a place page, counted the same way.</p>
         <label class="toggle"><input type="checkbox" id="mine" checked> Don't count my visits on this device</label>
       </section>`;
 
@@ -213,7 +215,7 @@
     const listBySlug = new Map(lists.map(l => [l.slug, l]));
     const guideBySlug = new Map((guides || []).map(g => [g.slug, g]));
     const nameOf = (type, ref) => {
-      if (type === 'place') { const p = byKey.get(ref); return p ? [p.name + (p.where ? ' · ' + p.where : ''), placeUrl(p)] : [ref + ' (removed)', '']; }
+      if (type === 'place' || type === 'book') { const p = byKey.get(ref); return p ? [p.name + (p.where ? ' · ' + p.where : ''), placeUrl(p)] : [ref + ' (removed)', '']; }
       if (type === 'list') { const l = listBySlug.get(ref); return [l ? l.title : ref, listUrl(ref)]; }
       if (type === 'city') { const d = dests.get(ref); return [d ? d.name : ref, d ? d.url : destinationUrl(ref)]; }
       if (type === 'guide') { const g = guideBySlug.get(ref); return [g ? g.title : ref, guideUrl(ref)]; }
@@ -233,12 +235,13 @@
     const drawViews = () => {
       const box = document.getElementById('viewsTable');
       if (rows === null) { box.innerHTML = '<p class="empty">The views could not be read. Add the views rule in Firebase (see the instructions).</p>'; return; }
-      const total = rows.reduce((a, r) => a + (r.count || 0), 0);
-      document.getElementById('viewsSub').textContent = `${nf(total)} ${total === 1 ? 'view' : 'views'} in ${sel.options[sel.selectedIndex].text}`;
+      const total = rows.filter(r => r.type !== 'book').reduce((a, r) => a + (r.count || 0), 0);
+      const clicks = rows.filter(r => r.type === 'book').reduce((a, r) => a + (r.count || 0), 0);
+      document.getElementById('viewsSub').textContent = `${nf(total)} ${total === 1 ? 'view' : 'views'} in ${sel.options[sel.selectedIndex].text}${clicks ? ` · ${nf(clicks)} ${clicks === 1 ? 'click' : 'clicks'} on Reserve or Book` : ''}`;
       const top = rows.filter(r => r.type === type).sort((a, b) => (b.count || 0) - (a.count || 0)).slice(0, 25);
-      if (!top.length) { box.innerHTML = '<p class="empty">No views counted yet for this month. Counting starts once this update is online.</p>'; return; }
+      if (!top.length) { box.innerHTML = type === 'book' ? '<p class="empty">No clicks on Reserve or Book this month yet. Set booking links in <a href="admin-booking.html">Booking</a>.</p>' : '<p class="empty">No views counted yet for this month. Counting starts once this update is online.</p>'; return; }
       const max = top[0].count || 1;
-      box.innerHTML = `<table><thead><tr><th class="n">#</th><th>${{ place: 'Place', list: 'List', city: 'City', guide: 'Guide' }[type]}</th><th class="n">Views</th></tr></thead><tbody>
+      box.innerHTML = `<table><thead><tr><th class="n">#</th><th>${{ place: 'Place', list: 'List', city: 'City', guide: 'Guide', book: 'Place' }[type]}</th><th class="n">${type === 'book' ? 'Clicks' : 'Views'}</th></tr></thead><tbody>
         ${top.map((r, i) => { const [name, url] = nameOf(r.type, r.ref); return `<tr><td class="n">${i + 1}</td><td>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a>` : esc(name)}</td><td class="n"><span class="meter" style="width:${Math.max(4, Math.round(80 * (r.count || 0) / max))}px" aria-hidden="true"></span>${nf(r.count)}</td></tr>`; }).join('')}
       </tbody></table>`;
     };

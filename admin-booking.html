@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Booking | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; flex-wrap: wrap; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.9rem 0 0.35rem; }
+  input[type=search], input[type=url], input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .tick { display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 0.9rem; font-size: 14px; line-height: 1.45; cursor: pointer; }
+  .tick input { accent-color: var(--accent); width: 17px; height: 17px; margin-top: 1px; flex: none; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.35rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .hint a { color: var(--accent); }
+  .state { font-size: 13px; margin-top: 0.4rem; font-weight: 600; }
+  .state.ok { color: var(--green); }
+  .state.off { color: var(--muted); font-weight: 500; }
+  .state.bad { color: var(--red); }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .preview { margin-top: 1rem; padding: 0.9rem; border: 1px dashed var(--border); border-radius: 12px; background: var(--cream); }
+  .preview .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 0.5rem; }
+  .preview .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; font-size: 13px; padding: 9px 18px; border-radius: 22px; text-decoration: none; display: inline-block; }
+  .preview .book-note { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 0.5rem; }
+  .preview .none { font-size: 13.5px; color: var(--ink-soft); }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .row { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .row-name { font-weight: 700; overflow-wrap: anywhere; }
+  .row-name a { color: inherit; }
+  .row-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; overflow-wrap: anywhere; }
+  .row-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-partner { background: var(--green-light); color: var(--green); }
+  .pill-none { background: #EFE8DC; color: var(--ink-soft); }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 0.5rem 0.4rem; border-bottom: 1px solid var(--border); }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  td a { color: var(--ink); }
+  .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row { grid-template-columns: 1fr; }
+    .row-tools { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>BOOKING</span></h1><nav><a href="admin-stats.html">📊 Stats</a><a href="admin-ads.html">📣 Ads</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { CATS, esc, fold, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=3";
+  import { confirmTap } from "./js/sf-delete.js?v=1";
+  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const refused = e => e && e.code === 'permission-denied';
+  const nf = n => Number(n || 0).toLocaleString('en-GB');
+  const hostOf = url => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
+  // Links that already carry a partner code: Awin, CJ, GetYourGuide and Expedia short links, or a partner parameter.
+  const AFFILIATE_HOSTS = ['awin1.com', 'tidd.ly', 'gyg.me', 'anrdoezrs.net', 'jdoqocy.com', 'tkqlhce.com', 'dpbolvw.net', 'kqzyfj.com', 'prf.hn', 'expe.app'];
+  function looksAffiliate(url) {
+    try {
+      const u = new URL(url), h = u.hostname.replace(/^www\./, '');
+      if (AFFILIATE_HOSTS.some(x => h === x || h.endsWith('.' + x))) return true;
+      if (/(^|\.)expedia\.[a-z.]+$/.test(h) && u.pathname.startsWith('/affiliate')) return true;
+      // Not aid: every address copied from booking.com carries Booking's own aid.
+      return ['partner', 'partner_id', 'affiliate', 'affid', 'awinaffid'].some(k => u.searchParams.has(k));
+    } catch (e) { return false; }
+  }
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  let places = [], byKey = new Map(), bookings = [], partners = {}, clicks = new Map(), editing = null, chosen = null;
+  const month = new Date().toISOString().slice(0, 7);
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't manage booking links.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const [loaded, snap, pSnap, vSnap] = await Promise.all([
+        loadPlaces(db),
+        getDocs(collection(db, 'bookings')),
+        getDoc(doc(db, 'site', 'partners')).catch(() => null),
+        getDocs(query(collection(db, 'views'), where('month', '==', month))).catch(() => ({ docs: [] })),
+      ]);
+      places = loaded.all.filter(p => !p.closed);
+      loaded.all.forEach(p => byKey.set(placeKey(p), p));
+      bookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      partners = pSnap && pSnap.exists() ? pSnap.data() : {};
+      vSnap.docs.map(d => d.data()).filter(v => v.type === 'book').forEach(v => clicks.set(v.ref, Number(v.count) || 0));
+      draw();
+    } catch (e) {
+      console.log('Booking error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rule for <code>bookings</code> in Firebase first, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  function draw() {
+    const own = bookings.filter(b => b.kind !== 'none').sort((a, b) => String(a.placeName).localeCompare(String(b.placeName)));
+    const off = bookings.filter(b => b.kind === 'none').sort((a, b) => String(a.placeName).localeCompare(String(b.placeName)));
+    const row = b => {
+      const p = byKey.get(b.placeKey);
+      const c = clicks.get(b.placeKey) || 0;
+      const partner = b.kind !== 'none' && (b.partner === true || withPartner(b.url, partners, b.placeKey).partner);
+      return `<div class="row"><div>
+          <p class="row-name">${p ? `<a href="${esc(placeUrl(p))}" target="_blank" rel="noopener">${esc(p.emoji)} ${esc(p.name)}</a>` : esc(b.placeName || 'Removed place')}${b.kind === 'none' ? '<span class="pill pill-none">No button</span>' : partner ? `<span class="pill pill-partner">Partner${b.partnerName ? ': ' + esc(b.partnerName) : ''}</span>` : ''}</p>
+          <p class="row-meta">${b.kind === 'none' ? 'No Reserve or Book button on this page' : `${esc(KINDS[b.kind] || KINDS.book)} · ${safeUrl(b.url) ? esc(hostOf(b.url)) : '<b style="color:var(--red)">⚠ This link does not work: edit it</b>'}`}${p && p.where ? ' · ' + esc(p.where) : ''}${p && p.closed ? ' · <b>Closed: no button shows</b>' : ''} · ${nf(c)} ${c === 1 ? 'click' : 'clicks'} this month</p>
+        </div>
+        <div class="row-tools">
+          <button class="btn btn-sm" type="button" data-edit="${esc(b.id)}">Edit</button>
+          <button class="btn btn-sm btn-danger" type="button" data-del="${esc(b.id)}">Delete</button>
+        </div></div>`;
+    };
+    const top = [...clicks.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+    root.innerHTML = `
+      <p class="lead">A <b>Reserve</b> or <b>Book</b> button on a place page, on the site and in the app. Hotels and culture spots get a partner button automatically once your partner accounts are filled in. Restaurants and bars without a link get <b>Call to reserve</b> when their phone number is known. Every link where you earn a commission shows a short partner note, as the Dutch advertising code asks.</p>
+      <section class="card" id="partners"></section>
+      <section class="card" id="form"></section>
+      ${own.length ? `<p class="grp">Places with their own link · ${own.length}</p>${own.map(row).join('')}` : ''}
+      ${off.length ? `<p class="grp">No button · ${off.length}</p>${off.map(row).join('')}` : ''}
+      ${bookings.length ? '' : '<div class="empty">No place has its own link yet. Add the first one above.</div>'}
+      <section class="card" style="margin-top:1.3rem;">
+        <h2>Most clicked this month</h2>
+        <p class="sub">Taps on Reserve or Book, also on the automatic partner buttons. One per visitor per place per 30 minutes, nothing personal. Your own taps on a device where you are signed in as admin don't count. All months: <a href="admin-stats.html" style="color:var(--accent)">Stats</a>, tab Book clicks.</p>
+        ${top.length ? `<table><thead><tr><th>Place</th><th class="n">Clicks</th></tr></thead><tbody>${top.map(([k, n]) => { const p = byKey.get(k); return `<tr><td>${p ? `<a href="${esc(placeUrl(p))}" target="_blank" rel="noopener">${esc(p.name)}</a>${p.where ? ` <small style="color:var(--muted)">${esc(p.where)}</small>` : ''}` : esc(k + ' (removed)')}</td><td class="n">${nf(n)}</td></tr>`; }).join('')}</tbody></table>` : '<p class="hint">No clicks yet this month.</p>'}
+      </section>`;
+    drawPartners();
+    drawForm();
+    root.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
+      editing = bookings.find(x => x.id === b.dataset.edit);
+      chosen = byKey.get(editing.placeKey) || null;
+      drawForm();
+      document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+    }));
+    root.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => remove(b)));
+  }
+
+  // ── Partner accounts (site/partners)
+  function bookingState(raw) {
+    if (!String(raw || '').trim()) return ['off', 'Not set: hotels show no Booking.com button.'];
+    if (/tidd\.ly|bit\.ly/.test(raw)) return ['bad', 'This is a short link. Paste the long link that starts with https://www.awin1.com/cread.php'];
+    if (/^\s*https?:\/\/([a-z0-9-]+\.)*booking\.com\//i.test(raw)) return ['bad', 'This is a normal Booking.com address: its aid is Booking\'s own. Paste your Awin or CJ link. Only with a direct Booking.com partner number, type aid= and that number.'];
+    const s = readBookingSetting(raw);
+    return s ? ['ok', `✓ Recognised: ${s.label}. Hotels without their own link show "Check prices on Booking.com".`] : ['bad', 'Not recognised. Paste a link from Awin (awin1.com/cread.php?awinmid=…&awinaffid=…) or from CJ. A direct Booking.com partner number: type aid= and the number.'];
+  }
+  function gygState(raw) {
+    if (!String(raw || '').trim()) return ['off', 'Not set: culture spots show no GetYourGuide button.'];
+    const id = readGygSetting(raw);
+    return id ? ['ok', `✓ Recognised: partner ID ${id}. Culture spots without their own link show "Tickets and tours".`] : ['bad', 'Not recognised. Paste your partner ID (letters and numbers), or a GetYourGuide link with partner_id= in it.'];
+  }
+
+  function drawPartners() {
+    const f = document.getElementById('partners');
+    f.innerHTML = `
+      <h2>Partner accounts</h2>
+      <p class="sub">Fill these in once a partner program has accepted you: Booking.com through Awin, GetYourGuide through its partner program. Everyone can read these codes: they are in every partner link anyway.</p>
+      <label class="lab" for="pBooking">Booking.com: one partner link</label>
+      <input type="url" id="pBooking" placeholder="https://www.awin1.com/cread.php?awinmid=…&awinaffid=…" value="${esc(partners.booking || '')}" autocomplete="off" spellcheck="false">
+      <p class="state" id="pBookingState"></p>
+      <p class="hint">In Awin: Toolbox, Link builder, choose Booking.com, make a link to www.booking.com and paste it here. The site turns it into a link for every hotel.</p>
+      <label class="lab" for="pGyg">GetYourGuide: partner ID</label>
+      <input type="text" id="pGyg" placeholder="e.g. ABC1DEF" value="${esc(partners.getyourguide || '')}" autocomplete="off" spellcheck="false">
+      <p class="state" id="pGygState"></p>
+      <p class="hint">In the GetYourGuide partner portal, under your account. A link with partner_id= in it works too.</p>
+      <p class="hint" id="pTry"></p>
+      <div class="actions"><button class="btn btn-main" id="pSave" type="button">Save partner accounts</button></div>`;
+    const show = () => {
+      const [bs, bt] = bookingState(document.getElementById('pBooking').value);
+      const [gs, gt] = gygState(document.getElementById('pGyg').value);
+      const a = document.getElementById('pBookingState'), g = document.getElementById('pGygState');
+      a.className = 'state ' + bs; a.textContent = bt;
+      g.className = 'state ' + gs; g.textContent = gt;
+      const tries = [];
+      if (bs === 'ok') tries.push(`<a href="${esc(bookingComLink(document.getElementById('pBooking').value, bookingSearchUrl('Amsterdam'), 'test'))}" target="_blank" rel="noopener">Booking.com, Amsterdam</a>`);
+      if (gs === 'ok') tries.push(`<a href="${esc(gygLink(readGygSetting(document.getElementById('pGyg').value), gygSearchUrl('Amsterdam'), 'test'))}" target="_blank" rel="noopener">GetYourGuide, Amsterdam</a>`);
+      document.getElementById('pTry').innerHTML = tries.length ? 'Try a link: ' + tries.join(' · ') : '';
+    };
+    ['pBooking', 'pGyg'].forEach(id => document.getElementById(id).addEventListener('input', show));
+    show();
+    document.getElementById('pSave').addEventListener('click', savePartners);
+  }
+
+  async function savePartners() {
+    const booking = document.getElementById('pBooking').value.trim(), gyg = document.getElementById('pGyg').value.trim();
+    if (booking && bookingState(booking)[0] !== 'ok') return toast('The Booking.com link is not recognised yet. See the line under it.', true);
+    if (gyg && !readGygSetting(gyg)) return toast('The GetYourGuide partner ID is not recognised. See the line under it.', true);
+    const data = { booking, getyourguide: gyg ? readGygSetting(gyg) : '', updatedAt: serverTimestamp() };
+    const btn = document.getElementById('pSave');
+    btn.disabled = true;
+    try {
+      await setDoc(doc(db, 'site', 'partners'), data, { merge: true });
+      partners = { ...partners, ...data };
+      toast('Partner accounts saved. Place pages use them within a few minutes.');
+      redrawKeepingForm();
+    } catch (e) {
+      console.log('Partners not saved:', e);
+      toast(refused(e) ? 'The database refused. Check that you are signed in as admin.' : 'Could not save. Try again.', true);
+      btn.disabled = false;
+    }
+  }
+
+  // ── The link for one place (bookings/{coll}_{id})
+  function drawForm() {
+    const f = document.getElementById('form');
+    const b = editing || {};
+    const kind = b.kind || (chosen ? defaultKind(chosen.cat) : 'table');
+    f.innerHTML = `
+      <h2>${editing ? 'Edit the link' : 'Link for one place'}</h2>
+      <p class="sub">The restaurant's own reservation page, the hotel's page on Booking.com, a ticket page. Or no button at all for this place.</p>
+      <div id="pickedBox">${chosen ? `<div class="picked"><span>${esc(chosen.emoji)} <b>${esc(chosen.name)}</b> <small style="color:var(--muted)">${esc(chosen.where || '')}</small></span>${editing ? '' : '<button class="btn btn-sm" type="button" id="unpick">Change</button>'}</div>` : `
+        <input type="search" id="find" placeholder="Find the place…" aria-label="Find the place" autocomplete="off"><div class="results" id="res"></div>`}</div>
+      <label class="lab">Button</label>
+      <div class="checks" id="kinds">${Object.entries(KINDS).map(([k, t]) => `<label><input type="radio" name="kind" value="${k}"${k === kind ? ' checked' : ''}> ${esc(t)}</label>`).join('')}</div>
+      <div id="urlBox">
+        <label class="lab" for="url">Link</label>
+        <input type="url" id="url" placeholder="https://…" value="${esc(b.url || '')}" autocomplete="off" spellcheck="false">
+        <p class="hint" id="urlHint"></p>
+        <label class="tick"><input type="checkbox" id="partner"${b.partner ? ' checked' : ''}> <span>This is a partner link: Strong Foodie earns a commission. The page then shows a short partner note.</span></label>
+        <label class="lab" for="pname">Partner name (optional)</label>
+        <input type="text" id="pname" placeholder="e.g. Tiqets, Expedia" maxlength="40" value="${esc(b.partnerName || '')}">
+      </div>
+      <div class="preview" id="preview"></div>
+      <div class="actions"><button class="btn btn-main" id="saveBtn" type="button">Save</button>${editing || chosen ? '<button class="btn" id="cancelBtn" type="button">Cancel</button>' : ''}</div>`;
+    const find = document.getElementById('find');
+    if (find) find.addEventListener('input', () => {
+      const q = fold(find.value).trim(), box = document.getElementById('res');
+      if (q.length < 2) { box.innerHTML = ''; return; }
+      const terms = q.split(/\s+/);
+      const hits = places.filter(p => terms.every(t => p._name.includes(t) || p._place.includes(t))).slice(0, 8);
+      box.innerHTML = hits.length ? hits.map(p => `<button class="res" type="button" data-k="${esc(placeKey(p))}">${esc(p.emoji)} ${esc(p.name)} <small>${esc(p.where || '')}${p.member ? ' · member spot' : ''}</small></button>`).join('') : '<p class="hint">No place found.</p>';
+      box.querySelectorAll('.res').forEach(x => x.addEventListener('click', () => {
+        chosen = byKey.get(x.dataset.k);
+        // A place that already has a link: edit that one.
+        editing = bookings.find(y => y.placeKey === x.dataset.k) || null;
+        drawForm();
+      }));
+    });
+    const un = document.getElementById('unpick');
+    if (un) un.addEventListener('click', () => { chosen = null; drawForm(); });
+    document.getElementById('saveBtn').addEventListener('click', save);
+    const c = document.getElementById('cancelBtn');
+    if (c) c.addEventListener('click', () => { editing = null; chosen = null; drawForm(); });
+    const url = document.getElementById('url'), partner = document.getElementById('partner');
+    url.addEventListener('input', () => {
+      const v = url.value.trim();
+      if (safeUrl(v) && (looksAffiliate(v) || withPartner(v, partners, chosen ? placeKey(chosen) : '').partner)) partner.checked = true;
+      preview();
+    });
+    f.querySelectorAll('input[name=kind], #partner, #pname').forEach(i => i.addEventListener('input', preview));
+    f.querySelectorAll('input[name=kind]').forEach(i => i.addEventListener('change', preview));
+    preview();
+  }
+
+  // Redraws the page but keeps what was typed in the link form.
+  function redrawKeepingForm() {
+    const v = document.getElementById('url') ? formValues() : null;
+    draw();
+    if (!v) return;
+    const k = document.querySelector(`input[name=kind][value="${v.kind}"]`);
+    if (k) k.checked = true;
+    document.getElementById('url').value = v.url;
+    document.getElementById('partner').checked = v.partner;
+    document.getElementById('pname').value = v.partnerName;
+    preview();
+  }
+
+  function formValues() {
+    return {
+      kind: (document.querySelector('input[name=kind]:checked') || {}).value || 'book',
+      url: document.getElementById('url').value.trim(),
+      partner: document.getElementById('partner').checked,
+      partnerName: document.getElementById('pname').value.trim().slice(0, 40),
+    };
+  }
+
+  function preview() {
+    const v = formValues(), box = document.getElementById('preview'), hint = document.getElementById('urlHint');
+    document.getElementById('urlBox').hidden = v.kind === 'none';
+    const href = safeUrl(v.url);
+    const auto = href ? withPartner(href, partners, chosen ? placeKey(chosen) : '') : null;
+    hint.textContent = !v.url ? '' : !href ? 'This is not a web link yet. It starts with https://'
+      : auto && auto.partner ? 'Your partner code is added to this link automatically.' : `Opens ${hostOf(href)} in a new tab.`;
+    if (!chosen) { box.innerHTML = '<p class="k">Preview</p><p class="none">Pick a place first.</p>'; return; }
+    const btn = bookingButton({ coll: chosen.coll, id: chosen.id, cat: chosen.cat, name: chosen.name, phone: '', closedStatus: '' }, v.kind === 'none' ? { kind: 'none' } : (href ? { ...v, url: href } : { kind: v.kind }), partners, chosen.town || '');
+    box.innerHTML = '<p class="k">Preview on the place page</p>' + (btn ? bookingButtonHtml(btn) + partnerNoteHtml(btn) : `<p class="none">${v.kind === 'none' ? 'No Reserve or Book button on this page.' : 'No button yet: add the link.'}${chosen.cat === 'eat' || chosen.cat === 'drink' ? ' Without a link, the page shows Call to reserve when the phone number is known.' : ''}</p>`);
+  }
+
+  async function save() {
+    if (!chosen) return toast('Pick the place first.', true);
+    const v = formValues();
+    const href = safeUrl(v.url);
+    if (v.kind !== 'none' && !href) return toast('Add the link, starting with https://', true);
+    const key = placeKey(chosen);
+    const data = {
+      placeKey: key, placeName: chosen.name, kind: v.kind,
+      url: v.kind === 'none' ? '' : href,
+      // A booking.com or GetYourGuide link that gets your code added is a partner link by itself,
+      // also later when the partner account changes: only a hand-ticked box is stored.
+      partner: v.kind === 'none' ? false : (v.partner && !withPartner(href, partners, key).partner),
+      partnerName: v.kind === 'none' ? '' : v.partnerName,
+      updatedAt: serverTimestamp(),
+    };
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    try {
+      await setDoc(doc(db, 'bookings', bookingId(key)), data);
+      const i = bookings.findIndex(b => b.id === bookingId(key));
+      if (i >= 0) bookings[i] = { id: bookingId(key), ...data }; else bookings.push({ id: bookingId(key), ...data });
+      toast(v.kind === 'none' ? `Saved: ${chosen.name} shows no button.` : `Saved: ${chosen.name} shows "${KINDS[v.kind]}".`);
+      editing = null; chosen = null;
+      draw();
+    } catch (e) {
+      console.log('Booking link not saved:', e);
+      toast(refused(e) ? 'The database refused: add the bookings rule in Firebase first.' : 'Could not save. Try again.', true);
+      btn.disabled = false;
+    }
+  }
+
+  async function remove(btn) {
+    if (!confirmTap(btn, 'Tap again to delete')) return;
+    btn.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'bookings', btn.dataset.del));
+      bookings = bookings.filter(b => b.id !== btn.dataset.del);
+      if (editing && editing.id === btn.dataset.del) editing = null;
+      toast('Deleted. The page goes back to the automatic button.');
+      redrawKeepingForm();
+    } catch (e) { console.log('Not deleted:', e); toast('Could not delete. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

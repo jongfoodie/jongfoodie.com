@@ -101,8 +101,8 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, collectionGroup, getDocs, getDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, fold, toDate, loadPlaces, loadLists, placeKey, placeUrl, SITE } from "./js/sf-places.js?v=7";
-  import { viewId } from "./js/sf-views.js?v=1";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=2";
+  import { viewId } from "./js/sf-views.js?v=2";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=3";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -119,8 +119,8 @@
 
   // The report is for the business: English or Dutch.
   const T = {
-    en: { kind: 'Monthly report', views: 'Page views', vsPrev: 'vs the month before', noPrev: 'first month counted', saves: 'On wishlists', savesNew: 'new this month', reviews: 'Member reviews', avg: 'average', none: 'none yet', highlights: 'Highlights', hlSub: 'photos and videos by members', chart: 'Page views per month', month: 'Month', listsH: 'In the best-of lists', rank: (i, n) => `#${i} of ${n}`, noLists: 'Not in a best-of list yet.', ad: 'Featured partner', adLine: (s, e, w) => `Featured with an Ad label from ${s} to ${e}, on ${w}.`, where: { home: 'the homepage', city: 'the city page', place: 'its own page' }, score: 'Strong Foodie score', foot: 'Page views are counted on strongfoodie.com without cookies: one view per visitor per page per 30 minutes; visits by Strong Foodie itself are not counted. Views in the app follow once the new app version is out. Reviews and scores are never paid for.', na: 'not available', sumLead: (p, m) => `Strong Foodie report for ${p}, ${m}:` },
-    nl: { kind: 'Maandrapport', views: 'Paginaweergaven', vsPrev: 'ten opzichte van de maand ervoor', noPrev: 'eerste gemeten maand', saves: 'Op wishlists', savesNew: 'nieuw deze maand', reviews: 'Ledenreviews', avg: 'gemiddeld', none: 'nog geen', highlights: 'Highlights', hlSub: "foto's en video's van leden", chart: 'Paginaweergaven per maand', month: 'Maand', listsH: 'In de best-of lijsten', rank: (i, n) => `#${i} van ${n}`, noLists: 'Nog niet in een best-of lijst.', ad: 'Uitgelichte partner', adLine: (s, e, w) => `Uitgelicht met een Ad-label van ${s} tot ${e}, op ${w}.`, where: { home: 'de homepage', city: 'de stadspagina', place: 'de eigen pagina' }, score: 'Strong Foodie-score', foot: 'Paginaweergaven worden geteld op strongfoodie.com zonder cookies: één weergave per bezoeker per pagina per 30 minuten; bezoeken van Strong Foodie zelf tellen niet mee. Weergaven in de app volgen zodra de nieuwe app-versie uit is. Reviews en scores zijn nooit betaald.', na: 'niet beschikbaar', sumLead: (p, m) => `Strong Foodie-rapport voor ${p}, ${m}:` },
+    en: { kind: 'Monthly report', books: 'Clicks on Reserve or Book', views: 'Page views', vsPrev: 'vs the month before', noPrev: 'first month counted', saves: 'On wishlists', savesNew: 'new this month', reviews: 'Member reviews', avg: 'average', none: 'none yet', highlights: 'Highlights', hlSub: 'photos and videos by members', chart: 'Page views per month', month: 'Month', listsH: 'In the best-of lists', rank: (i, n) => `#${i} of ${n}`, noLists: 'Not in a best-of list yet.', ad: 'Featured partner', adLine: (s, e, w) => `Featured with an Ad label from ${s} to ${e}, on ${w}.`, where: { home: 'the homepage', city: 'the city page', place: 'its own page' }, score: 'Strong Foodie score', foot: 'Page views are counted on strongfoodie.com without cookies: one view per visitor per page per 30 minutes; visits by Strong Foodie itself are not counted. Views in the app follow once the new app version is out. Reviews and scores are never paid for.', na: 'not available', sumLead: (p, m) => `Strong Foodie report for ${p}, ${m}:` },
+    nl: { kind: 'Maandrapport', books: 'Klikken op Reserveren of Boeken', views: 'Paginaweergaven', vsPrev: 'ten opzichte van de maand ervoor', noPrev: 'eerste gemeten maand', saves: 'Op wishlists', savesNew: 'nieuw deze maand', reviews: 'Ledenreviews', avg: 'gemiddeld', none: 'nog geen', highlights: 'Highlights', hlSub: "foto's en video's van leden", chart: 'Paginaweergaven per maand', month: 'Maand', listsH: 'In de best-of lijsten', rank: (i, n) => `#${i} van ${n}`, noLists: 'Nog niet in een best-of lijst.', ad: 'Uitgelichte partner', adLine: (s, e, w) => `Uitgelicht met een Ad-label van ${s} tot ${e}, op ${w}.`, where: { home: 'de homepage', city: 'de stadspagina', place: 'de eigen pagina' }, score: 'Strong Foodie-score', foot: 'Paginaweergaven worden geteld op strongfoodie.com zonder cookies: één weergave per bezoeker per pagina per 30 minuten; bezoeken van Strong Foodie zelf tellen niet mee. Weergaven in de app volgen zodra de nieuwe app-versie uit is. Reviews en scores zijn nooit betaald.', na: 'niet beschikbaar', sumLead: (p, m) => `Strong Foodie-rapport voor ${p}, ${m}:` },
   };
   let lang = 'en';
   const LOC = () => lang === 'nl' ? 'nl-NL' : 'en-GB';
@@ -199,7 +199,10 @@
     const from = new Date(y, m - 1, 1), to = new Date(y, m, 1);
     const inMonth = d => d && d >= from && d < to;
 
-    const views = await Promise.all(months.map(mk => getDoc(doc(db, 'views', viewId('place', key, mk))).then(s => s.exists() ? Number(s.data().count) || 0 : 0).catch(() => null)));
+    const count = (type, mk) => getDoc(doc(db, 'views', viewId(type, key, mk))).then(s => s.exists() ? Number(s.data().count) || 0 : 0).catch(() => null);
+    // Taps on Reserve or Book (js/sf-booking.js): shown only when there were any.
+    const [views, books] = await Promise.all([Promise.all(months.map(mk => count('place', mk))), Promise.all(months.map(mk => count('book', mk)))]);
+    const hasBooks = books.some(n => n > 0);
     const [revSnap, hlSnap] = await Promise.all([
       getDocs(query(collection(db, 'userReviews'), where('placeDocId', '==', place.id))).catch(() => ({ docs: [] })),
       getDocs(query(collection(db, 'highlights'), where('placeId', '==', place.id))).catch(() => ({ docs: [] })),
@@ -218,7 +221,7 @@
     const change = vNow !== null && vPrev ? Math.round((vNow - vPrev) / vPrev * 100) : null;
     const avg = reviews.length ? reviews.reduce((a, r) => a + r.rating, 0) / reviews.length : 0;
     const cat = CATS[place.cat];
-    last = { views: vNow, change, saves: wish ? wish.length : null, reviews: reviews.length, avg, hls: hls.length, lists: inLists };
+    last = { views: vNow, change, saves: wish ? wish.length : null, reviews: reviews.length, avg, hls: hls.length, lists: inLists, books: hasBooks ? books[5] : null };
 
     box.innerHTML = `<article class="report">
       <div class="r-head">
@@ -236,7 +239,7 @@
         <div class="tile"><p class="k">${t.highlights}</p><p class="v">${nf(hls.length)}</p><p class="d">${t.hlSub}</p></div>
       </div>
       <section class="sec"><h3>${t.chart}</h3><div class="chart">${chart(months, views)}</div>
-        <table><thead><tr><th>${t.month}</th><th class="n">${t.views}</th></tr></thead><tbody>${months.map((mk, i) => `<tr><td>${esc(monthName(mk))}</td><td class="n">${views[i] === null ? '?' : nf(views[i])}</td></tr>`).reverse().join('')}</tbody></table>
+        <table><thead><tr><th>${t.month}</th><th class="n">${t.views}</th>${hasBooks ? `<th class="n">${t.books}</th>` : ''}</tr></thead><tbody>${months.map((mk, i) => `<tr><td>${esc(monthName(mk))}</td><td class="n">${views[i] === null ? '?' : nf(views[i])}</td>${hasBooks ? `<td class="n">${books[i] === null ? '?' : nf(books[i])}</td>` : ''}</tr>`).reverse().join('')}</tbody></table>
       </section>
       <section class="sec"><h3>${t.listsH}</h3>${inLists.length ? `<ul class="lists">${inLists.map(x => `<li><span>${esc(x.l.title)}</span><b>${t.rank(x.i + 1, x.l.places.length)}</b></li>`).join('')}</ul>` : `<p class="na">${t.noLists}</p>`}</section>
       ${ads.length ? `<section class="sec"><h3>${t.ad}</h3>${ads.map(a => `<p class="adbox">${esc(t.adLine(toDate(a.start).toLocaleDateString(LOC(), { day: 'numeric', month: 'long' }), toDate(a.end).toLocaleDateString(LOC(), { day: 'numeric', month: 'long' }), (a.where || []).map(w => t.where[w]).filter(Boolean).join(', ')))}</p>`).join('')}</section>` : ''}
@@ -271,6 +274,7 @@
       L.saves === null ? '' : `- ${t.saves}: ${nf(L.saves)}`,
       `- ${t.reviews}: ${nf(L.reviews)}${L.reviews ? ` (${t.avg} ${fmt1(L.avg)})` : ''}`,
       `- ${t.highlights}: ${nf(L.hls)}`,
+      L.books === null ? '' : `- ${t.books}: ${nf(L.books)}`,
       ...L.lists.slice(0, 3).map(x => `- ${x.l.title}: ${t.rank(x.i + 1, x.l.places.length)}`),
     ].filter(Boolean);
     try { await navigator.clipboard.writeText(lines.join('\n')); toast('Copied. Paste it in your email.'); }
