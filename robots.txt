@@ -11,6 +11,11 @@ Disallow: /admin-ads.html
 Disallow: /admin-booking.html
 Disallow: /admin-openings.html
 Disallow: /admin-battles.html
+Disallow: /admin-deals.html
+Disallow: /admin-edits.html
+Disallow: /admin-claims.html
+Disallow: /admin-duplicates.html
+Disallow: /admin-export.html
 Disallow: /admin-report.html
 Disallow: /admin.html
 

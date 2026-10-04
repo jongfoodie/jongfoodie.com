@@ -215,8 +215,10 @@
   import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, getCountFromServer, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, toDate, starStr, placeUrl, loadPlaces, destinations, miniCard, photoTools, normalise } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
-  import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=3";
+  import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=5";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+  import { publishedListsBy, listCard } from "./js/sf-memberlists.js?v=1";
+  import { badgeRow } from "./js/sf-badges.js?v=1";
 
   // A member's public profile: the same profiles, follows, userPlaces and
   // userReviews documents the app uses. Following someone here is the same
@@ -277,7 +279,7 @@
   });
 
   // ── Data ────────────────────────────────────────────────────────────────
-  const state = { profile: null, profileLoaded: false, spots: [], reviews: [], followers: null, following: null, isFollowing: false, city: '', flags: null };
+  const state = { profile: null, profileLoaded: false, spots: [], reviews: [], lists: [], followers: null, following: null, isFollowing: false, city: '', flags: null };
 
   async function countFollows(field) {
     try { return (await getCountFromServer(query(collection(db, 'follows'), where(field, '==', uid)))).data().count; }
@@ -349,6 +351,7 @@
           ${meta ? `<p class="pf-meta">${esc(meta)}</p>` : ''}
           ${p.bio ? `<p class="pf-bio">${esc(p.bio)}</p>` : ''}
           <div class="pf-stats" id="pfStats"></div>
+          <div id="pfBadges"></div>
           <div class="pf-actions" id="pfActions"></div>
         </div>
       </section>
@@ -379,6 +382,9 @@
       stat(state.followers, state.followers === 1 ? 'follower' : 'followers'),
       isOfficial ? '' : stat(state.following, 'following'),
     ].join('');
+    // Badges (js/sf-badges.js), worked out from what this page loaded.
+    const b = document.getElementById('pfBadges');
+    if (b) b.innerHTML = isOfficial || priv ? '' : badgeRow({ reviews: state.reviews.length, spots: state.spots.length, cities: cities().list.length, followers: state.followers || 0, lists: state.lists.length });
   }
 
   function renderActions() {
@@ -530,12 +536,18 @@
       return;
     }
     const { list, unplaced } = cities();
-    const nothing = !state.spots.length && !state.reviews.length;
     const own = me && me.uid === uid;
+    // Lists made by this member (js/sf-memberlists.js)
+    const listsHtml = state.lists.length || own ? `<section class="sec" id="listsSec">
+        <p class="sec-label"><span>Lists${state.lists.length ? ' · ' + state.lists.length : ''}</span>${own ? '<a href="my-list.html" style="color:var(--accent);text-decoration:none;font-weight:600;letter-spacing:0.05em;">＋ Make a list</a>' : ''}</p>
+        ${state.lists.length ? `<div class="ml-grid">${state.lists.map(listCard).join('')}</div>` : '<div class="empty">No public lists yet. Make one with your favourite places, like "My top 5 in Rotterdam".</div>'}
+      </section>` : '';
+    const nothing = !state.spots.length && !state.reviews.length;
     if (nothing) {
-      body.innerHTML = `<section class="sec"><div class="empty">${own
+      body.innerHTML = listsHtml + (isOfficial || state.lists.length ? '' : `<section class="sec"><div class="empty">${own
         ? `You have not added any spots or reviews yet.<br><a href="add.html">＋ Add a spot</a> or review a place on its page.`
-        : `${esc(state.profile.displayName)} has not added any spots or reviews yet.`}</div></section>`;
+        : `${esc(state.profile.displayName)} has not added any spots or reviews yet.`}</div></section>`);
+      hydratePhotos(body);
       return;
     }
     const tiles = list.map((d, i) => {
@@ -548,7 +560,7 @@
         <span class="ct-text"><span class="ct-name">${esc(d.name)}</span><span class="ct-count">${esc(parts)}${d.country && d.country !== d.name ? ' · ' + esc(d.country) : ''}</span></span>
       </button>`;
     }).join('');
-    body.innerHTML = `
+    body.innerHTML = listsHtml + `
       ${list.length ? `<section class="sec">
         <p class="sec-label"><span>Places by city · ${list.length}</span>${unplaced ? `<span>${plural(unplaced, 'place', 'places')} without a city</span>` : ''}</p>
         <div class="city-grid" id="cityGrid">${tiles}</div>
@@ -697,6 +709,7 @@
     if (!isOfficial) tasks.push(countFollows('followerId').then(n => { state.following = n; }));
     if (me && me.uid !== uid) tasks.push(getDoc(doc(db, 'follows', `${me.uid}_${uid}`)).then(s => { state.isFollowing = s.exists(); }).catch(() => {}));
     if (!state.locked) tasks.push((isOfficial ? loadOfficial() : loadMember()).catch(e => console.log('Places could not load:', e.code || e)));
+    if (!state.locked && !isOfficial) tasks.push(publishedListsBy(db, uid).then(ls => { state.lists = ls; }).catch(e => console.log('Lists could not load:', e.code || e)));
     await Promise.all(tasks);
     state.profileLoaded = true;
     render();

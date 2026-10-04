@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Corrections | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
+  textarea.fld { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; min-height: 80px; resize: vertical; }
+  .switch-line { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.9rem; font-size: 14px; }
+  .switch-line input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .code-pill { font: 700 12px monospace; background: var(--accent-pale); color: var(--accent); padding: 2px 8px; border-radius: 6px; }
+  .tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tab { font: 500 14px 'DM Sans', sans-serif; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .ed { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; margin-bottom: 0.8rem; }
+  .ed-place { font-weight: 700; overflow-wrap: anywhere; }
+  .ed-place a { color: var(--ink); }
+  .ed-meta { font-size: 13px; color: var(--ink-soft); margin-top: 3px; line-height: 1.5; }
+  .ed-meta a { color: var(--accent); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem; }
+  .cmp .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; margin-bottom: 0.3rem; }
+  .now { background: #F3EEE6; border-radius: 10px; padding: 10px 12px; font-size: 14.5px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 44px; }
+  .now.empty { color: var(--muted); font-style: italic; }
+  select.fld { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .note { margin-top: 0.7rem; font-size: 14px; background: var(--accent-pale); border-radius: 10px; padding: 8px 12px; line-height: 1.5; overflow-wrap: anywhere; }
+  .ph { display: block; max-width: 240px; width: 100%; border-radius: 10px; }
+  .main-line { display: flex; gap: 0.45rem; align-items: center; margin-top: 0.6rem; font-size: 14px; }
+  .main-line input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .pill-owner { background: var(--green); color: #fff; }
+  .pill-field { background: var(--accent-pale); color: var(--accent); }
+  .pill-ok { background: var(--green-light); color: var(--green); }
+  .pill-no { background: #F6E3E3; color: var(--red); }
+  @media (max-width: 700px) { .cmp { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>CORRECTIONS</span></h1><nav><a href="admin-duplicates.html">🔁 Duplicates</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, toDate, photoTools } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+  import { FIELDS, CLOSED } from "./js/sf-corrections.js?v=1";
+
+  // Members suggest corrections on a place page or in the app (js/sf-corrections.js).
+  // Apply writes the change on the place itself, so the website and the app both
+  // show it; the suggestion is then marked approved (or rejected) and kept.
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const COLLS = ['reviews', 'drinkspots', 'shopspots', 'culturespots', 'healthspots', 'hotelreviews', 'userPlaces'];
+  const refused = e => e && e.code === 'permission-denied';
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const okId = v => typeof v === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(v);
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  let edits = [], places = new Map(), names = new Map(), owners = new Map(), view = 'pending';
+  const { hydratePhotos } = photoTools(db);
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't handle corrections.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const snap = await getDocs(collection(db, 'placeEdits'));
+      edits = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Approved business owners (admin-claims.html): their corrections are marked.
+      try { (await getDocs(collection(db, 'businessOwners'))).docs.forEach(d => owners.set(d.id, d.data().uid)); } catch (e) {}
+      const pending = edits.filter(e => (e.status || 'pending') === 'pending');
+      await Promise.all(pending.map(e => findPlace(e)));
+      const who = [...new Set(edits.map(e => e.submittedBy).filter(okId))];
+      await Promise.all(who.map(uid => getDoc(doc(db, 'profiles', uid)).then(s => { if (s.exists()) names.set(uid, String(s.data().displayName || '')); }).catch(() => {})));
+      draw();
+    } catch (e) {
+      console.log('Corrections error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not allowed</h2><p>The database refused. Check the <code>placeEdits</code> rules in Firebase, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  // The place a suggestion is about: its collection if it says one, otherwise looked up by id.
+  async function findPlace(e) {
+    if (!okId(e.placeId)) return null;
+    const tries = COLLS.includes(e.placeCollection) ? [e.placeCollection] : COLLS;
+    for (const c of tries) {
+      const key = `${c}/${e.placeId}`;
+      if (places.has(key)) { e._key = key; return places.get(key); }
+      try {
+        const s = await getDoc(doc(db, c, e.placeId));
+        if (s.exists()) { places.set(key, { coll: c, id: s.id, member: c === 'userPlaces', ...s.data() }); e._key = key; return places.get(key); }
+      } catch (err) {}
+    }
+    return null;
+  }
+
+  // What the place says now for this field.
+  function nowValue(p, field) {
+    if (!p) return '';
+    if (field === 'closed') return p.closedStatus && p.closedStatus !== 'open' ? p.closedStatus : 'open';
+    if (field === 'address') return p.member ? [p.address, p.city].filter(Boolean).join(', ') : (p.city || p.address || '');
+    return String(p[field] || '');
+  }
+  const closedLabel = v => v === 'open' ? 'Open' : (CLOSED[v] || v);
+  const fieldLabel = f => f === 'photo' ? 'Photo' : (FIELDS[f] && FIELDS[f].label) || String(f || 'Something');
+  const fromOwner = (e, p) => !!(p && e.submittedBy && owners.get(`${p.coll}_${p.id}`) === e.submittedBy);
+  const isPhoto = v => typeof v === 'string' && /^fsimg:\/\/[A-Za-z0-9_-]{1,128}$/.test(v);
+  const placeLink = (e, p) => `plek.html?c=${encodeURIComponent(p ? p.coll : (e.placeCollection || ''))}&id=${encodeURIComponent(e.placeId || '')}`;
+  const byWho = uid => okId(uid) ? `<a href="member.html?u=${encodeURIComponent(uid)}" target="_blank" rel="noopener">${esc(names.get(uid) || 'a member')}</a>` : 'a member';
+
+  function draw() {
+    const pending = edits.filter(e => (e.status || 'pending') === 'pending')
+      .sort((a, b) => (toDate(a.createdAt) || 0) - (toDate(b.createdAt) || 0));
+    const done = edits.filter(e => e.status === 'approved' || e.status === 'rejected')
+      .sort((a, b) => (toDate(b.handledAt) || 0) - (toDate(a.handledAt) || 0)).slice(0, 50);
+    root.innerHTML = `
+      <p class="lead">Corrections members sent from a place page or the app. <b>Apply</b> changes the place on the website and in the app straight away. You can adjust the suggestion before applying it.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" type="button" data-view="pending" aria-selected="${view === 'pending'}">Waiting · ${pending.length}</button>
+        <button class="tab" role="tab" type="button" data-view="done" aria-selected="${view === 'done'}">Handled</button>
+      </div>
+      <div id="list">${view === 'pending'
+        ? (pending.length ? pending.map(pendingCard).join('') : '<div class="empty">Nothing waiting. New corrections show up here.</div>')
+        : (done.length ? done.map(doneCard).join('') : '<div class="empty">Nothing handled yet.</div>')}</div>`;
+    hydratePhotos(root);
+    root.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { view = b.dataset.view; draw(); }));
+    root.querySelectorAll('[data-apply]').forEach(b => b.addEventListener('click', () => apply(b)));
+    root.querySelectorAll('[data-done]').forEach(b => b.addEventListener('click', () => settle(b, 'approved', false)));
+    root.querySelectorAll('[data-reject]').forEach(b => b.addEventListener('click', () => settle(b, 'rejected', false)));
+  }
+
+  function pendingCard(e) {
+    const p = e._key ? places.get(e._key) : null;
+    const f = String(e.field || 'other');
+    const now = nowValue(p, f);
+    const id = esc(e.id);
+    let suggest;
+    if (f === 'closed') {
+      const v = CLOSED[e.suggestedValue] ? e.suggestedValue : 'temp';
+      suggest = `<select class="fld" id="v-${id}" aria-label="It is now">${Object.entries(CLOSED).map(([k, t]) => `<option value="${k}"${k === v ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select>
+        <label class="lab" for="n-${id}">Note on the place (optional)</label><input type="text" id="n-${id}" maxlength="120" value="${esc(String(e.note || '').slice(0, 120))}" placeholder="e.g. Closed for renovation until March">`;
+    } else if (f === 'photo') {
+      suggest = isPhoto(e.suggestedValue) ? `<img class="ph" data-photo="${esc(e.suggestedValue)}" alt="The new photo" hidden>
+        <label class="main-line"><input type="checkbox" id="m-${id}"> Make it the main photo</label>` : '<div class="now empty">The photo is missing</div>';
+    } else if (f === 'other' || !FIELDS[f]) {
+      suggest = `<div class="now">${esc(e.suggestedValue || '')}</div>`;
+    } else {
+      suggest = `<textarea class="fld" id="v-${id}" maxlength="${f === 'name' ? 120 : 600}" aria-label="New ${esc(fieldLabel(f).toLowerCase())}">${esc(e.suggestedValue || '')}</textarea>`;
+    }
+    const canApply = p && f !== 'other' && (FIELDS[f] || (f === 'photo' && isPhoto(e.suggestedValue)));
+    const mainNow = p ? (p.photoUrl || (Array.isArray(p.photos) && p.photos[0]) || '') : '';
+    return `<div class="ed" data-id="${id}">
+      <p class="ed-place">${p || e.placeId ? `<a href="${esc(placeLink(e, p))}" target="_blank" rel="noopener">${esc((p && p.name) || e.placeName || 'Place')}</a>` : esc(e.placeName || 'Place')}<span class="pill pill-field">${esc(fieldLabel(f))}</span>${p ? (p.member ? '<span class="pill pill-soon">Member spot</span>' : '') : '<span class="pill pill-no">Place not found</span>'}${fromOwner(e, p) ? '<span class="pill pill-owner">Owner</span>' : ''}</p>
+      <p class="ed-meta">From ${byWho(e.submittedBy)}${toDate(e.createdAt) ? ' · ' + nice(toDate(e.createdAt)) : ''}</p>
+      <div class="cmp"${f === 'other' ? ' style="grid-template-columns:1fr"' : ''}>
+        ${f === 'other' ? '' : f === 'photo' ? `<div><p class="k">Main photo now</p>${mainNow ? `<img class="ph" data-photo="${esc(mainNow)}" alt="The main photo now" hidden>` : '<div class="now empty">No photo</div>'}</div>` : `<div><p class="k">Now</p><div class="now${now ? '' : ' empty'}">${f === 'closed' ? esc(closedLabel(now)) : (now ? esc(now) : 'Empty')}</div></div>`}
+        <div><p class="k">${f === 'other' ? 'What is wrong' : 'Suggested'}</p>${suggest}</div>
+      </div>
+      ${f !== 'closed' && e.note ? `<p class="note">💬 ${esc(e.note)}</p>` : ''}
+      <div class="actions">
+        ${canApply ? `<button class="btn btn-main btn-sm" type="button" data-apply="${id}">Apply</button>` : ''}
+        <button class="btn btn-sm" type="button" data-done="${id}">${canApply ? 'Mark done without changing' : 'Mark done'}</button>
+        <button class="btn btn-sm btn-danger" type="button" data-reject="${id}">Reject</button>
+      </div></div>`;
+  }
+
+  function doneCard(e) {
+    const f = String(e.field || 'other');
+    const v = e.appliedValue != null ? e.appliedValue : e.suggestedValue;
+    return `<div class="ed">
+      <p class="ed-place">${esc(e.placeName || 'Place')}<span class="pill pill-field">${esc(fieldLabel(f))}</span>${e.status === 'approved' ? `<span class="pill pill-ok">${e.applied ? 'Applied' : 'Done'}</span>` : '<span class="pill pill-no">Rejected</span>'}</p>
+      <p class="ed-meta">From ${byWho(e.submittedBy)}${toDate(e.handledAt) ? ' · handled ' + nice(toDate(e.handledAt)) : ''}</p>
+      ${f === 'photo' ? (isPhoto(v) && e.status === 'approved' ? `<img class="ph" data-photo="${esc(v)}" alt="" hidden>` : '') : `<p class="ed-meta">${esc(f === 'closed' ? closedLabel(v) : String(v || '').slice(0, 300))}</p>`}</div>`;
+  }
+
+  // The fields on the place for this correction.
+  function changesFor(e, p) {
+    const f = e.field;
+    const id = e.id;
+    if (f === 'closed') {
+      const v = document.getElementById('v-' + id).value;
+      const note = (document.getElementById('n-' + id).value || '').trim().slice(0, 120);
+      if (!CLOSED[v]) return null;
+      return { data: { closedStatus: v, closedNote: v === 'open' ? '' : note }, shown: v };
+    }
+    if (f === 'photo') {
+      const v = e.suggestedValue;
+      if (!isPhoto(v)) return null;
+      const list = (Array.isArray(p.photos) ? p.photos : []).filter(x => typeof x === 'string' && x);
+      const uniq = a => a.filter((x, i) => x && x !== v && a.indexOf(x) === i);
+      if (document.getElementById('m-' + id).checked) return { data: { photoUrl: v, photos: uniq([p.photoUrl || ''].concat(list)) }, shown: v };
+      return { data: { photos: uniq(list.filter(x => x !== p.photoUrl)).concat(v) }, shown: v };
+    }
+    let v = (document.getElementById('v-' + id).value || '').trim().replace(/\s+\n/g, '\n');
+    if (!v) return null;
+    if (f === 'name') return { data: { name: v.slice(0, 120) }, shown: v };
+    if (f === 'phone') return { data: { phone: v.slice(0, 40) }, shown: v };
+    if (f === 'hours') return { data: { hours: v.slice(0, 600) }, shown: v };
+    if (f === 'address') {
+      // Reviewed places keep the whole address in "city"; member spots have
+      // "address" and "city" apart, so the town is not added twice.
+      if (!p.member) return { data: { city: v.slice(0, 300) }, shown: v };
+      const town = String(p.city || '').trim();
+      let street = v;
+      if (town && street.toLowerCase().endsWith(', ' + town.toLowerCase())) street = street.slice(0, -(town.length + 2)).trim();
+      return { data: { address: street.slice(0, 300) }, shown: v };
+    }
+    return null;
+  }
+
+  async function apply(btn) {
+    const e = edits.find(x => x.id === btn.dataset.apply);
+    const p = e && e._key ? places.get(e._key) : null;
+    if (!e || !p) return toast('The place is not there any more. Reject this one.', true);
+    const ch = changesFor(e, p);
+    if (!ch) return toast('Fill in the new value first.', true);
+    btn.disabled = true;
+    // A photo must be one the sender uploaded themselves. Once used, it belongs to
+    // Strong Foodie, so the sender can't swap or remove it afterwards.
+    let img = null;
+    if (e.field === 'photo') {
+      img = await photoOf(e);
+      if (!img) { btn.disabled = false; return toast('This photo is missing or was not uploaded by the person who sent it. Reject it.', true); }
+    }
+    try {
+      if (img) await updateDoc(doc(db, 'images', img.id), { ownerId: BRAND_UID });
+      await updateDoc(doc(db, p.coll, p.id), ch.data);
+      Object.assign(p, ch.data);
+    } catch (err) {
+      console.log('Place not changed:', err);
+      toast(refused(err) ? 'The database refused to change this place.' : 'Could not change the place. Try again.', true);
+      btn.disabled = false;
+      return;
+    }
+    await mark(e, 'approved', true, ch.shown, btn);
+  }
+
+  // The image of a photo suggestion, only when the sender uploaded it for this (source web-owner).
+  async function photoOf(e) {
+    if (!isPhoto(e.suggestedValue)) return null;
+    try {
+      const id = e.suggestedValue.slice(8);
+      const s = await getDoc(doc(db, 'images', id));
+      return s.exists() && s.data().ownerId === e.submittedBy && s.data().source === 'web-owner' ? { id } : null;
+    } catch (err) { return null; }
+  }
+
+  async function settle(btn, status) {
+    const e = edits.find(x => x.id === (btn.dataset.done || btn.dataset.reject));
+    if (!e) return;
+    btn.disabled = true;
+    // A photo that is not used: its image document goes too, but only the one the sender uploaded for it.
+    if (e.field === 'photo') { const img = await photoOf(e); if (img) await deleteDoc(doc(db, 'images', img.id)).catch(err => console.log('Photo not removed:', err.code || err)); }
+    await mark(e, status, false, null, btn);
+  }
+
+  async function mark(e, status, applied, shown, btn) {
+    const data = { status, handledAt: serverTimestamp(), applied };
+    if (shown != null) data.appliedValue = String(shown).slice(0, 1200);
+    try {
+      await updateDoc(doc(db, 'placeEdits', e.id), data);
+      Object.assign(e, data, { handledAt: new Date() });
+      toast(status === 'rejected' ? 'Rejected.' : applied ? 'Applied. The place shows it now.' : 'Marked done.');
+      draw();
+    } catch (err) {
+      console.log('Not saved:', err);
+      toast(applied ? 'The place changed, but this correction is still waiting. Mark it done.' : 'Could not save. Try again.', true);
+      if (btn) btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>

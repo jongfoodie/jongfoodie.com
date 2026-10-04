@@ -21,7 +21,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.FIRESTORE_BASE || 'https://firestore.googleapis.com/v1/projects/jongfoodie/databases/(default)/documents';
 const CATALOG = Object.keys(CATS).map(k => CATS[k].coll);
-const GENERATED = ['p', 'stad', 'best', 'guide', 'og', 'links', 'press', 'kit'];
+const GENERATED = ['p', 'stad', 'best', 'guide', 'list', 'og', 'links', 'press', 'kit'];
 // Short addresses for an Instagram bio, a business card or a sticker: strongfoodie.com/links
 const SHORT = [['links', 'links.html'], ['press', 'press.html'], ['kit', 'kit.html'], ['best', 'best.html']];
 const day = d => d ? d.toISOString().slice(0, 10) : '';
@@ -71,16 +71,23 @@ async function listAll(coll, mask = []) {
 }
 // Members with a private account: their spots get no public page.
 // One read for all profiles when the database allows it, else one per member.
+// Also gives each member's name, and who has no profile (any more).
 async function privateMembers(owners) {
   const ids = new Set();
+  ids.names = new Map();
+  ids.missing = new Set();
   try {
-    (await listAll('profiles', ['isPrivate'])).forEach(p => { if (p.isPrivate === true) ids.add(p.id); });
+    const all = await listAll('profiles', ['isPrivate', 'displayName']);
+    all.forEach(p => { if (p.isPrivate === true) ids.add(p.id); if (p.displayName) ids.names.set(p.id, String(p.displayName)); });
+    const known = new Set(all.map(p => p.id));
+    owners.forEach(uid => { if (!known.has(uid)) ids.missing.add(uid); });
     return ids;
   } catch (e) { console.log('Profiles read one by one:', e.message); }
   for (const uid of [...new Set(owners)]) {
     // No profile: public, like on the website. A profile that can't be read: private, to be safe.
-    const p = await getDoc(`profiles/${uid}`).then(v => v || {}).catch(() => ({ isPrivate: true }));
+    const p = await getDoc(`profiles/${uid}`).then(v => { if (!v) ids.missing.add(uid); return v || {}; }).catch(() => ({ isPrivate: true }));
     if (p.isPrivate === true) ids.add(uid);
+    if (p.displayName) ids.names.set(uid, String(p.displayName));
   }
   return ids;
 }
@@ -96,6 +103,22 @@ async function publishedGuides() {
     await new Promise(r => setTimeout(r, 1500 * attempt));
   }
 }
+// Lists made by members (my-list.html): published ones that Strong Foodie did
+// not hide. The database shows only those to visitors, so the query asks for
+// exactly that.
+async function publishedMemberLists() {
+  const eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: v } });
+  const body = JSON.stringify({ structuredQuery: { from: [{ collectionId: 'memberLists' }], where: { compositeFilter: { op: 'AND', filters: [eq('status', { stringValue: 'published' }), eq('hidden', { booleanValue: false })] } } } });
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(`${BASE}:runQuery`, { method: 'POST', headers: { 'content-type': 'application/json' }, body });
+    if (res.ok) return (await res.json()).filter(r => r.document).map(r => ({ id: idOf(r.document.name), ...fromFields(r.document.fields) }));
+    if (attempt >= 3) { console.log(`Member lists not read (${res.status}): no list pages this time.`); return []; }
+    await new Promise(r => setTimeout(r, 1500 * attempt));
+  }
+}
+// The address of a member's list. js/sf-memberlists.js makes the same one.
+const memberListUrl = l => `/list/${slugOf(l.title) || 'list'}-${l.id}/`;
+
 async function getDoc(p) {
   const d = await getJson(`${BASE}/${p}`);
   return d ? fromFields(d.fields) : null;
@@ -173,7 +196,7 @@ async function writePage(url, html) {
 // ── Build ─────────────────────────────────────────────────────────────────
 async function main() {
   const now = new Date();
-  const [catalogLists, memberDocs, guideDocs, listEdits, dishDocs, flagDocs] = await Promise.all([
+  const [catalogLists, memberDocs, guideDocs, listEdits, dishDocs, flagDocs, memberListDocs] = await Promise.all([
     Promise.all(CATALOG.map(c => listAll(c))),
     listAll('userPlaces'),
     publishedGuides(),
@@ -183,9 +206,10 @@ async function main() {
     listAll('dishes').catch(e => { console.log('Dishes not read:', e.message); return []; }),
     // Members Strong Foodie blocked (admin-members.html); none is fine too.
     listAll('memberFlags').catch(e => { console.log('Member flags not read:', e.message); return []; }),
+    publishedMemberLists().catch(e => { console.log('Member lists not read:', e.message); return []; }),
   ]);
   const blockedIds = new Set(flagDocs.filter(d => d.blocked === true).map(d => d.id));
-  const privateIds = await privateMembers(memberDocs.map(r => r.addedByUserId).filter(Boolean));
+  const privateIds = await privateMembers(memberDocs.map(r => r.addedByUserId).concat(memberListDocs.map(l => l.authorId)).filter(Boolean));
 
   const catalog = [];
   CATALOG.forEach((coll, i) => catalogLists[i]
@@ -203,7 +227,7 @@ async function main() {
   for (const dir of GENERATED) await rm(path.join(ROOT, dir), { recursive: true, force: true });
   await mkdir(path.join(ROOT, 'og'), { recursive: true });
 
-  const [plek, stad, best, guide] = await Promise.all(['plek.html', 'stad.html', 'best.html', 'guide.html']
+  const [plek, stad, best, guide, listPage] = await Promise.all(['plek.html', 'stad.html', 'best.html', 'guide.html', 'list.html']
     .map(f => readFile(path.join(ROOT, f), 'utf8').catch(() => '')));
   const sitemap = [];
   const changedOf = new Map();
@@ -279,6 +303,27 @@ async function main() {
     sitemap.push({ loc: SITE + url, lastmod: day(toDate(g.updatedAt) || toDate(g.createdAt)), priority: '0.8' });
   }
 
+  // Lists made by members: a page of their own when the list is public, its
+  // maker's account isn't private or blocked, and at least one of its places
+  // is online. Only plain ids: the address becomes a folder.
+  let memberListPages = 0;
+  for (const l of memberListDocs) {
+    if (!/^[A-Za-z0-9]{1,64}$/.test(l.id) || typeof l.title !== 'string' || !l.title.trim() || !l.authorId) continue;
+    if (privateIds.has(l.authorId) || blockedIds.has(l.authorId) || privateIds.missing.has(l.authorId)) continue;
+    const items = (Array.isArray(l.places) ? l.places : []).map(it => it && placeByKey.get(`${it.coll}/${it.id}`)).filter(Boolean);
+    if (!items.length || !listPage) continue;
+    const url = memberListUrl(l);
+    // The name on the member's profile, not the one typed into the list.
+    const by = String(privateIds.names.get(l.authorId) || 'a Strong Foodie member').trim();
+    const title = `${l.title.trim()}, a list by ${by} | Strong Foodie`;
+    const description = oneLine(l.intro || `${items.length} ${items.length === 1 ? 'place' : 'places'}${l.city ? ' in ' + l.city : ''}, picked by ${by}: ${items.slice(0, 3).map(p => p.name).join(', ')}${items.length > 3 ? ' and more' : ''}.`);
+    const cover = l.cover || (items.find(p => p.photos.length) || { photos: [] }).photos[0] || '';
+    const image = cover ? await ogImage(cover, `mlist-${l.id}`) : '';
+    await writePage(url, makePage(listPage, { title, description, canonical: SITE + url, image, type: 'article', params: { id: l.id } }));
+    sitemap.push({ loc: SITE + url, lastmod: day(toDate(l.updatedAt) || toDate(l.createdAt)), priority: '0.5' });
+    memberListPages++;
+  }
+
   // Short addresses: the same page in a folder (strongfoodie.com/links/). GitHub
   // sends strongfoodie.com/links there by itself. Google keeps the .html page.
   for (const [dir, file] of SHORT) {
@@ -289,14 +334,14 @@ async function main() {
   // Sitemap: the fixed pages first, then everything made above.
   const fixed = [
     ['', '1.0'], ['reviews.html', '0.9'], ['drink.html', '0.9'], ['shop.html', '0.8'], ['culture.html', '0.8'], ['health.html', '0.8'],
-    ['hotel.html', '0.9'], ['stad.html', '0.9'], ['best.html', '0.9'], ['guides.html', '0.8'], ['battle.html', '0.6'], ['map.html', '0.7'], ['community.html', '0.7'],
+    ['hotel.html', '0.9'], ['stad.html', '0.9'], ['best.html', '0.9'], ['guides.html', '0.8'], ['battle.html', '0.6'], ['deals.html', '0.5'], ['map.html', '0.7'], ['community.html', '0.7'],
     ['videos.html', '0.6'], ['about.html', '0.6'], ['press.html', '0.5'], ['links.html', '0.5'], ['privacy.html', '0.3'],
   ].map(([p, priority]) => ({ loc: `${SITE}/${p}`, lastmod: '', priority }));
   const urls = fixed.concat(sitemap);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url>\n    <loc>${text(u.loc)}</loc>\n    ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>\n    ` : ''}<priority>${u.priority}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
   await writeFile(path.join(ROOT, 'sitemap.xml'), xml);
 
-  console.log(`Pages: ${entries.length} places, ${dests.length} destinations, ${lists.length} lists, ${guides.length} guides. Sitemap: ${urls.length} addresses.`);
+  console.log(`Pages: ${entries.length} places, ${dests.length} destinations, ${lists.length} lists, ${guides.length} guides, ${memberListPages} member lists. Sitemap: ${urls.length} addresses.`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

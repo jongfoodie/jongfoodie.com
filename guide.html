@@ -182,6 +182,11 @@
   .g-intro { max-width: 720px; margin: 1.75rem 0 0.5rem; font-size: 17px; line-height: 1.7; color: var(--ink-soft); }
   .g-intro p + p { margin-top: 0.9rem; }
   .ri-note { font-family: 'Playfair Display', serif; font-style: italic; font-size: 17px; line-height: 1.5; color: var(--ink); border-left: 3px solid var(--accent); padding-left: 0.85rem; overflow-wrap: anywhere; }
+  .walk-leg { list-style: none; display: flex; justify-content: center; margin: -0.35rem 0; }
+  .walk-leg span { font-size: 13px; color: var(--ink-soft); background: var(--warm-white); border: 1px dashed rgba(212,82,26,0.45); border-radius: 20px; padding: 4px 12px; }
+  .btn-walk { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-walk:hover { border-color: #fff; }
+  .walk-sum { font-weight: 600; }
   .g-map { height: 380px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); margin-top: 2rem; background: #E8E2D8; scroll-margin-top: 80px; }
   .rank-item .pill { vertical-align: 1px; }
   @media (max-width: 700px) {
@@ -299,7 +304,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, query, where, limit, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, SITE, esc, starStr, placeUrl, guideUrl, slugOf, normalise, isPublished, toDate, loadLists, loadPlaces, destinations, photoTools } from "./js/sf-places.js?v=7";
-  import { SEASONS, guideCard, loadGuides } from "./js/sf-guides.js?v=3";
+  import { SEASONS, guideCard, loadGuides, walkLegs, walkTotal, walkMapsUrl, fmtDistance, fmtMinutes } from "./js/sf-guides.js?v=4";
   import { countView } from "./js/sf-views.js?v=2";
 
   const firebaseConfig = {
@@ -387,7 +392,12 @@
   function renderGuide(g, places, others, lists) {
     const season = SEASONS[g.season] || null;
     const moment = String(g.moment || '').trim();
-    const eyebrow = [season ? `${season.emoji} ${moment || season.label}` : (moment ? '📖 ' + moment : '📖 Guide'), g.city].filter(Boolean).join(' · ');
+    // A food walk: the places are a route, in this order (guide-edit.html).
+    const walk = g.walk === true;
+    const legs = walk ? walkLegs(places) : [];
+    const total = walkTotal(legs);
+    const mapsUrl = walk ? walkMapsUrl(places) : '';
+    const eyebrow = [walk ? `🚶 ${moment || 'Food walk'}` : season ? `${season.emoji} ${moment || season.label}` : (moment ? '📖 ' + moment : '📖 Guide'), g.city].filter(Boolean).join(' · ');
     const updated = toDate(g.updatedAt) || toDate(g.createdAt);
     const cover = g.cover || (places.find(p => p.photos.length) || { photos: [] }).photos[0] || '';
     const intro = String(g.intro || '').trim();
@@ -403,9 +413,11 @@
           <h1>${esc(g.title)}</h1>
           <p class="d-sub">
             <span>${places.length} ${places.length === 1 ? 'place' : 'places'}, picked by Strong Foodie</span>
+            ${total.legs ? `<span class="walk-sum">🚶 ${fmtDistance(total.m)} · about ${fmtMinutes(total.min)} walking</span>` : ''}
             ${updated ? `<span>Updated ${esc(monthYear(updated))}</span>` : ''}
           </p>
           <div class="d-actions">
+            ${mapsUrl ? `<a class="btn btn-walk" id="walkBtn" href="${esc(mapsUrl)}" target="_blank" rel="noopener">▶ Start the walk${total.legs + 1 > 10 ? ' (first 10 stops)' : ''}</a>` : ''}
             <button class="btn btn-light" id="shareBtn" type="button">Share this guide ↗</button>
             ${places.some(p => p.lat != null) ? '<a class="btn btn-light" href="#guideMap">🗺️ On the map</a>' : ''}
           </div>
@@ -414,10 +426,11 @@
       ${intro ? `<div class="g-intro">${intro.split(/\n{2,}/).map(par => `<p>${esc(par).replace(/\n/g, '<br>')}</p>`).join('')}</div>` : ''}
 
       <ol class="rank-list">${places.map((p, i) => {
+        const leg = legs.find(l => l.to === i);
         const c = CATS[p.cat];
         const text = p.review || p.tip || p.type || '';
         const bits = [c.label, p.where, p.price].filter(Boolean);
-        return `<li class="rank-item">
+        return `${leg ? `<li class="walk-leg"><span>🚶 ${fmtDistance(leg.m)} · ${leg.min} min walk${leg.to - leg.from > 1 ? ` from stop ${leg.from + 1}` : ''}</span></li>` : ''}<li class="rank-item">
           <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
             <span>${esc(p.emoji)}</span>
             ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
@@ -452,7 +465,10 @@
       catch (err) { if (err && err.name === 'AbortError') return; }
       try { await navigator.clipboard.writeText(url); toast('Link copied!'); } catch { window.prompt('Copy this link:', url); }
     });
-    drawMap(places);
+    drawMap(places, walk);
+    // The page has <base href="/">, so a plain #link would go to the homepage.
+    const toMap = root.querySelector('a[href="#guideMap"]');
+    if (toMap) toMap.addEventListener('click', e => { e.preventDefault(); const m = document.getElementById('guideMap'); if (m) m.scrollIntoView({ behavior: 'smooth' }); });
 
     const s = document.createElement('script');
     s.type = 'application/ld+json';
@@ -464,7 +480,7 @@
     document.head.appendChild(s);
   }
 
-  function drawMap(places) {
+  function drawMap(places, walk) {
     const el = document.getElementById('guideMap');
     const pts = places.map((p, i) => ({ p, i })).filter(({ p }) => p.lat != null && p.lng != null);
     if (typeof L === 'undefined' || !pts.length) { el.remove(); const a = root.querySelector('a[href="#guideMap"]'); if (a) a.remove(); return; }
@@ -475,6 +491,8 @@
       L.marker([p.lat, p.lng], { icon, title: p.name }).addTo(map).bindPopup(`<strong>${i + 1}. ${esc(p.name)}</strong><br><a href="${placeUrl(p)}">View place →</a>`);
     });
     const ll = pts.map(({ p }) => [p.lat, p.lng]);
+    // A food walk: the route in order, under the numbers.
+    if (walk && ll.length > 1) L.polyline(ll, { color: '#D4521A', weight: 4, opacity: 0.85, dashArray: '2 9', lineCap: 'round', interactive: false }).addTo(map);
     if (ll.length === 1) map.setView(ll[0], 15); else map.fitBounds(ll, { padding: [30, 30], maxZoom: 15 });
   }
 

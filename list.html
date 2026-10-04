@@ -5,16 +5,29 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restaurant kit: badge and QR sticker | Strong Foodie</title>
-<meta name="description" content="Reviewed by Strong Foodie? Get a free QR sticker for your window, a badge for your website and a ready-made Instagram post.">
-<meta property="og:type" content="website">
+<title>List | Strong Foodie</title>
+<meta name="description" content="A list of favourite places, made by a Strong Foodie member.">
+<meta property="og:type" content="article">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="Strong Foodie restaurant kit">
-<meta property="og:description" content="Reviewed by Strong Foodie? Get a free QR sticker for your window, a badge for your website and a ready-made Instagram post.">
-<meta property="og:url" content="https://strongfoodie.com/kit.html">
+<meta property="og:title" content="A Strong Foodie list">
+<meta property="og:description" content="A list of favourite places, made by a Strong Foodie member.">
+<meta property="og:url" content="https://strongfoodie.com/list.html">
 <meta property="og:image" content="https://strongfoodie.com/icon-512.png">
-<link rel="canonical" href="https://strongfoodie.com/kit.html">
+<script>
+  // The canonical address is set here and not in plain HTML, because every
+  // list is its own page: only the parameter that chooses it counts.
+  (function () {
+    var q = new URLSearchParams(location.search), keep = [];
+    ['id'].forEach(function (k) { if (q.get(k)) keep.push(k + '=' + encodeURIComponent(q.get(k))); });
+    var l = document.createElement('link');
+    l.rel = 'canonical';
+    l.href = 'https://strongfoodie.com/list.html' + (keep.length ? '?' + keep.join('&') : '');
+    document.head.appendChild(l);
+  })();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -130,39 +143,68 @@
   .others a { text-decoration: none; }
   .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
-  /* Restaurant kit */
-  .kit-head h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; overflow-wrap: anywhere; }
-  .kit-head p { color: var(--muted); margin-top: 0.5rem; max-width: 640px; line-height: 1.6; }
-  .kit-head .place-line { color: var(--ink-soft); font-size: 15px; }
-  .kit-head .place-line a { color: var(--accent); text-decoration: none; }
-  .kit-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.75rem; }
-  .kit-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
-  .kit-card h2 { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.2; }
-  .kit-card .why { font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
-  .kit-card canvas, .kit-card .preview { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border); background: #fff; display: block; }
-  .kit-card .badge-row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; padding: 1rem; background: #EFE9DF; border-radius: 12px; }
-  .kit-card .badge-row img { max-width: 100%; height: auto; }
-  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .btn-main:hover { background: #b8401a; border-color: #b8401a; }
-  .code { width: 100%; font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #fff; color: var(--ink); resize: vertical; min-height: 92px; }
-  .caption { width: 100%; font: 14px/1.55 'DM Sans', sans-serif; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: #fff; color: var(--ink); resize: vertical; min-height: 120px; }
-  .tabs { display: flex; gap: 0.4rem; }
-  .tabs .chip { padding: 5px 12px; font-size: 12px; }
-  .kit-search { max-width: 560px; margin-top: 1.5rem; }
-  .kit-results { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; max-width: 560px; }
-  .kit-results a { display: block; background: var(--warm-white); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1rem; color: var(--ink); text-decoration: none; }
-  .kit-results a:hover { border-color: var(--accent); }
-  .kit-results small { color: var(--muted); }
-  .kit-foot { margin-top: 2rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.25rem; }
-  .kit-foot a { color: var(--accent); }
-  #printArea { display: none; }
-  @media (max-width: 800px) { .kit-grid { grid-template-columns: 1fr; } }
-  @media print {
-    body > *:not(#printArea) { display: none !important; }
-    #printArea { display: block !important; text-align: center; }
-    #printArea img { width: 10cm; height: auto; }
+  /* Best-of lists */
+  .notice { background: var(--accent-pale); color: var(--accent); border-radius: 12px; padding: 0.75rem 1rem; font-size: 14px; margin-bottom: 1.25rem; }
+  .list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .list-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; color: #fff; text-decoration: none; background: var(--ink); }
+  .list-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+  .list-card:hover img { transform: scale(1.04); }
+  .list-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.1) 25%, rgba(26,18,8,0.92) 100%); }
+  .lc-emoji { position: absolute; top: 12px; right: 14px; font-size: 30px; z-index: 1; }
+  .lc-info { position: absolute; left: 16px; right: 16px; bottom: 14px; z-index: 2; }
+  .lc-count { display: inline-block; background: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-bottom: 6px; }
+  .lc-title { display: block; font-family: 'Playfair Display', serif; font-size: 21px; line-height: 1.15; overflow-wrap: anywhere; }
+  .lc-names { display: block; font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .rank-list { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 1.1rem; }
+  .rank-item { display: grid; grid-template-columns: 280px minmax(0, 1fr); background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .ri-photo { position: relative; display: flex; align-items: center; justify-content: center; font-size: 46px; min-height: 200px; text-decoration: none; }
+  .ri-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ri-rank { position: absolute; top: 12px; left: 12px; background: var(--accent); color: #fff; font: 700 15px 'DM Sans', sans-serif; padding: 5px 11px; border-radius: 8px; z-index: 1; }
+  .ri-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .ri-name { font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.2; overflow-wrap: anywhere; }
+  .ri-name a { color: var(--ink); text-decoration: none; }
+  .ri-name a:hover { color: var(--accent); }
+  .ri-meta { font-size: 13px; color: var(--muted); }
+  .ri-meta .star { color: var(--gold); letter-spacing: 1px; }
+  .ri-meta strong { color: var(--ink); }
+  .ri-text { font-size: 14px; color: var(--ink-soft); line-height: 1.6; overflow-wrap: anywhere; }
+  .ri-link { font-size: 13px; color: var(--accent); font-weight: 500; text-decoration: none; margin-top: auto; }
+  .app-note a { color: var(--accent); }
+  @media (max-width: 700px) {
+    .list-grid { grid-template-columns: 1fr; }
+    .rank-item { grid-template-columns: 1fr; }
+    .ri-photo { min-height: 0; aspect-ratio: 16 / 9; }
+    .ri-body { padding: 1rem 1.1rem 1.2rem; }
+    .ri-name { font-size: 21px; }
   }
+  /* A guide */
+  .g-intro { max-width: 720px; margin: 1.75rem 0 0.5rem; font-size: 17px; line-height: 1.7; color: var(--ink-soft); }
+  .g-intro p + p { margin-top: 0.9rem; }
+  .ri-note { font-family: 'Playfair Display', serif; font-style: italic; font-size: 17px; line-height: 1.5; color: var(--ink); border-left: 3px solid var(--accent); padding-left: 0.85rem; overflow-wrap: anywhere; }
+  .g-map { height: 380px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); margin-top: 2rem; background: #E8E2D8; scroll-margin-top: 80px; }
+  .rank-item .pill { vertical-align: 1px; }
+  @media (max-width: 700px) {
+    .g-intro { font-size: 16px; }
+    .g-map { height: 300px; }
+  }
+
+  /* A member's list */
+  .ml-by { display: flex; align-items: center; gap: 0.6rem; margin: 1.25rem 0 0; font-size: 14px; color: var(--ink-soft); flex-wrap: wrap; }
+  .ml-by a { color: var(--ink); font-weight: 700; text-decoration: none; }
+  .ml-by a:hover { color: var(--accent); }
+  .ml-av { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; font: 700 13px 'DM Sans', sans-serif; flex-shrink: 0; }
+  .ri-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: auto; }
+  .ri-save { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 6px 13px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
+  .ri-save:hover { border-color: var(--accent); color: var(--accent); }
+  .ri-save.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .ri-save:disabled { cursor: default; }
+  .ml-foot { margin-top: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+  .ml-report { background: none; border: none; padding: 0; font: inherit; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+  .ml-cta { margin-top: 2.5rem; background: var(--ink); color: #fff; border-radius: 18px; padding: 1.5rem; text-align: center; }
+  .ml-cta h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .ml-cta p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 0.9rem; }
+  .ml-cta a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; border-radius: 24px; padding: 10px 20px; font-weight: 600; font-size: 14.5px; }
 
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -265,17 +307,23 @@
 </nav>
 
 <main class="wrap" id="root">
-  <div class="loading">Loading your kit…</div>
+  <div class="loading">Loading the list…</div>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div id="printArea"></div>
 
-<script src="js/qrcode.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, SITE, esc, fold, slugOf, placeUrl, normalise, isPublished, loadPlaces, photoTools } from "./js/sf-places.js?v=7";
+  import { getFirestore, collection, query, where, getDocs, getDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { CATS, SITE, esc, starStr, placeUrl, toDate, photoTools } from "./js/sf-places.js?v=7";
+  import { listPlaces, publishedListsBy, memberListUrl, memberListLink } from "./js/sf-memberlists.js?v=1";
+  import { loadFlags, isBlocked, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+
+  // A list made by a member (my-list.html): memberLists/{id}. The Firestore
+  // rules show it to everyone while it is published and not hidden by Strong
+  // Foodie; the author also sees a draft. The GitHub Action makes a page of
+  // its own for every published list (strongfoodie.com/list/<title>-<id>/).
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -285,328 +333,205 @@
     messagingSenderId: "1006154240382",
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
   };
-  const db = getFirestore(initializeApp(firebaseConfig));
-  const { resolvePhoto } = photoTools(db);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const { hydratePhotos } = photoTools(db);
   const root = document.getElementById('root');
   const params = new URLSearchParams(location.search);
-  const CATALOG = Object.keys(CATS).map(k => CATS[k].coll);
-  const INK = '#1A1208', ACCENT = '#D4521A', CREAM = '#FAF7F2', MUTED = '#8A7A66', GOLD = '#C8901A';
-  const SERIF = '"Playfair Display", Georgia, serif', SANS = '"DM Sans", Helvetica, Arial, sans-serif';
+  // A generated page (strongfoodie.com/list/my-top-5-x/) says which list it is.
+  if (window.SF_PARAMS) Object.entries(window.SF_PARAMS).forEach(([k, v]) => params.set(k, v));
+  const id = (params.get('id') || '').trim();
+  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+  const monthYear = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  const initialsOf = name => String(name || '?').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
 
   function toast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2600);
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), 2600);
   }
-  const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
-  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
-  async function copy(text) {
-    try { await navigator.clipboard.writeText(text); toast('Copied!'); }
-    catch { window.prompt('Copy this:', text); }
+  function setMeta(title, desc, path) {
+    document.title = title;
+    document.querySelector('meta[name="description"]').setAttribute('content', desc);
+    document.querySelector('meta[property="og:title"]').setAttribute('content', title.replace(/ \| Strong Foodie$/, ''));
+    document.querySelector('meta[property="og:description"]').setAttribute('content', desc);
+    document.querySelector('link[rel="canonical"]').setAttribute('href', SITE + path);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', SITE + path);
   }
-  function download(blob, name) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  }
-  const toBlob = canvas => new Promise((res, rej) => { try { canvas.toBlob(b => b ? res(b) : rej(new Error('empty')), 'image/png'); } catch (e) { rej(e); } });
-
-  // ── Drawing helpers
-  function lines(ctx, text, max, maxLines) {
-    const words = String(text).split(/\s+/), out = [];
-    let line = '';
-    for (const w of words) {
-      const test = line ? line + ' ' + w : w;
-      if (ctx.measureText(test).width <= max || !line) line = test;
-      else { out.push(line); line = w; }
-    }
-    if (line) out.push(line);
-    if (out.length > maxLines) {
-      out.length = maxLines;
-      let last = out[maxLines - 1];
-      while (last.length > 1 && ctx.measureText(last + '…').width > max) last = last.slice(0, -1);
-      out[maxLines - 1] = last.replace(/\s+$/, '') + '…';
-    }
-    return out;
-  }
-  function fitFont(ctx, text, weight, family, size, max, min) {
-    let s = size;
-    do { ctx.font = `${weight} ${s}px ${family}`; s -= 2; } while (s > min && ctx.measureText(text).width > max);
-  }
-  function spaced(ctx, text, x, y, spacing) {
-    // Letter-spaced caps, centred on x
-    const chars = [...text];
-    const w = chars.reduce((a, c) => a + ctx.measureText(c).width, 0) + spacing * (chars.length - 1);
-    let cx = x - w / 2;
-    ctx.textAlign = 'left';
-    chars.forEach(c => { ctx.fillText(c, cx, y); cx += ctx.measureText(c).width + spacing; });
-    ctx.textAlign = 'center';
-  }
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
-  }
-  function logo(ctx, cx, cy, r, fill = CREAM) {
-    ctx.save();
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = fill; ctx.fill();
-    ctx.lineWidth = Math.max(2, r / 28); ctx.strokeStyle = ACCENT; ctx.stroke();
-    ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    ctx.font = `700 ${Math.round(r * 0.42)}px ${SERIF}`;
-    ctx.fillStyle = INK; ctx.fillText('Strong', cx, cy - r * 0.02);
-    ctx.fillStyle = ACCENT; ctx.fillText('Foodie', cx, cy + r * 0.42);
-    ctx.restore();
-  }
-  function drawQr(ctx, qr, x, y, size) {
-    const n = qr.getModuleCount(), cell = size / n;
-    ctx.fillStyle = INK;
-    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
-      if (qr.isDark(r, c)) ctx.fillRect(Math.floor(x + c * cell), Math.floor(y + r * cell), Math.ceil(cell), Math.ceil(cell));
-    }
-  }
-  function loadImage(src) {
-    return new Promise(res => {
-      if (!src) return res(null);
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => res(img); img.onerror = () => res(null);
-      img.src = src;
-    });
-  }
-  function cover(ctx, img, x, y, w, h) {
-    const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-    const sw = w / s, sh = h / s;
-    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, x, y, w, h);
+  function closed(title, text) {
+    setMeta(`${title} | Strong Foodie`, 'Lists of favourite places, made by Strong Foodie members.', '/list.html');
+    const robots = document.createElement('meta'); robots.name = 'robots'; robots.content = 'noindex'; document.head.appendChild(robots);
+    root.innerHTML = `<div class="empty"><div style="font-size:42px;margin-bottom:0.75rem;">📝</div><h1>${esc(title)}</h1><p>${text}</p></div>`;
   }
 
-  // ── The window sticker: 1200 × 1500, prints at 10 × 12,5 cm
-  function drawSticker(canvas, p, qr) {
-    const W = 1200, H = 1500, ctx = canvas.getContext('2d');
-    canvas.width = W; canvas.height = H;
-    ctx.fillStyle = CREAM; ctx.fillRect(0, 0, W, H);
-    ctx.lineWidth = 10; ctx.strokeStyle = ACCENT; roundRect(ctx, 30, 30, W - 60, H - 60, 56); ctx.stroke();
-    ctx.textAlign = 'center';
-    logo(ctx, W / 2, 185, 100);
-    ctx.fillStyle = MUTED; ctx.font = `700 32px ${SANS}`;
-    spaced(ctx, 'REVIEWED ON STRONG FOODIE', W / 2, 345, 6);
-    let y = 345;
-    if (p.rating) {
-      // Stars and the score as one centred group
-      ctx.font = `700 60px ${SANS}`;
-      const sw = ctx.measureText(stars(p.rating)).width;
-      ctx.font = `700 60px ${SERIF}`;
-      const rw = ctx.measureText(fmt1(p.rating)).width;
-      const x0 = (W - (sw + 28 + rw)) / 2;
-      ctx.textAlign = 'left';
-      ctx.font = `700 60px ${SANS}`; ctx.fillStyle = GOLD; ctx.fillText(stars(p.rating), x0, y + 88);
-      ctx.font = `700 60px ${SERIF}`; ctx.fillStyle = INK; ctx.fillText(fmt1(p.rating), x0 + sw + 28, y + 88);
-      ctx.textAlign = 'center';
-      y += 88;
+  const userReady = new Promise(res => { const off = onAuthStateChanged(auth, u => { off && off(); res(u); }); });
+  let me = null, list = null, places = [], author = null, mine = new Set();
+
+  async function start() {
+    if (!/^[A-Za-z0-9]{1,64}$/.test(id)) return closed('List not found', 'Check the link you were sent, or browse the <a href="best.html">best-of lists</a>.');
+    me = await userReady;
+    let snap = null;
+    try { snap = await getDoc(doc(db, 'memberLists', id)); }
+    catch (e) { console.log('List not read:', e.code || e); }
+    if (!snap || !snap.exists()) return closed('List not found', 'It may have been taken offline. Browse the <a href="best.html">best-of lists</a> or the <a href="guides.html">guides</a>.');
+    list = { id: snap.id, ...snap.data() };
+    const own = !!(me && me.uid === list.authorId);
+    const [profile, flags] = await Promise.all([
+      getDoc(doc(db, 'profiles', list.authorId)).then(s => s.exists() ? s.data() : null).catch(() => null),
+      loadFlags(db),
+    ]);
+    if (!own && isBlocked(flags, list.authorId)) return closed('This list is not available', 'It can no longer be shown.');
+    if (!own && !profile) return closed('This list is not available', 'Its maker is no longer on Strong Foodie.');
+    if (!own && me && Array.isArray(profile.blockedUsers) && profile.blockedUsers.includes(me.uid)) return closed('This list is not available', 'You cannot view this list.');
+    if (!own && profile && profile.isPrivate === true) return closed('This list is private', 'Its maker has a private account.');
+    author = { name: (profile && profile.displayName) || list.authorName || 'A member' };
+    places = await listPlaces(db, list, flags);
+    await loadMine();
+    render(own);
+    const others = await publishedListsBy(db, list.authorId).catch(() => []);
+    const more = others.filter(l => l.id !== list.id).slice(0, 6);
+    const box = document.getElementById('moreLists');
+    if (box && more.length) {
+      box.innerHTML = `<p class="section-label">More lists by ${esc(author.name)}</p><div class="others">${more.map(l => `<a class="chip" href="${esc(memberListLink(l))}">📝 ${esc(l.title)}<span>${(l.places || []).length}</span></a>`).join('')}</div>`;
     }
-    ctx.fillStyle = INK; fitFont(ctx, p.name, 700, SERIF, 74, W - 220, 56);
-    const nameLines = lines(ctx, p.name, W - 220, 2);
-    nameLines.forEach((l, i) => ctx.fillText(l, W / 2, y + 100 + i * 80));
-    y += 100 + (nameLines.length - 1) * 80;
-    const size = 520, qx = (W - size) / 2, qy = y + 80;
-    ctx.fillStyle = '#FFFFFF'; roundRect(ctx, qx - 36, qy - 36, size + 72, size + 72, 34); ctx.fill();
-    ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(26,18,8,0.12)'; ctx.stroke();
-    drawQr(ctx, qr, qx, qy, size);
-    ctx.fillStyle = INK; ctx.font = `700 48px ${SANS}`;
-    ctx.fillText('Scan for our review', W / 2, qy + size + 112);
-    ctx.fillStyle = ACCENT; ctx.font = `500 36px ${SANS}`;
-    ctx.fillText('strongfoodie.com', W / 2, qy + size + 162);
   }
 
-  // ── Instagram post: 1080 × 1350
-  async function drawPost(canvas, p, photoUrl) {
-    const W = 1080, H = 1350, ctx = canvas.getContext('2d');
-    canvas.width = W; canvas.height = H;
-    const cat = CATS[p.cat], ph = 780;
-    const grad = ctx.createLinearGradient(0, 0, W, ph);
-    grad.addColorStop(0, cat.color); grad.addColorStop(1, INK);
-    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, ph);
-    const img = await loadImage(photoUrl);
-    if (img) cover(ctx, img, 0, 0, W, ph);
-    else { ctx.font = `200px ${SANS}`; ctx.textAlign = 'center'; ctx.fillText(p.emoji, W / 2, ph / 2 + 70); }
-    const shade = ctx.createLinearGradient(0, ph - 260, 0, ph);
-    shade.addColorStop(0, 'rgba(26,18,8,0)'); shade.addColorStop(1, 'rgba(26,18,8,0.35)');
-    ctx.fillStyle = shade; ctx.fillRect(0, ph - 260, W, 260);
-    ctx.fillStyle = CREAM; ctx.fillRect(0, ph, W, H - ph);
-    logo(ctx, 140, ph, 92);
-    ctx.textAlign = 'left';
-    ctx.fillStyle = MUTED; ctx.font = `700 30px ${SANS}`;
-    ctx.fillText('REVIEWED ON STRONG FOODIE', 260, ph + 70);
-    ctx.fillStyle = INK; fitFont(ctx, p.name, 700, SERIF, 78, W - 140, 48);
-    const nl = lines(ctx, p.name, W - 140, 2);
-    nl.forEach((l, i) => ctx.fillText(l, 70, ph + 200 + i * 84));
-    let y = ph + 200 + nl.length * 84;
-    if (p.rating) {
-      ctx.font = `700 54px ${SANS}`; ctx.fillStyle = GOLD; ctx.fillText(stars(p.rating), 70, y + 20);
-      const w = ctx.measureText(stars(p.rating) + '  ').width;
-      ctx.fillStyle = INK; ctx.font = `700 54px ${SERIF}`; ctx.fillText(fmt1(p.rating) + ' / 5', 70 + w, y + 20);
-      y += 80;
-    }
-    ctx.fillStyle = ACCENT; ctx.font = `500 36px ${SANS}`;
-    ctx.fillText('Read the review on strongfoodie.com', 70, Math.min(y + 40, H - 60));
-    return !!img;
+  async function loadMine() {
+    mine = new Set();
+    if (!me) return;
+    try {
+      const s = await getDocs(collection(db, 'profiles', me.uid, 'wishlistItems'));
+      s.docs.forEach(d => { const x = d.data(); if (x.placeCollection && x.placeDocId) mine.add(`${x.placeCollection}/${x.placeDocId}`); });
+    } catch (e) { console.log('Own wishlist not read:', e.code || e); }
   }
 
-  // ── Find your place (no place chosen yet)
-  async function renderFinder(message) {
-    document.title = 'Restaurant kit: badge and QR sticker | Strong Foodie';
+  function render(own) {
+    const updated = toDate(list.updatedAt) || toDate(list.createdAt);
+    const cover = list.cover || (places.find(p => p.photos.length) || { photos: [] }).photos[0] || '';
+    const intro = String(list.intro || '').trim();
+    const path = list.status === 'published' && list.hidden !== true ? memberListUrl(list) : `/list.html?id=${encodeURIComponent(list.id)}`;
+    setMeta(`${list.title} | Strong Foodie`, (intro || `A list by ${author.name}${list.city ? ' in ' + list.city : ''}: ${places.slice(0, 3).map(p => p.name).join(', ')}.`).replace(/\s+/g, ' ').slice(0, 160), path);
+    if (list.status !== 'published' || list.hidden === true) { const r = document.createElement('meta'); r.name = 'robots'; r.content = 'noindex'; document.head.appendChild(r); }
+    const notice = list.hidden === true ? '<p class="notice">Strong Foodie has hidden this list. Only you can see it.</p>'
+      : list.status !== 'published' ? '<p class="notice">This list is a draft. Only you can see it.</p>' : '';
     root.innerHTML = `
-      <div class="crumbs"><a href="index.html">Home</a> › Restaurant kit</div>
-      <div class="kit-head">
-        <h1>Reviewed by Strong Foodie? Get your kit</h1>
-        <p>${message ? esc(message) + ' ' : ''}Free for every place Strong Foodie reviewed: a QR sticker for your window, a badge for your website and a ready-made post for Instagram. Find your place:</p>
-      </div>
-      <input class="search kit-search" id="q" type="search" placeholder="Name of your place…" aria-label="Name of your place" autocomplete="off">
-      <div class="kit-results" id="results"></div>
-      <div class="kit-foot">Not reviewed yet but you'd like Strong Foodie to visit? Send a message on <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">Instagram</a> or mail <a href="mailto:jongfoodie@gmail.com">jongfoodie@gmail.com</a>.</div>`;
-    const { catalog } = await loadPlaces(db);
-    const q = document.getElementById('q');
-    q.addEventListener('input', () => {
-      const t = fold(q.value).trim();
-      const hits = t.length < 2 ? [] : catalog.filter(p => p._name.includes(t)).slice(0, 8);
-      document.getElementById('results').innerHTML = hits.map(p => `<a href="kit.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">${esc(p.emoji)} <strong>${esc(p.name)}</strong> <small>${esc(p.where)}</small></a>`).join('')
-        || (t.length >= 2 ? '<p class="result-count">No reviewed place with that name yet.</p>' : '');
+      <div class="crumbs"><a href="index.html">Home</a> › <a href="member.html?u=${encodeURIComponent(list.authorId)}">${esc(author.name)}</a> › ${esc(list.title)}</div>
+      ${notice}
+      <header class="d-hero">
+        ${cover ? `<img data-photo="${esc(cover)}" data-full alt="" hidden>` : ''}
+        <div class="d-hero-body">
+          <p class="d-eyebrow">📝 A member's list${list.city ? ' · ' + esc(list.city) : ''}</p>
+          <h1>${esc(list.title)}</h1>
+          <p class="d-sub">
+            <span>${places.length} ${places.length === 1 ? 'place' : 'places'}</span>
+            ${updated ? `<span>Updated ${esc(monthYear(updated))}</span>` : ''}
+          </p>
+          <div class="d-actions">
+            <button class="btn btn-light" id="shareBtn" type="button">Share this list ↗</button>
+            ${places.some(p => p.lat != null) ? '<a class="btn btn-light" href="#guideMap">🗺️ On the map</a>' : ''}
+            ${own ? `<a class="btn btn-light" href="my-list.html?id=${encodeURIComponent(list.id)}">✏️ Edit list</a>` : ''}
+          </div>
+        </div>
+      </header>
+      <p class="ml-by"><span class="ml-av" aria-hidden="true">${esc(initialsOf(author.name))}</span><span>A list by <a href="member.html?u=${encodeURIComponent(list.authorId)}">${esc(author.name)}</a>, a Strong Foodie member</span></p>
+      ${intro ? `<div class="g-intro">${intro.split(/\n{2,}/).map(par => `<p>${esc(par).replace(/\n/g, '<br>')}</p>`).join('')}</div>` : ''}
+
+      <ol class="rank-list">${places.map((p, i) => {
+        const c = CATS[p.cat];
+        const text = p.review || p.tip || p.type || '';
+        const bits = [c.label, p.where, p.price].filter(Boolean);
+        const key = `${p.coll}/${p.id}`, on = mine.has(key);
+        return `<li class="rank-item">
+          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
+            <span>${esc(p.emoji)}</span>
+            ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
+            <span class="ri-rank">${i + 1}</span>
+          </a>
+          <div class="ri-body">
+            <h2 class="ri-name"><a href="${placeUrl(p)}">${esc(p.name)}</a></h2>
+            <p class="ri-meta">${p.rating ? `<span class="star">${starStr(p.rating)}</span> <strong>${fmt1(p.rating)}</strong> · ` : ''}${esc(bits.join(' · '))}${p.member ? ' · <span class="pill pill-member">Member spot</span>' : ''}</p>
+            ${p.note ? `<p class="ri-note">${esc(p.note)}</p>` : ''}
+            ${text && !p.note ? `<p class="ri-text">${esc(text.slice(0, 220))}${text.length > 220 ? '…' : ''}</p>` : ''}
+            <div class="ri-actions"><a class="ri-link" href="${placeUrl(p)}">View place →</a>
+              ${own ? '' : `<button class="ri-save${on ? ' on' : ''}" type="button" data-save="${esc(key)}"${on ? ' disabled' : ''}>${on ? '🔖 On your wishlist' : '🔖 Save'}</button>`}</div>
+          </div>
+        </li>`;
+      }).join('')}</ol>
+      ${places.length ? '' : '<p class="grid-empty">The places on this list are not online right now.</p>'}
+
+      <div class="g-map" id="guideMap"></div>
+      <div class="ml-foot"><span>Lists are made by members. Strong Foodie's own ratings are on each place.</span>${own ? '' : reportButton('Report this list')}</div>
+      <div id="moreLists"></div>
+      ${own ? '' : `<div class="ml-cta"><h2>Make your own list</h2><p>Your top 5 in your city, the best brunch spots, where to take visitors: make a list and share it.</p><a href="my-list.html">Make a list →</a></div>`}`;
+
+    hydratePhotos(root);
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const url = document.querySelector('link[rel="canonical"]').getAttribute('href') || location.href;
+      try { if (navigator.share) { await navigator.share({ title: list.title, url }); return; } }
+      catch (err) { if (err && err.name === 'AbortError') return; }
+      try { await navigator.clipboard.writeText(url); toast('Link copied!'); } catch { toast('Copy the link from the address bar'); }
     });
-    q.focus();
+    root.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => save(b)));
+    // The page has <base href="/">, so a plain #link would go to the homepage.
+    const toMap = root.querySelector('a[href="#guideMap"]');
+    if (toMap) toMap.addEventListener('click', e => { e.preventDefault(); const m = document.getElementById('guideMap'); if (m) m.scrollIntoView({ behavior: 'smooth' }); });
+    wireReports(db, root, () => ({ kind: 'list', coll: 'memberLists', targetId: list.id, ownerId: list.authorId, label: list.title }));
+    drawMap(places);
+
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'ItemList', name: list.title, description: intro.slice(0, 300),
+      author: { '@type': 'Person', name: author.name },
+      numberOfItems: places.length,
+      itemListElement: places.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + placeUrl(p), name: p.name })),
+    }).replace(/</g, '\\u003c');
+    document.head.appendChild(s);
   }
 
-  // ── The kit for one place
-  async function renderKit(p) {
-    const page = SITE + placeUrl(p);
-    const qrUrl = `${page}?utm_source=qr&utm_medium=sticker&utm_campaign=kit`;
-    const badgeUrl = `${page}?utm_source=badge&utm_medium=website&utm_campaign=kit`;
-    const slug = slugOf(p.name) || 'place';
-    const city = p.destination || p.town || '';
-    const tag = slugOf(city).replace(/-/g, '');
-    document.title = `Kit for ${p.name} | Strong Foodie`;
-    const qr = qrcode(0, 'M');
-    qr.addData(qrUrl); qr.make();
-
-    const embed = style => `<a href="${badgeUrl}" target="_blank" rel="noopener"><img src="${SITE}/badge${style === 'dark' ? '-dark' : ''}.svg" alt="Reviewed on Strong Foodie" width="240" height="80"></a>`;
-    const rating = p.rating ? `${fmt1(p.rating)}/5` : '';
-    const captions = {
-      en: `We're on Strong Foodie! 🍽️ ${p.name}${rating ? ' got ' + rating + ' from' : ' was reviewed by'} @strongfoodie_. Read the whole review on strongfoodie.com, and come taste it yourself.\n\n#strongfoodie #foodie${tag ? ' #' + tag : ''}`,
-      nl: `We staan op Strong Foodie! 🍽️ ${p.name}${rating ? ' kreeg een ' + rating + ' van' : ' is gereviewd door'} @strongfoodie_. Lees de hele review op strongfoodie.com en kom het zelf proeven.\n\n#strongfoodie #foodie${tag ? ' #' + tag : ''}`,
-    };
-
-    root.innerHTML = `
-      <div class="crumbs"><a href="index.html">Home</a> › <a href="kit.html">Restaurant kit</a> › ${esc(p.name)}</div>
-      <div class="kit-head">
-        <h1>Your Strong Foodie kit</h1>
-        <p class="place-line">For <a href="${placeUrl(p)}">${esc(p.name)}</a>${p.where ? ', ' + esc(p.where) : ''}${p.rating ? ` · <span style="color:var(--gold)">${stars(p.rating)}</span> ${fmt1(p.rating)}` : ''}</p>
-        <p>Free to use. Guests scan the sticker or click the badge and land on your review, where they find your address, opening hours and the route.</p>
-      </div>
-      <div class="kit-grid">
-        <section class="kit-card">
-          <h2>🪟 Sticker for your window</h2>
-          <p class="why">Print it (10 × 12,5 cm) for the window, the counter or the menu.</p>
-          <canvas id="sticker" aria-label="Sticker with QR code"></canvas>
-          <div class="btn-row">
-            <button class="btn btn-main" id="dlSticker" type="button">Download (PNG)</button>
-            <button class="btn" id="printSticker" type="button">Print</button>
-            <button class="btn" id="dlQr" type="button">QR code only (SVG)</button>
-          </div>
-        </section>
-        <section class="kit-card">
-          <h2>📸 Post for Instagram</h2>
-          <p class="why">Share it in your feed or story and tag <strong>@strongfoodie_</strong>.</p>
-          <canvas id="post" aria-label="Instagram post"></canvas>
-          <div class="btn-row">
-            <button class="btn btn-main" id="dlPost" type="button">Download (PNG)</button>
-            <button class="btn" id="sharePost" type="button" hidden>Share…</button>
-          </div>
-          <div class="tabs" role="tablist"><button class="chip active" data-lang="en" type="button">English</button><button class="chip" data-lang="nl" type="button">Nederlands</button></div>
-          <textarea class="caption" id="caption" aria-label="Caption">${esc(captions.en)}</textarea>
-          <div class="btn-row"><button class="btn" id="copyCaption" type="button">Copy caption</button></div>
-        </section>
-        <section class="kit-card">
-          <h2>🏅 Badge for your website</h2>
-          <p class="why">Paste this code on your website, for example in the footer. The badge links to your review.</p>
-          <div class="badge-row"><img src="badge.svg" alt="Reviewed on Strong Foodie badge, light" width="240" height="80"><img src="badge-dark.svg" alt="Reviewed on Strong Foodie badge, dark" width="240" height="80"></div>
-          <div class="tabs"><button class="chip active" data-badge="light" type="button">Light</button><button class="chip" data-badge="dark" type="button">Dark</button></div>
-          <textarea class="code" id="embed" readonly aria-label="Badge code">${esc(embed('light'))}</textarea>
-          <div class="btn-row"><button class="btn" id="copyEmbed" type="button">Copy code</button></div>
-        </section>
-        <section class="kit-card">
-          <h2>🔗 Your review link</h2>
-          <p class="why">For your Google profile, Linktree, menu or email signature.</p>
-          <textarea class="code" id="link" readonly aria-label="Review link" style="min-height:0;">${esc(page)}</textarea>
-          <div class="btn-row"><button class="btn" id="copyLink" type="button">Copy link</button><a class="btn" href="${placeUrl(p)}">Open your review</a></div>
-        </section>
-      </div>
-      <div class="kit-foot">New opening hours, or want to reply to reviews? <a href="${placeUrl(p)}#claim">Claim your page for free</a>. Questions: <a href="mailto:jongfoodie@gmail.com">jongfoodie@gmail.com</a>.</div>`;
-
-    // Fonts first, so the images use the site's letters.
-    try { await Promise.all([document.fonts.load(`700 40px "Playfair Display"`), document.fonts.load(`700 40px "DM Sans"`), document.fonts.load(`500 40px "DM Sans"`)]); } catch (e) {}
-    const sticker = document.getElementById('sticker');
-    drawSticker(sticker, p, qr);
-    const post = document.getElementById('post');
-    const photo = p.photos[0] ? await resolvePhoto(p.photos[0]) : '';
-    await drawPost(post, p, photo);
-
-    const safeBlob = async (canvas, redraw) => {
-      try { return await toBlob(canvas); }
-      catch (e) { await redraw(); return toBlob(canvas); }  // a photo from another site can't be saved: without it
-    };
-    const postBlob = () => safeBlob(post, () => drawPost(post, p, ''));
-    document.getElementById('dlSticker').addEventListener('click', async () => download(await toBlob(sticker), `strong-foodie-sticker-${slug}.png`));
-    document.getElementById('dlQr').addEventListener('click', () => {
-      const svg = qr.createSvgTag({ cellSize: 10, margin: 4, scalable: true, alt: 'QR code to the Strong Foodie review of ' + p.name });
-      download(new Blob([svg], { type: 'image/svg+xml' }), `strong-foodie-qr-${slug}.svg`);
-    });
-    document.getElementById('printSticker').addEventListener('click', async () => {
-      const area = document.getElementById('printArea');
-      area.innerHTML = `<img alt="" src="${URL.createObjectURL(await toBlob(sticker))}">`;
-      area.querySelector('img').onload = () => window.print();
-    });
-    document.getElementById('dlPost').addEventListener('click', async () => download(await postBlob(), `strong-foodie-post-${slug}.png`));
-    const shareBtn = document.getElementById('sharePost');
-    const probe = new File([new Blob(['x'], { type: 'image/png' })], 'x.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [probe] })) {
-      shareBtn.hidden = false;
-      shareBtn.addEventListener('click', async () => {
-        const file = new File([await postBlob()], `strong-foodie-${slug}.png`, { type: 'image/png' });
-        try { await navigator.share({ files: [file], text: document.getElementById('caption').value }); }
-        catch (e) { if (e.name !== 'AbortError') toast('Sharing did not work, use Download.'); }
-      });
-    }
-    root.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => {
-      root.querySelectorAll('[data-lang]').forEach(x => x.classList.toggle('active', x === b));
-      document.getElementById('caption').value = captions[b.dataset.lang];
-    }));
-    root.querySelectorAll('[data-badge]').forEach(b => b.addEventListener('click', () => {
-      root.querySelectorAll('[data-badge]').forEach(x => x.classList.toggle('active', x === b));
-      document.getElementById('embed').value = embed(b.dataset.badge);
-    }));
-    document.getElementById('copyCaption').addEventListener('click', () => copy(document.getElementById('caption').value));
-    document.getElementById('copyEmbed').addEventListener('click', () => copy(document.getElementById('embed').value));
-    document.getElementById('copyLink').addEventListener('click', () => copy(page));
-  }
-
-  // ── Start
-  try {
-    const id = params.get('id');
-    let coll = params.get('c');
-    if (!id) await renderFinder();
-    else if (coll === 'userPlaces') await renderFinder('The kit is for places Strong Foodie reviewed; this one was added by a member.');
-    else {
-      let snap = null;
-      for (const c of (coll && CATALOG.includes(coll) ? [coll] : CATALOG)) {
-        const s = await getDoc(doc(db, c, id)).catch(() => null);
-        if (s && s.exists()) { snap = s; coll = c; break; }
+  // 🔖 Save: onto the visitor's own wishlist, the same way as on the place itself.
+  async function save(btn) {
+    if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+    const p = places.find(x => `${x.coll}/${x.id}` === btn.dataset.save);
+    if (!p) return;
+    btn.disabled = true;
+    try {
+      const own = collection(db, 'profiles', me.uid, 'wishlistItems');
+      const dup = await getDocs(query(own, where('placeDocId', '==', p.id)));
+      if (!dup.docs.some(d => (d.data().placeCollection || p.coll) === p.coll)) {
+        await addDoc(own, { kind: 'place', placeCollection: p.coll, placeDocId: p.id, placeName: p.name, placeCategory: p.cat, city: p.where || '', source: 'web', createdAt: serverTimestamp() });
       }
-      const r = snap && snap.data();
-      if (!r || !r.name || !isPublished(r, new Date())) await renderFinder('That place was not found.');
-      else await renderKit(normalise(coll, id, r, false));
+      mine.add(btn.dataset.save);
+      btn.classList.add('on'); btn.textContent = '🔖 On your wishlist';
+      toast('Saved to your wishlist');
+    } catch (e) {
+      console.log('Not saved:', e.code || e);
+      toast('Could not save. Please try again.');
+      btn.disabled = false;
     }
-  } catch (e) {
-    console.log('Kit error:', e);
-    root.innerHTML = '<div class="empty"><h1>Could not load the kit</h1><p>Please refresh the page.</p></div>';
   }
+
+  let map = null;
+  function drawMap(places) {
+    const el = document.getElementById('guideMap');
+    const pts = places.map((p, i) => ({ p, i })).filter(({ p }) => p.lat != null && p.lng != null);
+    if (typeof L === 'undefined' || !pts.length) { el.remove(); const a = root.querySelector('a[href="#guideMap"]'); if (a) a.remove(); return; }
+    map = L.map(el, { scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+    pts.forEach(({ p, i }) => {
+      const icon = L.divIcon({ className: '', html: `<div style="background:${CATS[p.cat].color};color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font:700 13px 'DM Sans',sans-serif;border:2px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${i + 1}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
+      L.marker([p.lat, p.lng], { icon, title: p.name }).addTo(map).bindPopup(`<strong>${i + 1}. ${esc(p.name)}</strong><br><a href="${placeUrl(p)}">View place →</a>`);
+    });
+    const ll = pts.map(({ p }) => [p.lat, p.lng]);
+    if (ll.length === 1) map.setView(ll[0], 15); else map.fitBounds(ll, { padding: [30, 30], maxZoom: 15 });
+  }
+
+  start().catch(e => {
+    console.log('List error:', e);
+    root.innerHTML = '<div class="empty"><h1>Could not load this list</h1><p>Please refresh, or browse the <a href="best.html">best-of lists</a>.</p></div>';
+  });
 </script>
 
 <footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
@@ -628,6 +553,7 @@
           <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="stad.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Destinations</a>
           <a href="best.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Best of</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>

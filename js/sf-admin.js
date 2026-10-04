@@ -189,7 +189,7 @@ export function lockScreen(auth, user) {
 
 // Only admin pages on this site may be a ?next= target of admin.html.
 export function safeNext(raw) {
-  return raw && /^(admin-stats|admin-reports|admin-members|admin-home|admin-ads|admin-booking|admin-openings|admin-battles|admin-report|list-edit|guide-edit|dish-edit|correcties)\.html(\?[^#]*)?$/.test(raw) ? raw : null;
+  return raw && /^(admin-stats|admin-reports|admin-members|admin-home|admin-ads|admin-booking|admin-openings|admin-battles|admin-deals|admin-edits|admin-claims|admin-duplicates|admin-export|admin-report|list-edit|guide-edit|dish-edit|correcties)\.html(\?[^#]*)?$/.test(raw) ? raw : null;
 }
 
 export function nextLink(page = location.pathname.split('/').pop() + location.search) {

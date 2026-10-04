@@ -7,6 +7,7 @@
 // memberFlags/{uid}: set by the admin (admin-members.html), readable by everyone.
 //   { trusted: true } puts a "Trusted" mark next to the member's name;
 //   { blocked: true } hides everything of that member on the site and in the app.
+// Lists made by members (memberLists) are reported the same way, kind "list".
 // Hiding one review, highlight or spot keeps the field the app already uses:
 //   hidden: true on that document.
 
@@ -19,7 +20,7 @@ export const REASONS = [
   ['wrong', 'Wrong information'],
   ['other', 'Something else'],
 ];
-export const KINDS = { review: 'review', highlight: 'highlight', member: 'member', spot: 'spot' };
+export const KINDS = { review: 'review', highlight: 'highlight', member: 'member', spot: 'spot', list: 'list' };
 
 const CSS = `
 .sf-trusted { display: inline-flex; align-items: center; gap: 3px; font: 700 10px 'DM Sans', system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; color: #2D5A3D; background: #E8F2EC; border-radius: 10px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; white-space: nowrap; }
@@ -100,7 +101,7 @@ async function currentUser() {
 // Resolves true when a report was sent.
 export function openReport(db, target) {
   addModerationStyle();
-  const noun = { review: 'review', highlight: 'highlight', member: 'member', spot: 'place' }[target.kind] || 'post';
+  const noun = { review: 'review', highlight: 'highlight', member: 'member', spot: 'place', list: 'list' }[target.kind] || 'post';
   const box = document.createElement('div');
   box.className = 'sfr';
   box.setAttribute('role', 'dialog');
@@ -213,8 +214,9 @@ const KIND_ALIASES = {
   highlight: 'highlight', highlights: 'highlight', story: 'highlight',
   member: 'member', user: 'member', users: 'member', profile: 'member', account: 'member',
   spot: 'spot', place: 'spot', userplace: 'spot', userplaces: 'spot',
+  list: 'list', lists: 'list', memberlist: 'list', memberlists: 'list',
 };
-const COLL_OF = { review: 'userReviews', highlight: 'highlights', member: 'profiles', spot: 'userPlaces' };
+const COLL_OF = { review: 'userReviews', highlight: 'highlights', member: 'profiles', spot: 'userPlaces', list: 'memberLists' };
 export function normReport(r) {
   const raw = String(r.kind || r.type || r.targetType || r.contentType || r.itemType || '').toLowerCase().replace(/[^a-z]/g, '');
   const kind = KIND_ALIASES[raw] || raw || 'other';

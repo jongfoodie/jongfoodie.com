@@ -94,6 +94,9 @@
   .open-note { font-size: 13px; color: #2D5A3D; font-weight: 600; margin-top: 0.35rem; }
   .battle-note { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; background: var(--ink); color: #fff; text-decoration: none; border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 14px; line-height: 1.35; }
   .battle-note b { color: #F5C896; }
+  .deal-note { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; background: var(--accent-pale); border: 1px dashed var(--accent); color: var(--ink); text-decoration: none; border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 14px; line-height: 1.35; }
+  .deal-note b { color: var(--accent); }
+  .deal-note span:last-child { white-space: nowrap; font-weight: 600; color: var(--accent); }
   .battle-note span:last-child { white-space: nowrap; font-weight: 600; }
   .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
   .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
@@ -161,6 +164,19 @@
   .dish-note { font-size: 14px; line-height: 1.55; margin-top: 4px; overflow-wrap: anywhere; }
   .owner { margin-top: 1.5rem; font-size: 14px; background: var(--warm-white, #FFFDF9); border: 1px dashed rgba(26,18,8,0.18); border-radius: 12px; padding: 0.85rem 1rem; line-height: 1.5; }
   .owner a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .badge-owner { background: #E8F2EC; color: var(--green); border: 1px solid rgba(45,90,61,0.35); }
+  .owner-panel { margin-top: 1.5rem; background: #F2F7F3; border: 1px solid rgba(45,90,61,0.3); border-radius: 14px; padding: 1rem 1.1rem; font-size: 14px; line-height: 1.55; }
+  .owner-panel h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 0.2rem; }
+  .owner-panel .op-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.8rem 0 0.6rem; }
+  .owner-panel a { color: var(--accent); }
+  .mr-reply { margin: 0.6rem 0 0.2rem 0.9rem; border-left: 3px solid var(--green); background: #F2F7F3; border-radius: 0 10px 10px 0; padding: 0.55rem 0.8rem; font-size: 14px; }
+  .mr-reply-head { font-weight: 600; color: var(--green); font-size: 13px; margin-bottom: 0.15rem; }
+  .mr-reply textarea, .reply-form textarea { width: 100%; min-height: 80px; border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem 0.7rem; font: 14px 'DM Sans', sans-serif; resize: vertical; background: #fff; }
+  .reply-form { margin: 0.6rem 0 0.2rem 0.9rem; }
+  .reply-form .rf-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; align-items: center; }
+  .fix-line { margin-top: 1.5rem; font-size: 14px; color: var(--ink-soft); }
+  .fix-btn { background: none; border: 0; padding: 0; font: inherit; font-weight: 500; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   @media (max-width: 700px) {
@@ -258,6 +274,11 @@
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
   import { loadPromos } from "./js/sf-promos.js?v=1";
   import { isBeen, markBeen, unmarkBeen } from "./js/sf-been.js?v=1";
+  import { rememberRef, recordInvite } from "./js/sf-invites.js?v=1";
+  import { loadDeals } from "./js/sf-deals.js?v=1";
+  import { openCorrection } from "./js/sf-corrections.js?v=1";
+  import { loadOwner, myClaim, openClaim, loadReplies, saveReply, deleteReply, suggestPhoto, REPLY_MAX } from "./js/sf-claims.js?v=1";
+  rememberRef();
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -482,7 +503,7 @@
       <article class="place">
         <div class="media">${hero}${thumbs}</div>
         <div class="head">
-          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}${p.opening ? `<span class="badge badge-new">${isUpcoming(p.opening) ? '🆕 Opening soon' : '🆕 Just opened'}</span>` : ''}</div>
+          <div class="badges"><span class="badge" style="background:${cat.color};color:#fff;">${cat.emoji} ${cat.label}</span>${sourceBadge}${partner}${p.opening ? `<span class="badge badge-new">${isUpcoming(p.opening) ? '🆕 Opening soon' : '🆕 Just opened'}</span>` : ''}${p.owner ? '<span class="badge badge-owner">✓ Claimed by the owner</span>' : ''}</div>
           <h1>${esc(p.name)}</h1>
           ${p.address ? `<p class="sub">📍 ${esc(p.address)}</p>` : ''}
           ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
@@ -497,6 +518,7 @@
             ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
           </div>
           ${partnerNoteHtml(p.book)}
+          ${p.deal ? `<a class="deal-note" href="deals.html#d-${esc(p.deal.id)}"><span>🎟️ Pro deal: <b>${esc(p.deal.title)}</b></span><span>See it →</span></a>` : ''}
           ${p.battle ? `<a class="battle-note" href="battle.html"><span>⚔️ In a battle: <b>${esc(p.battle.title || 'Battle')}</b></span><span>Vote →</span></a>` : ''}
         </div>
       </article>
@@ -515,7 +537,8 @@
         <h2>Nearby ${cat.label.toLowerCase()} spots</h2>
         <div class="nearby" id="nearbyList"></div>
       </section>
-      ${p.member ? '' : `<p class="owner">🤝 Is this your place? <a href="kit.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">Get your free Strong Foodie badge and QR sticker →</a></p>`}
+      <p class="fix-line">✏️ Something wrong or changed? <button class="fix-btn" id="fixBtn" type="button">Suggest a correction</button></p>
+      <div id="ownerBox"></div>
       <p class="back"><a href="${cat.page}">← All ${cat.label} spots</a>${dest ? ` &nbsp;·&nbsp; <a href="${destinationUrl(dest)}">More in ${esc(dest)} →</a>` : ''}</p>`;
 
     // The hero takes the shape of the photo, so the whole photo is visible.
@@ -546,6 +569,9 @@
     wishPlace = p;
     document.getElementById('wishBtn').addEventListener('click', toggleWish);
     document.getElementById('beenBtn').addEventListener('click', toggleBeen);
+    document.getElementById('fixBtn').addEventListener('click', () => openCorrection(db, p, auth.currentUser));
+    ownerPlace = p;
+    drawOwnerBox();
     refreshWish();
     refreshBeen();
 
@@ -614,7 +640,103 @@
     }
     refreshWish();
     refreshBeen();
+    authKnown = true;
+    replying = '';
+    drawOwnerBox();
   });
+
+  // ── Claim your business (js/sf-claims.js) ─────────────────────────────
+  let ownerPlace = null;    // the place, once drawn
+  let ownClaim;             // this member's claim for it (undefined: not looked up yet)
+  let claimFor = '';        // whose claim ownClaim is
+  let replies = new Map();  // review id -> owner reply
+  let replying = '';        // the review the owner is replying to
+  let authKnown = false;    // Firebase has said who is signed in
+  let claimWanted = location.hash === '#claim'; // opened from the app or the kit page
+  const isOwner = () => !!(me && ownerPlace && ownerPlace.owner && ownerPlace.owner.uid === me.uid);
+
+  async function drawOwnerBox() {
+    const box = document.getElementById('ownerBox');
+    if (!box || !ownerPlace) return;
+    const p = ownerPlace;
+    const kit = p.member ? '' : ` <a href="kit.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}">Get your free Strong Foodie badge and QR sticker →</a>`;
+    if (isOwner()) {
+      box.innerHTML = `<section class="owner-panel" aria-labelledby="opTitle">
+        <h2 id="opTitle">🏪 You manage this place</h2>
+        <p>Reply to member reviews below. New hours, details and photos go live once Strong Foodie has checked them.</p>
+        <div class="op-actions">
+          <button class="btn" id="opFix" type="button">Update hours or details</button>
+          <button class="btn" id="opPhoto" type="button">Add a photo</button>
+          <input type="file" id="opFile" accept="image/*" hidden>
+        </div>
+        <p>${kit ? kit.trim() + '<br>' : ''}Want more guests? <a href="press.html">Ask about a featured spot →</a></p>
+      </section>`;
+      document.getElementById('opFix').addEventListener('click', () => openCorrection(db, p, auth.currentUser));
+      const file = document.getElementById('opFile');
+      document.getElementById('opPhoto').addEventListener('click', () => file.click());
+      file.addEventListener('change', async () => {
+        const f = file.files && file.files[0];
+        if (!f) return;
+        const b = document.getElementById('opPhoto');
+        b.disabled = true; b.textContent = 'Sending…';
+        try { await suggestPhoto(db, p, auth.currentUser, f); showToast('Thank you! Strong Foodie adds the photo after a quick check.'); }
+        catch (e) { console.log('Photo not sent:', e.code || e); showToast(/too big|unreadable/.test(String(e && e.message)) ? 'This photo could not be used. Try another one.' : 'Could not send the photo. Try again.'); }
+        b.disabled = false; b.textContent = 'Add a photo'; file.value = '';
+      });
+      return;
+    }
+    if (p.owner) { claimWanted = false; box.innerHTML = `<p class="owner">✓ The owner manages this page.${kit}</p>`; return; }
+    if (me && claimFor !== me.uid) { claimFor = me.uid; ownClaim = await myClaim(db, p, me.uid); }
+    if (!me) { claimFor = ''; ownClaim = undefined; }
+    if (ownClaim && ownClaim.status === 'pending') { box.innerHTML = `<p class="owner">⏳ Your claim for this place is being checked. Strong Foodie gets in touch at ${esc(ownClaim.contact || 'the contact you gave')}.</p>`; return; }
+    box.innerHTML = `<p class="owner">🤝 Is this your place? <button class="fix-btn" id="claimBtn" type="button">Claim it for free</button> to reply to reviews and keep your hours and photos up to date.${kit}</p>`;
+    const claim = () => openClaim(db, p, auth.currentUser, c => { ownClaim = c; claimFor = c.uid; drawOwnerBox(); });
+    document.getElementById('claimBtn').addEventListener('click', claim);
+    // #claim in the address: open the form once we know who is signed in.
+    if (claimWanted && authKnown) { claimWanted = false; claim(); }
+  }
+
+  function showToast(msg) {
+    let t = document.getElementById('ownerToast');
+    if (!t) { t = document.createElement('div'); t.id = 'ownerToast'; t.setAttribute('role', 'status'); t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1A1208;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:20060;max-width:90vw;text-align:center;'; document.body.appendChild(t); }
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(showToast.t); showToast.t = setTimeout(() => { t.hidden = true; }, 4000);
+  }
+
+  // Under a member review: the owner's reply, or for the owner a way to reply.
+  function replyHtml(r) {
+    const rep = replies.get(r.id);
+    const mine = !!(rep && me && rep.authorId === me.uid);
+    if (rep && rep.hidden === true) return mine ? '<p class="muted">Your reply was hidden by Strong Foodie.</p>' : '';
+    if (replying === r.id && isOwner() && (!rep || mine)) return `<div class="reply-form" data-rf="${esc(r.id)}"><label class="sr-only" for="rf-${esc(r.id)}">Your reply</label><textarea id="rf-${esc(r.id)}" maxlength="${REPLY_MAX}" placeholder="Thank them, or explain what you changed.">${esc(rep ? rep.text : '')}</textarea>
+      <div class="rf-actions"><button class="btn btn-primary" type="button" data-ract="save" data-rid="${esc(r.id)}">Post reply</button><button class="link-btn" type="button" data-ract="cancel">Cancel</button></div></div>`;
+    if (rep) {
+      const d = toDate(rep.updatedAt) || toDate(rep.createdAt);
+      return `<div class="mr-reply"><p class="mr-reply-head">💬 Reply from the owner</p><p>${esc(rep.text)}</p>
+        <p class="muted">${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}${mine ? ` · <button class="link-btn" type="button" data-ract="edit" data-rid="${esc(r.id)}">Edit</button> · <button class="link-btn" type="button" data-ract="delete" data-rid="${esc(r.id)}">Delete</button>` : ` · ${reportButton('Report', `data-reply-rid="${esc(r.id)}"`)}`}</p></div>`;
+    }
+    return isOwner() && r.hidden !== true ? `<p class="muted"><button class="link-btn" type="button" data-ract="edit" data-rid="${esc(r.id)}">Reply as the owner</button></p>` : '';
+  }
+
+  function wireReplies(box) {
+    box.querySelectorAll('[data-ract]').forEach(b => b.addEventListener('click', async () => {
+      const act = b.dataset.ract, rid = b.dataset.rid;
+      if (act === 'edit') { replying = rid; renderMemberReviews(); const t = document.getElementById('rf-' + rid); if (t) t.focus(); }
+      if (act === 'cancel') { replying = ''; renderMemberReviews(); }
+      if (act === 'delete') {
+        if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Tap again to delete'; return; }
+        try { await deleteReply(db, rid); replies.delete(rid); renderMemberReviews(); }
+        catch (e) { console.log('Reply not deleted:', e.code || e); showToast('Could not delete. Try again.'); }
+      }
+      if (act === 'save') {
+        const text = (document.getElementById('rf-' + rid).value || '').trim();
+        if (!text) { showToast('Write your reply first.'); return; }
+        b.disabled = true;
+        try { replies.set(rid, await saveReply(db, ownerPlace, rid, me.uid, text, replies.get(rid))); replying = ''; renderMemberReviews(); }
+        catch (e) { console.log('Reply not saved:', e.code || e); showToast('Could not post the reply. Try again.'); b.disabled = false; }
+      }
+    }));
+  }
 
   // ── Wishlist ───────────────────────────────────────────────────────────
   // Private per member: profiles/{uid}/wishlistItems/{id}. The Firestore rules
@@ -724,6 +846,7 @@
       .then(s => { authorInfo[uid] = s.exists() ? { name: s.data().displayName || '', priv: s.data().isPrivate === true } : { name: '', priv: false }; })
       .catch(() => { authorInfo[uid] = { name: '', priv: false }; })));
     reviewRows = rows.sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    replies = rows.length ? await loadReplies(db, p) : new Map();
     renderMemberReviews();
   }
 
@@ -761,6 +884,7 @@
             ${r.text ? `<p>${esc(r.text)}</p>` : ''}
             ${r.photoUrl ? `<div class="mr-photo"><img data-photo="${esc(r.photoUrl)}" data-hide-parent="1" alt="" hidden></div>` : ''}
             <p class="muted">${d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}${own ? ` · <button class="link-btn" data-act="edit">Edit</button> · <button class="link-btn" data-act="delete">Delete</button>` : ` · ${reportButton('Report', `data-rid="${esc(r.id)}"`)}`}</p>
+            ${replyHtml(r)}
           </div>`;
         }).join('')}</div>`
       : `<p class="muted">No member reviews yet. Be the first to review ${esc(reviewPlace.name)}.</p>`;
@@ -768,7 +892,12 @@
     box.innerHTML = list + `<div class="composer" id="composer">${composerHtml(mine)}</div>`;
     hydratePhotos(box);
     wireComposer(mine);
+    wireReplies(box);
     wireReports(db, box, b => {
+      if (b.dataset.replyRid) {
+        const rep = replies.get(b.dataset.replyRid) || {};
+        return { kind: 'reply', coll: 'ownerReplies', targetId: b.dataset.replyRid, ownerId: rep.authorId || '', label: `Owner reply at ${reviewPlace.name}: ${String(rep.text || '').slice(0, 150)}` };
+      }
       const r = reviewRows.find(x => x.id === b.dataset.rid) || {};
       return { kind: 'review', coll: 'userReviews', targetId: r.id, ownerId: r.authorId || '', label: `${reviewPlace.name}: ${String(r.text || '').slice(0, 150)}` };
     });
@@ -955,7 +1084,7 @@
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
         let hasProfile = true;
-        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); }
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await recordInvite(db, cred.user.uid); }
         catch (err) { console.error('Profile could not be saved:', err); hasProfile = false; }
         me = { uid: cred.user.uid, name, photo: '', hasProfile, authName: name };
         signingUp = false;
@@ -982,7 +1111,7 @@
       try {
         const ref = doc(db, 'profiles', me.uid);
         const existing = await getDoc(ref);
-        if (!existing.exists()) await setDoc(ref, newProfile(name));
+        if (!existing.exists()) { await setDoc(ref, newProfile(name)); await recordInvite(db, me.uid); }
         try { await updateProfile(auth.currentUser, { displayName: name }); } catch (err) {}
         me = { ...me, name, hasProfile: true };
         startDraft(myReview());
@@ -1162,6 +1291,7 @@
     const promosP = loadPromos(db);
     const partnersP = loadPartners(db);
     const openingsP = loadOpenings(db);
+    const dealsP = loadDeals(db);
     const battlesP = loadBattles(db);
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
@@ -1195,9 +1325,17 @@
     if (!snap || !snap.exists()) return notFound();
 
     const r = snap.data();
+    // Merged into another place by Strong Foodie (admin-duplicates.html): go to that one.
+    const into = typeof r.mergedInto === 'string' ? r.mergedInto.split('/') : [];
+    const hops = +(new URLSearchParams(location.search).get('via') || 0);
+    if (into.length === 2 && COLLS[into[0]] && /^[A-Za-z0-9_-]{1,128}$/.test(into[1]) && !(into[0] === coll && into[1] === id) && hops < 3) {
+      location.replace(`/plek.html?c=${encodeURIComponent(into[0])}&id=${encodeURIComponent(into[1])}&via=${hops + 1}`);
+      return;
+    }
     if (!COLLS[coll].member && !isPublished(r, new Date())) return notFound();
     const p = normalise(coll, id, r);
     const bookingP = loadBooking(db, `${coll}/${id}`);
+    const ownerP = loadOwner(db, { coll, id });
 
     if (p.member) {
       // Hidden by Strong Foodie, or added by a blocked member (js/sf-moderation.js).
@@ -1213,12 +1351,14 @@
 
     p.promoLive = (await promosP).some(x => x.placeKey === `${p.coll}/${p.id}` && Array.isArray(x.where) && x.where.includes('place'));
     // Reserve or Book (js/sf-booking.js): the link Strong Foodie set, a partner search, or Call to reserve.
-    const [booking, partners, openings, battles] = await Promise.all([bookingP, partnersP, openingsP, battlesP]);
+    const [booking, partners, openings, battles, deals] = await Promise.all([bookingP, partnersP, openingsP, battlesP, dealsP]);
     p.book = bookingButton(p, booking, partners, townOf(p));
     // Just opened (admin-openings.html) and a live battle with this place (battle.html).
     const key = `${p.coll}/${p.id}`;
     p.opening = p.closedStatus ? null : (openings.find(o => o.placeKey === key) || null);
     p.battle = liveBattles(battles).find(b => b.a === key || b.b === key) || null;
+    p.deal = p.closedStatus ? null : (deals.find(d => d.placeKey === key) || null);
+    p.owner = await ownerP;
     render(p);
     const spotWrap = document.getElementById('spotReportWrap');
     if (spotWrap) wireReports(db, spotWrap, () => ({ kind: 'spot', coll: p.coll, targetId: p.id, ownerId: p.addedByUserId || '', label: p.name }));

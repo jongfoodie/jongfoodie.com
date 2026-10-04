@@ -96,6 +96,7 @@
   .stars { color: var(--gold); white-space: nowrap; }
   .wish-form { margin-top: 0.75rem; margin-bottom: 0; }
   .share-row { margin-bottom: 0.9rem; }
+  .invite-note { background: var(--accent-pale, #FBF3EF); color: var(--accent); border-radius: 12px; padding: 0.7rem 0.9rem; font-weight: 600; font-size: 14px; margin: 0.6rem 0 0; }
   .share-box { display: flex; gap: 0.5rem; margin: -0.3rem 0 0.9rem; flex-wrap: wrap; }
   .share-box[hidden] { display: none; }
   .share-box .field { flex: 1 1 220px; min-width: 0; font-size: 13px; color: var(--ink-soft); }
@@ -210,8 +211,11 @@
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=4";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
-  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=3";
+  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=5";
   import { markBeen, loadBeen } from "./js/sf-been.js?v=1";
+  import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
+  import { memberStats, badgeProgress } from "./js/sf-badges.js?v=1";
+  import { rememberRef, inviterName, recordInvite, inviteLink, countInvites, proUntil, monthsToClaim, claimMonths, REWARD_CAP } from "./js/sf-invites.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -299,7 +303,11 @@
   }
 
   // ── Views ─────────────────────────────────────────────────────────────
-  let mode = new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login';
+  // Invited by a friend (account.html?ref=<uid>, js/sf-invites.js): open on "Create account".
+  const invitedBy = rememberRef();
+  let mode = new URLSearchParams(location.search).get('mode') === 'signup' || invitedBy ? 'signup' : 'login';
+  let inviterLabel = '';
+  const inviterReady = invitedBy ? inviterName(db, invitedBy).then(n => { inviterLabel = n; }) : Promise.resolve();
   let signingUp = false;
   let deletingAccount = false;   // while an account is being deleted, ignore sign-in changes
 
@@ -335,6 +343,7 @@
     root.innerHTML = `
       <div class="acct-card">
         <h1>${mode === 'signup' ? 'Create your account' : 'Log in'}</h1>
+        ${invitedBy && inviterLabel ? `<p class="invite-note">🎉 ${esc(inviterLabel)} invited you to Strong Foodie.</p>` : ''}
         <p class="lead">One Strong Foodie account for this website and the app.${n ? ' After logging in you go straight back to the page you came from.' : ''}</p>
         ${socialHtml()}
         <div class="tabs" role="tablist">
@@ -404,7 +413,7 @@
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
-        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); }
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await recordInvite(db, cred.user.uid); }
         catch (err) { console.error('Profile could not be saved:', err); }
         signingUp = false;
         toast('Welcome, ' + name + '! Your account works in the app too.');
@@ -441,7 +450,7 @@
       const name = document.getElementById('pfName').value.trim();
       try {
         const ref = doc(db, 'profiles', user.uid);
-        if (!(await getDoc(ref)).exists()) await setDoc(ref, newProfile(name));
+        if (!(await getDoc(ref)).exists()) { await setDoc(ref, newProfile(name)); await recordInvite(db, user.uid); }
         try { await updateProfile(user, { displayName: name }); } catch (err) {}
         toast('Profile saved');
         const n = nextUrl();
@@ -528,6 +537,31 @@
         <div id="beenList"><p class="small">Loading…</p></div>
       </section>
 
+      <section class="acct-block" id="lists">
+        <h2>Your lists <span class="count" id="listCount"></span></h2>
+        <p class="small" style="margin-bottom:0.75rem;">Your favourite places in a list, like "My top 5 in Rotterdam". Public lists are on your profile and can be found on Google.</p>
+        <div id="listList"><p class="small">Loading…</p></div>
+        <a class="btn" href="my-list.html" style="display:inline-block;text-decoration:none;margin-top:0.25rem;">＋ Make a list</a>
+      </section>
+
+      <section class="acct-block" id="badges">
+        <h2>Your badges</h2>
+        <p class="small" style="margin-bottom:0.75rem;">Earn them by reviewing, adding spots and making lists. The ones you earned show on your profile.</p>
+        <div id="badgeBox"><p class="small">Loading…</p></div>
+      </section>
+
+      <section class="acct-block" id="invite">
+        <h2>Invite friends</h2>
+        <p class="small" style="margin-bottom:0.75rem;">Share your link. Every friend who makes an account with it gives you a month of Strong Foodie Pro in the app, up to ${REWARD_CAP} months.</p>
+        <div class="share-box">
+          <input class="field" id="inviteUrl" type="text" readonly value="${esc(inviteLink(user.uid))}" aria-label="Your invite link">
+          <button class="btn" type="button" id="inviteShare">Share link</button>
+        </div>
+        <p class="small" id="inviteStatus" aria-live="polite">Loading…</p>
+        <div id="inviteClaim"></div>
+        <p class="small" style="margin-top:0.6rem;"><a href="deals.html">🎟️ See the Pro deals</a></p>
+      </section>
+
       <section class="acct-block">
         <h2>Your reviews <span class="count" id="revCount"></span></h2>
         <div id="revList"><p class="small">Loading…</p></div>
@@ -547,8 +581,8 @@
         <button class="btn" type="button" id="delOpen" style="margin-top:0.75rem;">Delete my account…</button>
         <div class="del-panel" id="delPanel" hidden>
           <ul class="del-list">
-            <li>Your profile, spots, reviews and highlights</li>
-            <li>Your wishlist, your Been there list, and who you follow</li>
+            <li>Your profile, spots, reviews and highlights, and as a business owner your replies and claims</li>
+            <li>Your wishlist, your Been there list, your lists, your invites, and who you follow</li>
             <li>Your login for the website and the app</li>
           </ul>
           ${delNeedsPassword(user) ? `<label class="field-label" for="delPw">Your password</label>
@@ -749,6 +783,21 @@
     });
     loadWishlist(user);
     loadBeenList(user);
+    loadListsBlock(user);
+    loadBadges(user);
+    loadInvites(user, profile);
+    document.getElementById('inviteShare').addEventListener('click', async () => {
+      const url = inviteLink(user.uid);
+      try {
+        if (navigator.share) { await navigator.share({ title: 'Join me on Strong Foodie', text: 'Honest food reviews and the best places, from Amsterdam to the world.', url }); return; }
+        await navigator.clipboard.writeText(url);
+        toast('Link copied');
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        const f = document.getElementById('inviteUrl'); f.focus(); f.select();
+        toast('Copy the link from the box');
+      }
+    });
 
     // Your reviews (written here or in the app)
     loadReviews(user);
@@ -870,6 +919,54 @@
     }));
   }
 
+  // ── Invite friends (js/sf-invites.js)
+  async function loadInvites(user, profile) {
+    const status = document.getElementById('inviteStatus'), box = document.getElementById('inviteClaim');
+    if (!status) return;
+    let joined = 0;
+    try { joined = await countInvites(db, user.uid); }
+    catch (e) { console.log('Invites could not load:', e.code || e); status.textContent = 'Your invites could not load right now.'; return; }
+    const draw = () => {
+      const until = proUntil(profile), todo = monthsToClaim(joined, profile);
+      status.textContent = [joined ? `${joined} ${joined === 1 ? 'friend' : 'friends'} joined with your link.` : 'No friends joined yet.',
+        until ? `You have Pro until ${fmtDate(until)}.` : ''].filter(Boolean).join(' ');
+      box.innerHTML = todo ? `<button class="btn btn-primary" type="button" id="claimBtn" style="margin-top:0.6rem;">Claim ${todo} ${todo === 1 ? 'month' : 'months'} of Pro</button>` : '';
+      const b = document.getElementById('claimBtn');
+      if (b) b.addEventListener('click', async () => {
+        b.disabled = true;
+        try { const u = await claimMonths(db, user.uid, profile, todo); toast(`Pro until ${fmtDate(u)}. Enjoy!`); draw(); }
+        catch (e) { console.error(e); toast('Could not claim. Please try again.'); b.disabled = false; }
+      });
+    };
+    draw();
+  }
+
+  // ── Your lists (js/sf-memberlists.js), drafts too
+  async function loadListsBlock(user) {
+    const box = document.getElementById('listList');
+    if (!box) return;
+    let rows = [];
+    try { rows = await myLists(db, user.uid); }
+    catch (e) { console.log('Lists could not load:', e.code || e); box.innerHTML = '<p class="small">Your lists could not load right now.</p>'; return; }
+    document.getElementById('listCount').textContent = rows.length ? `(${rows.length})` : '';
+    box.innerHTML = rows.length ? `<ul class="acct-list">${rows.map(l => {
+      const n = Array.isArray(l.places) ? l.places.length : 0;
+      const state = l.hidden === true ? 'Hidden by Strong Foodie' : l.status === 'published' ? 'Public' : 'Draft';
+      return `<li>
+        <div class="row-top"><a href="${esc(memberListLink(l))}">${esc(l.title || 'A list')}</a><span class="small">${esc(state)}</span></div>
+        <p class="small">${n} ${n === 1 ? 'place' : 'places'}${l.city ? ' · ' + esc(l.city) : ''} · <a class="link-btn small-link" style="font-weight:400;" href="my-list.html?id=${encodeURIComponent(l.id)}">Edit</a></p>
+      </li>`;
+    }).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">No lists yet.</p>';
+  }
+
+  // ── Your badges (js/sf-badges.js), with how far along you are
+  async function loadBadges(user) {
+    const box = document.getElementById('badgeBox');
+    if (!box) return;
+    try { box.innerHTML = badgeProgress(await memberStats(db, user.uid)); }
+    catch (e) { console.log('Badges could not load:', e.code || e); box.innerHTML = '<p class="small">Your badges could not load right now.</p>'; }
+  }
+
   // ── Been there (js/sf-been.js): newest first
   async function loadBeenList(user) {
     const box = document.getElementById('beenList');
@@ -903,7 +1000,7 @@
   }
 
   async function show(user) {
-    if (!user) return renderSignedOut();
+    if (!user) { await inviterReady; return renderSignedOut(); }
     let profile = null;
     try { const s = await getDoc(doc(db, 'profiles', user.uid)); profile = s.exists() ? s.data() : null; }
     catch (e) { profile = {}; } // could not check: don't block the member

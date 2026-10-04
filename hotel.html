@@ -327,7 +327,7 @@ function renderHotels(list) {
     const closedOverlay = isClosed
       ? `<div style="position:absolute;inset:0;background:rgba(20,20,20,0.6);display:flex;align-items:center;justify-content:center;">
            <span style="background:${h.closedStatus === 'perm' ? '#8A2323' : '#8A6A0A'};color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 12px;border-radius:4px;">
-             🚪 ${h.closedStatus === 'perm' ? 'DEFINITIEF GESLOTEN' : 'TIJDELIJK GESLOTEN'}
+             🚪 ${h.closedStatus === 'perm' ? 'PERMANENTLY CLOSED' : 'TEMPORARILY CLOSED'}
            </span>
          </div>`
       : '';

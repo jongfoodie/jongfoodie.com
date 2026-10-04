@@ -59,6 +59,13 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('wishlist', collection(db, 'profiles', uid, 'wishlistItems'), d => deleteDoc(d.ref));
   await each('been there', collection(db, 'profiles', uid, 'beenThere'), d => deleteDoc(d.ref));
   await each('settings', collection(db, 'profiles', uid, 'settings'), d => deleteDoc(d.ref));
+  await each('lists', query(collection(db, 'memberLists'), where('authorId', '==', uid)), d => deleteDoc(d.ref), true);
+  step('invite');
+  try { await deleteDoc(doc(db, 'invites', uid)); } catch (e) { console.log('Invite not deleted:', e.code || e); }
+  // Claim your business (js/sf-claims.js): their replies, claims and the places they manage.
+  await each('owner replies', query(collection(db, 'ownerReplies'), where('authorId', '==', uid)), d => deleteDoc(d.ref), true);
+  await each('claims', query(collection(db, 'claims'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
+  await each('places you manage', query(collection(db, 'businessOwners'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
   await each('follows', query(collection(db, 'follows'), where('followerId', '==', uid)), d => deleteDoc(d.ref));
   await each('followers', query(collection(db, 'follows'), where('followingId', '==', uid)), d => deleteDoc(d.ref), true);
   // The profile goes last: while anything above failed it stays, so the member can try again.

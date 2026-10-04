@@ -133,6 +133,11 @@
   <a href="admin-booking.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🛎️ Booking</a>
   <a href="admin-openings.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🆕 Openings</a>
   <a href="admin-battles.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">⚔️ Battles</a>
+  <a href="admin-deals.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🎟️ Deals</a>
+  <a href="admin-edits.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">✏️ Corrections</a>
+  <a href="admin-claims.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🏪 Claims</a>
+  <a href="admin-duplicates.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🔁 Duplicates</a>
+  <a href="admin-export.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">⬇️ Export</a>
   <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
   <button id="signOutBtn" onclick="adminSignOut()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:12px;">Sign out</button>
 </div>
@@ -1011,7 +1016,7 @@
   import { getFirestore, collection, addDoc, getDocs, getDoc, updateDoc, deleteDoc, doc, setDoc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=4";
+  import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=6";
 
 
   const firebaseConfig = {

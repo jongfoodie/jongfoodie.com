@@ -90,9 +90,9 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { CATS, esc, fold, slugOf, loadPlaces, destinations, guideUrl, SITE } from "./js/sf-places.js?v=7";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=4";
-  import { SEASONS } from "./js/sf-guides.js?v=3";
-  import { confirmTap } from "./js/sf-delete.js?v=3";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+  import { SEASONS, walkLegs, walkTotal, fmtDistance, fmtMinutes } from "./js/sf-guides.js?v=4";
+  import { confirmTap } from "./js/sf-delete.js?v=5";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -196,6 +196,10 @@
         <input type="search" id="find" placeholder="Add a place: type a name or city…" autocomplete="off" style="margin-top:0.75rem;">
         <div class="results" id="results"></div></div>
 
+      <div class="field"><span class="label">Food walk</span>
+        <div class="status"><label><input type="checkbox" id="fWalk"${current.walk === true ? ' checked' : ''}> 🚶 Show it as a walking route</label></div>
+        <p class="hint" id="walkHint"></p></div>
+
       <div class="field"><label for="fCover">Cover photo</label><select id="fCover"></select>
         <p class="hint">The photo on top of the guide and in link previews (WhatsApp, Instagram).</p></div>
 
@@ -216,6 +220,7 @@
     $('fSlug').addEventListener('input', () => { slugTouched = true; slugHint(); });
     $('fSlug').addEventListener('blur', () => { $('fSlug').value = slugOf($('fSlug').value).slice(0, 70); slugHint(); });
     $('find').addEventListener('input', search);
+    $('fWalk').addEventListener('change', walkHint);
     $('saveBtn').addEventListener('click', save);
     if (g) $('delBtn').addEventListener('click', remove);
     slugHint(); drawPicked(); updatePreview();
@@ -262,6 +267,19 @@
     box.querySelectorAll('[data-down]').forEach(b => b.addEventListener('click', () => move(Number(b.dataset.down), 1)));
     box.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => { syncNotes(); current.places.splice(Number(b.dataset.del), 1); drawPicked(); }));
     drawCover();
+    walkHint();
+  }
+  // What a food walk with these places in this order comes to.
+  function walkHint() {
+    const h = document.getElementById('walkHint'), on = document.getElementById('fWalk');
+    if (!h || !on) return;
+    const pts = current.places.map(it => byKey.get(keyOf(it.coll, it.id))).filter(Boolean);
+    const legs = walkLegs(pts), t = walkTotal(legs);
+    const missing = pts.filter(p => p.lat == null || p.lng == null).length;
+    h.textContent = !on.checked
+      ? 'Tick it for a route: the places in this order, the distance and walking time between them, the route on the map and a Start the walk button.'
+      : t.legs ? `Now ${fmtDistance(t.m)}, about ${fmtMinutes(t.min)} walking, in this order.${missing ? ` ${missing} ${missing === 1 ? 'place has' : 'places have'} no location and ${missing === 1 ? 'is' : 'are'} left out of the route.` : ''}`
+      : 'Add at least two places with a location on the map.';
   }
   function move(i, d) {
     syncNotes();
@@ -314,6 +332,7 @@
     const data = {
       title, slug, status, cover,
       city: $('fCity').value.trim(), season: $('fSeason').value, moment: $('fMoment').value.trim(), intro: $('fIntro').value.trim(),
+      walk: $('fWalk').checked,
       places: current.places.map(it => ({ coll: it.coll, id: it.id, note: String(it.note || '').trim(), name: (byKey.get(keyOf(it.coll, it.id)) || {}).name || it.name || '' })),
       author: 'Strong Foodie', updatedAt: serverTimestamp(),
     };

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Claims | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
+  textarea.fld { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; min-height: 80px; resize: vertical; }
+  .switch-line { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.9rem; font-size: 14px; }
+  .switch-line input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .code-pill { font: 700 12px monospace; background: var(--accent-pale); color: var(--accent); padding: 2px 8px; border-radius: 6px; }
+  .tabs { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tab { font: 500 14px 'DM Sans', sans-serif; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .cl { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; margin-bottom: 0.8rem; }
+  .cl-place { font-weight: 700; overflow-wrap: anywhere; }
+  .cl-place a { color: var(--ink); }
+  .cl dl { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 0.3rem 0.8rem; margin-top: 0.7rem; font-size: 14px; }
+  .cl dt { color: var(--ink-soft); font-weight: 600; }
+  .cl dd { overflow-wrap: anywhere; white-space: pre-wrap; }
+  .cl dd a { color: var(--accent); }
+  .warn { margin-top: 0.7rem; font-size: 13.5px; background: #FFF4E0; border-radius: 10px; padding: 8px 12px; }
+  .pill-ok { background: var(--green-light); color: var(--green); }
+  .pill-no { background: #F6E3E3; color: var(--red); }
+  @media (max-width: 700px) { .cl dl { grid-template-columns: 1fr; gap: 0.1rem; } .cl dd { margin-bottom: 0.4rem; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>CLAIMS</span></h1><nav><a href="admin-edits.html">✏️ Corrections</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, toDate } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+  import { confirmTap } from "./js/sf-delete.js?v=5";
+
+  // Owners claim their place on its page (js/sf-claims.js). Approve makes
+  // businessOwners/{collection}_{id}: from then on that member is the owner
+  // on the website and in the app. Check the contact first: an email on their
+  // own website or Instagram, or call the place.
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const refused = e => e && e.code === 'permission-denied';
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const okId = v => typeof v === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(v);
+  const keyOf = c => `${c.placeCollection}_${c.placeId}`;
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 3000);
+  }
+
+  let claims = [], owners = [], names = new Map(), view = 'pending';
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't handle claims.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const [cs, os] = await Promise.all([getDocs(collection(db, 'claims')), getDocs(collection(db, 'businessOwners'))]);
+      claims = cs.docs.map(d => ({ id: d.id, ...d.data() }));
+      owners = os.docs.map(d => ({ id: d.id, ...d.data() }));
+      const uids = [...new Set(claims.map(c => c.uid).concat(owners.map(o => o.uid)).filter(okId))];
+      await Promise.all(uids.map(u => getDoc(doc(db, 'profiles', u)).then(s => names.set(u, s.exists() ? String(s.data().displayName || 'Member') : 'Deleted account')).catch(() => {})));
+      draw();
+    } catch (e) {
+      console.log('Claims error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not switched on yet</h2><p>Add the rules for <code>claims</code>, <code>businessOwners</code> and <code>ownerReplies</code> in Firebase first, then refresh.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  const member = uid => okId(uid) ? `<a href="member.html?u=${encodeURIComponent(uid)}" target="_blank" rel="noopener">${esc(names.get(uid) || 'Member')}</a>` : 'Unknown';
+  const placeLink = c => `<a href="plek.html?c=${encodeURIComponent(c.placeCollection || '')}&id=${encodeURIComponent(c.placeId || '')}" target="_blank" rel="noopener">${esc(c.placeName || 'A place')}</a>`;
+  function contactLink(v) {
+    const s = String(v || '').trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) return `<a href="mailto:${esc(s)}?subject=${encodeURIComponent('Your Strong Foodie claim')}">${esc(s)}</a>`;
+    if (/^\+?[\d\s()-]{6,}$/.test(s)) return `<a href="tel:${esc(s.replace(/[^\d+]/g, ''))}">${esc(s)}</a>`;
+    return esc(s);
+  }
+
+  function draw() {
+    const pending = claims.filter(c => c.status === 'pending').sort((a, b) => (toDate(a.createdAt) || 0) - (toDate(b.createdAt) || 0));
+    const done = claims.filter(c => c.status && c.status !== 'pending').sort((a, b) => (toDate(b.handledAt) || 0) - (toDate(a.handledAt) || 0)).slice(0, 50);
+    const list = view === 'pending'
+      ? (pending.length ? pending.map(pendingCard).join('') : '<div class="empty">No claims waiting. When an owner claims their place, it shows up here.</div>')
+      : view === 'owners'
+        ? (owners.length ? owners.map(ownerCard).join('') : '<div class="empty">No owners yet.</div>')
+        : (done.length ? done.map(doneCard).join('') : '<div class="empty">Nothing handled yet.</div>');
+    root.innerHTML = `
+      <p class="lead">Owners who claimed their place. <b>Check the contact before you approve</b>: an email that is also on their own website or Instagram, or call the place. An owner can reply to reviews and suggest new hours, details and photos (those still come to Corrections).</p>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" type="button" data-view="pending" aria-selected="${view === 'pending'}">Waiting · ${pending.length}</button>
+        <button class="tab" role="tab" type="button" data-view="owners" aria-selected="${view === 'owners'}">Owners · ${owners.length}</button>
+        <button class="tab" role="tab" type="button" data-view="done" aria-selected="${view === 'done'}">Handled</button>
+      </div>
+      <div id="list">${list}</div>`;
+    root.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { view = b.dataset.view; draw(); }));
+    root.querySelectorAll('[data-ok]').forEach(b => b.addEventListener('click', () => approve(b)));
+    root.querySelectorAll('[data-no]').forEach(b => b.addEventListener('click', () => reject(b)));
+    root.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => removeOwner(b)));
+  }
+
+  function pendingCard(c) {
+    const now = owners.find(o => o.id === keyOf(c));
+    return `<div class="cl">
+      <p class="cl-place">${placeLink(c)}</p>
+      <dl>
+        <dt>Name</dt><dd>${esc(c.name || '')} (${esc(c.role || 'Owner')})</dd>
+        <dt>Contact</dt><dd>${contactLink(c.contact)}</dd>
+        ${c.proof ? `<dt>Proof</dt><dd>${esc(c.proof)}</dd>` : ''}
+        <dt>Account</dt><dd>${member(c.uid)}</dd>
+        <dt>Sent</dt><dd>${nice(toDate(c.createdAt))}</dd>
+      </dl>
+      ${now ? `<p class="warn">This place already has an owner: ${member(now.uid)}. Approving replaces them.</p>` : ''}
+      <div class="actions"><button class="btn btn-main btn-sm" type="button" data-ok="${esc(c.id)}">Approve</button><button class="btn btn-sm btn-danger" type="button" data-no="${esc(c.id)}">Reject</button></div>
+    </div>`;
+  }
+  function ownerCard(o) {
+    return `<div class="cl"><p class="cl-place">${placeLink(o)}</p>
+      <dl><dt>Owner</dt><dd>${member(o.uid)}</dd><dt>Since</dt><dd>${nice(toDate(o.since)) || '?'}</dd></dl>
+      <div class="actions"><button class="btn btn-sm btn-danger" type="button" data-remove="${esc(o.id)}">Remove owner</button></div></div>`;
+  }
+  function doneCard(c) {
+    const pill = c.status === 'approved' ? '<span class="pill pill-ok">Approved</span>' : c.status === 'removed' ? '<span class="pill pill-no">Removed</span>' : '<span class="pill pill-no">Rejected</span>';
+    return `<div class="cl"><p class="cl-place">${placeLink(c)}${pill}</p><p class="ad-meta">${esc(c.name || '')} · ${member(c.uid)}${toDate(c.handledAt) ? ' · ' + nice(toDate(c.handledAt)) : ''}</p></div>`;
+  }
+
+  async function approve(btn) {
+    const c = claims.find(x => x.id === btn.dataset.ok);
+    if (!c || !okId(c.uid) || !okId(c.placeId) || !c.placeCollection) return toast('This claim is incomplete. Reject it.', true);
+    btn.disabled = true;
+    const owner = { placeKey: `${c.placeCollection}/${c.placeId}`, placeId: c.placeId, placeCollection: c.placeCollection, placeName: c.placeName || '', uid: c.uid, since: serverTimestamp() };
+    try {
+      await setDoc(doc(db, 'businessOwners', keyOf(c)), owner);
+      await updateDoc(doc(db, 'claims', c.id), { status: 'approved', handledAt: serverTimestamp() });
+      owners = owners.filter(o => o.id !== keyOf(c)).concat({ id: keyOf(c), ...owner, since: new Date() });
+      Object.assign(c, { status: 'approved', handledAt: new Date() });
+      toast(`Approved. ${c.name || 'The owner'} now manages ${c.placeName || 'the place'}. Let them know at ${c.contact || 'their contact'}.`);
+      draw();
+    } catch (e) { console.log('Not approved:', e); toast(refused(e) ? 'The database refused: add the claims rules in Firebase first.' : 'Could not approve. Try again.', true); btn.disabled = false; }
+  }
+
+  async function reject(btn) {
+    const c = claims.find(x => x.id === btn.dataset.no);
+    if (!c) return;
+    if (!confirmTap(btn, 'Tap again to reject')) return;
+    btn.disabled = true;
+    try {
+      await updateDoc(doc(db, 'claims', c.id), { status: 'rejected', handledAt: serverTimestamp() });
+      Object.assign(c, { status: 'rejected', handledAt: new Date() });
+      toast('Rejected.'); draw();
+    } catch (e) { console.log('Not rejected:', e); toast('Could not save. Try again.', true); btn.disabled = false; }
+  }
+
+  async function removeOwner(btn) {
+    const o = owners.find(x => x.id === btn.dataset.remove);
+    if (!o) return;
+    if (!confirmTap(btn, 'Tap again: they stop managing it')) return;
+    btn.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'businessOwners', o.id));
+      const c = claims.find(x => x.id === `${o.id}_${o.uid}`);
+      if (c) { await updateDoc(doc(db, 'claims', c.id), { status: 'removed', handledAt: serverTimestamp() }).catch(() => {}); Object.assign(c, { status: 'removed', handledAt: new Date() }); }
+      owners = owners.filter(x => x !== o);
+      toast('Removed. Their replies stay; delete one under Reports if needed.'); draw();
+    } catch (e) { console.log('Not removed:', e); toast('Could not remove. Try again.', true); btn.disabled = false; }
+  }
+</script>
+</body>
+</html>

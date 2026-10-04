@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Duplicates | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
+  textarea.fld { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; min-height: 80px; resize: vertical; }
+  .switch-line { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.9rem; font-size: 14px; }
+  .switch-line input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .code-pill { font: 700 12px monospace; background: var(--accent-pale); color: var(--accent); padding: 2px 8px; border-radius: 6px; }
+  .pair { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; margin-bottom: 0.9rem; }
+  .pair-why { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 0.6rem; }
+  .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .side { border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.85rem; background: #fff; cursor: pointer; display: block; }
+  .side:has(input:checked) { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset; }
+  .side input { accent-color: var(--green); width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
+  .side-name { font-weight: 700; overflow-wrap: anywhere; }
+  .side-name a { color: var(--ink); }
+  .side-meta { font-size: 13px; color: var(--ink-soft); margin-top: 4px; line-height: 1.5; overflow-wrap: anywhere; }
+  .keep-lab { font-size: 12px; font-weight: 600; color: var(--green); }
+  @media (max-width: 700px) { .sides { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>DUPLICATES</span></h1><nav><a href="admin-edits.html">✏️ Corrections</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, where, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, fold, toDate, normalise, isPublished, CATS } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+  import { confirmTap } from "./js/sf-delete.js?v=5";
+
+  // The same place twice: a member added a spot Strong Foodie already reviewed,
+  // or two members added it. Merge keeps one, moves member reviews, highlights,
+  // dishes, member lists, deals, openings and paid placements to it, and hides
+  // the other with mergedInto, so its old links (website and app) go to the one kept.
+  // "Not the same" remembers the pair in site/dupIgnore.
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const CATALOG = Object.keys(CATS).map(k => CATS[k].coll);
+  const COLLS = CATALOG.concat('userPlaces');
+  const NEAR_M = 300;
+  const refused = e => e && e.code === 'permission-denied';
+  const nice = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const keyOf = p => `${p.coll}/${p.id}`;
+  const pairId = (a, b) => [keyOf(a), keyOf(b)].sort().join('|');
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 3500);
+  }
+
+  // Words that say what kind of place it is, not which one.
+  const STOP = new Set(['the', 'de', 'het', 'la', 'le', 'el', 'les', 'il', 'restaurant', 'cafe', 'bar', 'eetcafe', 'bistro', 'and', 'en', 'amsterdam']);
+  function nameKey(name) {
+    return fold(name).replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').split(' ').filter(w => w && !STOP.has(w)).join('');
+  }
+  function metres(a, b) {
+    const R = 6371000, rad = x => x * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  const hasXY = p => typeof p.lat === 'number' && typeof p.lng === 'number' && !(p.lat === 0 && p.lng === 0);
+
+  // Why two places look like one, or '' when they don't.
+  function sameReason(a, b) {
+    const ka = a._key, kb = b._key;
+    if (!ka || !kb) return '';
+    // The same name, or one is the start of the other ("Fabel Friet" and "Fabel Friet De Pijp").
+    const sameName = ka === kb || (Math.min(ka.length, kb.length) >= 5 && (ka.startsWith(kb) || kb.startsWith(ka)));
+    if (!sameName) return '';
+    if (hasXY(a) && hasXY(b)) {
+      const m = metres(a, b);
+      return m <= NEAR_M ? `Same name, ${Math.round(m)} m apart` : '';
+    }
+    if (a.destination && a.destination === b.destination) return `Same name, both in ${a.destination}`;
+    if (a.town && a.town === b.town) return `Same name, both in ${a.town}`;
+    return '';
+  }
+
+  // The one to keep by default: a Strong Foodie review over a member spot, then the fullest, then the oldest.
+  function better(a, b) {
+    if (a.member !== b.member) return a.member ? b : a;
+    const score = p => (p.rating ? 2 : 0) + (p.review ? 2 : 0) + Math.min(p.photos.length, 3) + (hasXY(p) ? 1 : 0);
+    if (score(a) !== score(b)) return score(a) > score(b) ? a : b;
+    return (toDate(a.created) || new Date()) <= (toDate(b.created) || new Date()) ? a : b;
+  }
+
+  let places = [], byKey = new Map(), pairs = [], ignored = new Set(), memberNames = new Map();
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't merge places.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Looking for places that are there twice…</p>';
+    try {
+      const now = new Date();
+      const [lists, ign] = await Promise.all([
+        Promise.all(COLLS.map(c => getDocs(collection(db, c)).then(s => s.docs.map(d => ({ id: d.id, ...d.data() }))))),
+        getDoc(doc(db, 'site', 'dupIgnore')).catch(() => null),
+      ]);
+      if (ign && ign.exists() && Array.isArray(ign.data().pairs)) ign.data().pairs.forEach(x => ignored.add(String(x)));
+      COLLS.forEach((c, i) => {
+        const member = c === 'userPlaces';
+        lists[i].forEach(r => {
+          if (!r.name || r.mergedInto) return;
+          if (member ? r.hidden === true : !isPublished(r, now)) return;
+          const p = normalise(c, r.id, r, member);
+          p.raw = r; p._key = nameKey(p.name);
+          p.addr = member ? [r.address, r.city].filter(Boolean).join(', ') : (r.city || r.address || '');
+          places.push(p); byKey.set(keyOf(p), p);
+        });
+      });
+      findPairs();
+      draw();
+    } catch (e) {
+      console.log('Duplicates error:', e);
+      root.innerHTML = refused(e)
+        ? '<div class="msg"><h2>Not allowed</h2><p>The database refused to read the places.</p></div>'
+        : '<div class="msg"><h2>Could not load</h2><p>Please refresh the page.</p></div>';
+    }
+  });
+
+  function findPairs() {
+    pairs = [];
+    for (let i = 0; i < places.length; i++) {
+      for (let j = i + 1; j < places.length; j++) {
+        const a = places[i], b = places[j];
+        const why = sameReason(a, b);
+        if (!why || ignored.has(pairId(a, b))) continue;
+        pairs.push({ a, b, why, keep: keyOf(better(a, b)) });
+      }
+    }
+  }
+
+  function side(p, pr, n) {
+    const kind = p.member ? `Member spot by ${esc(p.author)}` : 'Strong Foodie review';
+    return `<label class="side"><span class="keep-lab"><input type="radio" name="keep${n}" value="${esc(keyOf(p))}"${pr.keep === keyOf(p) ? ' checked' : ''}>Keep this one</span>
+      <p class="side-name"><a href="plek.html?c=${encodeURIComponent(p.coll)}&id=${encodeURIComponent(p.id)}" target="_blank" rel="noopener">${esc(p.emoji)} ${esc(p.name)}</a></p>
+      <p class="side-meta">${kind}${p.rating ? ` · ${p.rating.toFixed(1)}★` : ''}${p.photos.length ? ` · ${p.photos.length} photo${p.photos.length === 1 ? '' : 's'}` : ''}${p.closed ? ' · closed' : ''}</p>
+      <p class="side-meta">${esc(p.addr || 'No address')}${p.created ? ' · added ' + nice(p.created) : ''}</p></label>`;
+  }
+
+  function draw() {
+    root.innerHTML = `
+      <p class="lead">Places that look like the same one: the same name, and less than ${NEAR_M} m apart or in the same city. <b>Merge</b> keeps the one you tick and moves member reviews, owner replies, highlights, dishes, lists, guides, deals and openings to it. The other one is hidden and its old links go to the one you keep.</p>
+      ${pairs.length ? pairs.map((pr, n) => `<div class="pair" data-n="${n}">
+        <p class="pair-why">${esc(pr.why)}</p>
+        <div class="sides">${side(pr.a, pr, n)}${side(pr.b, pr, n)}</div>
+        <div class="actions"><button class="btn btn-main btn-sm" type="button" data-merge="${n}">Merge</button><button class="btn btn-sm" type="button" data-ignore="${n}">Not the same</button></div>
+      </div>`).join('') : '<div class="empty">No duplicates found. 🎉</div>'}
+      <p class="hint">${places.length} places checked.</p>`;
+    root.querySelectorAll('.pair input[type=radio]').forEach(r => r.addEventListener('change', () => { pairs[+r.name.slice(4)].keep = r.value; }));
+    root.querySelectorAll('[data-merge]').forEach(b => b.addEventListener('click', () => merge(b)));
+    root.querySelectorAll('[data-ignore]').forEach(b => b.addEventListener('click', () => ignore(b)));
+  }
+
+  async function ignore(btn) {
+    const pr = pairs[+btn.dataset.ignore];
+    btn.disabled = true;
+    try {
+      await setDoc(doc(db, 'site', 'dupIgnore'), { pairs: arrayUnion(pairId(pr.a, pr.b)), updatedAt: serverTimestamp() }, { merge: true });
+      ignored.add(pairId(pr.a, pr.b));
+      pairs = pairs.filter(x => x !== pr);
+      toast('Okay, these two stay apart.');
+      draw();
+    } catch (e) { console.log('Not saved:', e); toast('Could not save. Try again.', true); btn.disabled = false; }
+  }
+
+  // Moves everything that points at `from` to `to`. Returns what moved.
+  async function moveAll(from, to) {
+    const moved = { reviews: 0, highlights: 0, dishes: 0, lists: 0, other: 0 };
+    const fromOwnerKey = `${from.coll}_${from.id}`, toOwnerKey = `${to.coll}_${to.id}`;
+    const fromKey = keyOf(from), toKey = keyOf(to);
+
+    // Member reviews (the app writes placeId; the website also placeDocId and placeCollection).
+    const [r1, r2] = await Promise.all([
+      getDocs(query(collection(db, 'userReviews'), where('placeId', '==', from.id))),
+      getDocs(query(collection(db, 'userReviews'), where('placeDocId', '==', from.id))),
+    ]);
+    const reviews = new Map();
+    r1.docs.concat(r2.docs).forEach(d => { const r = d.data(); if (!r.placeCollection || r.placeCollection === from.coll) reviews.set(d.id, r); });
+    // A member who reviewed both keeps one: the moved review is hidden, so nothing counts twice.
+    const [k1, k2] = reviews.size ? await Promise.all([
+      getDocs(query(collection(db, 'userReviews'), where('placeId', '==', to.id))),
+      getDocs(query(collection(db, 'userReviews'), where('placeDocId', '==', to.id))),
+    ]) : [{ docs: [] }, { docs: [] }];
+    const authorsThere = new Set(k1.docs.concat(k2.docs).filter(d => !d.data().placeCollection || d.data().placeCollection === to.coll).map(d => d.data().authorId).filter(Boolean));
+    for (const [id, r] of reviews) {
+      const data = { placeId: to.id, placeDocId: to.id, placeCollection: to.coll, placeCategory: to.cat, placeName: to.name };
+      if (r.authorId && authorsThere.has(r.authorId) && r.hidden !== true) Object.assign(data, { hidden: true, hiddenBy: 'merge', hiddenAt: serverTimestamp() });
+      await updateDoc(doc(db, 'userReviews', id), data);
+      // The owner's reply moves along with its review.
+      const rep = await getDoc(doc(db, 'ownerReplies', id)).catch(() => null);
+      if (rep && rep.exists() && rep.data().ownerKey === fromOwnerKey) await updateDoc(doc(db, 'ownerReplies', id), { ownerKey: toOwnerKey });
+      moved.reviews++;
+    }
+
+    // Highlights linked to the place. placeCategory is a collection or a category; keep that style.
+    const hs = await getDocs(query(collection(db, 'highlights'), where('placeId', '==', from.id)));
+    for (const d of hs.docs) {
+      const h = d.data();
+      const pc = String(h.placeCategory || '');
+      await updateDoc(doc(db, 'highlights', d.id), { placeId: to.id, placeName: to.name, placeCategory: COLLS.includes(pc) ? to.coll : to.cat });
+      moved.highlights++;
+    }
+
+    // Dishes Strong Foodie rated there.
+    const ds = await getDocs(query(collection(db, 'dishes'), where('placeId', '==', from.id)));
+    for (const d of ds.docs) {
+      if (d.data().placeColl && d.data().placeColl !== from.coll) continue;
+      await updateDoc(doc(db, 'dishes', d.id), { placeId: to.id, placeColl: to.coll });
+      moved.dishes++;
+    }
+
+    // Member lists: the place swaps for the one kept (or drops out when the list has both).
+    const ls = await getDocs(collection(db, 'memberLists'));
+    for (const d of ls.docs) {
+      const items = Array.isArray(d.data().places) ? d.data().places : [];
+      if (!items.some(it => it && it.coll === from.coll && it.id === from.id)) continue;
+      const hasTo = items.some(it => it && it.coll === to.coll && it.id === to.id);
+      const next = items
+        .filter(it => !(hasTo && it && it.coll === from.coll && it.id === from.id))
+        .map(it => it && it.coll === from.coll && it.id === from.id ? { ...it, coll: to.coll, id: to.id, name: to.name } : it);
+      await updateDoc(doc(db, 'memberLists', d.id), { places: next });
+      moved.lists++;
+    }
+
+    // Guides and food walks: the same, so the route keeps its stop.
+    const gs = await getDocs(collection(db, 'guides'));
+    for (const d of gs.docs) {
+      const items = Array.isArray(d.data().places) ? d.data().places : [];
+      if (!items.some(it => it && it.coll === from.coll && it.id === from.id)) continue;
+      const hasTo = items.some(it => it && it.coll === to.coll && it.id === to.id);
+      const next = items
+        .filter(it => !(hasTo && it && it.coll === from.coll && it.id === from.id))
+        .map(it => it && it.coll === from.coll && it.id === from.id ? { ...it, coll: to.coll, id: to.id, name: to.name } : it);
+      await updateDoc(doc(db, 'guides', d.id), { places: next });
+      moved.lists++;
+    }
+
+    // The owner, when only the removed one had been claimed.
+    const own = await getDoc(doc(db, 'businessOwners', fromOwnerKey)).catch(() => null);
+    if (own && own.exists()) {
+      const there = await getDoc(doc(db, 'businessOwners', toOwnerKey)).catch(() => null);
+      if (!there || !there.exists()) await setDoc(doc(db, 'businessOwners', toOwnerKey), { ...own.data(), placeKey: toKey, placeId: to.id, placeCollection: to.coll, placeName: to.name });
+      await deleteDoc(doc(db, 'businessOwners', fromOwnerKey));
+    }
+
+    // Deals, openings and paid placements point at "collection/id".
+    for (const c of ['deals', 'openings', 'promos']) {
+      const s = await getDocs(query(collection(db, c), where('placeKey', '==', fromKey)));
+      for (const d of s.docs) {
+        await updateDoc(doc(db, c, d.id), d.data().placeName != null ? { placeKey: toKey, placeName: to.name } : { placeKey: toKey });
+        moved.other++;
+      }
+    }
+    return moved;
+  }
+
+  async function merge(btn) {
+    const pr = pairs[+btn.dataset.merge];
+    const keep = byKey.get(pr.keep);
+    const gone = keep === pr.a ? pr.b : pr.a;
+    if (!confirmTap(btn, `Tap again to merge into ${keep.name.slice(0, 30)}`)) return;
+    btn.disabled = true;
+    btn.textContent = 'Merging…';
+    try {
+      const moved = await moveAll(gone, keep);
+      const hide = gone.member ? { hidden: true, mergedInto: keyOf(keep) } : { status: 'hidden', mergedInto: keyOf(keep) };
+      await updateDoc(doc(db, gone.coll, gone.id), hide);
+      places = places.filter(p => p !== gone);
+      byKey.delete(keyOf(gone));
+      pairs = pairs.filter(x => x.a !== gone && x.b !== gone);
+      const bits = [moved.reviews && `${moved.reviews} review${moved.reviews === 1 ? '' : 's'}`, moved.highlights && `${moved.highlights} highlight${moved.highlights === 1 ? '' : 's'}`, moved.dishes && `${moved.dishes} dish${moved.dishes === 1 ? '' : 'es'}`, moved.lists && `${moved.lists} list${moved.lists === 1 ? '' : 's'} or guide${moved.lists === 1 ? '' : 's'}`, moved.other && `${moved.other} deal or opening`].filter(Boolean);
+      toast(`Merged.${bits.length ? ' Moved ' + bits.join(', ') + '.' : ''}`);
+      draw();
+    } catch (e) {
+      console.log('Merge stopped:', e);
+      toast(refused(e) ? 'The database refused part of the merge. Nothing is hidden; try again.' : 'The merge stopped halfway. Nothing is hidden; try again.', true);
+      btn.disabled = false; btn.textContent = 'Merge';
+    }
+  }
+</script>
+</body>
+</html>

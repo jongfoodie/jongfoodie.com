@@ -82,11 +82,11 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, setDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, setDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { esc, starStr, toDate, photoTools } from "./js/sf-places.js?v=7";
   import { REASONS, normReport } from "./js/sf-moderation.js?v=1";
-  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=4";
-  import { deleteReview, deleteHighlight, deleteSpot, confirmTap } from "./js/sf-delete.js?v=3";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+  import { deleteReview, deleteHighlight, deleteSpot, confirmTap } from "./js/sf-delete.js?v=5";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -104,7 +104,7 @@
 
   // What members can report (js/sf-moderation.js) and where it lives.
   const REASON = Object.fromEntries(REASONS);
-  const KIND = { review: 'Review', highlight: 'Highlight', spot: 'Member spot', member: 'Member' };
+  const KIND = { review: 'Review', highlight: 'Highlight', spot: 'Member spot', member: 'Member', list: 'Member list', reply: 'Owner reply' };
   const COLL = { review: 'userReviews', highlight: 'highlights', spot: 'userPlaces', member: 'profiles' };
   const ACTION = { hidden: 'Hidden', deleted: 'Deleted', blocked: 'Member blocked', dismissed: 'Nothing wrong', gone: 'Was already gone' };
 
@@ -179,7 +179,7 @@
     const gs = groups();
     const done = reports.filter(r => r.status === 'done');
     root.innerHTML = `
-      <p class="lead">Members report reviews, highlights, spots and other members here. Apple asks that reports are handled within 24 hours. Hiding keeps it for you to undo; blocking hides everything of that member on the site, and in the app after Rork batch 14.</p>
+      <p class="lead">Members report reviews, highlights, spots, lists and other members here. Apple asks that reports are handled within 24 hours. Hiding keeps it for you to undo; blocking hides everything of that member on the site, and in the app after Rork batch 14.</p>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" data-tab="open" aria-selected="${tab === 'open'}">Open${gs.length ? `<span class="n">${gs.length}</span>` : ''}</button>
         <button class="tab" role="tab" data-tab="done" aria-selected="${tab === 'done'}">Handled · ${done.length}</button>
@@ -227,6 +227,20 @@
         <p class="t-by">Highlight by ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.createdAt)))}${t.mediaType === 'video' ? ' · video' : ''}</p></div>
         ${t.photoUrl ? `<div class="thumb"><img data-photo="${esc(t.photoUrl)}" alt="" hidden></div>` : ''}</div>`;
     }
+    if (g.kind === 'list') {
+      const items = Array.isArray(t.places) ? t.places.filter(i => i && typeof i === 'object') : [];
+      return `<div class="target"><div>
+        <p class="t-title"><a href="list.html?id=${encodeURIComponent(g.targetId)}" target="_blank" rel="noopener">${esc(t.title || 'List')}</a>${hidden}</p>
+        ${t.intro ? `<p class="t-text">${esc(String(t.intro).slice(0, 300))}</p>` : ''}
+        <p class="t-text">${items.length} ${items.length === 1 ? 'place' : 'places'}${items.length ? ': ' + esc(items.slice(0, 6).map(i => i.name || '?').join(', ')) : ''}${items.some(i => i.note) ? '<br><small>Notes: ' + esc(items.filter(i => i.note).slice(0, 4).map(i => '“' + String(i.note).slice(0, 80) + '”').join(' ')) + '</small>' : ''}</p>
+        <p class="t-by">List by ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.updatedAt) || toDate(t.createdAt)))}</p></div></div>`;
+    }
+    if (g.kind === 'reply') {
+      return `<div class="target"><div>
+        <p class="t-title">💬 Reply from the owner of ${esc(t.ownerName || 'a place')}${hidden}</p>
+        <p class="t-text">${esc(t.text || '')}</p>
+        <p class="t-by">By ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.updatedAt) || toDate(t.createdAt)))}</p></div></div>`;
+    }
     if (g.kind === 'spot') {
       return `<div class="target"><div>
         <p class="t-title"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(g.targetId)}" target="_blank" rel="noopener">${esc(t.name || 'Spot')}</a>${hidden}</p>
@@ -248,7 +262,7 @@
       const blocked = !!(owner && flags[owner] && flags[owner].blocked);
       const exists = !!t && t !== 'unknown';
       const buttons = [];
-      if (g.kind !== 'member' && exists && ['review', 'highlight', 'spot'].includes(g.kind)) {
+      if (g.kind !== 'member' && exists && ['review', 'highlight', 'spot', 'list', 'reply'].includes(g.kind)) {
         buttons.push(t.hidden === true
           ? `<button class="btn" data-act="keep" data-g="${i}">Keep hidden, close</button>`
           : `<button class="btn btn-main" data-act="hide" data-g="${i}">Hide</button>`);
@@ -301,6 +315,8 @@
       } else if (a === 'delete') {
         if (g.kind === 'review') await deleteReview(db, { id: g.targetId, photoUrl: t.photoUrl });
         else if (g.kind === 'highlight') await deleteHighlight(db, { id: g.targetId, photoUrl: t.photoUrl });
+        else if (g.kind === 'list') await deleteDoc(doc(db, 'memberLists', g.targetId));
+        else if (g.kind === 'reply') await deleteDoc(doc(db, 'ownerReplies', g.targetId));
         else await deleteSpot(db, { id: g.targetId, photoUrl: t.photoUrl, photos: t.photos || [] });
         targets.set(g.key, null);
         await closeReports(g, 'deleted');
@@ -338,7 +354,7 @@
   async function drawHidden(list) {
     list.innerHTML = '<p class="msg">Loading hidden content…</p>';
     if (!hiddenRows) {
-      const colls = [['userReviews', 'review'], ['highlights', 'highlight'], ['userPlaces', 'spot']];
+      const colls = [['userReviews', 'review'], ['highlights', 'highlight'], ['userPlaces', 'spot'], ['memberLists', 'list'], ['ownerReplies', 'reply']];
       const snaps = await Promise.all(colls.map(([c]) => getDocs(query(collection(db, c), where('hidden', '==', true))).catch(() => ({ docs: [] }))));
       hiddenRows = snaps.flatMap((s, i) => s.docs.map(d => ({ id: d.id, coll: colls[i][0], kind: colls[i][1], ...d.data() })));
       const uids = [...new Set(hiddenRows.map(r => r.authorId || r.addedByUserId).filter(u => u && !names.has(u)))];
@@ -348,7 +364,7 @@
     const rows = hiddenRows.filter(r => r.hidden === true);
     if (!rows.length) { list.innerHTML = '<div class="empty">Nothing is hidden.</div>'; return; }
     list.innerHTML = rows.map((r, i) => {
-      const title = r.kind === 'review' ? `${r.placeName || 'A place'}: ${String(r.text || '').slice(0, 120)}` : (r.title || r.name || 'Item');
+      const title = r.kind === 'review' ? `${r.placeName || 'A place'}: ${String(r.text || '').slice(0, 120)}` : r.kind === 'reply' ? `${r.ownerName || 'Owner'}: ${String(r.text || '').slice(0, 120)}` : (r.title || r.name || 'Item');
       return `<div class="row-item"><div>
         <p><span class="pill pill-kind">${esc(KIND[r.kind])}</span> ${esc(title)}</p>
         <small>by ${who(r.authorId || r.addedByUserId)}${toDate(r.hiddenAt) ? ' · hidden ' + esc(ago(toDate(r.hiddenAt))) : ''}</small>

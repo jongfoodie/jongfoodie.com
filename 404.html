@@ -12,6 +12,7 @@
     else if ((m = p.match(/^\/stad\/([a-z0-9-]+)\/?$/))) to = '/stad.html?d=' + m[1];
     else if ((m = p.match(/^\/best\/([a-z0-9-]+)\/?$/))) to = '/best.html?l=' + m[1];
     else if ((m = p.match(/^\/guide\/([a-z0-9-]+)\/?$/))) to = '/guide.html?g=' + m[1];
+    else if ((m = p.match(/^\/list\/(?:[^\/]*-)?([A-Za-z0-9]+)\/?$/))) to = '/list.html?id=' + m[1];
     else if (/^\/(best|links|press|kit|guides)\/?$/.test(p)) to = p.replace(/\/$/, '') + '.html';
     if (to) location.replace(to + (q ? (to.indexOf('?') < 0 ? '?' : '&') + q : '') + location.hash);
   })();
