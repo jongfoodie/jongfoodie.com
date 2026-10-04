@@ -539,7 +539,7 @@
           <div class="btn-row"><button class="btn" id="copyLink" type="button">Copy link</button><a class="btn" href="${placeUrl(p)}">Open your review</a></div>
         </section>
       </div>
-      <div class="kit-foot">Something wrong in your review, or new opening hours? <a href="correcties.html">Send a correction</a>. Questions: <a href="mailto:jongfoodie@gmail.com">jongfoodie@gmail.com</a>.</div>`;
+      <div class="kit-foot">New opening hours, or want to reply to reviews? <a href="${placeUrl(p)}#claim">Claim your page for free</a>. Questions: <a href="mailto:jongfoodie@gmail.com">jongfoodie@gmail.com</a>.</div>`;
 
     // Fonts first, so the images use the site's letters.
     try { await Promise.all([document.fonts.load(`700 40px "Playfair Display"`), document.fonts.load(`700 40px "DM Sans"`), document.fonts.load(`500 40px "DM Sans"`)]); } catch (e) {}
