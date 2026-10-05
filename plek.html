@@ -928,15 +928,21 @@
     if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
     return '';
   }
-  // Same profile fields the app writes when someone signs up there. The date of
-  // birth is checked but not stored: profiles are still public until Rork batch P
-  // moves private details to a place only the owner can read.
+  // Same public profile fields the app writes when someone signs up there. The
+  // date of birth is checked but not stored.
   function newProfile(name) {
     return {
-      displayName: name, bio: '', city: '', photoUrl: '', birthDate: '', isAdult: true,
+      displayName: name, bio: '', city: '', photoUrl: '',
       meetupEnabled: false, meetupMode: 'friends', favouriteCuisines: [], blockedUsers: [],
       createdAt: serverTimestamp(),
     };
+  }
+  // Rork batch 1: the adult check lives in profiles/{uid}/private/account, which
+  // only the member and the admin can read. The public profile has no age or
+  // date of birth any more. The date of birth itself is still not stored.
+  async function saveAdult(uid) {
+    try { await setDoc(doc(db, 'profiles', uid, 'private', 'account'), { isAdult: true }, { merge: true }); }
+    catch (err) { console.log('Adult check not saved:', err.code || err); }
   }
 
   function composerHtml(mine) {
@@ -1084,7 +1090,7 @@
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
         let hasProfile = true;
-        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await recordInvite(db, cred.user.uid); }
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await saveAdult(cred.user.uid); await recordInvite(db, cred.user.uid); }
         catch (err) { console.error('Profile could not be saved:', err); hasProfile = false; }
         me = { uid: cred.user.uid, name, photo: '', hasProfile, authName: name };
         signingUp = false;
@@ -1111,7 +1117,7 @@
       try {
         const ref = doc(db, 'profiles', me.uid);
         const existing = await getDoc(ref);
-        if (!existing.exists()) { await setDoc(ref, newProfile(name)); await recordInvite(db, me.uid); }
+        if (!existing.exists()) { await setDoc(ref, newProfile(name)); await saveAdult(me.uid); await recordInvite(db, me.uid); }
         try { await updateProfile(auth.currentUser, { displayName: name }); } catch (err) {}
         me = { ...me, name, hasProfile: true };
         startDraft(myReview());

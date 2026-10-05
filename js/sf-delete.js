@@ -68,11 +68,24 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('places you manage', query(collection(db, 'businessOwners'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
   await each('follows', query(collection(db, 'follows'), where('followerId', '==', uid)), d => deleteDoc(d.ref));
   await each('followers', query(collection(db, 'follows'), where('followingId', '==', uid)), d => deleteDoc(d.ref), true);
+  // Dating data from the app (Rork batch 1): the card, and the member's own likes and passes.
+  await each('likes', collection(db, 'datingSwipes', uid, 'likes'), d => deleteDoc(d.ref), true);
+  await each('passes', collection(db, 'datingSwipes', uid, 'passes'), d => deleteDoc(d.ref), true);
+  step('dating card');
+  try { await deleteDoc(doc(db, 'datingProfiles', uid)); }
+  catch (e) { console.log('Could not delete the dating card', e.code || e); left.push('dating card'); }
   // The profile goes last: while anything above failed it stays, so the member can try again.
   if (!failed.length) {
     step('profile');
     try { await deleteDoc(doc(db, 'profiles', uid)); }
     catch (e) { console.log('Could not delete the profile', e.code || e); failed.push('profile'); }
+  }
+  // Then the private details (date of birth, email). A locked date of birth stays
+  // for now: the cleanupDeletedMember function removes it once the login is gone.
+  if (!failed.length) {
+    step('private details');
+    try { await deleteDoc(doc(db, 'profiles', uid, 'private', 'account')); }
+    catch (e) { console.log('Could not delete the private details', e.code || e); left.push('private details'); }
   }
   return { ok: !failed.length, failed, left };
 }

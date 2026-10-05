@@ -211,7 +211,7 @@
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=4";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
-  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=5";
+  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=6";
   import { markBeen, loadBeen } from "./js/sf-been.js?v=1";
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
   import { memberStats, badgeProgress } from "./js/sf-badges.js?v=1";
@@ -269,14 +269,20 @@
     if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
     return '';
   }
-  // The date of birth is checked but not stored: profiles are still public
-  // until Rork batch P moves private details to a place only the owner can read.
+  // The date of birth is checked but not stored.
   function newProfile(name) {
     return {
-      displayName: name, bio: '', city: '', photoUrl: '', birthDate: '', isAdult: true,
+      displayName: name, bio: '', city: '', photoUrl: '',
       meetupEnabled: false, meetupMode: 'friends', favouriteCuisines: [], blockedUsers: [],
       createdAt: serverTimestamp(),
     };
+  }
+  // Rork batch 1: the adult check lives in profiles/{uid}/private/account, which
+  // only the member and the admin can read. The public profile has no age or
+  // date of birth any more. The date of birth itself is still not stored.
+  async function saveAdult(uid) {
+    try { await setDoc(doc(db, 'profiles', uid, 'private', 'account'), { isAdult: true }, { merge: true }); }
+    catch (err) { console.log('Adult check not saved:', err.code || err); }
   }
   function birthFields(prefix) {
     return `<label class="field-label" for="${prefix}Birth">Date of birth</label>
@@ -413,7 +419,7 @@
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         try { await updateProfile(cred.user, { displayName: name }); } catch (err) {}
-        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await recordInvite(db, cred.user.uid); }
+        try { await setDoc(doc(db, 'profiles', cred.user.uid), newProfile(name)); await saveAdult(cred.user.uid); await recordInvite(db, cred.user.uid); }
         catch (err) { console.error('Profile could not be saved:', err); }
         signingUp = false;
         toast('Welcome, ' + name + '! Your account works in the app too.');
@@ -450,7 +456,7 @@
       const name = document.getElementById('pfName').value.trim();
       try {
         const ref = doc(db, 'profiles', user.uid);
-        if (!(await getDoc(ref)).exists()) { await setDoc(ref, newProfile(name)); await recordInvite(db, user.uid); }
+        if (!(await getDoc(ref)).exists()) { await setDoc(ref, newProfile(name)); await saveAdult(user.uid); await recordInvite(db, user.uid); }
         try { await updateProfile(user, { displayName: name }); } catch (err) {}
         toast('Profile saved');
         const n = nextUrl();
