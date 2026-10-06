@@ -269,6 +269,7 @@
   import { isBeen, markBeen, unmarkBeen } from "./js/sf-been.js?v=1";
   import { rememberRef, recordInvite } from "./js/sf-invites.js?v=1";
   import { loadDeals } from "./js/sf-deals.js?v=1";
+  import { PRO_ON } from "./js/sf-flags.js?v=1";
   import { openCorrection } from "./js/sf-corrections.js?v=1";
   import { loadOwner, myClaim, openClaim, loadReplies, saveReply, deleteReply, suggestPhoto, REPLY_MAX } from "./js/sf-claims.js?v=1";
   rememberRef();
@@ -1290,7 +1291,8 @@
     const promosP = loadPromos(db);
     const partnersP = loadPartners(db);
     const openingsP = loadOpenings(db);
-    const dealsP = loadDeals(db);
+    // Pro deals only while Pro is switched on (js/sf-flags.js).
+    const dealsP = PRO_ON ? loadDeals(db) : Promise.resolve([]);
     const battlesP = loadBattles(db);
     // A generated page (strongfoodie.com/p/...) says which place it is in window.SF_PARAMS.
     const qs = new URLSearchParams(window.SF_PARAMS || location.search);
