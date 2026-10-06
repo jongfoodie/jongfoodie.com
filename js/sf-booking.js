@@ -178,7 +178,9 @@ export function bookingButton(p, booking, partners, town = '') {
   const q = [p.name, town].filter(Boolean).join(', ');
   const pr = partners || {};
   if (p.cat === 'stay' && pr.booking) {
-    const href = bookingComLink(pr.booking, bookingSearchUrl(q), key);
+    // Booking.com only recognises the bare hotel name: "Petit Ermitage, West Hollywood"
+    // lands on its home page with "we don't recognize that name" (tested 6 October 2026).
+    const href = bookingComLink(pr.booking, bookingSearchUrl(String(p.name || '').trim() || q), key);
     if (href) return { href, label: 'Check prices on Booking.com', partner: true, partnerName: 'Booking.com', tel: false, kind: 'room' };
   }
   if (p.cat === 'culture' && pr.getyourguide) {
