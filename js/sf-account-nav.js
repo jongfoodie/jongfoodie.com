@@ -15,6 +15,21 @@ import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebase
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+// "Cookie settings" belongs next to "Privacy & Cookie Policy" in the footer's
+// bottom row, not on a line of its own under the footer. Every page has the same
+// button after the footer; it moves here, styled like the privacy link.
+(function cookieLinkInFooter() {
+  const btn = document.getElementById('cookieSettingsLink');
+  const priv = document.querySelector('footer a[href$="privacy.html"]');
+  if (!btn || !priv || btn.dataset.moved) return;
+  const wrap = document.createElement('span');
+  wrap.style.cssText = 'display:inline-flex;align-items:center;gap:1rem;flex-wrap:wrap;';
+  priv.replaceWith(wrap);
+  wrap.append(priv, btn);
+  btn.dataset.moved = '1';
+  btn.style.cssText = 'background:none;border:none;padding:0;margin:0;font:inherit;font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;cursor:pointer;';
+})();
+
 const firebaseConfig = {
   apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
   authDomain: "jongfoodie.firebaseapp.com",
