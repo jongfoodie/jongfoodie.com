@@ -812,6 +812,21 @@
    ]
   },
   {
+   "slug": "dish-ceppi-s-pizza-amsterdam",
+   "url": "/best/dish-ceppi-s-pizza-amsterdam/",
+   "kind": "dish",
+   "cat": "",
+   "tag": "",
+   "dishKind": "Ceppi’s Pizza",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Ceppi’s Pizza in Amsterdam",
+   "places": [
+    "dishes/kkUWNYi4O6U7Ul42fOz4"
+   ]
+  },
+  {
    "slug": "clothing-store-amsterdam",
    "url": "/best/clothing-store-amsterdam/",
    "kind": "tag",
@@ -2240,6 +2255,21 @@
    "places": [
     "healthspots/BvdrQsC4wyabEstW21Hg",
     "healthspots/NLyQLKEyTIimJAtYe8Qj"
+   ]
+  },
+  {
+   "slug": "dish-ceppi-s-pizza-worldwide",
+   "url": "/best/dish-ceppi-s-pizza-worldwide/",
+   "kind": "dish",
+   "cat": "",
+   "tag": "",
+   "dishKind": "Ceppi’s Pizza",
+   "dest": "",
+   "destSlug": "",
+   "country": "",
+   "title": "Best Ceppi’s Pizza Worldwide",
+   "places": [
+    "dishes/kkUWNYi4O6U7Ul42fOz4"
    ]
   },
   {
