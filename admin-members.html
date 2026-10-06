@@ -76,6 +76,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { esc, fold, toDate } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
   import { normReport } from "./js/sf-moderation.js?v=1";
@@ -141,7 +142,7 @@
 
   function shell() {
     root.innerHTML = `
-      <p class="lead">Every member of the site and the app. <b>Trusted</b> puts a green mark next to their name on reviews and their profile. <b>Block</b> hides everything they added, on the site and in the app after Rork batch 14.</p>
+      <p class="lead">Every member of the site and the app. <b>Trusted</b> puts a green mark next to their name on reviews and their profile. <b>Block</b> hides everything they added, on the site and in the app. <b>Make admin</b> gives an account full admin rights, on the site and in the app: only for people you trust.</p>
       <div class="bar">
         <input type="search" id="find" placeholder="Search by name or city" aria-label="Search members" autocomplete="off">
         <div class="chips" role="group" aria-label="Show">
@@ -185,12 +186,39 @@
         ${brand ? '' : `<div class="tools">
           <button class="btn${m.trusted ? ' btn-on' : ''}" type="button" data-trust="${esc(m.uid)}" aria-pressed="${m.trusted}">${m.trusted ? '✓ Trusted' : 'Make trusted'}</button>
           <button class="btn${m.blocked ? '' : ' btn-danger'}" type="button" data-block="${esc(m.uid)}">${m.blocked ? 'Unblock' : 'Block'}</button>
+          <button class="btn${m.madeAdmin ? ' btn-on' : ''}" type="button" data-admin="${esc(m.uid)}"${m.madeAdmin ? ' disabled' : ''}>${m.madeAdmin ? '✓ Admin' : 'Make admin'}</button>
         </div>`}
       </div>`;
     }).join('');
     document.getElementById('more').hidden = rows.length <= shown;
     list.querySelectorAll('[data-trust]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.trust, 'trusted')));
     list.querySelectorAll('[data-block]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.block, 'blocked')));
+    list.querySelectorAll('[data-admin]').forEach(b => b.addEventListener('click', () => makeAdmin(b, b.dataset.admin)));
+  }
+
+  // Full admin rights for another account: the setAdminClaim Cloud Function puts the
+  // "admin" claim on that account (the same function the app's "Activate admin
+  // rights" button uses). Only an admin can call it. There is no button to take it
+  // back yet; that needs a change to the function.
+  async function makeAdmin(btn, uid) {
+    const m = members.find(x => x.uid === uid);
+    if (!m || m.madeAdmin) return;
+    if (!confirmTap(btn, 'Tap again: full admin rights')) return;
+    btn.disabled = true;
+    try {
+      const call = httpsCallable(getFunctions(app, 'us-central1'), 'setAdminClaim');
+      await call({ uid });
+      m.madeAdmin = true;
+      toast(`${m.name} is now an admin. They log out and back in (website and app) to get the rights.`);
+      drawList();
+    } catch (e) {
+      console.log('Admin not granted:', e);
+      const code = String((e && e.code) || '');
+      toast(code.includes('permission-denied') ? 'Only an admin can do this. Log out and back in, then try again.'
+        : code.includes('not-found') ? 'This account no longer exists.'
+        : 'Did not work. Try again.', true);
+      btn.disabled = false;
+    }
   }
 
   async function flag(btn, uid, key) {
