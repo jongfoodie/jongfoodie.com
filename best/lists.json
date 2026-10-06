@@ -13,6 +13,7 @@
    "country": "Netherlands",
    "title": "Best Restaurants in Amsterdam",
    "places": [
+    "reviews/xC6fNWJQnFuJxQI1F2VO",
     "reviews/ho0RfyOC8STBgXVqoSnD",
     "reviews/emeqDtJYsN0KTCAqruAu",
     "reviews/XgxTz6Noh7G7D4rP1lIa",
@@ -146,6 +147,23 @@
    ]
   },
   {
+   "slug": "italian-amsterdam",
+   "url": "/best/italian-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Italian",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Italian in Amsterdam",
+   "places": [
+    "reviews/xC6fNWJQnFuJxQI1F2VO",
+    "reviews/xjsOZJYUwfs9mvMp7DNE",
+    "reviews/1qc2f42wltb7XJjRqDdT"
+   ]
+  },
+  {
    "slug": "palm-beach-aruba",
    "url": "/best/palm-beach-aruba/",
    "kind": "tag",
@@ -260,22 +278,6 @@
    ]
   },
   {
-   "slug": "italian-amsterdam",
-   "url": "/best/italian-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Italian",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Italian in Amsterdam",
-   "places": [
-    "reviews/xjsOZJYUwfs9mvMp7DNE",
-    "reviews/1qc2f42wltb7XJjRqDdT"
-   ]
-  },
-  {
    "slug": "italian-aruba",
    "url": "/best/italian-aruba/",
    "kind": "tag",
@@ -337,6 +339,22 @@
    "places": [
     "reviews/ho0RfyOC8STBgXVqoSnD",
     "reviews/ZNOGJC8ToeqsNZfIKxrS"
+   ]
+  },
+  {
+   "slug": "pizza-amsterdam",
+   "url": "/best/pizza-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Pizza",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Pizza in Amsterdam",
+   "places": [
+    "reviews/xC6fNWJQnFuJxQI1F2VO",
+    "reviews/9MNWsXrs5sN7M8zAwWFX"
    ]
   },
   {
@@ -1604,6 +1622,21 @@
    ]
   },
   {
+   "slug": "pasta-amsterdam",
+   "url": "/best/pasta-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Pasta",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Pasta in Amsterdam",
+   "places": [
+    "reviews/xC6fNWJQnFuJxQI1F2VO"
+   ]
+  },
+  {
    "slug": "pastrie-los-angeles",
    "url": "/best/pastrie-los-angeles/",
    "kind": "tag",
@@ -1616,21 +1649,6 @@
    "title": "Best Pastries in Los Angeles",
    "places": [
     "reviews/W9QELDdyqBTWb0vOTBY8"
-   ]
-  },
-  {
-   "slug": "pizza-amsterdam",
-   "url": "/best/pizza-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Pizza",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Pizza in Amsterdam",
-   "places": [
-    "reviews/9MNWsXrs5sN7M8zAwWFX"
    ]
   },
   {
@@ -2118,6 +2136,7 @@
     "reviews/0B3wtVT0GtUHyUydKbNz",
     "reviews/RMhpQyIG0vrVL7yr6L5y",
     "reviews/gg0krN67ZncvtTvKFC4N",
+    "reviews/xC6fNWJQnFuJxQI1F2VO",
     "reviews/ho0RfyOC8STBgXVqoSnD",
     "reviews/emeqDtJYsN0KTCAqruAu",
     "reviews/XgxTz6Noh7G7D4rP1lIa",
