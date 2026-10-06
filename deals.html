@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Pro deals: discounts at places Strong Foodie loves, for Strong Foodie Pro members.">
 <link rel="canonical" href="https://strongfoodie.com/deals.html">
+<meta name="robots" content="noindex">
 <title>Pro deals | Strong Foodie</title>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strong Foodie">
@@ -270,6 +271,7 @@ function declineCookies(){
   import { esc, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
   import { loadDeals, dealCode, untilLabel } from "./js/sf-deals.js?v=1";
   import { proUntil } from "./js/sf-invites.js?v=1";
+  import { PRO_ON } from "./js/sf-flags.js?v=1";
 
   // Pro deals (js/sf-deals.js): the deals for everyone, the codes for Pro members.
 
@@ -294,6 +296,14 @@ function declineCookies(){
   const userReady = new Promise(res => { const off = onAuthStateChanged(auth, u => { off && off(); res(u); }); });
 
   async function start() {
+    // Strong Foodie launches without Pro (js/sf-flags.js): no deals or codes yet.
+    if (!PRO_ON) {
+      document.title = 'Deals | Strong Foodie';
+      const hero = document.querySelector('.page-hero');
+      if (hero) { hero.querySelector('h1').textContent = '🎟️ Deals'; hero.querySelector('p').textContent = 'Discounts at places we love.'; }
+      root.innerHTML = '<div class="msg"><h2>Deals are coming later</h2><p>Strong Foodie deals at places we love are on their way. Follow <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">@strongfoodie_</a> so you don\'t miss them.</p><p><a href="index.html">Discover places →</a></p></div>';
+      return;
+    }
     const [deals, loaded, user] = await Promise.all([loadDeals(db), loadPlaces(db).catch(() => ({ all: [] })), userReady]);
     const byKey = new Map(loaded.all.map(p => [placeKey(p), p]));
     const list = deals.filter(d => { const p = byKey.get(d.placeKey); return !p || !p.closed; });

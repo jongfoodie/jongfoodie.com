@@ -216,6 +216,7 @@
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
   import { memberStats, badgeProgress } from "./js/sf-badges.js?v=1";
   import { rememberRef, inviterName, recordInvite, inviteLink, countInvites, proUntil, monthsToClaim, claimMonths, REWARD_CAP } from "./js/sf-invites.js?v=1";
+  import { PRO_ON } from "./js/sf-flags.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -558,14 +559,14 @@
 
       <section class="acct-block" id="invite">
         <h2>Invite friends</h2>
-        <p class="small" style="margin-bottom:0.75rem;">Share your link. Every friend who makes an account with it gives you a month of Strong Foodie Pro in the app, up to ${REWARD_CAP} months.</p>
+        <p class="small" style="margin-bottom:0.75rem;">${PRO_ON ? `Share your link. Every friend who makes an account with it gives you a month of Strong Foodie Pro in the app, up to ${REWARD_CAP} months.` : 'Invite your friends to Strong Foodie. Everyone who joins with your link is counted here.'}</p>
         <div class="share-box">
           <input class="field" id="inviteUrl" type="text" readonly value="${esc(inviteLink(user.uid))}" aria-label="Your invite link">
           <button class="btn" type="button" id="inviteShare">Share link</button>
         </div>
         <p class="small" id="inviteStatus" aria-live="polite">Loading…</p>
         <div id="inviteClaim"></div>
-        <p class="small" style="margin-top:0.6rem;"><a href="deals.html">🎟️ See the Pro deals</a></p>
+        ${PRO_ON ? '<p class="small" style="margin-top:0.6rem;"><a href="deals.html">🎟️ See the Pro deals</a></p>' : ''}
       </section>
 
       <section class="acct-block">
@@ -933,7 +934,8 @@
     try { joined = await countInvites(db, user.uid); }
     catch (e) { console.log('Invites could not load:', e.code || e); status.textContent = 'Your invites could not load right now.'; return; }
     const draw = () => {
-      const until = proUntil(profile), todo = monthsToClaim(joined, profile);
+      // Without Pro (js/sf-flags.js) only the count shows: no Pro months to claim.
+      const until = PRO_ON ? proUntil(profile) : null, todo = PRO_ON ? monthsToClaim(joined, profile) : 0;
       status.textContent = [joined ? `${joined} ${joined === 1 ? 'friend' : 'friends'} joined with your link.` : 'No friends joined yet.',
         until ? `You have Pro until ${fmtDate(until)}.` : ''].filter(Boolean).join(' ');
       box.innerHTML = todo ? `<button class="btn btn-primary" type="button" id="claimBtn" style="margin-top:0.6rem;">Claim ${todo} ${todo === 1 ? 'month' : 'months'} of Pro</button>` : '';
