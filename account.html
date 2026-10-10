@@ -709,7 +709,7 @@
       const result = await deleteAllContent(db, user.uid, what => { status.textContent = 'Deleting your ' + what + '…'; });
       if (!result.ok) {
         deletingAccount = false; go.disabled = false; document.getElementById('delCancel').disabled = false; status.textContent = '';
-        return showError('delError', `Your ${result.failed.join(', ')} could not be deleted, so your account and profile still exist. Everything else is deleted. Try again later, or email jongfoodie@gmail.com and we delete the rest for you.`);
+        return showError('delError', `Your ${result.failed.join(', ')} could not be deleted, so your account and profile still exist. Everything else is deleted. Try again later, or email info@strongfoodie.com and we delete the rest for you.`);
       }
       if (appleToken) { try { await revokeAccessToken(auth, appleToken); } catch (err) { console.log('Apple link not revoked:', err.code || err); } }
       try {
@@ -718,7 +718,7 @@
       } catch (err) {
         console.error(err);
         deletingAccount = false; go.disabled = false; status.textContent = '';
-        return showError('delError', 'Your data is deleted, but your login could not be. Log out, log in again and delete once more, or email jongfoodie@gmail.com.');
+        return showError('delError', 'Your data is deleted, but your login could not be. Log out, log in again and delete once more, or email info@strongfoodie.com.');
       }
       root.innerHTML = `<div class="acct-card"><h1>Your account is deleted</h1><p class="lead">Your profile, spots, reviews, highlights and login are gone, on the website and in the app. Thank you for being part of Strong Foodie.</p><a class="btn" href="index.html" style="display:inline-block;text-decoration:none;">Back to Strong Foodie</a></div>`;
       document.title = 'Account deleted | Strong Foodie';
