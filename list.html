@@ -319,6 +319,7 @@
   import { CATS, SITE, esc, starStr, placeUrl, toDate, photoTools } from "./js/sf-places.js?v=7";
   import { listPlaces, publishedListsBy, memberListUrl, memberListLink } from "./js/sf-memberlists.js?v=1";
   import { loadFlags, isBlocked, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+  import { hasBlocked } from "./js/sf-blocks.js?v=1";
 
   // A list made by a member (my-list.html): memberLists/{id}. The Firestore
   // rules show it to everyone while it is published and not hidden by Strong
@@ -384,7 +385,7 @@
     ]);
     if (!own && isBlocked(flags, list.authorId)) return closed('This list is not available', 'It can no longer be shown.');
     if (!own && !profile) return closed('This list is not available', 'Its maker is no longer on Strong Foodie.');
-    if (!own && me && Array.isArray(profile.blockedUsers) && profile.blockedUsers.includes(me.uid)) return closed('This list is not available', 'You cannot view this list.');
+    if (!own && me && await hasBlocked(db, list.authorId, me.uid, profile)) return closed('This list is not available', 'You cannot view this list.');
     if (!own && profile && profile.isPrivate === true) return closed('This list is private', 'Its maker has a private account.');
     author = { name: (profile && profile.displayName) || list.authorName || 'A member' };
     places = await listPlaces(db, list, flags);

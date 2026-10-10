@@ -217,6 +217,7 @@
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
   import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=6";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+  import { hasBlocked } from "./js/sf-blocks.js?v=1";
   import { publishedListsBy, listCard } from "./js/sf-memberlists.js?v=1";
   import { badgeRow } from "./js/sf-badges.js?v=1";
 
@@ -690,7 +691,8 @@
       return;
     }
     await authReady;
-    const blocked = Array.isArray(profile.blockedUsers) && me && profile.blockedUsers.includes(me.uid);
+    // Blocked by this member (blocks/<their uid>_<your uid>, js/sf-blocks.js)
+    const blocked = !!me && await hasBlocked(db, uid, me.uid, profile);
     if (blocked) {
       message('Profile not available', 'You cannot view this profile. <a href="community.html">See the community</a>.');
       return;

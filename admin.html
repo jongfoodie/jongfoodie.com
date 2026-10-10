@@ -1017,6 +1017,7 @@
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=6";
+  import { setupAutofill, autofillExtras, clearAutofill, cityTag } from "./js/sf-autofill.js?v=1";
 
 
   const firebaseConfig = {
@@ -1031,6 +1032,8 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const functionsInstance = getFunctions(app);
+  // Search field above each form: fills it in from the place's name or address (js/sf-autofill.js).
+  setupAutofill(db);
   const auth = getAuth(app);
 
 
@@ -1206,6 +1209,7 @@
   window.editItem = async function(coll, id) {
     const cfg = EDIT_CONFIG[coll];
     if (!cfg) { showToast('Onbekende categorie: ' + coll); return; }
+    clearAutofill(cfg.prefix);
     try {
       const snap = await getDoc(doc(db, coll, id));
       if (!snap.exists()) { showToast('Item niet gevonden, misschien al verwijderd?'); return; }
@@ -1313,16 +1317,21 @@
     const bar = document.getElementById(prefix + 'EditCancelBar');
     if (bar) bar.style.display = 'none';
     clearPhotos(prefix);
+    clearAutofill(prefix);
     showToast('Bewerken geannuleerd.');
   };
 
   // Saves a place: creates a new document normally, or, if this form is
   // currently in Edit mode for this collection, updates the existing
   // document instead (keeping its original createdAt/publish history).
-  async function saveDoc(coll, prefix, data) {
+  async function saveDoc(coll, prefix, formData) {
+    // Phone, country (and for hotels the coordinates) from the search field go along;
+    // what is in the form itself always wins.
+    const data = { ...autofillExtras(prefix), ...formData };
     const editing = window.editingId[prefix];
     if (editing && editing.coll === coll) {
       await updateDoc(doc(db, coll, editing.id), data);
+      clearAutofill(prefix);
       delete window.editingId[prefix];
       const cfg = EDIT_CONFIG[coll];
       const btn = document.getElementById(cfg.publishBtnId);
@@ -1332,6 +1341,7 @@
       return { updated: true };
     } else {
       await addDoc(collection(db, coll), { ...data, createdAt: serverTimestamp() });
+      clearAutofill(prefix);
       return { updated: false };
     }
   }
@@ -1614,14 +1624,14 @@
       // Auto-share to Instagram if checked (only possible with a public photoUrl)
       if (document.getElementById('rShareInstagram').checked) {
         if (photoUrl) {
-          const caption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #${city.replace(/\s+/g,'').toLowerCase()}`;
+          const caption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #${cityTag(city)}`;
           shareToInstagram(photoUrl, caption);
         } else {
           showToast('No photo uploaded, cannot share to Instagram without a photo.');
         }
       }
       if (document.getElementById('rShareThreads').checked) {
-        const threadsCaption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #${city.replace(/\s+/g,'').toLowerCase()}`;
+        const threadsCaption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #${cityTag(city)}`;
         shareToThreads(threadsCaption, photoUrl || null);
       }
 
@@ -2175,13 +2185,13 @@
 
       if (document.getElementById('hShareInstagram').checked) {
         if (hPhotoUrl) {
-          shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #stay #${city.replace(/\s+/g,'').toLowerCase()}`);
+          shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #stay #${cityTag(city)}`);
         } else {
           showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('hShareThreads').checked) {
-        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #stay #${city.replace(/\s+/g,'').toLowerCase()}`, hPhotoUrl || null);
+        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #stay #${cityTag(city)}`, hPhotoUrl || null);
       }
 
       document.getElementById('hName').value = '';
@@ -2268,13 +2278,13 @@
 
       if (document.getElementById('dShareInstagram').checked) {
         if (dPhotoUrl) {
-          shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #drink #${city.replace(/\s+/g,'').toLowerCase()}`);
+          shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #drink #${cityTag(city)}`);
         } else {
           showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('dShareThreads').checked) {
-        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #drink #${city.replace(/\s+/g,'').toLowerCase()}`, dPhotoUrl || null);
+        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #drink #${cityTag(city)}`, dPhotoUrl || null);
       }
 
       ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
@@ -2336,13 +2346,13 @@
 
       if (document.getElementById('sShareInstagram').checked) {
         if (sPhotoUrl) {
-          shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`);
+          shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #shop #${cityTag(city)}`);
         } else {
           showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('sShareThreads').checked) {
-        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #shop #${city.replace(/\s+/g,'').toLowerCase()}`, sPhotoUrl || null);
+        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #shop #${cityTag(city)}`, sPhotoUrl || null);
       }
 
       ['sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
@@ -2404,13 +2414,13 @@
 
       if (document.getElementById('cShareInstagram').checked) {
         if (cPhotoUrl) {
-          shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #culture #${city.replace(/\s+/g,'').toLowerCase()}`);
+          shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #culture #${cityTag(city)}`);
         } else {
           showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('cShareThreads').checked) {
-        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #culture #${city.replace(/\s+/g,'').toLowerCase()}`, cPhotoUrl || null);
+        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #culture #${cityTag(city)}`, cPhotoUrl || null);
       }
 
       ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
@@ -2471,13 +2481,13 @@
 
       if (document.getElementById('hlShareInstagram').checked) {
         if (hlPhotoUrl) {
-          shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #health #${city.replace(/\s+/g,'').toLowerCase()}`);
+          shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #health #${cityTag(city)}`);
         } else {
           showToast('No photo uploaded, cannot share to Instagram.');
         }
       }
       if (document.getElementById('hlShareThreads').checked) {
-        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#jongfoodie #health #${city.replace(/\s+/g,'').toLowerCase()}`, hlPhotoUrl || null);
+        shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #health #${cityTag(city)}`, hlPhotoUrl || null);
       }
 
       ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');

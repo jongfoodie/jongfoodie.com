@@ -25,6 +25,8 @@
   .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
   .msg a { color: var(--accent); }
   .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .notice { background: var(--accent-pale); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 1rem; display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+  .notice p { flex: 1 1 280px; color: var(--ink-soft); line-height: 1.55; font-size: 14px; }
   .bar { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
   input[type=search] { flex: 1 1 240px; border: 1px solid var(--border); border-radius: 22px; padding: 10px 16px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
   input[type=search]:focus { border-color: var(--accent); }
@@ -81,6 +83,7 @@
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
   import { normReport } from "./js/sf-moderation.js?v=1";
   import { confirmTap } from "./js/sf-delete.js?v=6";
+  import { withPublicBlocks, movePublicBlocks } from "./js/sf-blocks.js?v=1";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -106,7 +109,7 @@
   }
   const refused = e => e && e.code === 'permission-denied';
 
-  let members = [], filter = 'all', shown = PAGE;
+  let members = [], filter = 'all', shown = PAGE, publicBlocks = [];
 
   onAuthStateChanged(auth, async user => {
     if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
@@ -128,6 +131,7 @@
     const nSpots = tally(spots, 'addedByUserId'), nReviews = tally(reviews, 'authorId'), nHl = tally(highlights, 'authorId');
     const nReports = tally(reports.map(normReport).filter(r => r.status !== 'done'), 'ownerId');
     const flags = Object.fromEntries(flagDocs.map(f => [f.id, f]));
+    publicBlocks = withPublicBlocks(profiles);
     members = profiles.map(p => {
       const f = flags[p.id] || {};
       const name = String(p.displayName || '').trim() || 'Member';
@@ -149,6 +153,7 @@
           ${[['all', 'All'], ['reported', 'Reported'], ['trusted', 'Trusted'], ['blocked', 'Blocked']].map(([k, t]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${t}</button>`).join('')}
         </div>
       </div>
+      ${publicBlocks.length ? `<div class="notice" id="blocksNotice"><p><b>🔒 ${publicBlocks.length} ${publicBlocks.length === 1 ? 'member still has' : 'members still have'} a public block list.</b> Anyone can see on their profile who they blocked. Move those blocks to private block documents that only the two members involved can read.</p><button class="btn" type="button" id="moveBlocks">Make blocks private</button></div>` : ''}
       <p class="count" id="count"></p>
       <div class="list" id="list"></div>
       <div class="more" id="more" hidden><button class="btn" type="button" id="moreBtn">Show more</button></div>`;
@@ -159,6 +164,20 @@
       drawList();
     }));
     document.getElementById('moreBtn').addEventListener('click', () => { shown += PAGE; drawList(); });
+    const mb = document.getElementById('moveBlocks');
+    if (mb) mb.addEventListener('click', async () => {
+      mb.disabled = true;
+      const res = await movePublicBlocks(db, publicBlocks, who => { mb.textContent = 'Moving… ' + who; });
+      if (res.failed.length) {
+        toast(`${res.members} done, ${res.failed.length} not: paste the new Firestore rules first, then try again.`, true);
+        mb.disabled = false; mb.textContent = 'Try again';
+        publicBlocks = publicBlocks.filter(p => res.failed.includes(p.id));
+        return;
+      }
+      publicBlocks = [];
+      document.getElementById('blocksNotice').remove();
+      toast(`Done: ${res.blocks} ${res.blocks === 1 ? 'block' : 'blocks'} of ${res.members} ${res.members === 1 ? 'member' : 'members'} are private now.`);
+    });
     drawList();
   }
 

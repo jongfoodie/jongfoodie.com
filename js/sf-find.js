@@ -49,7 +49,7 @@ export function catFromOsm(key, value) {
 }
 export const typeLabel = v => !v || v === 'yes' ? '' : (v.charAt(0).toUpperCase() + v.slice(1)).replace(/_/g, ' ');
 
-function fromFeature(f) {
+export function fromFeature(f) {
   const p = f.properties || {};
   const [lng, lat] = (f.geometry && f.geometry.coordinates) || [];
   const town = p.city || p.town || p.village || p.locality || p.district || p.county || p.state || '';
@@ -60,8 +60,11 @@ function fromFeature(f) {
     cat: catFromOsm(p.osm_key, p.osm_value), type: typeLabel(p.osm_value),
     street, postcode: p.postcode || '', town, country: p.country || '', countryCode: (p.countrycode || '').toUpperCase(), address,
     lat: typeof lat === 'number' ? lat : null, lng: typeof lng === 'number' ? lng : null,
+    osmType: p.osm_type || '', osmId: p.osm_id || null, osmKey: p.osm_key || '', osmValue: p.osm_value || '',
+    streetName: p.street || '', houseNumber: p.housenumber || '',
   };
 }
+export const isPoiFeature = f => { const p = (f && f.properties) || {}; return !!p.name && POI_KEYS.has(p.osm_key); };
 
 // Places (restaurants, hotels, shops...) matching the text. Streets, towns and countries are left out.
 export async function photonSearch(q, limit = 5) {
@@ -140,7 +143,7 @@ export function placeFinder(opts) {
 
   function render() {
     if (!items.length) {
-      list.innerHTML = `<li class="sugg-note">No match found. You can still add it: choose a category below.</li>`;
+      list.innerHTML = `<li class="sugg-note">${esc(opts.emptyText || 'No match found. You can still add it: choose a category below.')}</li>`;
     } else {
       list.innerHTML = items.map((s, i) => {
         const c = s.cat ? catInfo(s.cat) : null;
@@ -148,7 +151,7 @@ export function placeFinder(opts) {
         return `<li role="option" id="${idPrefix}${i}" data-i="${i}" aria-selected="false"><span class="s-emoji">${c ? c.emoji : '📍'}</span>
           <span class="s-text"><span class="s-name">${esc(s.name)}</span>${s.src === 'sf' ? '<span class="s-on">On Strong Foodie</span>' : ''}
           <span class="s-meta">${esc(meta)}</span></span></li>`;
-      }).join('') + (items.some(s => s.src === 'osm') ? '<li class="sugg-note">Addresses © OpenStreetMap contributors</li>' : '');
+      }).join('') + (items.some(s => s.src === 'osm' || s.src === 'addr') ? '<li class="sugg-note">Addresses © OpenStreetMap contributors</li>' : '');
     }
     list.hidden = false;
     input.setAttribute('aria-expanded', 'true');
@@ -158,12 +161,13 @@ export function placeFinder(opts) {
   async function search(q) {
     const mine = ++seq;
     const fq = foldText(q);
-    const [sf, osm] = await Promise.all([
+    const [sf, osm, more] = await Promise.all([
       strongFoodiePlaces(db).then(all => all.filter(p => p.n.includes(fq)).slice(0, 3)),
       photonSearch(q).catch(() => []),
+      opts.moreResults ? opts.moreResults(q).catch(() => []) : [],   // for example street addresses (admin)
     ]);
     if (mine !== seq || foldText(input.value) !== fq) return;   // an older search, or typing went on
-    items = sf.concat(osm.filter(o => !sf.some(p => p.n === foldText(o.name))));
+    items = sf.concat(osm.filter(o => !sf.some(p => p.n === foldText(o.name))), more);
     render();
   }
 

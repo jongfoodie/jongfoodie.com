@@ -13,6 +13,18 @@ async function dropImages(db, ids) {
   for (const id of ids) { try { await deleteDoc(doc(db, 'images', id)); } catch (e) { console.log('Photo not removed:', id, e.code || e); } }
 }
 
+// Videos: "fsvid://<id>" is a document in `videoclips`, its video split across
+// videoclips/<id>/parts. The parts go first: the rules check the owner on the clip.
+const clipIds = (...urls) => [...new Set(urls.flat().filter(u => typeof u === 'string' && u.startsWith('fsvid://')).map(u => u.slice(8)))];
+async function dropClip(db, id) {
+  const parts = await getDocs(collection(db, 'videoclips', id, 'parts'));
+  for (const part of parts.docs) await deleteDoc(part.ref);
+  await deleteDoc(doc(db, 'videoclips', id));
+}
+async function dropClips(db, ids) {
+  for (const id of ids) { try { await dropClip(db, id); } catch (e) { console.log('Video not removed:', id, e.code || e); } }
+}
+
 export async function deleteSpot(db, spot) {
   await deleteDoc(doc(db, 'userPlaces', spot.id));
   await dropImages(db, imageIds(spot.photoUrl, spot.photos || []));
@@ -23,8 +35,8 @@ export async function deleteReview(db, review) {
 }
 export async function deleteHighlight(db, h) {
   await deleteDoc(doc(db, 'highlights', h.id));
-  // Videos are stored in pieces the website does not know; the cover photo it can remove.
   await dropImages(db, imageIds(h.photoUrl));
+  await dropClips(db, clipIds(h.videoUrl));
 }
 
 // A delete button that asks once more: the first tap arms it, the second does it.
@@ -59,6 +71,10 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('wishlist', collection(db, 'profiles', uid, 'wishlistItems'), d => deleteDoc(d.ref));
   await each('been there', collection(db, 'profiles', uid, 'beenThere'), d => deleteDoc(d.ref));
   await each('settings', collection(db, 'profiles', uid, 'settings'), d => deleteDoc(d.ref));
+  // Every video and photo they uploaded, also the ones no review or highlight uses any more
+  // (for example a profile photo, a chat photo or a clip that was replaced).
+  await each('videos', query(collection(db, 'videoclips'), where('ownerId', '==', uid)), d => dropClip(db, d.id));
+  await each('photos', query(collection(db, 'images'), where('ownerId', '==', uid)), d => deleteDoc(d.ref));
   await each('lists', query(collection(db, 'memberLists'), where('authorId', '==', uid)), d => deleteDoc(d.ref), true);
   step('invite');
   try { await deleteDoc(doc(db, 'invites', uid)); } catch (e) { console.log('Invite not deleted:', e.code || e); }
@@ -68,6 +84,8 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('places you manage', query(collection(db, 'businessOwners'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
   await each('follows', query(collection(db, 'follows'), where('followerId', '==', uid)), d => deleteDoc(d.ref));
   await each('followers', query(collection(db, 'follows'), where('followingId', '==', uid)), d => deleteDoc(d.ref), true);
+  // Members they blocked (js/sf-blocks.js). Soft: before the blocks rules exist, nothing is there.
+  await each('blocks', query(collection(db, 'blocks'), where('blockerId', '==', uid)), d => deleteDoc(d.ref), true);
   // Dating data from the app (Rork batch 1): the card, and the member's own likes and passes.
   await each('likes', collection(db, 'datingSwipes', uid, 'likes'), d => deleteDoc(d.ref), true);
   await each('passes', collection(db, 'datingSwipes', uid, 'passes'), d => deleteDoc(d.ref), true);
