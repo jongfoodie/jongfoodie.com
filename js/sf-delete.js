@@ -71,6 +71,8 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('wishlist', collection(db, 'profiles', uid, 'wishlistItems'), d => deleteDoc(d.ref));
   await each('been there', collection(db, 'profiles', uid, 'beenThere'), d => deleteDoc(d.ref));
   await each('settings', collection(db, 'profiles', uid, 'settings'), d => deleteDoc(d.ref));
+  // Phones registered for push notifications in the app.
+  await each('phones', collection(db, 'profiles', uid, 'devices'), d => deleteDoc(d.ref), true);
   // Every video and photo they uploaded, also the ones no review or highlight uses any more
   // (for example a profile photo, a chat photo or a clip that was replaced).
   await each('videos', query(collection(db, 'videoclips'), where('ownerId', '==', uid)), d => dropClip(db, d.id));

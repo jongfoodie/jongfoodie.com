@@ -104,7 +104,7 @@
   import { CATS, esc, fold, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
   import { confirmTap } from "./js/sf-delete.js?v=6";
-  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=1";
+  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, readOpentableSetting, opentableLink, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=2";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -226,11 +226,17 @@
     return id ? ['ok', `✓ Recognised: partner ID ${id}. Culture spots without their own link show "Tickets and tours".`] : ['bad', 'Not recognised. Paste your partner ID (letters and numbers), or a GetYourGuide link with partner_id= in it.'];
   }
 
+  function otState(raw) {
+    if (!String(raw || '').trim()) return ['off', 'Not set: OpenTable links show as normal links, without commission.'];
+    const c = readOpentableSetting(raw);
+    return c ? ['ok', `✓ Recognised: camref ${c}. Every OpenTable link you set for a restaurant goes through Partnerize.`] : ['bad', 'Not recognised. Paste the camref from Partnerize (letters and numbers), or a prf.hn link with camref: in it.'];
+  }
+
   function drawPartners() {
     const f = document.getElementById('partners');
     f.innerHTML = `
       <h2>Partner accounts</h2>
-      <p class="sub">Fill these in once a partner program has accepted you: Booking.com through CJ (Europe), GetYourGuide through its partner program. Everyone can read these codes: they are in every partner link anyway.</p>
+      <p class="sub">Fill these in once a partner program has accepted you: Booking.com through CJ (Europe), GetYourGuide through its partner program, OpenTable through Partnerize. Everyone can read these codes: they are in every partner link anyway.</p>
       <label class="lab" for="pBooking">Booking.com: one partner link</label>
       <input type="url" id="pBooking" placeholder="https://www.dpbolvw.net/click-…-…?url=https%3A%2F%2Fwww.booking.com" value="${esc(partners.booking || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pBookingState"></p>
@@ -239,29 +245,37 @@
       <input type="text" id="pGyg" placeholder="e.g. ABC1DEF" value="${esc(partners.getyourguide || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pGygState"></p>
       <p class="hint">In the GetYourGuide partner portal, under your account. A link with partner_id= in it works too.</p>
+      <label class="lab" for="pOt">OpenTable: Partnerize camref</label>
+      <input type="text" id="pOt" placeholder="e.g. 1100lAbCd" value="${esc(partners.opentable || '')}" autocomplete="off" spellcheck="false">
+      <p class="state" id="pOtState"></p>
+      <p class="hint">In Partnerize, under the OpenTable campaign: the camref in your tracking links (prf.hn/click/camref:…). Then set an OpenTable link per restaurant below, with kind "Reserve a table".</p>
       <p class="hint" id="pTry"></p>
       <div class="actions"><button class="btn btn-main" id="pSave" type="button">Save partner accounts</button></div>`;
     const show = () => {
       const [bs, bt] = bookingState(document.getElementById('pBooking').value);
       const [gs, gt] = gygState(document.getElementById('pGyg').value);
-      const a = document.getElementById('pBookingState'), g = document.getElementById('pGygState');
+      const [os, ot] = otState(document.getElementById('pOt').value);
+      const a = document.getElementById('pBookingState'), g = document.getElementById('pGygState'), o = document.getElementById('pOtState');
       a.className = 'state ' + bs; a.textContent = bt;
       g.className = 'state ' + gs; g.textContent = gt;
+      o.className = 'state ' + os; o.textContent = ot;
       const tries = [];
       if (bs === 'ok') tries.push(`<a href="${esc(bookingComLink(document.getElementById('pBooking').value, bookingSearchUrl('Amsterdam'), 'test'))}" target="_blank" rel="noopener">Booking.com, Amsterdam</a>`);
       if (gs === 'ok') tries.push(`<a href="${esc(gygLink(readGygSetting(document.getElementById('pGyg').value), gygSearchUrl('Amsterdam'), 'test'))}" target="_blank" rel="noopener">GetYourGuide, Amsterdam</a>`);
+      if (os === 'ok') tries.push(`<a href="${esc(opentableLink(readOpentableSetting(document.getElementById('pOt').value), 'https://www.opentable.com/', 'test'))}" target="_blank" rel="noopener">OpenTable</a>`);
       document.getElementById('pTry').innerHTML = tries.length ? 'Try a link: ' + tries.join(' · ') : '';
     };
-    ['pBooking', 'pGyg'].forEach(id => document.getElementById(id).addEventListener('input', show));
+    ['pBooking', 'pGyg', 'pOt'].forEach(id => document.getElementById(id).addEventListener('input', show));
     show();
     document.getElementById('pSave').addEventListener('click', savePartners);
   }
 
   async function savePartners() {
-    const booking = document.getElementById('pBooking').value.trim(), gyg = document.getElementById('pGyg').value.trim();
+    const booking = document.getElementById('pBooking').value.trim(), gyg = document.getElementById('pGyg').value.trim(), ot = document.getElementById('pOt').value.trim();
     if (booking && bookingState(booking)[0] !== 'ok') return toast('The Booking.com link is not recognised yet. See the line under it.', true);
     if (gyg && !readGygSetting(gyg)) return toast('The GetYourGuide partner ID is not recognised. See the line under it.', true);
-    const data = { booking, getyourguide: gyg ? readGygSetting(gyg) : '', updatedAt: serverTimestamp() };
+    if (ot && !readOpentableSetting(ot)) return toast('The OpenTable camref is not recognised. See the line under it.', true);
+    const data = { booking, getyourguide: gyg ? readGygSetting(gyg) : '', opentable: ot ? readOpentableSetting(ot) : '', updatedAt: serverTimestamp() };
     const btn = document.getElementById('pSave');
     btn.disabled = true;
     try {

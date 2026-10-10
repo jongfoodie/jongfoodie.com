@@ -47,6 +47,11 @@
   .pill-trusted { background: var(--green-light); color: var(--green); }
   .pill-private { background: #F0EBE3; color: var(--ink-soft); }
   .pill-brand { background: var(--accent-pale); color: var(--accent); }
+  .pill-creator { background: var(--accent-pale); color: #B4441A; }
+  .creator-edit { grid-column: 1 / -1; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; padding-top: 0.6rem; border-top: 1px dashed var(--border); }
+  .creator-edit label { font-size: 13px; font-weight: 600; color: var(--ink-soft); flex-basis: 100%; }
+  .creator-edit input { flex: 1 1 240px; min-width: 0; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font: 14px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .creator-edit input:focus { outline: none; border-color: var(--accent); }
   .tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
   .btn { font: 500 13px 'DM Sans', sans-serif; padding: 7px 13px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; white-space: nowrap; }
   .btn:hover { border-color: var(--ink-soft); }
@@ -138,7 +143,7 @@
       return {
         uid: p.id, name, city: p.city || '', since: toDate(p.createdAt), priv: p.isPrivate === true,
         spots: nSpots[p.id] || 0, reviews: nReviews[p.id] || 0, highlights: nHl[p.id] || 0, reports: nReports[p.id] || 0,
-        trusted: f.trusted === true, blocked: f.blocked === true, _q: fold(name + ' ' + (p.city || '')),
+        trusted: f.trusted === true, blocked: f.blocked === true, creator: f.creator === true, creatorUrl: f.creatorUrl || '', _q: fold(name + ' ' + (p.city || '')),
       };
     }).sort((a, b) => (b.reports - a.reports) || ((b.spots + b.reviews + b.highlights) - (a.spots + a.reviews + a.highlights)) || a.name.localeCompare(b.name));
     shell();
@@ -146,11 +151,11 @@
 
   function shell() {
     root.innerHTML = `
-      <p class="lead">Every member of the site and the app. <b>Trusted</b> puts a green mark next to their name on reviews and their profile. <b>Block</b> hides everything they added, on the site and in the app. <b>Make admin</b> gives an account full admin rights, on the site and in the app: only for people you trust.</p>
+      <p class="lead">Every member of the site and the app. <b>Trusted</b> puts a green mark next to their name on reviews and their profile. <b>Block</b> hides everything they added, on the site and in the app. <b>Make admin</b> gives an account full admin rights, on the site and in the app: only for people you trust. <b>Creator</b> gives a food blogger a Creator mark and a link to their own website on their profile.</p>
       <div class="bar">
         <input type="search" id="find" placeholder="Search by name or city" aria-label="Search members" autocomplete="off">
         <div class="chips" role="group" aria-label="Show">
-          ${[['all', 'All'], ['reported', 'Reported'], ['trusted', 'Trusted'], ['blocked', 'Blocked']].map(([k, t]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${t}</button>`).join('')}
+          ${[['all', 'All'], ['reported', 'Reported'], ['trusted', 'Trusted'], ['creator', 'Creators'], ['blocked', 'Blocked']].map(([k, t]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${t}</button>`).join('')}
         </div>
       </div>
       ${publicBlocks.length ? `<div class="notice" id="blocksNotice"><p><b>🔒 ${publicBlocks.length} ${publicBlocks.length === 1 ? 'member still has' : 'members still have'} a public block list.</b> Anyone can see on their profile who they blocked. Move those blocks to private block documents that only the two members involved can read.</p><button class="btn" type="button" id="moveBlocks">Make blocks private</button></div>` : ''}
@@ -183,7 +188,7 @@
 
   function visible() {
     const q = fold(document.getElementById('find').value).trim();
-    return members.filter(m => (filter === 'all' || (filter === 'reported' && m.reports) || (filter === 'trusted' && m.trusted) || (filter === 'blocked' && m.blocked))
+    return members.filter(m => (filter === 'all' || (filter === 'reported' && m.reports) || (filter === 'trusted' && m.trusted) || (filter === 'creator' && m.creator) || (filter === 'blocked' && m.blocked))
       && (!q || q.split(/\s+/).every(t => m._q.includes(t))));
   }
 
@@ -199,11 +204,12 @@
       return `<div class="mem">
         <div class="av" style="background:${colourOf(m.uid)};">${esc(initialsOf(m.name))}</div>
         <div>
-          <p class="mem-name"><a href="member.html?u=${encodeURIComponent(m.uid)}" target="_blank" rel="noopener">${esc(m.name)}</a>${brand ? '<span class="pill pill-brand">Strong Foodie</span>' : ''}${m.trusted ? '<span class="pill pill-trusted">Trusted</span>' : ''}${m.blocked ? '<span class="pill pill-blocked">Blocked</span>' : ''}${m.priv ? '<span class="pill pill-private">Private</span>' : ''}</p>
+          <p class="mem-name"><a href="member.html?u=${encodeURIComponent(m.uid)}" target="_blank" rel="noopener">${esc(m.name)}</a>${brand ? '<span class="pill pill-brand">Strong Foodie</span>' : ''}${m.creator ? '<span class="pill pill-creator">Creator</span>' : ''}${m.trusted ? '<span class="pill pill-trusted">Trusted</span>' : ''}${m.blocked ? '<span class="pill pill-blocked">Blocked</span>' : ''}${m.priv ? '<span class="pill pill-private">Private</span>' : ''}</p>
           <p class="mem-meta">${esc(bits.join(' · '))}${m.reports ? ` · <a href="admin-reports.html">${m.reports} open ${m.reports === 1 ? 'report' : 'reports'}</a>` : ''}</p>
         </div>
         ${brand ? '' : `<div class="tools">
           <button class="btn${m.trusted ? ' btn-on' : ''}" type="button" data-trust="${esc(m.uid)}" aria-pressed="${m.trusted}">${m.trusted ? '✓ Trusted' : 'Make trusted'}</button>
+          <button class="btn${m.creator ? ' btn-on' : ''}" type="button" data-creator="${esc(m.uid)}" aria-expanded="false">${m.creator ? '✓ Creator' : 'Make creator'}</button>
           <button class="btn${m.blocked ? '' : ' btn-danger'}" type="button" data-block="${esc(m.uid)}">${m.blocked ? 'Unblock' : 'Block'}</button>
           <button class="btn${m.madeAdmin ? ' btn-on' : ''}" type="button" data-admin="${esc(m.uid)}"${m.madeAdmin ? ' disabled' : ''}>${m.madeAdmin ? '✓ Admin' : 'Make admin'}</button>
         </div>`}
@@ -211,6 +217,7 @@
     }).join('');
     document.getElementById('more').hidden = rows.length <= shown;
     list.querySelectorAll('[data-trust]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.trust, 'trusted')));
+    list.querySelectorAll('[data-creator]').forEach(b => b.addEventListener('click', () => creatorEditor(b, b.dataset.creator)));
     list.querySelectorAll('[data-block]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.block, 'blocked')));
     list.querySelectorAll('[data-admin]').forEach(b => b.addEventListener('click', () => makeAdmin(b, b.dataset.admin)));
   }
@@ -237,6 +244,47 @@
         : code.includes('not-found') ? 'This account no longer exists.'
         : 'Did not work. Try again.', true);
       btn.disabled = false;
+    }
+  }
+
+  // Creator: a food blogger with their own website. memberFlags/{uid} gets
+  // { creator: true, creatorUrl }; the site (js/sf-moderation.js) and the app show
+  // a Creator mark next to their name and a link to the website on their profile.
+  const urlOk = raw => { try { const u = new URL(String(raw || '').trim()); return (u.protocol === 'https:' || u.protocol === 'http:') && u.hostname.includes('.') ? u.href : ''; } catch (e) { return ''; } };
+  function creatorEditor(btn, uid) {
+    const m = members.find(x => x.uid === uid);
+    const row = btn.closest('.mem');
+    const open = row.querySelector('.creator-edit');
+    if (open) { open.remove(); btn.setAttribute('aria-expanded', 'false'); return; }
+    btn.setAttribute('aria-expanded', 'true');
+    const id = 'cu-' + uid.replace(/[^A-Za-z0-9_-]/g, '');
+    row.insertAdjacentHTML('beforeend', `<div class="creator-edit">
+      <label for="${id}">Website of ${esc(m.name)}</label>
+      <input type="url" id="${id}" placeholder="https://theirblog.com" value="${esc(m.creatorUrl)}" autocomplete="off" spellcheck="false">
+      <button class="btn btn-on" type="button" data-save>${m.creator ? 'Save' : 'Make creator'}</button>
+      ${m.creator ? '<button class="btn btn-danger" type="button" data-remove>Remove Creator</button>' : ''}
+    </div>`);
+    const box = row.querySelector('.creator-edit'), input = box.querySelector('input');
+    input.focus();
+    box.querySelector('[data-save]').addEventListener('click', () => {
+      const url = urlOk(input.value);
+      if (!url) { toast('Paste the full address of their website, starting with https://', true); input.focus(); return; }
+      saveCreator(box, m, { creator: true, creatorUrl: url });
+    });
+    const rm = box.querySelector('[data-remove]');
+    if (rm) rm.addEventListener('click', () => saveCreator(box, m, { creator: false, creatorUrl: '' }));
+  }
+  async function saveCreator(box, m, data) {
+    box.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    try {
+      await setDoc(doc(db, 'memberFlags', m.uid), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      Object.assign(m, data);
+      toast(data.creator ? `${m.name} is a creator now. Their profile links to ${new URL(data.creatorUrl).hostname.replace(/^www\./, '')}.` : `${m.name} is no longer a creator.`);
+      drawList();
+    } catch (e) {
+      console.log('Creator not saved:', e);
+      toast(refused(e) ? 'The database refused. Check that you are signed in as admin.' : 'Did not work. Try again.', true);
+      box.querySelectorAll('button').forEach(b => { b.disabled = false; });
     }
   }
 

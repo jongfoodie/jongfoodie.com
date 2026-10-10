@@ -217,6 +217,8 @@
   import { highlightsRow } from "./js/sf-highlights.js?v=8";
   import { deleteSpot, deleteReview, confirmTap } from "./js/sf-delete.js?v=6";
   import { loadFlags, isBlocked, trustedMark, reportButton, wireReports } from "./js/sf-moderation.js?v=1";
+  // As a namespace: a browser that still has the previous version cached simply shows no creator link.
+  import * as sfMod from "./js/sf-moderation.js?v=1";
   import { hasBlocked } from "./js/sf-blocks.js?v=1";
   import { publishedListsBy, listCard } from "./js/sf-memberlists.js?v=1";
   import { badgeRow } from "./js/sf-badges.js?v=1";
@@ -351,6 +353,7 @@
           <h1 class="pf-name">${esc(name)}${isOfficial ? '<span class="pf-badge">Official</span>' : trustedMark(state.flags, uid)}</h1>
           ${meta ? `<p class="pf-meta">${esc(meta)}</p>` : ''}
           ${p.bio ? `<p class="pf-bio">${esc(p.bio)}</p>` : ''}
+          ${isOfficial || !sfMod.creatorLink ? '' : sfMod.creatorLink(state.flags, uid)}
           <div class="pf-stats" id="pfStats"></div>
           <div id="pfBadges"></div>
           <div class="pf-actions" id="pfActions"></div>

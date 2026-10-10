@@ -8,7 +8,7 @@
 //   then says so under the button (Dutch advertising code, ACM).
 // site/partners: the partner accounts, also set in admin-booking.html.
 //   { booking: "<one partner link to booking.com from CJ (Europe) or Awin, or aid=<number>>",
-//     getyourguide: "<partner ID>", updatedAt }
+//     getyourguide: "<partner ID>", opentable: "<Partnerize camref>", updatedAt }
 //   With these, hotels without their own link get "Check prices on Booking.com"
 //   and culture spots get "Tickets and tours" (GetYourGuide).
 // Restaurants and bars without a link: "Call to reserve" when the phone is known.
@@ -127,6 +127,23 @@ export function gygLink(id, target, key) {
 
 export const gygSearchUrl = q => `https://www.getyourguide.com/s/?q=${encodeURIComponent(q)}`;
 
+// ── OpenTable through Partnerize: the camref of the Strong Foodie campaign
+// (or any prf.hn link with camref: in it). Restaurant links on any OpenTable
+// site (opentable.com, .co.uk, .de, .ca, .com.au, .jp, .com.mx) then go through
+// https://prf.hn/click/camref:<camref>/pubref:<place>/destination:<the OpenTable address>.
+export function readOpentableSetting(raw) {
+  const s = String(raw || '').trim();
+  const m = s.match(/camref:([A-Za-z0-9]+)/);
+  const c = m ? m[1] : s;
+  return /^[A-Za-z0-9]{5,20}$/.test(c) ? c : '';
+}
+export const isOpentable = url => /(^|\.)opentable\.[a-z.]{2,8}$/.test(hostOf(url));
+export function opentableLink(camref, target, key) {
+  const url = safeUrl(target);
+  if (!camref || !url || !isOpentable(url)) return '';
+  return `https://prf.hn/click/camref:${camref}/pubref:${encodeURIComponent(refOf(key))}/destination:${encodeURIComponent(url)}`;
+}
+
 // A link Strong Foodie set by hand: a booking.com or GetYourGuide page gets the
 // partner code added when it has none yet. Returns { href, partner }.
 export function withPartner(url, partners, key) {
@@ -140,6 +157,10 @@ export function withPartner(url, partners, key) {
   }
   if (isHost(href, 'getyourguide.com') && !u.searchParams.get('partner_id') && p.getyourguide) {
     const l = gygLink(readGygSetting(p.getyourguide), href, key);
+    if (l) return { href: l, partner: true };
+  }
+  if (isOpentable(href) && p.opentable) {
+    const l = opentableLink(readOpentableSetting(p.opentable), href, key);
     if (l) return { href: l, partner: true };
   }
   return { href, partner: false };

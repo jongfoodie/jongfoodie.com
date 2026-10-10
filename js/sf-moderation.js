@@ -24,6 +24,9 @@ export const KINDS = { review: 'review', highlight: 'highlight', member: 'member
 
 const CSS = `
 .sf-trusted { display: inline-flex; align-items: center; gap: 3px; font: 700 10px 'DM Sans', system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; color: #2D5A3D; background: #E8F2EC; border-radius: 10px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; white-space: nowrap; }
+.sf-creator { display: inline-flex; align-items: center; gap: 3px; font: 700 10px 'DM Sans', system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; color: #B4441A; background: #FBEDE6; border-radius: 10px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; white-space: nowrap; }
+.sf-creator-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 0.6rem; font: 600 14px 'DM Sans', system-ui, sans-serif; color: #B4441A; text-decoration: none; overflow-wrap: anywhere; }
+.sf-creator-link:hover { text-decoration: underline; }
 .sf-report-link { background: none; border: none; padding: 0; font: inherit; font-size: 12px; color: #8A7A66; text-decoration: underline; cursor: pointer; }
 .sf-report-link:hover { color: #A32323; }
 .sf-report-link:disabled { text-decoration: none; cursor: default; }
@@ -53,17 +56,24 @@ export function addModerationStyle() {
   document.head.appendChild(s);
 }
 
-// One read per page: who is trusted and who is blocked.
+// One read per page: who is trusted, who is blocked, and who is a creator
+// (a food blogger with their own website, set by Strong Foodie in admin-members.html:
+// memberFlags/{uid} { creator: true, creatorUrl: "https://..." }).
 let flagsPromise = null;
 export function loadFlags(db) {
   if (!flagsPromise) {
     flagsPromise = getDocs(collection(db, 'memberFlags'))
       .then(snap => {
-        const f = { blocked: new Set(), trusted: new Set() };
-        snap.docs.forEach(d => { const x = d.data(); if (x.blocked === true) f.blocked.add(d.id); if (x.trusted === true) f.trusted.add(d.id); });
+        const f = { blocked: new Set(), trusted: new Set(), creator: new Map() };
+        snap.docs.forEach(d => {
+          const x = d.data();
+          if (x.blocked === true) f.blocked.add(d.id);
+          if (x.trusted === true) f.trusted.add(d.id);
+          if (x.creator === true) f.creator.set(d.id, creatorUrlOk(x.creatorUrl));
+        });
         return f;
       })
-      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set() }; });
+      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set(), creator: new Map() }; });
   }
   return flagsPromise;
 }
@@ -72,10 +82,31 @@ export const isBlocked = (f, uid) => !!(f && uid && f.blocked.has(uid));
 // Is this review, highlight or spot one the visitor may see?
 export const isVisible = (f, item, authorKey = 'authorId') => !!item && item.hidden !== true && !isBlocked(f, item[authorKey]);
 
+// Only a real https or http address counts as a creator's website.
+export function creatorUrlOk(raw) {
+  try {
+    const u = new URL(String(raw || '').trim());
+    return (u.protocol === 'https:' || u.protocol === 'http:') && u.hostname.includes('.') ? u.href : '';
+  } catch (e) { return ''; }
+}
+export const isCreator = (f, uid) => !!(f && uid && f.creator && f.creator.has(uid));
+
+// The marks after a member's name: Creator and Trusted.
 export function trustedMark(f, uid) {
-  if (!(f && uid && f.trusted.has(uid))) return '';
+  if (!f || !uid) return '';
+  let out = '';
+  if (isCreator(f, uid)) { addModerationStyle(); out += '<span class="sf-creator" title="Creator: a food blogger with their own website">✍️ Creator</span>'; }
+  if (f.trusted.has(uid)) { addModerationStyle(); out += '<span class="sf-trusted" title="Trusted reviewer: picked by Strong Foodie">✓ Trusted</span>'; }
+  return out;
+}
+
+// On a creator's profile: a link to their own website.
+export function creatorLink(f, uid) {
+  const url = isCreator(f, uid) ? f.creator.get(uid) : '';
+  if (!url) return '';
   addModerationStyle();
-  return '<span class="sf-trusted" title="Trusted reviewer: picked by Strong Foodie">✓ Trusted</span>';
+  const host = new URL(url).hostname.replace(/^www\./, '');
+  return `<a class="sf-creator-link" href="${esc(url)}" target="_blank" rel="noopener">🔗 ${esc(host)} ↗</a>`;
 }
 
 // extra = more attributes for the button, e.g. `data-rid="abc"`.

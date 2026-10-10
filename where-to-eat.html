@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Can't decide where to eat with your friends? Pick a few places on Strong Foodie and let everyone vote.">
+<meta name="robots" content="noindex, follow">
+<title>Where are we eating? | Strong Foodie</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Where are we eating? Vote with your friends">
+<meta property="og:description" content="Pick a few places, share the link and let everyone vote. On Strong Foodie.">
+<meta property="og:url" content="https://strongfoodie.com/where-to-eat.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .msg a { color: var(--accent); }
+
+
+  .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .lab { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1rem 0 0.4rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .field:focus { outline: none; border-color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; color: var(--ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .chip:disabled { opacity: 0.55; cursor: default; }
+  .chip.danger { color: #A32323; border-color: rgba(163,35,35,0.35); }
+  .btn-main { display: inline-block; margin-top: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 24px; padding: 12px 24px; font: 600 15px 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  .btn-main:disabled { opacity: 0.5; cursor: default; }
+  .share-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .share-row .field { flex: 1 1 220px; min-width: 0; }
+  .count { font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrapper { max-width: 760px; }
+  .wte-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 18px; padding: 1.4rem; }
+  .wte-card h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; }
+  .wte-card .sub { color: var(--ink-soft); font-size: 14.5px; margin-top: 0.2rem; }
+  .wte-results { list-style: none; display: grid; gap: 0.4rem; margin-top: 0.5rem; }
+  .wte-results li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 0.75rem; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.55rem 0.8rem; }
+  .wte-results li .chip { grid-row: 1 / 3; grid-column: 2; }
+  .wte-r-name { font-weight: 600; overflow-wrap: anywhere; }
+  .wte-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .wte-chosen { list-style: none; counter-reset: c; display: grid; gap: 0.4rem; }
+  .wte-chosen li { counter-increment: c; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.8rem; overflow-wrap: anywhere; }
+  .wte-chosen li:not(.empty)::before { content: counter(c); font-weight: 700; color: var(--accent); min-width: 1.2em; }
+  .wte-chosen li > span { flex: 1; min-width: 0; }
+  .wte-chosen .x { background: none; border: none; font-size: 16px; color: var(--muted); cursor: pointer; padding: 4px 6px; }
+  .wte-chosen .x:hover { color: #A32323; }
+  .wte-mine { margin-top: 2rem; }
+  .wte-row { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.75rem 0; border-bottom: 1px solid var(--border); color: var(--ink); text-decoration: none; font-weight: 600; }
+  .wte-row:hover span:first-child { color: var(--accent); }
+  .wte-result { background: var(--ink); color: #fff; border-radius: 16px; padding: 1rem 1.2rem; font-size: 16px; margin-bottom: 1.25rem; }
+  .wte-share { background: var(--accent-pale); border-radius: 16px; padding: 0.4rem 1rem 1rem; margin-bottom: 1.25rem; }
+  .wte-share .lab { margin-top: 0.6rem; }
+  .wte-login { text-align: center; margin-bottom: 1rem; color: var(--ink-soft); }
+  .wte-login a, .wte-foot a { color: var(--accent); font-weight: 600; }
+  .wte-opts { display: grid; gap: 0.8rem; }
+  .wte-opt { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 0.8rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem 0.8rem; align-items: center; }
+  .wte-opt.mine { border-color: var(--accent); }
+  .wte-opt.win { border: 2px solid var(--gold); background: #FFF8EA; }
+  .wte-place { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0.8rem; align-items: center; color: inherit; text-decoration: none; min-width: 0; }
+  .wte-img { position: relative; width: 64px; height: 64px; border-radius: 12px; overflow: hidden; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .wte-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .wte-txt { display: grid; min-width: 0; }
+  .wte-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+  .wte-place:hover .wte-name { color: var(--accent); }
+  .wte-bar { grid-column: 1 / -1; height: 8px; border-radius: 8px; background: var(--tag-bg); overflow: hidden; }
+  .wte-bar span { display: block; height: 100%; background: var(--accent); border-radius: 8px; }
+  .wte-opt.win .wte-bar span { background: var(--gold); }
+  .wte-votes { grid-column: 1 / -1; font-size: 13px; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .vote { grid-row: 1; grid-column: 2; border: 1px solid var(--accent); background: #fff; color: var(--accent); border-radius: 20px; padding: 8px 18px; font: 600 14px 'DM Sans', sans-serif; cursor: pointer; }
+  .vote.on { background: var(--accent); color: #fff; }
+  .vote:disabled { opacity: 0.6; }
+  .wte-tools { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .wte-foot { text-align: center; margin-top: 1.75rem; }
+  @media (prefers-reduced-motion: no-preference) { .wte-bar span { transition: width 0.4s ease; } }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .wrapper { padding: 1.5rem 16px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+</style>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {
+    if (window.__mcLoaded) return;
+    window.__mcLoaded = true;
+    var m = document.createElement('script');
+    m.id = 'mcjs'; m.async = true;
+    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
+    document.head.appendChild(m);
+  }
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
+  <a href="index.html">🏠 Home</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="about.html">👤 About</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Strong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Eat</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="hotel.html">Stay</a></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
+    <li><a href="map.html">Map</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+
+<div class="page-hero">
+  <h1 id="wteTitle">🗳️ Where are we eating?</h1>
+  <p id="wteSub">Can't decide with your friends? Pick a few places and let everyone vote.</p>
+</div>
+
+<main class="wrapper" id="root"><p class="msg">Loading…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Strong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+    loadMailchimp();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+  loadMailchimp();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module">
+  // "Where are we eating?": a member picks 2 to 8 places, shares the link, friends vote.
+  // groupPicks/{id}: { ownerId, ownerName, title, places: [{ coll, id, name, city, cat, photo }],
+  //                    status: "open" | "closed", createdAt, closesAt }
+  // groupPicks/{id}/votes/{uid}: { choice: <index in places>, name, updatedAt }
+  // Anyone with the link sees the vote; voting needs an account. The app uses the
+  // same documents (Rork batch 33).
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, query, where, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { CATS, esc, toDate, loadPlaces, placeUrl, photoTools } from "./js/sf-places.js?v=7";
+  import { confirmTap } from "./js/sf-delete.js?v=6";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const { hydratePhotos } = photoTools(db);
+  const root = document.getElementById('root');
+  const pickId = new URLSearchParams(location.search).get('id') || '';
+  const MAX = 8, DAY = 86400000;
+  const fold = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  const loginLink = () => 'account.html?next=' + encodeURIComponent(location.pathname.replace(/^\//, '') + location.search);
+  let me = null, myName = '', all = [], byKey = new Map(), chosen = [], pick = null, votes = [];
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function hero(title, sub) {
+    document.getElementById('wteTitle').textContent = title;
+    document.getElementById('wteSub').textContent = sub;
+  }
+  const entryOf = p => ({
+    coll: p.coll, id: p.id, name: String(p.name || '').slice(0, 80), city: String(p.where || p.town || '').slice(0, 60),
+    cat: p.cat || 'eat', photo: (Array.isArray(p.photos) && p.photos[0]) || '',
+  });
+  const catEmoji = c => (CATS[c] || CATS.eat).emoji;
+  const thumb = (photo, cat) => `<div class="wte-img">${photo ? `<img data-photo="${esc(photo)}" alt="" hidden>` : ''}<span>${catEmoji(cat)}</span></div>`;
+
+  function whenText(d) {
+    const ms = d - Date.now();
+    const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    if (Math.abs(ms) < 2 * 3600000) return rtf.format(Math.round(ms / 60000), 'minute');
+    if (Math.abs(ms) < 2 * DAY) return rtf.format(Math.round(ms / 3600000), 'hour');
+    return rtf.format(Math.round(ms / DAY), 'day');
+  }
+
+  // ── Start a vote ─────────────────────────────────────────────────────────
+  async function startView() {
+    hero('🗳️ Where are we eating?', "Can't decide with your friends? Pick a few places and let everyone vote.");
+    if (!me) {
+      root.innerHTML = `<div class="msg"><h2>Start a vote with your friends</h2><p>Pick 2 to 8 places, send the link, and everyone votes for their favourite. <a href="${esc(loginLink())}">Log in</a> or make a free account to start.</p></div>`;
+      return;
+    }
+    root.innerHTML = '<p class="msg">Loading places…</p>';
+    const [loaded, wishSnap, mineSnap] = await Promise.all([
+      loadPlaces(db).catch(() => ({ all: [] })),
+      getDocs(collection(db, 'profiles', me.uid, 'wishlistItems')).catch(() => ({ docs: [] })),
+      getDocs(query(collection(db, 'groupPicks'), where('ownerId', '==', me.uid))).catch(() => ({ docs: [] })),
+    ]);
+    all = loaded.all || [];
+    byKey = new Map(all.map(p => [`${p.coll}/${p.id}`, p]));
+    const wish = wishSnap.docs.map(d => d.data()).map(w => byKey.get(`${w.placeCollection}/${w.placeDocId}`)).filter(Boolean).slice(0, 12);
+    const mine = mineSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    root.innerHTML = `
+      <section class="wte-card">
+        <h2>Start a vote</h2>
+        <p class="sub">Pick 2 to 8 places and send the link to your friends. Everyone with the link can see the vote; voting needs a free account.</p>
+        <label class="lab" for="wTitle">Question</label>
+        <input class="field" id="wTitle" type="text" maxlength="80" value="Where are we eating?">
+        <label class="lab" for="wFind">Add places</label>
+        <input class="field" id="wFind" type="search" placeholder="Search Strong Foodie, e.g. pizza or Amsterdam" autocomplete="off">
+        <ul class="wte-results" id="wResults"></ul>
+        ${wish.length ? `<p class="lab">From your wishlist</p><div class="wte-chips">${wish.map(p => `<button class="chip" type="button" data-add="${esc(p.coll + '/' + p.id)}">${catEmoji(p.cat)} ${esc(p.name)}</button>`).join('')}</div>` : ''}
+        <p class="lab">Your places <span class="count" id="wCount"></span></p>
+        <ol class="wte-chosen" id="wChosen"></ol>
+        <label class="lab" for="wDays">Voting closes</label>
+        <select class="field" id="wDays"><option value="1">In 1 day</option><option value="3" selected>In 3 days</option><option value="7">In 7 days</option></select>
+        <button class="btn-main" type="button" id="wCreate">Start the vote</button>
+      </section>
+      ${mine.length ? `<section class="wte-mine"><p class="section-label">Your votes</p>${mine.map(m => {
+        const closed = m.status === 'closed' || (toDate(m.closesAt) && toDate(m.closesAt) <= new Date());
+        return `<a class="wte-row" href="where-to-eat.html?id=${encodeURIComponent(m.id)}"><span>${esc(m.title || 'Where are we eating?')}</span><span class="small">${(m.places || []).length} places · ${closed ? 'closed' : 'open'}</span></a>`;
+      }).join('')}</section>` : ''}`;
+    drawChosen();
+    const find = document.getElementById('wFind');
+    find.addEventListener('input', () => drawResults(find.value));
+    root.addEventListener('click', e => {
+      const add = e.target.closest('[data-add]');
+      if (add) { addPlace(add.dataset.add); return; }
+      const rm = e.target.closest('[data-remove]');
+      if (rm) { chosen.splice(+rm.dataset.remove, 1); drawChosen(); drawResults(find.value); }
+    });
+    document.getElementById('wCreate').addEventListener('click', createPick);
+  }
+
+  function drawResults(q) {
+    const list = document.getElementById('wResults');
+    const t = fold(q);
+    if (t.length < 2) { list.innerHTML = ''; return; }
+    const words = t.split(/\s+/);
+    const hits = all.filter(p => { const s = fold([p.name, p.where, p.town, p.type, (CATS[p.cat] || {}).label].join(' ')); return words.every(w => s.includes(w)); }).slice(0, 8);
+    list.innerHTML = hits.length ? hits.map(p => {
+      const key = `${p.coll}/${p.id}`, on = chosen.some(c => `${c.coll}/${c.id}` === key);
+      return `<li><span class="wte-r-name">${catEmoji(p.cat)} ${esc(p.name)}</span><span class="small">${esc(p.where || p.town || '')}</span>
+        <button class="chip${on ? ' on' : ''}" type="button" data-add="${esc(key)}"${on || chosen.length >= MAX ? ' disabled' : ''}>${on ? '✓ Added' : '+ Add'}</button></li>`;
+    }).join('') : '<li class="small">Nothing found on Strong Foodie.</li>';
+  }
+
+  function addPlace(key) {
+    if (chosen.length >= MAX) { toast('8 places is the most.'); return; }
+    if (chosen.some(c => `${c.coll}/${c.id}` === key)) return;
+    const p = byKey.get(key);
+    if (!p) return;
+    chosen.push(entryOf(p));
+    drawChosen();
+    drawResults(document.getElementById('wFind').value);
+  }
+
+  function drawChosen() {
+    document.getElementById('wCount').textContent = `${chosen.length} / ${MAX}`;
+    document.getElementById('wChosen').innerHTML = chosen.length
+      ? chosen.map((c, i) => `<li><span>${catEmoji(c.cat)} ${esc(c.name)}<span class="small"> · ${esc(c.city)}</span></span><button class="x" type="button" data-remove="${i}" aria-label="Remove ${esc(c.name)}">✕</button></li>`).join('')
+      : '<li class="small empty">No places yet. Search above or tap one from your wishlist.</li>';
+    document.getElementById('wCreate').disabled = chosen.length < 2;
+  }
+
+  async function createPick() {
+    const btn = document.getElementById('wCreate');
+    const title = document.getElementById('wTitle').value.trim().slice(0, 80) || 'Where are we eating?';
+    const days = +document.getElementById('wDays').value || 3;
+    if (chosen.length < 2) { toast('Pick at least 2 places.'); return; }
+    btn.disabled = true; btn.textContent = 'Starting…';
+    try {
+      // A minute less than the full span, so a phone clock that runs ahead stays within 7 days.
+      const closesAt = Timestamp.fromMillis(Date.now() + days * DAY - 60000);
+      const ref = await addDoc(collection(db, 'groupPicks'), {
+        ownerId: me.uid, ownerName: String(myName || 'A member').slice(0, 60), title, places: chosen,
+        status: 'open', createdAt: serverTimestamp(), closesAt,
+      });
+      location.href = 'where-to-eat.html?id=' + encodeURIComponent(ref.id);
+    } catch (e) {
+      console.log('Vote not started:', e.code || e);
+      toast('Could not start the vote. Try again.');
+      btn.disabled = false; btn.textContent = 'Start the vote';
+    }
+  }
+
+  // ── A vote ───────────────────────────────────────────────────────────────
+  const isClosed = () => pick.status === 'closed' || (toDate(pick.closesAt) && toDate(pick.closesAt) <= new Date());
+
+  async function loadPick() {
+    let snap = null;
+    try { snap = await getDoc(doc(db, 'groupPicks', pickId)); } catch (e) { console.log('Vote not read:', e.code || e); }
+    if (!snap || !snap.exists()) {
+      hero('🗳️ Where are we eating?', 'Vote with your friends.');
+      root.innerHTML = `<div class="msg"><h2>Vote not found</h2><p>It may have been deleted, or the link is incomplete. <a href="where-to-eat.html">Start your own vote</a>.</p></div>`;
+      return false;
+    }
+    pick = { id: snap.id, ...snap.data() };
+    pick.places = Array.isArray(pick.places) ? pick.places : [];
+    try { votes = (await getDocs(collection(db, 'groupPicks', pickId, 'votes'))).docs.map(d => ({ uid: d.id, ...d.data() })); }
+    catch (e) { console.log('Votes not read:', e.code || e); votes = []; }
+    return true;
+  }
+
+  function drawVote() {
+    const closed = isClosed();
+    const groups = pick.places.map((_, i) => votes.filter(v => v.choice === i));
+    const top = Math.max(0, ...groups.map(g => g.length));
+    const winners = top ? groups.map((g, i) => (g.length === top ? i : -1)).filter(i => i >= 0) : [];
+    const mine = me ? votes.find(v => v.uid === me.uid) : null;
+    const own = !!(me && me.uid === pick.ownerId);
+    const n = votes.length;
+    const closes = toDate(pick.closesAt);
+    hero(pick.title || 'Where are we eating?', `Started by ${pick.ownerName || 'a member'} · ${closed ? 'voting closed' : 'closes ' + (closes ? whenText(closes) : 'soon')} · ${n} ${n === 1 ? 'vote' : 'votes'}`);
+    const link = `${location.origin}/where-to-eat.html?id=${encodeURIComponent(pick.id)}`;
+    const result = !closed ? '' : winners.length === 1
+      ? `<div class="wte-result">🏆 The winner: <b>${esc(pick.places[winners[0]].name)}</b> with ${top} ${top === 1 ? 'vote' : 'votes'}.</div>`
+      : winners.length > 1 ? `<div class="wte-result">🤝 A tie between ${winners.map(i => `<b>${esc(pick.places[i].name)}</b>`).join(' and ')}.</div>`
+      : '<div class="wte-result">Nobody voted.</div>';
+    root.innerHTML = `
+      ${result}
+      ${closed ? '' : `<section class="wte-share">
+        <p class="lab">Send this link to your friends</p>
+        <div class="share-row">
+          <input class="field" id="wLink" type="text" readonly value="${esc(link)}" aria-label="Link to this vote">
+          <button class="chip" type="button" id="wCopy">Copy</button>
+          <a class="chip" href="https://wa.me/?text=${encodeURIComponent((pick.title || 'Where are we eating?') + ' Vote here: ' + link)}" target="_blank" rel="noopener">WhatsApp</a>
+          ${navigator.share ? '<button class="chip" type="button" id="wShare">Share</button>' : ''}
+        </div>
+      </section>`}
+      ${!closed && !me ? `<p class="wte-login"><a href="${esc(loginLink())}">Log in</a> or make a free account to vote.</p>` : ''}
+      <div class="wte-opts">${pick.places.map((p, i) => {
+        const g = groups[i], pct = n ? Math.round(g.length / n * 100) : 0;
+        const win = closed && winners.includes(i);
+        const voted = mine && mine.choice === i;
+        return `<article class="wte-opt${win ? ' win' : ''}${voted ? ' mine' : ''}">
+          <a class="wte-place" href="${esc(placeUrl(p))}">${thumb(p.photo, p.cat)}
+            <span class="wte-txt"><span class="wte-name">${win ? '🏆 ' : ''}${esc(p.name)}</span><span class="small">${esc(p.city)}${p.city ? ' · ' : ''}${esc((CATS[p.cat] || CATS.eat).label)}</span></span></a>
+          <div class="wte-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+          <p class="wte-votes"><b>${g.length} ${g.length === 1 ? 'vote' : 'votes'}</b>${g.length ? ' · ' + g.map(v => esc(v.name || 'A member')).join(', ') : ''}</p>
+          ${closed ? '' : me ? `<button class="vote${voted ? ' on' : ''}" type="button" data-vote="${i}"${voted ? ' aria-pressed="true"' : ''}>${voted ? '✓ Your vote' : 'Vote'}</button>` : ''}
+        </article>`;
+      }).join('')}</div>
+      ${own ? `<div class="wte-tools">${closed ? '' : '<button class="chip" type="button" id="wClose">Close voting now</button>'}<button class="chip danger" type="button" id="wDelete">Delete this vote</button></div>` : ''}
+      <p class="wte-foot"><a href="where-to-eat.html">🗳️ Start your own vote</a></p>`;
+    hydratePhotos(root);
+    const copy = document.getElementById('wCopy');
+    if (copy) copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(link); toast('Link copied'); }
+      catch (e) { const f = document.getElementById('wLink'); f.select(); toast('Link selected: copy it'); }
+    });
+    const share = document.getElementById('wShare');
+    if (share) share.addEventListener('click', () => navigator.share({ title: pick.title, text: 'Vote where we eat', url: link }).catch(() => {}));
+    root.querySelectorAll('[data-vote]').forEach(b => b.addEventListener('click', () => vote(+b.dataset.vote, b)));
+    const close = document.getElementById('wClose');
+    if (close) close.addEventListener('click', closeNow);
+    const del = document.getElementById('wDelete');
+    if (del) del.addEventListener('click', () => { if (confirmTap(del, 'Tap again to delete')) removePick(del); });
+  }
+
+  async function vote(i, btn) {
+    if (!me || isClosed()) return;
+    btn.disabled = true;
+    try {
+      await setDoc(doc(db, 'groupPicks', pickId, 'votes', me.uid), { choice: i, name: String(myName || 'A member').slice(0, 60), updatedAt: serverTimestamp() });
+      votes = votes.filter(v => v.uid !== me.uid).concat([{ uid: me.uid, choice: i, name: myName || 'A member' }]);
+      toast('Vote saved. You can change it until voting closes.');
+      drawVote();
+    } catch (e) {
+      console.log('Vote not saved:', e.code || e);
+      toast(e && e.code === 'permission-denied' ? 'Voting is closed.' : 'Could not save your vote. Try again.');
+      btn.disabled = false;
+    }
+  }
+
+  async function closeNow() {
+    try { await updateDoc(doc(db, 'groupPicks', pickId), { status: 'closed' }); pick.status = 'closed'; toast('Voting closed.'); drawVote(); }
+    catch (e) { console.log('Not closed:', e.code || e); toast('Could not close the vote. Try again.'); }
+  }
+
+  async function removePick(btn) {
+    btn.disabled = true;
+    try {
+      for (const v of votes) await deleteDoc(doc(db, 'groupPicks', pickId, 'votes', v.uid));
+      await deleteDoc(doc(db, 'groupPicks', pickId));
+      location.href = 'where-to-eat.html';
+    } catch (e) { console.log('Not deleted:', e.code || e); toast('Could not delete. Try again.'); btn.disabled = false; }
+  }
+
+  // ── Start ────────────────────────────────────────────────────────────────
+  let first = true;
+  onAuthStateChanged(auth, async u => {
+    me = u ? { uid: u.uid } : null;
+    myName = '';
+    if (u) {
+      try { const s = await getDoc(doc(db, 'profiles', u.uid)); myName = (s.exists() && String(s.data().displayName || '').trim()) || u.displayName || ''; }
+      catch (e) { myName = u.displayName || ''; }
+    }
+    if (pickId) {
+      if (first && !(await loadPick())) { first = false; return; }
+      first = false;
+      if (pick) drawVote();
+    } else {
+      chosen = [];
+      await startView();
+    }
+  });
+</script>
+
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
+</body>
+</html>
