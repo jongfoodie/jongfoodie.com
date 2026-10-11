@@ -104,7 +104,7 @@
   import { CATS, esc, fold, loadPlaces, placeKey, placeUrl, destinations } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
   import { confirmTap } from "./js/sf-delete.js?v=6";
-  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, readOpentableSetting, opentableLink, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml, toursLink, toursOff } from "./js/sf-booking.js?v=3";
+  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, readOpentableSetting, opentableLink, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml, toursLink, toursOff } from "./js/sf-booking.js?v=4";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -230,7 +230,7 @@
   function otState(raw) {
     if (!String(raw || '').trim()) return ['off', 'Not set: OpenTable links show as normal links, without commission.'];
     const c = readOpentableSetting(raw);
-    return c ? ['ok', `✓ Recognised: camref ${c}. Every OpenTable link you set for a restaurant goes through Partnerize.`] : ['bad', 'Not recognised. Paste the camref from Partnerize (letters and numbers), or a prf.hn link with camref: in it.'];
+    return c ? ['ok', `✓ Recognised: camref ${c}. Every OpenTable link you set for a restaurant goes through Partnerize, and the homepage shows "Book a table on OpenTable".`] : ['bad', 'Not recognised. Paste the camref from Partnerize (letters and numbers), or a prf.hn link with camref: in it.'];
   }
 
   // Destinations unticked under "Food tours on destination pages". A destination

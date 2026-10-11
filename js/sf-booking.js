@@ -152,6 +152,8 @@ export function readOpentableSetting(raw) {
   return /^[A-Za-z0-9]{5,20}$/.test(c) ? c : '';
 }
 export const isOpentable = url => /(^|\.)opentable\.[a-z.]{2,8}$/.test(hostOf(url));
+// Restaurants in a city or by name on OpenTable, for two people (homepage "Plan your trip").
+export const opentableSearchUrl = q => `https://www.opentable.com/s?covers=2&term=${encodeURIComponent(q)}`;
 export function opentableLink(camref, target, key) {
   const url = safeUrl(target);
   if (!camref || !url || !isOpentable(url)) return '';
