@@ -131,6 +131,20 @@
   .others a { text-decoration: none; }
   .app-note { margin-top: 2.5rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
+  /* Food tours (GetYourGuide partner link) */
+  a.tours-card { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; text-decoration: none; color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s; }
+  a.tours-card:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(26,18,8,0.06); }
+  .tours-emoji { font-size: 28px; line-height: 1; flex: none; }
+  .tours-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .tours-body strong { font-size: 15px; font-weight: 600; }
+  .tours-body span { font-size: 13px; color: var(--muted); }
+  .tours-go { flex: none; font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .tours-note { font-size: 12px; color: var(--muted); margin-top: 0.5rem; line-height: 1.5; }
+  @media (max-width: 520px) {
+    a.tours-card { flex-wrap: wrap; }
+    .tours-go { width: 100%; padding-left: calc(28px + 1rem); }
+  }
+
   .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 10002; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -250,6 +264,7 @@
   import { openSurprise, surprisePool } from "./js/sf-surprise.js?v=2";
   import { loadOpenings, openingsWithPlaces, openingCard } from "./js/sf-openings.js?v=1";
   import { placeKey } from "./js/sf-places.js?v=7";
+  import { loadPartners, toursLink, PARTNER_NOTE } from "./js/sf-booking.js?v=3";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -329,7 +344,7 @@
   const state = { cat: 'all', area: 'all', q: '', sort: 'best', shown: PAGE };
   let D = null, map = null, markerLayer = null;
 
-  function renderDestination(d, dests, lists = [], ads = [], opened = []) {
+  function renderDestination(d, dests, lists = [], ads = [], opened = [], tours = '') {
     D = d;
     const counts = catCounts(d.places);
     const reviewed = d.places.filter(p => !p.member).length;
@@ -390,6 +405,15 @@
       ${lists.length ? `
       <p class="section-label">Best-of lists for ${esc(d.name)}</p>
       <div class="others">${lists.map(l => `<a class="chip" href="${l.url}">🏆 ${esc(l.title.replace(/ in .*$/, ''))}<span>${l.count}</span></a>`).join('')}</div>` : ''}
+
+      ${tours ? `
+      <p class="section-label">Food tours in ${esc(d.name)}</p>
+      <a class="tours-card" href="${esc(tours)}" target="_blank" rel="sponsored noopener">
+        <span class="tours-emoji" aria-hidden="true">🍴</span>
+        <span class="tours-body"><strong>Food tours, cooking classes and tastings</strong><span>With a local guide, bookable on GetYourGuide.</span></span>
+        <span class="tours-go">See tours ↗</span>
+      </a>
+      <p class="tours-note">${esc(PARTNER_NOTE)}</p>` : ''}
 
       <p class="section-label" id="places" style="scroll-margin-top:80px;">All places in ${esc(d.name)}</p>
       <div class="toolbar">
@@ -550,13 +574,15 @@
     else {
       const d = dests.find(x => x.slug === slug);
       if (d) {
-        const [lists, promos, openings] = await Promise.all([loadLists(db, all), loadPromos(db), loadOpenings(db)]);
+        const [lists, promos, openings, partners] = await Promise.all([loadLists(db, all), loadPromos(db), loadOpenings(db), loadPartners(db)]);
         // Paid placements for this destination (admin-ads.html), at most three.
         const inCity = new Map(d.places.map(p => [placeKey(p), p]));
         const ads = adsFor(promos, 'city', inCity).filter(x => !x.place.closed).slice(0, 3);
         // Just opened in this destination (admin-openings.html), at most six.
         const opened = openingsWithPlaces(openings, inCity).slice(0, 6);
-        renderDestination(d, dests, lists.filter(l => l.destSlug === d.slug), ads, opened);
+        // Food tours: a GetYourGuide search for this city (admin-booking.html).
+        const tours = toursLink(partners, d);
+        renderDestination(d, dests, lists.filter(l => l.destSlug === d.slug), ads, opened, tours);
         countView(db, 'city', d.slug);
       } else renderNotFound(slug, dests);
     }
