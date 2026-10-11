@@ -101,10 +101,10 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, loadPlaces, placeKey, placeUrl } from "./js/sf-places.js?v=7";
+  import { CATS, esc, fold, loadPlaces, placeKey, placeUrl, destinations } from "./js/sf-places.js?v=7";
   import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
   import { confirmTap } from "./js/sf-delete.js?v=6";
-  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, readOpentableSetting, opentableLink, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml } from "./js/sf-booking.js?v=2";
+  import { KINDS, defaultKind, bookingId, safeUrl, readBookingSetting, readGygSetting, readOpentableSetting, opentableLink, bookingComLink, bookingSearchUrl, gygLink, gygSearchUrl, withPartner, bookingButton, bookingButtonHtml, partnerNoteHtml, toursLink, toursOff } from "./js/sf-booking.js?v=3";
 
   const app = initializeApp({
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -139,7 +139,7 @@
     clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
   }
 
-  let places = [], byKey = new Map(), bookings = [], partners = {}, clicks = new Map(), editing = null, chosen = null;
+  let places = [], byKey = new Map(), bookings = [], partners = {}, clicks = new Map(), editing = null, chosen = null, dests = [];
   const month = new Date().toISOString().slice(0, 7);
 
   onAuthStateChanged(auth, async user => {
@@ -157,6 +157,7 @@
         getDocs(query(collection(db, 'views'), where('month', '==', month))).catch(() => ({ docs: [] })),
       ]);
       places = loaded.all.filter(p => !p.closed);
+      dests = destinations(loaded.all);
       loaded.all.forEach(p => byKey.set(placeKey(p), p));
       bookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       partners = pSnap && pSnap.exists() ? pSnap.data() : {};
@@ -232,6 +233,16 @@
     return c ? ['ok', `✓ Recognised: camref ${c}. Every OpenTable link you set for a restaurant goes through Partnerize.`] : ['bad', 'Not recognised. Paste the camref from Partnerize (letters and numbers), or a prf.hn link with camref: in it.'];
   }
 
+  // Destinations unticked under "Food tours on destination pages". A destination
+  // that isn't on the list right now (no places at the moment) keeps its setting.
+  function offTours() {
+    const box = document.getElementById('pTours');
+    if (!box) return toursOff(partners);
+    const shown = new Set(dests.map(d => d.slug));
+    const kept = toursOff(partners).filter(s => !shown.has(s));
+    return kept.concat([...box.querySelectorAll('input')].filter(c => !c.checked).map(c => c.value));
+  }
+
   function drawPartners() {
     const f = document.getElementById('partners');
     f.innerHTML = `
@@ -245,6 +256,13 @@
       <input type="text" id="pGyg" placeholder="e.g. ABC1DEF" value="${esc(partners.getyourguide || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pGygState"></p>
       <p class="hint">In the GetYourGuide partner portal, under your account. A link with partner_id= in it works too.</p>
+      ${dests.length ? `
+      <p class="lab">Food tours on destination pages</p>
+      <p class="hint">A "Food tours in …" block with a GetYourGuide search, on the site and in the app. Untick small towns where GetYourGuide has no food tours.</p>
+      <div class="checks" id="pTours" style="margin-top:0.5rem;">${dests.map(d => `
+        <label><input type="checkbox" value="${esc(d.slug)}" ${toursOff(partners).includes(d.slug) ? '' : 'checked'}> ${esc(d.name)} <small style="color:var(--muted)">${d.count}</small></label>`).join('')}
+      </div>
+      <p class="hint" id="pToursTry"></p>` : ''}
       <label class="lab" for="pOt">OpenTable: Partnerize camref</label>
       <input type="text" id="pOt" placeholder="e.g. 1100lAbCd" value="${esc(partners.opentable || '')}" autocomplete="off" spellcheck="false">
       <p class="state" id="pOtState"></p>
@@ -264,8 +282,17 @@
       if (gs === 'ok') tries.push(`<a href="${esc(gygLink(readGygSetting(document.getElementById('pGyg').value), gygSearchUrl('Amsterdam'), 'test'))}" target="_blank" rel="noopener">GetYourGuide, Amsterdam</a>`);
       if (os === 'ok') tries.push(`<a href="${esc(opentableLink(readOpentableSetting(document.getElementById('pOt').value), 'https://www.opentable.com/', 'test'))}" target="_blank" rel="noopener">OpenTable</a>`);
       document.getElementById('pTry').innerHTML = tries.length ? 'Try a link: ' + tries.join(' · ') : '';
+      const tt = document.getElementById('pToursTry');
+      if (tt) {
+        const p = { getyourguide: document.getElementById('pGyg').value, toursOff: offTours() };
+        const on = dests.map(d => [d, toursLink(p, d)]).filter(([, l]) => l);
+        tt.innerHTML = gs !== 'ok' ? 'Fill in the GetYourGuide partner ID first.'
+          : on.length ? 'Try: ' + on.map(([d, l]) => `<a href="${esc(l)}" target="_blank" rel="noopener">${esc(d.name)}</a>`).join(' · ')
+          : 'Shown on no destination page.';
+      }
     };
     ['pBooking', 'pGyg', 'pOt'].forEach(id => document.getElementById(id).addEventListener('input', show));
+    root.querySelectorAll('#pTours input').forEach(c => c.addEventListener('change', show));
     show();
     document.getElementById('pSave').addEventListener('click', savePartners);
   }
@@ -276,6 +303,7 @@
     if (gyg && !readGygSetting(gyg)) return toast('The GetYourGuide partner ID is not recognised. See the line under it.', true);
     if (ot && !readOpentableSetting(ot)) return toast('The OpenTable camref is not recognised. See the line under it.', true);
     const data = { booking, getyourguide: gyg ? readGygSetting(gyg) : '', opentable: ot ? readOpentableSetting(ot) : '', updatedAt: serverTimestamp() };
+    if (document.getElementById('pTours')) data.toursOff = offTours();
     const btn = document.getElementById('pSave');
     btn.disabled = true;
     try {

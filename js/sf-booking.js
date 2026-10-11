@@ -8,9 +8,12 @@
 //   then says so under the button (Dutch advertising code, ACM).
 // site/partners: the partner accounts, also set in admin-booking.html.
 //   { booking: "<one partner link to booking.com from CJ (Europe) or Awin, or aid=<number>>",
-//     getyourguide: "<partner ID>", opentable: "<Partnerize camref>", updatedAt }
+//     getyourguide: "<partner ID>", opentable: "<Partnerize camref>",
+//     toursOff: ["<destination slug>", …], updatedAt }
 //   With these, hotels without their own link get "Check prices on Booking.com"
 //   and culture spots get "Tickets and tours" (GetYourGuide).
+//   Destination pages get "Food tours in <city>" (GetYourGuide), except the
+//   destinations in toursOff (small towns without food tours).
 // Restaurants and bars without a link: "Call to reserve" when the phone is known.
 // A click counts in `views` as type "book" (js/sf-views.js), nothing personal.
 
@@ -126,6 +129,17 @@ export function gygLink(id, target, key) {
 }
 
 export const gygSearchUrl = q => `https://www.getyourguide.com/s/?q=${encodeURIComponent(q)}`;
+
+// ── Food tours on a destination page (stad.html), and in the app (Rork batch 38).
+// dest: { name, slug }. The search is "<city> food tour"; cmp "tours-<slug>"
+// shows in the GetYourGuide reports which city page the booking came from.
+export const toursQuery = name => `${String(name || '').trim()} food tour`;
+export const toursOff = partners => (Array.isArray(partners && partners.toursOff) ? partners.toursOff.filter(s => typeof s === 'string') : []);
+export function toursLink(partners, dest) {
+  const id = readGygSetting(partners && partners.getyourguide);
+  if (!id || !dest || !dest.name || !dest.slug || toursOff(partners).includes(dest.slug)) return '';
+  return gygLink(id, gygSearchUrl(toursQuery(dest.name)), 'tours/' + dest.slug);
+}
 
 // ── OpenTable through Partnerize: the camref of the Strong Foodie campaign
 // (or any prf.hn link with camref: in it). Restaurant links on any OpenTable
