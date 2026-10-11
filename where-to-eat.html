@@ -66,6 +66,10 @@
   .wte-results { list-style: none; display: grid; gap: 0.4rem; margin-top: 0.5rem; }
   .wte-results li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 0.75rem; align-items: center; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.55rem 0.8rem; }
   .wte-results li .chip { grid-row: 1 / 3; grid-column: 2; }
+  .wte-results li.wte-own { border-style: dashed; background: transparent; }
+  .wte-check { display: flex; gap: 0.55rem; align-items: flex-start; font-size: 14px; line-height: 1.45; margin-top: 1rem; cursor: pointer; }
+  .wte-check input { accent-color: var(--accent); width: 18px; height: 18px; margin: 1px 0 0; flex: none; }
+  .wte-friends { margin-bottom: 1.5rem; }
   .wte-r-name { font-weight: 600; overflow-wrap: anywhere; }
   .wte-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .wte-chosen { list-style: none; counter-reset: c; display: grid; gap: 0.4rem; }
@@ -307,6 +311,8 @@ function declineCookies(){
   // "Where are we eating?": a member picks 2 to 8 places, shares the link, friends vote.
   // groupPicks/{id}: { ownerId, ownerName, title, places: [{ coll, id, name, city, cat, photo }],
   //                    status: "open" | "closed", createdAt, closesAt }
+  //   visibility: "followers" (people who follow the maker see it under "From people you follow") or "link" (only with the link).
+  //   An own idea (not on Strong Foodie): { coll: '', id: '', name, city: '', cat: 'own', photo: '', custom: true }
   // groupPicks/{id}/votes/{uid}: { choice: <index in places>, name, updatedAt }
   // Anyone with the link sees the vote; voting needs an account. The app uses the
   // same documents (Rork batch 33).
@@ -347,7 +353,9 @@ function declineCookies(){
     coll: p.coll, id: p.id, name: String(p.name || '').slice(0, 80), city: String(p.where || p.town || '').slice(0, 60),
     cat: p.cat || 'eat', photo: (Array.isArray(p.photos) && p.photos[0]) || '',
   });
-  const catEmoji = c => (CATS[c] || CATS.eat).emoji;
+  const catEmoji = c => (c === 'own' ? '✏️' : (CATS[c] || CATS.eat).emoji);
+  // An own idea: a place that is not on Strong Foodie, typed by the maker. It has no coll or id.
+  const isOwn = p => !!p && (p.custom === true || !p.coll || !p.id);
   const thumb = (photo, cat) => `<div class="wte-img">${photo ? `<img data-photo="${esc(photo)}" alt="" hidden>` : ''}<span>${catEmoji(cat)}</span></div>`;
 
   function whenText(d) {
@@ -358,6 +366,27 @@ function declineCookies(){
     return rtf.format(Math.round(ms / DAY), 'day');
   }
 
+  // Open votes from people this member follows, shared with followers. Needs the
+  // groupPicks list rule for visibility "followers"; without it the section stays away.
+  async function friendsPolls() {
+    try {
+      const f = await getDocs(query(collection(db, 'follows'), where('followerId', '==', me.uid)));
+      const ids = [...new Set(f.docs.map(d => d.data().followingId).filter(x => typeof x === 'string' && x && x !== me.uid))].slice(0, 100);
+      const out = [];
+      const add = s => s.docs.forEach(d => out.push({ id: d.id, ...d.data() }));
+      const byOwner = id => getDocs(query(collection(db, 'groupPicks'), where('visibility', '==', 'followers'), where('ownerId', '==', id))).then(add).catch(() => {});
+      for (let i = 0; i < ids.length; i += 10) {
+        const part = ids.slice(i, i + 10);
+        // One query per 10 people; if the rules can't check an "in" query, one per person.
+        try { add(await getDocs(query(collection(db, 'groupPicks'), where('visibility', '==', 'followers'), where('ownerId', 'in', part)))); }
+        catch (e) { if (e && e.code === 'permission-denied') await Promise.all(part.map(byOwner)); else throw e; }
+      }
+      const now = new Date();
+      return out.filter(m => m.status === 'open' && toDate(m.closesAt) && toDate(m.closesAt) > now)
+        .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0)).slice(0, 20);
+    } catch (e) { console.log('Votes from people you follow could not load:', e.code || e); return []; }
+  }
+
   // ── Start a vote ─────────────────────────────────────────────────────────
   async function startView() {
     hero('🗳️ Where are we eating?', "Can't decide with your friends? Pick a few places and let everyone vote.");
@@ -366,41 +395,56 @@ function declineCookies(){
       return;
     }
     root.innerHTML = '<p class="msg">Loading places…</p>';
-    const [loaded, wishSnap, mineSnap] = await Promise.all([
+    const [loaded, wishSnap, mineSnap, friends] = await Promise.all([
       loadPlaces(db).catch(() => ({ all: [] })),
       getDocs(collection(db, 'profiles', me.uid, 'wishlistItems')).catch(() => ({ docs: [] })),
       getDocs(query(collection(db, 'groupPicks'), where('ownerId', '==', me.uid))).catch(() => ({ docs: [] })),
+      friendsPolls(),
     ]);
     all = loaded.all || [];
     byKey = new Map(all.map(p => [`${p.coll}/${p.id}`, p]));
     const wish = wishSnap.docs.map(d => d.data()).map(w => byKey.get(`${w.placeCollection}/${w.placeDocId}`)).filter(Boolean).slice(0, 12);
     const mine = mineSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
     root.innerHTML = `
+      ${friends.length ? `<section class="wte-mine wte-friends"><p class="section-label">From people you follow</p>${friends.map(m => {
+        const closes = toDate(m.closesAt);
+        const names = (m.places || []).map(x => x && x.name).filter(Boolean);
+        const shown = names.slice(0, 3).join(' · ') + (names.length > 3 ? ` +${names.length - 3}` : '');
+        return `<a class="wte-row" href="where-to-eat.html?id=${encodeURIComponent(m.id)}"><span>${esc(m.title || 'Where are we eating?')}<span class="small" style="display:block;font-weight:400;margin-top:2px;">${esc(m.ownerName || 'A member')}${shown ? ' · ' + esc(shown) : ''}</span></span><span class="small">${closes ? 'closes ' + esc(closes.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })) : 'open'}</span></a>`;
+      }).join('')}</section>` : ''}
       <section class="wte-card">
         <h2>Start a vote</h2>
         <p class="sub">Pick 2 to 8 places and send the link to your friends. Everyone with the link can see the vote; voting needs a free account.</p>
         <label class="lab" for="wTitle">Question</label>
         <input class="field" id="wTitle" type="text" maxlength="80" value="Where are we eating?">
         <label class="lab" for="wFind">Add places</label>
-        <input class="field" id="wFind" type="search" placeholder="Search Strong Foodie, e.g. pizza or Amsterdam" autocomplete="off">
+        <input class="field" id="wFind" type="search" placeholder="Search Strong Foodie, or type your own idea" autocomplete="off">
         <ul class="wte-results" id="wResults"></ul>
         ${wish.length ? `<p class="lab">From your wishlist</p><div class="wte-chips">${wish.map(p => `<button class="chip" type="button" data-add="${esc(p.coll + '/' + p.id)}">${catEmoji(p.cat)} ${esc(p.name)}</button>`).join('')}</div>` : ''}
         <p class="lab">Your places <span class="count" id="wCount"></span></p>
         <ol class="wte-chosen" id="wChosen"></ol>
         <label class="lab" for="wDays">Voting closes</label>
         <select class="field" id="wDays"><option value="1">In 1 day</option><option value="3" selected>In 3 days</option><option value="7">In 7 days</option></select>
+        <label class="wte-check"><input type="checkbox" id="wFollowers" checked> <span>Show this vote to people who follow me</span></label>
         <button class="btn-main" type="button" id="wCreate">Start the vote</button>
       </section>
-      ${mine.length ? `<section class="wte-mine"><p class="section-label">Your votes</p>${mine.map(m => {
-        const closed = m.status === 'closed' || (toDate(m.closesAt) && toDate(m.closesAt) <= new Date());
-        return `<a class="wte-row" href="where-to-eat.html?id=${encodeURIComponent(m.id)}"><span>${esc(m.title || 'Where are we eating?')}</span><span class="small">${(m.places || []).length} places · ${closed ? 'closed' : 'open'}</span></a>`;
+      ${mine.length ? `<section class="wte-mine"><p class="section-label">My polls</p>${mine.map(m => {
+        const closes = toDate(m.closesAt), started = toDate(m.createdAt);
+        const closed = m.status === 'closed' || (closes && closes <= new Date());
+        const names = (m.places || []).map(x => x && x.name).filter(Boolean);
+        const shown = names.slice(0, 3).join(' · ') + (names.length > 3 ? ` +${names.length - 3}` : '');
+        const when = [started ? 'Started ' + started.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '',
+          closed ? 'closed' : closes ? 'closes ' + closes.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : 'open'].filter(Boolean).join(' · ');
+        return `<a class="wte-row" href="where-to-eat.html?id=${encodeURIComponent(m.id)}"><span>${esc(m.title || 'Where are we eating?')}${shown ? `<span class="small" style="display:block;font-weight:400;margin-top:2px;">${esc(shown)}</span>` : ''}</span><span class="small">${esc(when)}</span></a>`;
       }).join('')}</section>` : ''}`;
     drawChosen();
     const find = document.getElementById('wFind');
     find.addEventListener('input', () => drawResults(find.value));
+    find.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const b = document.querySelector('#wResults [data-add]:not([disabled])'); if (b) addPlace(b.dataset.add); else addOwn(find.value); } });
     root.addEventListener('click', e => {
       const add = e.target.closest('[data-add]');
       if (add) { addPlace(add.dataset.add); return; }
+      if (e.target.closest('[data-own]')) { addOwn(find.value); return; }
       const rm = e.target.closest('[data-remove]');
       if (rm) { chosen.splice(+rm.dataset.remove, 1); drawChosen(); drawResults(find.value); }
     });
@@ -418,6 +462,23 @@ function declineCookies(){
       return `<li><span class="wte-r-name">${catEmoji(p.cat)} ${esc(p.name)}</span><span class="small">${esc(p.where || p.town || '')}</span>
         <button class="chip${on ? ' on' : ''}" type="button" data-add="${esc(key)}"${on || chosen.length >= MAX ? ' disabled' : ''}>${on ? '✓ Added' : '+ Add'}</button></li>`;
     }).join('') : '<li class="small">Nothing found on Strong Foodie.</li>';
+    const typed = String(q).trim().slice(0, 80);
+    const dup = chosen.some(c => isOwn(c) && fold(c.name) === fold(typed));
+    list.innerHTML += `<li class="wte-own"><span class="wte-r-name">✏️ “${esc(typed)}”</span><span class="small">Not on Strong Foodie? Add it as your own idea.</span>
+      <button class="chip${dup ? ' on' : ''}" type="button" data-own="1"${dup || chosen.length >= MAX ? ' disabled' : ''}>${dup ? '✓ Added' : '+ Add'}</button></li>`;
+  }
+
+  function addOwn(text) {
+    const name = String(text || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+    if (name.length < 2) return;
+    if (chosen.length >= MAX) { toast('8 places is the most.'); return; }
+    if (chosen.some(c => isOwn(c) && fold(c.name) === fold(name))) return;
+    chosen.push({ coll: '', id: '', name, city: '', cat: 'own', photo: '', custom: true });
+    const find = document.getElementById('wFind');
+    find.value = '';
+    drawChosen();
+    drawResults('');
+    find.focus();
   }
 
   function addPlace(key) {
@@ -433,8 +494,8 @@ function declineCookies(){
   function drawChosen() {
     document.getElementById('wCount').textContent = `${chosen.length} / ${MAX}`;
     document.getElementById('wChosen').innerHTML = chosen.length
-      ? chosen.map((c, i) => `<li><span>${catEmoji(c.cat)} ${esc(c.name)}<span class="small"> · ${esc(c.city)}</span></span><button class="x" type="button" data-remove="${i}" aria-label="Remove ${esc(c.name)}">✕</button></li>`).join('')
-      : '<li class="small empty">No places yet. Search above or tap one from your wishlist.</li>';
+      ? chosen.map((c, i) => `<li><span>${catEmoji(c.cat)} ${esc(c.name)}<span class="small">${isOwn(c) ? ' · Own idea' : c.city ? ' · ' + esc(c.city) : ''}</span></span><button class="x" type="button" data-remove="${i}" aria-label="Remove ${esc(c.name)}">✕</button></li>`).join('')
+      : '<li class="small empty">No places yet. Search above, tap one from your wishlist, or type your own idea.</li>';
     document.getElementById('wCreate').disabled = chosen.length < 2;
   }
 
@@ -450,6 +511,7 @@ function declineCookies(){
       const ref = await addDoc(collection(db, 'groupPicks'), {
         ownerId: me.uid, ownerName: String(myName || 'A member').slice(0, 60), title, places: chosen,
         status: 'open', createdAt: serverTimestamp(), closesAt,
+        visibility: document.getElementById('wFollowers').checked ? 'followers' : 'link',
       });
       location.href = 'where-to-eat.html?id=' + encodeURIComponent(ref.id);
     } catch (e) {
@@ -509,8 +571,10 @@ function declineCookies(){
         const win = closed && winners.includes(i);
         const voted = mine && mine.choice === i;
         return `<article class="wte-opt${win ? ' win' : ''}${voted ? ' mine' : ''}">
-          <a class="wte-place" href="${esc(placeUrl(p))}">${thumb(p.photo, p.cat)}
-            <span class="wte-txt"><span class="wte-name">${win ? '🏆 ' : ''}${esc(p.name)}</span><span class="small">${esc(p.city)}${p.city ? ' · ' : ''}${esc((CATS[p.cat] || CATS.eat).label)}</span></span></a>
+          ${isOwn(p) ? `<div class="wte-place">${thumb('', 'own')}
+            <span class="wte-txt"><span class="wte-name">${win ? '🏆 ' : ''}${esc(p.name)}</span><span class="small">Own idea</span></span></div>`
+          : `<a class="wte-place" href="${esc(placeUrl(p))}">${thumb(p.photo, p.cat)}
+            <span class="wte-txt"><span class="wte-name">${win ? '🏆 ' : ''}${esc(p.name)}</span><span class="small">${esc(p.city)}${p.city ? ' · ' : ''}${esc((CATS[p.cat] || CATS.eat).label)}</span></span></a>`}
           <div class="wte-bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
           <p class="wte-votes"><b>${g.length} ${g.length === 1 ? 'vote' : 'votes'}</b>${g.length ? ' · ' + g.map(v => esc(v.name || 'A member')).join(', ') : ''}</p>
           ${closed ? '' : me ? `<button class="vote${voted ? ' on' : ''}" type="button" data-vote="${i}"${voted ? ' aria-pressed="true"' : ''}>${voted ? '✓ Your vote' : 'Vote'}</button>` : ''}

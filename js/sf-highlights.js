@@ -52,6 +52,13 @@ function placeHref(h) {
   const coll = COLLS.includes(pc) ? pc : (CATS[pc.toLowerCase()] ? CATS[pc.toLowerCase()].coll : '');
   return coll ? `plek.html?c=${encodeURIComponent(coll)}&id=${encodeURIComponent(h.placeId)}` : '';
 }
+// The category of the place a highlight links to (a gym is Health, even when the
+// highlight itself was filed under another category), else the highlight's own.
+function catOf(h) {
+  const pc = String(h.placeCategory || '').trim();
+  const byColl = Object.values(CATS).find(c => c.coll === pc);
+  return byColl || CATS[pc.toLowerCase()] || CATS[String(h.category || '').toLowerCase()] || null;
+}
 const DAY = 24 * 60 * 60 * 1000;
 export const isLive = h => { const d = toDate(h.createdAt); return !!d && Date.now() - d.getTime() < DAY; };
 const safeUrl = u => /^https?:\/\/[^\s]+$/i.test(String(u || '')) ? String(u) : '';
@@ -166,7 +173,7 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
   }
   function draw() {
     const h = list[i];
-    const cat = CATS[String(h.category || '').toLowerCase()];
+    const cat = catOf(h);
     const place = placeHref(h);
     const link = h.linkType === 'url' ? safeUrl(h.linkUrl) : '';
     const video = h.mediaType === 'video';
@@ -193,7 +200,7 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
           ${h.title ? `<p class="hl-title">${esc(h.title)}</p>` : ''}
           <div class="hl-links">
             ${cat ? `<span class="hl-pill">${cat.label}</span>` : ''}
-            ${place ? `<a class="hl-go" href="${place}">${esc(h.placeName || 'View place')} →</a>` : (h.placeName ? `<span class="hl-pill">📍 ${esc(h.placeName)}</span>` : '')}
+            ${place ? `<a class="hl-go" href="${place}"><span aria-hidden="true">${cat ? cat.emoji : '📍'}</span> ${esc(h.placeName || 'View place')} →</a>` : (h.placeName ? `<span class="hl-pill">📍 ${esc(h.placeName)}</span>` : '')}
             ${link ? `<a class="hl-go" href="${esc(link)}" target="_blank" rel="noopener nofollow ugc">Open link ↗</a>` : ''}
           </div>
         </div>
@@ -306,7 +313,7 @@ export async function highlightsRow(db, el, opts = {}) {
   el.innerHTML = `<section class="hl-sec" aria-label="${esc(title)}">
     <p class="hl-label">${esc(title)}</p>
     <div class="hl-row">${list.map((h, k) => {
-      const cat = CATS[String(h.category || '').toLowerCase()];
+      const cat = catOf(h);
       const label = [h.title || 'Highlight', h.mediaType === 'video' ? 'video' : '', showAuthor && h.authorName ? 'by ' + h.authorName : ''].filter(Boolean).join(', ');
       return `<button class="hl-item${h._featured ? ' hl-feat' : ''}" type="button" data-k="${k}" aria-label="${esc((h._featured ? 'Featured: ' : '') + label)}">
         <span class="hl-ring">${h._featured ? '<span class="hl-star" aria-hidden="true">★</span>' : ''}<span class="hl-thumb" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">${cat ? cat.emoji : '✨'}${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}</span>${h.mediaType === 'video' ? '<span class="hl-play" aria-hidden="true">▶</span>' : ''}</span>
