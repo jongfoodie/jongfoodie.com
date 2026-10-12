@@ -221,7 +221,7 @@
   import * as sfMod from "./js/sf-moderation.js?v=1";
   import { hasBlocked } from "./js/sf-blocks.js?v=1";
   import { publishedListsBy, listCard } from "./js/sf-memberlists.js?v=1";
-  import { badgeRow } from "./js/sf-badges.js?v=1";
+  import { badgeRow } from "./js/sf-badges.js?v=2";
 
   // A member's public profile: the same profiles, follows, userPlaces and
   // userReviews documents the app uses. Following someone here is the same
@@ -284,8 +284,20 @@
   // ── Data ────────────────────────────────────────────────────────────────
   const state = { profile: null, profileLoaded: false, spots: [], reviews: [], lists: [], followers: null, following: null, isFollowing: false, city: '', flags: null };
 
+  // A follow counts once approved: status "accepted" or "approved", or no
+  // status (older follows). "pending" is a request to a private account that
+  // has not been answered yet, the same as in the app.
+  const followApproved = f => !!f && (f.status === undefined || f.status === null || f.status === 'accepted' || f.status === 'approved');
+
   async function countFollows(field) {
-    try { return (await getCountFromServer(query(collection(db, 'follows'), where(field, '==', uid)))).data().count; }
+    const all = query(collection(db, 'follows'), where(field, '==', uid));
+    try {
+      const [total, waiting] = await Promise.all([
+        getCountFromServer(all).then(s => s.data().count),
+        getCountFromServer(query(all, where('status', '==', 'pending'))).then(s => s.data().count).catch(() => 0),
+      ]);
+      return Math.max(0, total - waiting);
+    }
     catch (e) { console.log('Follow count could not load:', e.code || e); return null; }
   }
 
@@ -521,7 +533,7 @@
     renderActions(); renderStats();
     try {
       if (was) await deleteDoc(ref);
-      else await setDoc(ref, { followerId: me.uid, followingId: uid, createdAt: serverTimestamp() });
+      else await setDoc(ref, { followerId: me.uid, followingId: uid, status: 'accepted', createdAt: serverTimestamp() });
       toast(was ? 'Unfollowed ' + state.profile.displayName : 'You now follow ' + state.profile.displayName + ', in the app too');
     } catch (e) {
       console.log('Follow failed:', e.code || e);
@@ -712,7 +724,7 @@
 
     const tasks = [countFollows('followingId').then(n => { state.followers = n; })];
     if (!isOfficial) tasks.push(countFollows('followerId').then(n => { state.following = n; }));
-    if (me && me.uid !== uid) tasks.push(getDoc(doc(db, 'follows', `${me.uid}_${uid}`)).then(s => { state.isFollowing = s.exists(); }).catch(() => {}));
+    if (me && me.uid !== uid) tasks.push(getDoc(doc(db, 'follows', `${me.uid}_${uid}`)).then(s => { state.isFollowing = s.exists() && followApproved(s.data()); }).catch(() => {}));
     if (!state.locked) tasks.push((isOfficial ? loadOfficial() : loadMember()).catch(e => console.log('Places could not load:', e.code || e)));
     if (!state.locked && !isOfficial) tasks.push(publishedListsBy(db, uid).then(ls => { state.lists = ls; }).catch(e => console.log('Lists could not load:', e.code || e)));
     await Promise.all(tasks);

@@ -66,7 +66,11 @@ export async function memberStats(db, uid) {
   const [spots, reviews, followers, lists] = await Promise.all([
     getDocs(query(collection(db, 'userPlaces'), where('addedByUserId', '==', uid))).then(s => s.docs.map(d => d.data()).filter(r => r.name && r.hidden !== true)).catch(() => []),
     getDocs(query(collection(db, 'userReviews'), where('authorId', '==', uid))).then(s => s.docs.map(d => d.data()).filter(r => typeof r.rating === 'number' && r.rating > 0 && r.hidden !== true)).catch(() => []),
-    getCountFromServer(query(collection(db, 'follows'), where('followingId', '==', uid))).then(s => s.data().count).catch(() => 0),
+    // Followers: every follow minus requests still waiting for a private account.
+    Promise.all([
+      getCountFromServer(query(collection(db, 'follows'), where('followingId', '==', uid))).then(s => s.data().count),
+      getCountFromServer(query(collection(db, 'follows'), where('followingId', '==', uid), where('status', '==', 'pending'))).then(s => s.data().count).catch(() => 0),
+    ]).then(([all, waiting]) => Math.max(0, all - waiting)).catch(() => 0),
     getDocs(query(collection(db, 'memberLists'), where('authorId', '==', uid), where('status', '==', 'published'), where('hidden', '==', false))).then(s => s.size).catch(() => 0),
   ]);
   const cities = new Set(spots.map(r => normalise('userPlaces', 'x', r, true).destination).filter(Boolean));

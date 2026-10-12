@@ -371,7 +371,9 @@ function declineCookies(){
   async function friendsPolls() {
     try {
       const f = await getDocs(query(collection(db, 'follows'), where('followerId', '==', me.uid)));
-      const ids = [...new Set(f.docs.map(d => d.data().followingId).filter(x => typeof x === 'string' && x && x !== me.uid))].slice(0, 100);
+      // Only approved follows: a request to a private account that is still waiting doesn't count.
+      const approved = x => x.status === undefined || x.status === null || x.status === 'accepted' || x.status === 'approved';
+      const ids = [...new Set(f.docs.map(d => d.data()).filter(approved).map(x => x.followingId).filter(x => typeof x === 'string' && x && x !== me.uid))].slice(0, 100);
       const out = [];
       const add = s => s.docs.forEach(d => out.push({ id: d.id, ...d.data() }));
       const byOwner = id => getDocs(query(collection(db, 'groupPicks'), where('visibility', '==', 'followers'), where('ownerId', '==', id))).then(add).catch(() => {});

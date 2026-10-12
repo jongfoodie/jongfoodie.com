@@ -74,13 +74,16 @@ export async function collectNotifications(db, uid, now = Date.now()) {
 
   async function followers() {
     const s = await getDocs(query(collection(db, 'follows'), where('followingId', '==', uid)));
-    const rows = s.docs.map(d => d.data()).filter(f => ok(f.followerId) && ms(f.createdAt) >= since)
-      .sort((a, b) => ms(b.createdAt) - ms(a.createdAt)).slice(0, 20);
+    // Only approved follows: a request to a private account that is still
+    // waiting is answered in the app.
+    const approved = f => f.status === undefined || f.status === null || f.status === 'accepted' || f.status === 'approved';
+    const rows = s.docs.map(d => d.data()).filter(f => ok(f.followerId) && approved(f) && ms(f.acceptedAt || f.createdAt) >= since)
+      .sort((a, b) => ms(b.acceptedAt || b.createdAt) - ms(a.acceptedAt || a.createdAt)).slice(0, 20);
     const out = [];
     for (const f of rows) {
       const p = await person(f.followerId);
       if (!p) continue;
-      out.push({ kind: 'follow', time: ms(f.createdAt), icon: '👤', html: `<b>${esc(p.name)}</b> started following you`, href: `/member.html?u=${encodeURIComponent(f.followerId)}` });
+      out.push({ kind: 'follow', time: ms(f.acceptedAt || f.createdAt), icon: '👤', html: `<b>${esc(p.name)}</b> started following you`, href: `/member.html?u=${encodeURIComponent(f.followerId)}` });
     }
     return out;
   }

@@ -325,7 +325,7 @@ function declineCookies(){
     ]);
     const byKey = new Map((loaded.all || []).map(p => [`${p.coll}/${p.id}`, p]));
     const R = reviews.filter(r => inYear(r.createdAt)), S = spots.filter(s => inYear(s.createdAt)), H = highlights.filter(h => inYear(h.createdAt));
-    const B = been.filter(b => inYear(b.createdAt)), W = wish.filter(w => inYear(w.createdAt)), L = lists.filter(l => inYear(l.createdAt)), F = followers.filter(f => inYear(f.createdAt));
+    const B = been.filter(b => inYear(b.createdAt)), W = wish.filter(w => inYear(w.createdAt)), L = lists.filter(l => inYear(l.createdAt)), F = followers.filter(f => (f.status === undefined || f.status === null || f.status === 'accepted' || f.status === 'approved') && inYear(f.acceptedAt || f.createdAt));
 
     // Places this year: reviewed, added or ticked off. Their category and city.
     const places = new Map();
