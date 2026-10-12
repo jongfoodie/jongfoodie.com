@@ -5,14 +5,21 @@
       {
         "appID": "XG99TUL7K7.app.rork.mia79cz0112thtz7aygip",
         "appIDs": ["XG99TUL7K7.app.rork.mia79cz0112thtz7aygip"],
-        "paths": ["/p/*", "/stad/*", "/best/*", "/guide/*", "/plek.html", "/member.html"],
+        "paths": ["/p/*", "/stad/*", "/best/*", "/guide/*", "/plek.html", "/member.html", "/battle.html", "/wishlist.html", "/list.html", "/list/*", "/where-to-eat.html", "/recap.html"],
         "components": [
-          { "/": "/p/*", "comment": "A place" },
-          { "/": "/stad/*", "comment": "A destination" },
-          { "/": "/best/*", "comment": "A best-of list" },
-          { "/": "/guide/*", "comment": "A guide" },
-          { "/": "/plek.html", "comment": "A place, older address" },
-          { "/": "/member.html", "comment": "A member profile" }
+          {"/": "/p/*", "comment": "A place"},
+          {"/": "/stad/*", "comment": "A destination"},
+          {"/": "/best/*", "comment": "A best-of list"},
+          {"/": "/guide/*", "comment": "A guide"},
+          {"/": "/plek.html", "comment": "A place, older address"},
+          {"/": "/member.html", "comment": "A member profile"},
+          {"/": "/battle.html", "comment": "Battle"},
+          {"/": "/wishlist.html", "comment": "A shared wishlist"},
+          {"/": "/list.html", "comment": "A member's list"},
+          {"/": "/list/*", "comment": "A member's list, short address"},
+          {"/": "/where-to-eat.html", "comment": "Where are we eating? A vote"},
+          {"/": "/recap.html", "comment": "Your year on Strong Foodie"},
+          {"/": "/account.html", "?": {"ref": "?*"}, "comment": "An invite link"}
         ]
       }
     ]
