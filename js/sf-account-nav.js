@@ -10,6 +10,7 @@
 // (site/home.announcement: text, link, until), at the top of every page.
 // Signed in, a bell 🔔 with notifications sits next to it (js/sf-notify.js,
 // loaded only for members).
+// A magnifier before it opens search.html (places and people), on every page.
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -56,6 +57,12 @@ const css = `
   .sf-acct-avatar:hover { color: #fff; opacity: 0.9; }
   .sf-acct-wrap { display: flex; align-items: center; gap: 10px; }
   .nav-actions .sf-acct { margin-right: 8px; }
+  .sf-search { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(26,18,8,0.15); background: #FFFDF9; color: #3D2F1A; text-decoration: none; }
+  .sf-search:hover { border-color: #D4521A; color: #D4521A; }
+  .sf-search.on { background: #FBF3EF; border-color: #D4521A; color: #B8461A; }
+  .sf-search svg { display: block; }
+  .nav-actions .sf-search, .sf-acct-wrap .sf-search { margin-right: 2px; }
+  nav > .sf-search { margin-left: 12px; }
   /* Phones: on the crowded homepage bar only the icon, elsewhere "👤 Log in" */
   @media (max-width: 600px) {
     .nav-actions .sf-acct:not(.sf-acct-avatar) { padding: 7px 11px; }
@@ -75,6 +82,14 @@ function mount() {
   a.innerHTML = '👤<span class="sf-acct-label"> Log in</span>';
   a.setAttribute('aria-label', 'Log in');
 
+  // Search (search.html): a magnifier just before the account button.
+  const s = document.createElement('a');
+  s.className = 'sf-search' + (page() === 'search.html' ? ' on' : '');
+  s.href = '/search.html';
+  s.setAttribute('aria-label', 'Search places and people');
+  if (page() === 'search.html') s.setAttribute('aria-current', 'page');
+  s.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+
   const actions = nav.querySelector('.nav-actions');
   const burger = nav.querySelector('.hamburger');
   if (actions) {
@@ -89,6 +104,7 @@ function mount() {
   } else {
     nav.appendChild(a);
   }
+  a.parentNode.insertBefore(s, a);
 
   // Same entry at the top of the phone menu.
   const menu = document.getElementById('mobileNav');
@@ -98,6 +114,10 @@ function mount() {
     m.href = loginHref();
     m.textContent = '👤 Log in';
     menu.insertBefore(m, menu.firstChild);
+    const ms = document.createElement('a');
+    ms.href = '/search.html';
+    ms.textContent = '🔍 Search places and people';
+    m.after(ms);
   }
   return { a, m };
 }

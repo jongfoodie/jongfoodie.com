@@ -1842,7 +1842,8 @@
             </span></a>`;
         }).join('')
       : `<div class="sr-empty">No places found for “${esc(q)}”. Try a dish, a city or a category.</div>`)
-      + (results.length > MAX_DROPDOWN ? `<button class="sr-more" type="button" data-all>Show all ${results.length} results →</button>` : '');
+      + (results.length > MAX_DROPDOWN ? `<button class="sr-more" type="button" data-all>Show all ${results.length} results →</button>` : '')
+      + `<a class="sr-more" style="text-decoration:none;" href="search.html?q=${encodeURIComponent(q.trim())}">Search all places and people →</a>`;
     box.hidden = false;
     input.setAttribute('aria-expanded', 'true');
   }

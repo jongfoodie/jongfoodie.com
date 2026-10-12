@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Search Strong Foodie: restaurants, bars, shops, culture, gyms and hotels from Amsterdam to the world, and the members who share them.">
+<meta name="robots" content="noindex, follow">
+<title>Search | Strong Foodie</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="Search Strong Foodie">
+<meta property="og:description" content="Find places and people on Strong Foodie.">
+<meta property="og:url" content="https://strongfoodie.com/search.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .msg a { color: var(--accent); }
+
+
+  .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .lab { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1rem 0 0.4rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .field:focus { outline: none; border-color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; color: var(--ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .chip:disabled { opacity: 0.55; cursor: default; }
+  .chip.danger { color: #A32323; border-color: rgba(163,35,35,0.35); }
+  .btn-main { display: inline-block; margin-top: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 24px; padding: 12px 24px; font: 600 15px 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  .btn-main:disabled { opacity: 0.5; cursor: default; }
+  .share-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .share-row .field { flex: 1 1 220px; min-width: 0; }
+  .count { font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ── Search (search.html): Places and People, the same as the app's search screen ── */
+  .wrapper { max-width: 760px; }
+  .s-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 2.6rem); line-height: 1.1; margin-bottom: 1rem; }
+  .s-bar { display: flex; align-items: center; gap: 0.6rem; }
+  .s-field { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 0.6rem; background: var(--warm-white); border: 1.5px solid var(--accent); border-radius: 999px; padding: 0 6px 0 18px; height: 56px; }
+  .s-field svg { flex: none; color: var(--muted); }
+  .s-field input { flex: 1 1 auto; min-width: 0; border: none; outline: none; background: transparent; font: 400 17px 'DM Sans', sans-serif; color: var(--ink); }
+  .s-field input::placeholder { color: #7A6B58; }
+  .s-field input::-webkit-search-cancel-button { display: none; }
+  .s-clear { flex: none; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--tag-bg); color: var(--ink-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .s-cancel { flex: none; background: none; border: none; color: var(--ink-soft); font: 500 15px 'DM Sans', sans-serif; padding: 12px 4px; cursor: pointer; }
+  .s-cancel:hover { color: var(--accent); }
+  .s-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 1px solid rgba(26,18,8,0.12); margin: 1.1rem 0 0.9rem; }
+  .s-tab { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -1px; padding: 14px 0; font: 500 16px 'DM Sans', sans-serif; color: #6E604E; cursor: pointer; }
+  .s-tab[aria-selected="true"] { border-bottom-color: var(--ink); color: var(--ink); font-weight: 700; }
+  .s-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .s-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 15px; border-radius: 999px; border: 1px solid rgba(26,18,8,0.14); background: #fff; color: var(--ink); font: 500 14px 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
+  .s-chip .n { color: #6E604E; }
+  .s-chip:hover:not(:disabled) { border-color: var(--accent); }
+  .s-chip[aria-pressed="true"] { background: #B8461A; border-color: #B8461A; color: #fff; font-weight: 700; }
+  .s-chip[aria-pressed="true"] .n { color: #fff; opacity: 0.9; }
+  .s-chip:disabled { opacity: 0.45; cursor: default; }
+  .s-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: 14px; color: #6E604E; min-height: 40px; }
+  .s-link { background: none; border: none; color: var(--ink-soft); font: 500 14px 'DM Sans', sans-serif; padding: 10px 0; cursor: pointer; }
+  .s-link:hover { color: var(--accent); }
+  .s-list { list-style: none; display: flex; flex-direction: column; }
+  .s-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(26,18,8,0.08); }
+  .s-go { display: flex; align-items: center; gap: 14px; flex: 1 1 auto; min-width: 0; color: var(--ink); text-decoration: none; }
+  .s-go:hover .s-name { color: var(--accent); }
+  .s-thumb { position: relative; width: 60px; height: 60px; border-radius: 14px; overflow: hidden; flex: none; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .s-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .s-avatar { border-radius: 50%; color: #fff; font-size: 20px; font-weight: 700; }
+  .s-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .s-name { font-size: 16px; font-weight: 700; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .s-nameline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+  .s-meta { font-size: 14px; color: #6E604E; line-height: 1.4; }
+  .s-tag { align-self: flex-start; font-size: 12px; font-weight: 500; color: var(--ink-soft); background: var(--tag-bg); border-radius: 999px; padding: 1px 9px; }
+  .s-lock { font-size: 12px; color: #6E604E; }
+  .s-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 112px; height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--ink); background: #fff; color: var(--ink); font: 500 15px 'DM Sans', sans-serif; cursor: pointer; }
+  .s-btn:disabled { opacity: 0.6; cursor: default; }
+  .s-btn.saved { border-color: #B8461A; background: var(--accent-pale); color: #B8461A; font-weight: 700; }
+  .s-btn.follow { border-color: #B8461A; background: #B8461A; color: #fff; font-weight: 700; }
+  .s-btn.requested { border-color: rgba(26,18,8,0.3); background: var(--tag-bg); color: var(--ink-soft); }
+  .s-you { flex: none; font-size: 14px; color: #6E604E; padding: 0 8px; }
+  .s-empty { padding: 1.5rem 0; color: var(--ink-soft); }
+  .s-empty p { margin-bottom: 0.8rem; font-size: 16px; color: var(--ink); }
+  .s-add { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; background: #B8461A; color: #fff; text-decoration: none; font-weight: 700; }
+  .s-add:hover { opacity: 0.92; }
+  .s-more { margin-top: 1rem; }
+  .s-loading { padding: 1.5rem 0; color: #6E604E; }
+  @media (max-width: 640px) {
+    .s-field { height: 48px; padding-left: 14px; }
+    .s-field input { font-size: 16px; }
+    .s-chips { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px 0.6rem; padding: 2px 16px 4px; }
+    .s-row { gap: 12px; padding: 10px 0; }
+    .s-go { gap: 12px; }
+    .s-thumb { width: 52px; height: 52px; border-radius: 12px; font-size: 22px; }
+    .s-name { font-size: 15px; }
+    .s-meta { font-size: 13px; }
+    .s-btn { min-width: 92px; font-size: 14px; padding: 0 12px; }
+  }
+  .s-clear[hidden] { display: none; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .wrapper { padding: 1.5rem 16px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+</style>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {
+    if (window.__mcLoaded) return;
+    window.__mcLoaded = true;
+    var m = document.createElement('script');
+    m.id = 'mcjs'; m.async = true;
+    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
+    document.head.appendChild(m);
+  }
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
+  <a href="index.html">🏠 Home</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="about.html">👤 About</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Strong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Eat</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="hotel.html">Stay</a></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
+    <li><a href="map.html">Map</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+
+<main class="wrapper">
+  <h1 class="s-title">Search</h1>
+  <form class="s-bar" id="sForm" role="search" action="search.html">
+    <div class="s-field">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sInput" name="q" type="search" enterkeyhint="search" autocomplete="off" aria-label="Search places and people" placeholder="Search places, cities, food or people">
+      <button type="button" class="s-clear" id="sClear" aria-label="Clear search" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <button type="button" class="s-cancel" id="sCancel">Cancel</button>
+  </form>
+  <div class="s-tabs" role="tablist" aria-label="What to search">
+    <button type="button" class="s-tab" role="tab" id="tabPlaces" aria-selected="true" aria-controls="sPanel">Places</button>
+    <button type="button" class="s-tab" role="tab" id="tabPeople" aria-selected="false" aria-controls="sPanel">People</button>
+  </div>
+  <div id="sPanel" role="tabpanel"><p class="s-loading">Loading…</p></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Strong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+    loadMailchimp();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+  loadMailchimp();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module">
+  // Search: one place to find places and people, the same as the app's search screen (Rork batch 53).
+  // Places: every Strong Foodie place plus the places members added (labelled), from js/sf-places.js:
+  //   places of private accounts only when you follow them (approved), nothing hidden or by a blocked member.
+  // People: members by name or city. Leaves out members Strong Foodie blocked, members you blocked
+  //   and members who blocked you. Follow a private account = a request (status "pending").
+  // Save puts a place on your wishlist (profiles/{uid}/wishlistItems), the same document as the place page.
+  // Recent searches are the places and members you opened from here, kept on this device only.
+  // search.html?q=pizza&tab=people opens with that search.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, addDoc, setDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { CATS, esc, fold, loadPlaces, placeUrl, photoTools, normalise } from "./js/sf-places.js?v=7";
+  import { loadFlags, isBlocked, trustedMark } from "./js/sf-moderation.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const { hydratePhotos } = photoTools(db);
+
+  const PAGE = 40;
+  const RECENT_KEY = 'sf_search_recent';
+  const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
+  const colourOf = s => COLOURS[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLOURS.length];
+  const initialsOf = name => String(name || '?').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+  const memberUrl = uid => `member.html?u=${encodeURIComponent(uid)}`;
+  const approved = s => s === undefined || s === null || s === 'accepted' || s === 'approved';
+  const ICON_SAVE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v16l-5-3.5L7 20z"/></svg>';
+  const ICON_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  const S = {
+    q: '', tab: 'places', cat: 'all', shown: PAGE,
+    me: null, places: null, people: null, flags: null,
+    saved: new Map(), follows: new Map(), myBlocks: new Set(), blockedMe: new Map(),
+  };
+  const $ = id => document.getElementById(id);
+  const input = $('sInput'), panel = $('sPanel');
+
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+  const loginHref = () => '/account.html?next=' + encodeURIComponent('/search.html' + location.search);
+
+  // ── Recent searches: on this device only ─────────────────────────────
+  function readRecent() {
+    try {
+      const r = JSON.parse(localStorage.getItem(RECENT_KEY) || '{}');
+      return { places: Array.isArray(r.places) ? r.places : [], people: Array.isArray(r.people) ? r.people : [] };
+    } catch (e) { return { places: [], people: [] }; }
+  }
+  function writeRecent(r) { try { localStorage.setItem(RECENT_KEY, JSON.stringify(r)); } catch (e) {} }
+  function remember(kind, key) {
+    if (kind !== 'places' && kind !== 'people') return;
+    const r = readRecent();
+    r[kind] = [key].concat(r[kind].filter(k => k !== key)).slice(0, 10);
+    writeRecent(r);
+  }
+
+  // ── Data ─────────────────────────────────────────────────────────────
+  async function loadAll() {
+    const [loaded, flags, profSnap] = await Promise.all([
+      loadPlaces(db).catch(e => { console.log('Places could not load:', e.code || e); return { all: [] }; }),
+      loadFlags(db),
+      getDocs(collection(db, 'profiles')).catch(e => { console.log('Members could not load:', e.code || e); return { docs: [] }; }),
+    ]);
+    S.flags = flags;
+    S.places = (loaded.all || []).slice();
+    S.people = profSnap.docs
+      .map(d => ({ uid: d.id, ...d.data() }))
+      .filter(p => typeof p.displayName === 'string' && p.displayName.trim() && !p.deletedAt && p.isTestProfile !== true && !isBlocked(flags, p.uid))
+      .map(p => {
+        const name = p.displayName.trim();
+        const city = typeof p.city === 'string' ? p.city.trim() : '';
+        return { uid: p.uid, name, city, photo: typeof p.photoUrl === 'string' ? p.photoUrl : '', isPrivate: p.isPrivate === true, _name: fold(name), _hay: fold(name + ' ' + city) };
+      });
+  }
+
+  // Your wishlist, who you follow, who you blocked, and the places of private accounts you may see.
+  async function loadMine(user) {
+    S.saved = new Map(); S.follows = new Map(); S.myBlocks = new Set(); S.blockedMe = new Map();
+    if (!user) return;
+    const none = { docs: [] };
+    const [wish, fol, blocks] = await Promise.all([
+      getDocs(collection(db, 'profiles', user.uid, 'wishlistItems')).catch(() => none),
+      getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid))).catch(() => none),
+      getDocs(query(collection(db, 'blocks'), where('blockerId', '==', user.uid))).catch(() => none),
+    ]);
+    wish.docs.forEach(d => { const x = d.data(); if (x.kind === 'place' && x.placeDocId) S.saved.set(`${x.placeCollection || ''}/${x.placeDocId}`, d.id); });
+    fol.docs.forEach(d => { const x = d.data(); if (x.followingId) S.follows.set(x.followingId, approved(x.status) ? 'accepted' : 'pending'); });
+    blocks.docs.forEach(d => { const x = d.data(); if (x.blockedId) S.myBlocks.add(x.blockedId); });
+    const privateOk = S.people.filter(m => m.isPrivate && (m.uid === user.uid || S.follows.get(m.uid) === 'accepted')).map(m => m.uid).slice(0, 50);
+    if (!privateOk.length) return;
+    const have = new Set(S.places.map(p => p.coll + '/' + p.id));
+    const snaps = await Promise.all(privateOk.map(uid => getDocs(query(collection(db, 'userPlaces'), where('addedByUserId', '==', uid))).catch(() => none)));
+    snaps.forEach(snap => snap.docs.forEach(d => {
+      const r = d.data();
+      if (!r.name || r.hidden === true || have.has('userPlaces/' + d.id)) return;
+      S.places.push(normalise('userPlaces', d.id, r, true));
+      have.add('userPlaces/' + d.id);
+    }));
+  }
+
+  // Has this member blocked you? Checked for the members on screen, once each.
+  async function checkBlockedMe(list) {
+    if (!S.me) return;
+    const todo = list.filter(m => m.uid !== S.me.uid && !S.blockedMe.has(m.uid)).slice(0, 30);
+    if (!todo.length) return;
+    todo.forEach(m => S.blockedMe.set(m.uid, false));
+    const res = await Promise.all(todo.map(m => getDoc(doc(db, 'blocks', `${m.uid}_${S.me.uid}`)).then(s => s.exists()).catch(() => false)));
+    let changed = false;
+    todo.forEach((m, i) => { if (res[i]) { S.blockedMe.set(m.uid, true); changed = true; } });
+    if (changed) render();
+  }
+
+  // ── Searching ────────────────────────────────────────────────────────
+  // The same scoring as the search on the homepage.
+  function searchPlaces(q) {
+    const terms = fold(q).split(/\s+/).filter(Boolean);
+    if (!terms.length) return [];
+    const out = [];
+    for (const p of S.places) {
+      let score = 0;
+      for (const t of terms) {
+        let s = 0;
+        if (p._name.startsWith(t)) s = 100;
+        else if (p._name.includes(' ' + t)) s = 70;
+        else if (p._name.includes(t)) s = 50;
+        else if (p._place.includes(t)) s = 35;
+        else if (p._kind.includes(t)) s = 25;
+        else if (t.length >= 4 && p._text.includes(t)) s = 8;
+        if (!s) { score = 0; break; }
+        score += s;
+      }
+      if (score) out.push({ p, score: score + (p.rating || 0) + (p.member ? -5 : 0) + (p.closed ? -20 : 0) });
+    }
+    return out.sort((a, b) => b.score - a.score || a.p.name.localeCompare(b.p.name)).map(x => x.p);
+  }
+  const visiblePerson = m => !S.myBlocks.has(m.uid) && S.blockedMe.get(m.uid) !== true;
+  function searchPeople(q) {
+    const terms = fold(q).split(/\s+/).filter(Boolean);
+    if (!terms.length) return [];
+    return S.people
+      .filter(m => visiblePerson(m) && terms.every(t => m._hay.includes(t)))
+      .map(m => ({ m, score: (m._name.startsWith(terms[0]) ? 100 : m._name.includes(terms[0]) ? 50 : 10) + (S.flags && S.flags.trusted.has(m.uid) ? 5 : 0) }))
+      .sort((a, b) => b.score - a.score || a.m.name.localeCompare(b.m.name))
+      .map(x => x.m);
+  }
+  const isSaved = p => S.saved.has(p.coll + '/' + p.id) || S.saved.has('/' + p.id);
+
+  // ── Rows ─────────────────────────────────────────────────────────────
+  function placeRow(p) {
+    const cat = CATS[p.cat] || CATS.eat;
+    const key = p.coll + '/' + p.id;
+    const saved = isSaved(p);
+    const meta = [cat.label, p.where].filter(Boolean).join(' · ') + (p.rating ? ` · ★ ${p.rating}` : '') + (p.closed ? ' · Closed' : '');
+    const photo = p.photos && p.photos[0];
+    return `<li class="s-row">
+      <a class="s-go" href="${placeUrl(p)}" data-recent="places" data-key="${esc(key)}">
+        <span class="s-thumb" style="background:${cat.tint};" aria-hidden="true">${esc(p.emoji || cat.emoji)}${photo ? `<img alt="" data-photo="${esc(photo)}" hidden>` : ''}</span>
+        <span class="s-txt">
+          <span class="s-name">${esc(p.name)}</span>
+          <span class="s-meta">${esc(meta)}</span>
+          ${p.member ? '<span class="s-tag">Added by a member</span>' : ''}
+        </span>
+      </a>
+      <button type="button" class="s-btn${saved ? ' saved' : ''}" data-save="${esc(key)}" aria-pressed="${saved}" aria-label="${saved ? 'Saved' : 'Save'}: ${esc(p.name)}">${saved ? ICON_CHECK + 'Saved' : ICON_SAVE + 'Save'}</button>
+    </li>`;
+  }
+  function personRow(m) {
+    const st = S.follows.get(m.uid);
+    const mine = S.me && S.me.uid === m.uid;
+    const label = `${esc(m.name)}`;
+    const btn = mine ? '<span class="s-you">You</span>'
+      : st === 'accepted' ? `<button type="button" class="s-btn" data-follow="${esc(m.uid)}" aria-label="Following ${label}, tap to unfollow">Following</button>`
+      : st === 'pending' ? `<button type="button" class="s-btn requested" data-follow="${esc(m.uid)}" aria-label="Requested to follow ${label}, tap to cancel">Requested</button>`
+      : `<button type="button" class="s-btn follow" data-follow="${esc(m.uid)}" aria-label="Follow ${label}">Follow</button>`;
+    return `<li class="s-row">
+      <a class="s-go" href="${memberUrl(m.uid)}" data-recent="people" data-key="${esc(m.uid)}">
+        <span class="s-thumb s-avatar" style="background:${colourOf(m.uid)};" aria-hidden="true">${esc(initialsOf(m.name))}${m.photo ? `<img alt="" data-photo="${esc(m.photo)}" data-full hidden>` : ''}</span>
+        <span class="s-txt">
+          <span class="s-nameline"><span class="s-name">${esc(m.name)}</span>${trustedMark(S.flags, m.uid)}${m.isPrivate ? '<span class="s-lock">🔒 Private</span>' : ''}</span>
+          ${m.city ? `<span class="s-meta">${esc(m.city)}</span>` : ''}
+        </span>
+      </a>
+      ${btn}
+    </li>`;
+  }
+  const recentHead = kind => `<div class="s-head"><span>Recent searches</span><button type="button" class="s-link" data-clear="${kind}">Clear history</button></div>`;
+  const moreBtn = (shown, total) => total > shown ? '<button type="button" class="chip s-more" data-more>Show more</button>' : '';
+
+  function placesHtml() {
+    const q = S.q.trim();
+    if (!q) {
+      const byKey = new Map(S.places.map(p => [p.coll + '/' + p.id, p]));
+      const list = readRecent().places.map(k => byKey.get(k)).filter(Boolean);
+      if (!list.length) return '<p class="s-empty">No recent searches yet. Try “pizza”, “Istanbul” or “hotel”.</p>';
+      return recentHead('places') + `<ul class="s-list">${list.map(placeRow).join('')}</ul>`;
+    }
+    const found = searchPlaces(q);
+    if (!found.length) {
+      return `<div class="s-empty"><p>Nothing found for “${esc(q)}”.</p><a class="s-add" href="add.html">Not on Strong Foodie? Add it as a spot</a></div>`;
+    }
+    const counts = {};
+    found.forEach(p => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
+    if (S.cat !== 'all' && !counts[S.cat]) S.cat = 'all';
+    const inCat = S.cat === 'all' ? found : found.filter(p => p.cat === S.cat);
+    const chips = [['all', 'All', found.length]].concat(Object.keys(CATS).map(k => [k, CATS[k].label, counts[k] || 0]))
+      .map(([k, label, n]) => `<button type="button" class="s-chip" data-cat="${k}" aria-pressed="${S.cat === k}"${n ? '' : ' disabled'}>${esc(label)} <span class="n">${n}</span></button>`).join('');
+    const shown = inCat.slice(0, S.shown);
+    return `<div class="s-chips" role="group" aria-label="Category">${chips}</div>
+      <div class="s-head"><span role="status">${inCat.length} ${inCat.length === 1 ? 'place' : 'places'}</span></div>
+      <ul class="s-list">${shown.map(placeRow).join('')}</ul>${moreBtn(shown.length, inCat.length)}`;
+  }
+  function peopleHtml() {
+    const q = S.q.trim();
+    if (!q) {
+      const byId = new Map(S.people.map(m => [m.uid, m]));
+      const list = readRecent().people.map(id => byId.get(id)).filter(m => m && visiblePerson(m));
+      if (!list.length) return '<p class="s-empty">No recent searches yet. Search a member by name or city.</p>';
+      checkBlockedMe(list);
+      return recentHead('people') + `<ul class="s-list">${list.map(personRow).join('')}</ul>`;
+    }
+    const found = searchPeople(q);
+    if (!found.length) return `<div class="s-empty"><p>No members found for “${esc(q)}”.</p></div>`;
+    const shown = found.slice(0, S.shown);
+    checkBlockedMe(shown);
+    return `<div class="s-head"><span role="status">${found.length} ${found.length === 1 ? 'member' : 'members'}</span></div>
+      <ul class="s-list">${shown.map(personRow).join('')}</ul>${moreBtn(shown.length, found.length)}`;
+  }
+
+  function render() {
+    $('tabPlaces').setAttribute('aria-selected', String(S.tab === 'places'));
+    $('tabPeople').setAttribute('aria-selected', String(S.tab === 'people'));
+    $('sClear').hidden = !S.q;
+    if (!S.places || !S.people) { panel.innerHTML = '<p class="s-loading">Loading…</p>'; return; }
+    panel.innerHTML = S.tab === 'places' ? placesHtml() : peopleHtml();
+    hydratePhotos(panel);
+  }
+  let urlTimer = 0;
+  function syncUrl() {
+    clearTimeout(urlTimer);
+    urlTimer = setTimeout(() => {
+      const u = new URL(location.href);
+      if (S.q.trim()) u.searchParams.set('q', S.q.trim()); else u.searchParams.delete('q');
+      if (S.tab === 'people') u.searchParams.set('tab', 'people'); else u.searchParams.delete('tab');
+      history.replaceState(null, '', u.pathname + u.search);
+    }, 300);
+  }
+
+  // ── Actions ──────────────────────────────────────────────────────────
+  async function toggleSave(key, btn) {
+    if (!S.me) { location.href = loginHref(); return; }
+    const p = S.places.find(x => x.coll + '/' + x.id === key);
+    if (!p) return;
+    btn.disabled = true;
+    try {
+      const existing = S.saved.get(key) || S.saved.get('/' + p.id);
+      if (existing) {
+        await deleteDoc(doc(db, 'profiles', S.me.uid, 'wishlistItems', existing));
+        S.saved.delete(key); S.saved.delete('/' + p.id);
+        toast('Removed from your wishlist');
+      } else {
+        const ref = await addDoc(collection(db, 'profiles', S.me.uid, 'wishlistItems'), {
+          kind: 'place', placeCollection: p.coll, placeDocId: p.id, placeName: p.name,
+          placeCategory: p.cat, city: p.where || '', source: 'web', createdAt: serverTimestamp(),
+        });
+        S.saved.set(key, ref.id);
+        toast('Saved to your wishlist');
+      }
+    } catch (e) { console.log('Wishlist not saved:', e.code || e); toast('Could not save. Please try again.'); }
+    render();
+  }
+  async function toggleFollow(uid, btn) {
+    if (!S.me) { location.href = loginHref(); return; }
+    const m = S.people.find(x => x.uid === uid);
+    if (!m || uid === S.me.uid) return;
+    btn.disabled = true;
+    const ref = doc(db, 'follows', `${S.me.uid}_${uid}`);
+    const st = S.follows.get(uid);
+    try {
+      if (st) {
+        await deleteDoc(ref);
+        S.follows.delete(uid);
+        toast(st === 'pending' ? 'Request cancelled' : 'Unfollowed ' + m.name);
+      } else {
+        const status = m.isPrivate ? 'pending' : 'accepted';
+        await setDoc(ref, { followerId: S.me.uid, followingId: uid, status, createdAt: serverTimestamp() });
+        S.follows.set(uid, status);
+        toast(status === 'pending' ? 'Follow request sent to ' + m.name : 'You now follow ' + m.name);
+      }
+    } catch (e) { console.log('Follow failed:', e.code || e); toast('That did not work. Please try again.'); }
+    render();
+  }
+
+  panel.addEventListener('click', e => {
+    const t = e.target.closest('[data-cat],[data-more],[data-clear],[data-save],[data-follow],a[data-recent]');
+    if (!t) return;
+    if (t.matches('a[data-recent]')) { remember(t.dataset.recent, t.dataset.key); return; }
+    if (t.dataset.cat) { S.cat = t.dataset.cat; S.shown = PAGE; render(); return; }
+    if (t.hasAttribute('data-more')) { S.shown += PAGE; render(); return; }
+    if (t.dataset.clear) { const r = readRecent(); r[t.dataset.clear] = []; writeRecent(r); render(); return; }
+    if (t.dataset.save) { toggleSave(t.dataset.save, t); return; }
+    if (t.dataset.follow) toggleFollow(t.dataset.follow, t);
+  });
+  input.addEventListener('input', () => { S.q = input.value; S.cat = 'all'; S.shown = PAGE; render(); syncUrl(); });
+  $('sForm').addEventListener('submit', e => { e.preventDefault(); input.blur(); });
+  $('sClear').addEventListener('click', () => { input.value = ''; S.q = ''; S.cat = 'all'; render(); syncUrl(); input.focus(); });
+  $('sCancel').addEventListener('click', () => {
+    if (S.q) { input.value = ''; S.q = ''; S.cat = 'all'; render(); syncUrl(); return; }
+    if (document.referrer && document.referrer.startsWith(location.origin) && history.length > 1) history.back();
+    else location.href = 'index.html';
+  });
+  function pickTab(tab) { S.tab = tab; S.shown = PAGE; render(); syncUrl(); }
+  $('tabPlaces').addEventListener('click', () => pickTab('places'));
+  $('tabPeople').addEventListener('click', () => pickTab('people'));
+  $('tabPlaces').addEventListener('keydown', e => { if (e.key === 'ArrowRight') { pickTab('people'); $('tabPeople').focus(); } });
+  $('tabPeople').addEventListener('keydown', e => { if (e.key === 'ArrowLeft') { pickTab('places'); $('tabPlaces').focus(); } });
+
+  // ── Start ────────────────────────────────────────────────────────────
+  const params = new URLSearchParams(location.search);
+  S.q = (params.get('q') || '').slice(0, 100);
+  S.tab = params.get('tab') === 'people' ? 'people' : 'places';
+  input.value = S.q;
+  render();
+  if (!S.q && window.matchMedia('(pointer: fine)').matches) input.focus();
+  const ready = loadAll().then(render);
+  onAuthStateChanged(auth, async user => {
+    S.me = user;
+    await ready;
+    await loadMine(user);
+    render();
+  });
+</script>
+
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
+</body>
+</html>
