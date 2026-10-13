@@ -452,6 +452,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://strongfoodie.com/p/brasserie-van-dam-MtyBt0MgTahWpNNlVhwP/</loc>
+    <lastmod>2026-10-13</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://strongfoodie.com/p/acarkent-gym-ZSv3rQAkrln6n5ZFl27S/</loc>
     <lastmod>2026-10-11</lastmod>
     <priority>0.5</priority>
@@ -477,8 +482,13 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://strongfoodie.com/p/joe-the-juice-rqUxeDIcunFyaFvWEUqq/</loc>
+    <lastmod>2026-10-13</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://strongfoodie.com/stad/amsterdam/</loc>
-    <lastmod>2026-10-07</lastmod>
+    <lastmod>2026-10-13</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -509,6 +519,11 @@
   <url>
     <loc>https://strongfoodie.com/stad/alkmaar/</loc>
     <lastmod>2026-10-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strongfoodie.com/stad/amstelveen/</loc>
+    <lastmod>2026-10-13</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -590,5 +605,10 @@
     <loc>https://strongfoodie.com/best/bars-worldwide/</loc>
     <lastmod>2026-08-24</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strongfoodie.com/list/best-burger-lxC39dt8AAjPKe0Shj6s/</loc>
+    <lastmod>2026-10-13</lastmod>
+    <priority>0.5</priority>
   </url>
 </urlset>
