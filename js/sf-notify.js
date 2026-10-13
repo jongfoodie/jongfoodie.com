@@ -6,6 +6,7 @@
 //   - a new member review of a place on your wishlist (userReviews)
 //   - a new guide                        (guides, published; publishedAt)
 //   - a new battle, and a battle's result (battles)
+//   - an invitation to a meetup you haven't answered yet (meetups, invited contains you)
 // Only "when did I last look" is stored, so the red badge shows what is new:
 //   profiles/{uid}/settings/notifications: { seenAt }
 // The app reads and writes the same document (Rork batch 18), so what you
@@ -117,6 +118,27 @@ export async function collectNotifications(db, uid, now = Date.now()) {
     return out;
   }
 
+  // Meetup invitations (Rork batch 54): the host put you in invited and you
+  // haven't answered yet. Answer on meetups.html or in the app.
+  async function meetupInvites() {
+    const s = await getDocs(query(collection(db, 'meetups'), where('invited', 'array-contains', uid)));
+    const out = [];
+    for (const d of s.docs) {
+      const m = d.data();
+      const at = m.invitedAt && typeof m.invitedAt === 'object' ? ms(m.invitedAt[uid]) : 0;
+      if (!ok(m.hostId) || at < since) continue;
+      const start = ['date', 'dateTime', 'startDate', 'startsAt', 'start', 'when'].map(k => ms(m[k])).find(Boolean) || 0;
+      if (start && start < now) continue;
+      const kind = [m.intent, m.type, m.mode].map(v => String(v || '').toLowerCase());
+      if (kind.includes('dating') || ['cancelled', 'canceled'].includes(String(m.status || '').toLowerCase())) continue;
+      const p = await person(m.hostId);
+      if (!p) continue;
+      const what = String(m.placeName || m.locationText || m.title || m.name || 'a meetup').slice(0, 80);
+      out.push({ kind: 'meetup', time: at, icon: '🤝', html: `<b>${esc(p.name)}</b> invited you to <b>${esc(what)}</b>`, href: `/meetups.html?id=${encodeURIComponent(d.id)}` });
+    }
+    return out;
+  }
+
   async function guides() {
     const s = await getDocs(query(collection(db, 'guides'), where('status', '==', 'published')));
     return guideItems(s.docs.map(d => d.data()), since);
@@ -128,7 +150,7 @@ export async function collectNotifications(db, uid, now = Date.now()) {
     return battleItems(list, new Map(), since, now);
   }
 
-  const parts = await Promise.allSettled([followers(), wishlistReviews(), guides(), battles()]);
+  const parts = await Promise.allSettled([followers(), wishlistReviews(), meetupInvites(), guides(), battles()]);
   parts.forEach(p => { if (p.status === 'rejected') console.log('Notifications: part not loaded:', p.reason && (p.reason.code || p.reason)); });
   return parts.flatMap(p => p.status === 'fulfilled' ? p.value : [])
     .filter(x => x.time && x.time <= now + 60000)
@@ -202,7 +224,7 @@ export function mountBell({ db, uid, anchor }) {
     const now = Date.now();
     panel.innerHTML = `<div class="sf-n-head"><h2>Notifications</h2><span>Last ${WINDOW_DAYS} days</span></div>`
       + (items.length ? `<ul class="sf-n-list">${items.map(x => `<li><a class="sf-n-item${x.time > shownSeen ? ' unread' : ''}" href="${esc(x.href)}"><span class="sf-n-icon" aria-hidden="true">${x.icon}</span><span class="sf-n-text">${x.html}<span class="sf-n-time">${esc(timeAgo(x.time, now))}</span></span></a></li>`).join('')}</ul>`
-        : '<p class="sf-n-empty">Nothing new yet. Follow members and save places to your wishlist: new followers, reviews of those places, new guides and battles show up here.</p>');
+        : '<p class="sf-n-empty">Nothing new yet. Follow members and save places to your wishlist: new followers, reviews of those places, meetup invitations, new guides and battles show up here.</p>');
   }
   function saveCache() {
     try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), items, seenAt })); } catch (e) {}

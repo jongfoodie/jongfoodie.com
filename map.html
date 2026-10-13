@@ -99,6 +99,17 @@
   .pop-by-sf { color: #D4521A; font-weight: 600; }
   .leaflet-popup-content a.pop-view { display: inline-block; margin: 6px 0 0; }
   .leaflet-popup-content a.pop-route { font-size: 11px; color: #D4521A; font-weight: 600; text-decoration: none; margin-left: 6px; }
+  /* Whose places: You, Strong Foodie, People you follow, other members (the same as the app's map) */
+  .chip.kind { display: inline-flex; align-items: center; gap: 6px; }
+  .chip.kind .dot { width: 10px; height: 10px; margin: 0; flex: none; }
+  .chip.kind[aria-pressed="true"] { background: #1A1208; color: #fff; border-color: #1A1208; }
+  .chip.kind[aria-pressed="false"] { color: var(--muted); }
+  .chip.kind[aria-pressed="false"] .dot { background: transparent !important; box-shadow: inset 0 0 0 2px currentColor; }
+  .chip.kind:disabled { opacity: 0.45; cursor: default; }
+  /* The name under every pin; names that would overlap wait until you zoom in */
+  .leaflet-tooltip.pin-label { background: rgba(255,253,249,0.96); border: 1px solid rgba(26,18,8,0.15); border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 1px 7px; font: 600 11px/1.5 'DM Sans', sans-serif; color: #1A1208; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+  .leaflet-tooltip.pin-label::before { display: none; }
+  .leaflet-tooltip.pin-label.off { visibility: hidden; }
 </style>
 <!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
 <script>
@@ -180,11 +191,8 @@
   <button class="chip" data-cat="culture" onclick="filterByCategory('culture')">🎭 Culture</button>
   <button class="chip" data-cat="health" onclick="filterByCategory('health')">💪 Health</button>
   <button class="chip" data-cat="stay" onclick="filterByCategory('stay')">🏨 Stay</button>
-  <span class="filter-sep" aria-hidden="true"></span>
-  <button class="chip active" data-source="all" onclick="filterBySource('all')">Everyone</button>
-  <button class="chip" data-source="sf" onclick="filterBySource('sf')">⭐ Strong Foodie</button>
-  <button class="chip" data-source="member" onclick="filterBySource('member')">👥 Members</button>
 </div>
+<div class="filter-row" id="kindChips" role="group" aria-label="Whose places to show"></div>
 <div class="map-layout" style="position:relative;">
   <div id="loadingBar" class="loading-bar">📍 Loading places...</div>
   <div class="spots-panel">
@@ -192,10 +200,6 @@
       <input class="search-input" type="text" placeholder="Search a place or city…" oninput="applyFilters()">
     </div>
     <div class="spots-count" id="spotsCount">Loading...</div>
-    <div class="map-legend">
-      <span><i class="dot dot-sf"></i> Strong Foodie review</span>
-      <span><i class="dot dot-member"></i> Added by a member</span>
-    </div>
     <div class="spots-list" id="spotsList"></div>
   </div>
   <div id="map"></div>
@@ -295,7 +299,8 @@ window.LEGACY_SPOTS = [
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { loadFlags, isBlocked } from "./js/sf-moderation.js?v=1";
 
   const firebaseConfig = {
@@ -306,7 +311,9 @@ window.LEGACY_SPOTS = [
     messagingSenderId: "1006154240382",
     appId: "1:1006154240382:web:45dc5562f8205364aa232f"
   };
-  const db = getFirestore(initializeApp(firebaseConfig));
+  const fbApp = initializeApp(firebaseConfig);
+  const db = getFirestore(fbApp);
+  const auth = getAuth(fbApp);
   // Pretty place address, the same rule as js/sf-core.js (placeUrl).
   const prettyUrl = (name, id) => '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/';
 
@@ -441,17 +448,31 @@ window.LEGACY_SPOTS = [
   const pinLayer = L.layerGroup().addTo(map);
 
   let places = [];
-  let filters = { country: 'all', cat: 'all', source: 'all' };
+  let filters = { country: 'all', cat: 'all' };
+
+  // Whose place it is, the same colours as the map in the app: You, Strong Foodie,
+  // People you follow (approved follows only) and, for everyone else, other members.
+  const KINDS = {
+    you:    { label: 'You',               color: '#D4521A' },
+    sf:     { label: 'Strong Foodie',     color: '#3E9B63' },
+    follow: { label: 'People you follow', color: '#C8901A' },
+    member: { label: 'Other members',     color: '#8A7A66' },
+  };
+  let me = null;
+  const following = new Set();
+  const kindsOn = new Set(Object.keys(KINDS));
+  const kindOf = p => p.source === 'sf' ? 'sf' : (me && p.ownerId === me ? 'you' : (following.has(p.ownerId) ? 'follow' : 'member'));
+  const kindList = () => me ? ['you', 'sf', 'follow', 'member'] : ['sf', 'member'];
+  const kindLabel = k => (!me && k === 'member') ? 'Members' : KINDS[k].label;
+  // A private account's places: only for themselves and their approved followers.
+  const allowed = p => !p.privateOwner || (me && (p.ownerId === me || following.has(p.ownerId)));
 
   function makeIcon(p) {
-    const color = CATS[p.cat].color;
-    const style = p.source === 'member'
-      ? `background:#fff;color:${color};border:3px solid ${color};`
-      : `background:${color};color:#fff;border:2px solid #fff;`;
+    const ring = KINDS[kindOf(p)].color;
     return L.divIcon({
       className: '',
-      html: `<div style="${style}border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`,
-      iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -22]
+      html: `<div style="background:#fff;border:3px solid ${ring};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 10px rgba(0,0,0,0.3);">${esc(p.emoji)}</div>`,
+      iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -22], tooltipAnchor: [0, 16]
     });
   }
 
@@ -460,9 +481,10 @@ window.LEGACY_SPOTS = [
     const photo = p.photo
       ? `<img ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : smallImg(p.photo)} alt="${esc(p.name)}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
       : '';
-    const by = p.source === 'member'
-      ? `<span class="pop-by">Added by ${esc(p.addedBy || 'a member')}</span>`
-      : `<span class="pop-by pop-by-sf">Strong Foodie review</span>`;
+    const k = kindOf(p);
+    const by = k === 'sf' ? `<span class="pop-by pop-by-sf">Strong Foodie review</span>`
+      : k === 'you' ? `<span class="pop-by">Your place</span>`
+      : `<span class="pop-by">Added by ${esc(p.addedBy || 'a member')}${k === 'follow' ? ' · you follow' : ''}</span>`;
     const route = (p.lat != null && p.lng != null)
       ? `<a class="pop-route" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Route ↗</a>` : '';
     return `<div style="width:210px;">
@@ -479,30 +501,81 @@ window.LEGACY_SPOTS = [
   }
 
   function addMarker(p) {
-    const marker = L.marker([p.lat, p.lng], { icon: makeIcon(p) });
+    const marker = L.marker([p.lat, p.lng], { icon: makeIcon(p), title: p.name, alt: p.name });
     marker.bindPopup(() => popupHtml(p));
+    marker.bindTooltip(esc(p.name), { permanent: true, direction: 'bottom', className: 'pin-label', opacity: 1, interactive: false });
     marker.on('popupopen', e => hydratePhotos(e.popup.getElement()));
     p.marker = marker;
   }
 
-  function visible(p) {
+  // Every pin has its name. Where names would overlap, the best-rated places keep
+  // theirs (Strong Foodie first on a tie); the others appear as you zoom in.
+  function declutter() {
+    const area = map.getBounds().pad(0.05);
+    const order = places.filter(p => p.marker && pinLayer.hasLayer(p.marker))
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (a.source === 'sf' ? -1 : 0) - (b.source === 'sf' ? -1 : 0) || a.name.localeCompare(b.name));
+    const taken = [];
+    for (const p of order) {
+      const t = p.marker.getTooltip();
+      const el = t && t.getElement();
+      if (!el) continue;
+      if (!area.contains(p.marker.getLatLng())) { el.classList.add('off'); continue; }
+      el.classList.remove('off');
+      const r = el.getBoundingClientRect();
+      if (taken.some(s => r.left < s.right + 2 && r.right > s.left - 2 && r.top < s.bottom + 1 && r.bottom > s.top - 1)) el.classList.add('off');
+      else taken.push(r);
+    }
+  }
+  let declutterTimer = 0;
+  const declutterSoon = () => { clearTimeout(declutterTimer); declutterTimer = setTimeout(declutter, 60); };
+  map.on('zoomend moveend resize', declutterSoon);
+
+  // Country, category and search; whose places comes on top of that.
+  function matches(p) {
+    if (!allowed(p)) return false;
     if (filters.country !== 'all' && p.country !== filters.country) return false;
     if (filters.cat !== 'all' && p.cat !== filters.cat) return false;
-    if (filters.source !== 'all' && p.source !== filters.source) return false;
     const q = (document.querySelector('.search-input').value || '').toLowerCase().trim();
     if (q && !(`${p.name} ${p.address} ${p.city}`.toLowerCase().includes(q))) return false;
     return true;
   }
+  const visible = p => matches(p) && kindsOn.has(kindOf(p));
+
+  function buildKindChips() {
+    const counts = {};
+    places.filter(matches).forEach(p => { const k = kindOf(p); counts[k] = (counts[k] || 0) + 1; });
+    document.getElementById('kindChips').innerHTML = kindList().map(k => {
+      const n = counts[k] || 0;
+      return `<button type="button" class="chip kind" data-kind="${k}" aria-pressed="${kindsOn.has(k) && n > 0}"${n ? '' : ' disabled'}><i class="dot" style="background:${KINDS[k].color};"></i>${esc(kindLabel(k))} <small>${n}</small></button>`;
+    }).join('');
+  }
+  document.getElementById('kindChips').addEventListener('click', e => {
+    const b = e.target.closest('[data-kind]');
+    if (!b || b.disabled) return;
+    const k = b.dataset.kind;
+    if (kindsOn.has(k)) {
+      // At least one stays on.
+      const counts = {};
+      places.filter(matches).forEach(p => { counts[kindOf(p)] = (counts[kindOf(p)] || 0) + 1; });
+      const othersOn = kindList().filter(x => x !== k && kindsOn.has(x) && counts[x]);
+      if (!othersOn.length) return;
+      kindsOn.delete(k);
+    } else kindsOn.add(k);
+    applyFilters(true);
+  });
 
   function applyFilters(fit) {
     const shown = places.filter(visible);
     pinLayer.clearLayers();
     shown.forEach(p => { if (p.marker) pinLayer.addLayer(p.marker); });
     buildList(shown);
+    buildKindChips();
     if (fit) {
       const pts = shown.filter(p => p.marker).map(p => [p.lat, p.lng]);
-      if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 14 });
+      if (pts.length === 1) map.setView(pts[0], 16);
+      else if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 14 });
     }
+    declutterSoon();
   }
   window.applyFilters = () => applyFilters(false);
 
@@ -511,11 +584,10 @@ window.LEGACY_SPOTS = [
   }
   window.filterByCountry = c => { filters.country = c; setActive('country', c); applyFilters(true); };
   window.filterByCategory = c => { filters.cat = c; setActive('cat', c); applyFilters(true); };
-  window.filterBySource = s => { filters.source = s; setActive('source', s); applyFilters(true); };
 
   function buildList(shown) {
     const list = document.getElementById('spotsList');
-    const members = shown.filter(p => p.source === 'member').length;
+    const members = shown.filter(p => p.source === 'member' && kindOf(p) !== 'you').length;
     document.getElementById('spotsCount').textContent =
       `${shown.length} places` + (members ? ` · ${members} added by members` : '');
     list.innerHTML = '';
@@ -526,8 +598,10 @@ window.LEGACY_SPOTS = [
       const thumb = p.photo
         ? `<img class="spot-thumb" ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : smallImg(p.photo)} loading="lazy" alt=""><span class="spot-emoji photo-fallback">${esc(p.emoji)}</span>`
         : `<span class="spot-emoji">${esc(p.emoji)}</span>`;
-      const badge = p.source === 'member'
-        ? `<span class="badge badge-member">Member</span>`
+      const k = kindOf(p);
+      const badge = k === 'you' ? `<span class="badge badge-member">You</span>`
+        : k === 'follow' ? `<span class="badge badge-member">Following</span>`
+        : k === 'member' ? `<span class="badge badge-member">Member</span>`
         : (p.isNew ? `<span class="badge badge-new">NEW</span>` : '');
       div.innerHTML = `
         ${thumb}
@@ -550,7 +624,7 @@ window.LEGACY_SPOTS = [
 
   function buildCountryButtons() {
     const counts = {};
-    places.forEach(p => { counts[p.country] = (counts[p.country] || 0) + 1; });
+    places.filter(allowed).forEach(p => { counts[p.country] = (counts[p.country] || 0) + 1; });
     const order = ['netherlands', 'usa', 'aruba', 'turkey'];
     const keys = Object.keys(counts).sort((a, b) => {
       const ia = order.indexOf(a), ib = order.indexOf(b);
@@ -560,6 +634,8 @@ window.LEGACY_SPOTS = [
     const row = document.getElementById('countryFilters');
     row.innerHTML = `<button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>` +
       keys.map(k => `<button class="chip chip-dark" data-country="${esc(k)}" onclick="filterByCountry('${esc(k)}')">${countryLabel(k)} <small>${counts[k]}</small></button>`).join('');
+    if (filters.country !== 'all' && !counts[filters.country]) filters.country = 'all';
+    setActive('country', filters.country);
   }
 
   // ── Loading
@@ -600,7 +676,7 @@ window.LEGACY_SPOTS = [
       .then(s => { if (s.exists() && s.data().isPrivate === true) privateOwners.add(uid); })
       .catch(() => {})));
 
-    return raw.filter(r => !privateOwners.has(r.addedByUserId)).map(r => {
+    return raw.map(r => {
       const lat = num(r.lat), lng = num(r.lng);
       const cat = normCat(r.category, 'eat');
       const created = toDate(r.createdAt);
@@ -610,7 +686,7 @@ window.LEGACY_SPOTS = [
         name: r.name, address, city: r.city || '', type: r.type || '', hours: r.hours || '',
         rating: r.rating || null, emoji: r.emoji || CATS[cat].emoji,
         photo: r.photoUrl || (Array.isArray(r.photos) ? r.photos[0] : '') || '',
-        addedBy: r.addedByName || '', lat, lng,
+        addedBy: r.addedByName || '', ownerId: r.addedByUserId || '', privateOwner: privateOwners.has(r.addedByUserId), lat, lng,
         country: normCountry(r.country || r.countryLabel, lat, lng),
         isNew: !!created && (now - created) < 30 * 864e5,
       };
@@ -688,15 +764,39 @@ window.LEGACY_SPOTS = [
     const qs = new URLSearchParams(location.search);
     const qCat = qs.get('cat'), qSource = qs.get('source'), qCountry = qs.get('country');
     if (qCat && CATS[qCat]) { filters.cat = qCat; setActive('cat', qCat); }
-    if (qSource === 'sf' || qSource === 'member') { filters.source = qSource; setActive('source', qSource); }
+    // source=sf: only Strong Foodie; source=member: only places members added.
+    if (qSource === 'sf') { kindsOn.clear(); kindsOn.add('sf'); }
+    if (qSource === 'member') kindsOn.delete('sf');
     if (qCountry && places.some(p => p.country === qCountry)) { filters.country = qCountry; setActive('country', qCountry); }
     applyFilters(!!(qCat || qSource || qCountry));
 
-    const missing = places.filter(p => p.source === 'member' && p.lat == null);
+    const missing = places.filter(p => p.source === 'member' && p.lat == null && allowed(p));
     if (missing.length) { await geocodeMissing(missing); applyFilters(false); }
   }
 
-  init().catch(e => {
+  // Signed in: your own places and those of people you follow get their own colour.
+  async function loadMe(user) {
+    me = user ? user.uid : null;
+    following.clear();
+    if (user) {
+      try {
+        const s = await getDocs(query(collection(db, 'follows'), where('followerId', '==', user.uid)));
+        s.docs.forEach(d => { const x = d.data(); const st = x.status; if (x.followingId && (st === undefined || st === null || st === 'accepted' || st === 'approved')) following.add(x.followingId); });
+      } catch (e) { console.log('Follows not loaded:', e.code || e); }
+    }
+  }
+  let ready = null;
+  onAuthStateChanged(auth, async user => {
+    await loadMe(user);
+    if (!ready) return;
+    await ready;
+    places.forEach(p => { if (p.marker) p.marker.setIcon(makeIcon(p)); });
+    buildCountryButtons();
+    applyFilters(false);
+  });
+
+  ready = init();
+  ready.catch(e => {
     console.error('Map failed to load:', e);
     document.getElementById('loadingBar').textContent = 'Could not load the map. Please refresh.';
   });

@@ -11,6 +11,7 @@
 // Signed in, a bell 🔔 with notifications sits next to it (js/sf-notify.js,
 // loaded only for members).
 // A magnifier before it opens search.html (places and people), on every page.
+// Signed in, the phone menu also has "My meetups" (meetups.html).
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -108,7 +109,7 @@ function mount() {
 
   // Same entry at the top of the phone menu.
   const menu = document.getElementById('mobileNav');
-  let m = null;
+  let m = null, mm = null;
   if (menu) {
     m = document.createElement('a');
     m.href = loginHref();
@@ -118,8 +119,14 @@ function mount() {
     ms.href = '/search.html';
     ms.textContent = '🔍 Search places and people';
     m.after(ms);
+    // Only for members: shown once signed in.
+    mm = document.createElement('a');
+    mm.href = '/meetups.html';
+    mm.textContent = '🤝 My meetups';
+    mm.style.display = 'none';
+    m.after(mm);
   }
-  return { a, m };
+  return { a, m, mm };
 }
 
 const els = mount();
@@ -178,9 +185,10 @@ document.addEventListener('keydown', e => {
 let bellLoaded = false;
 onAuthStateChanged(auth, async user => {
   if (!els) return;
-  const { a, m } = els;
+  const { a, m, mm } = els;
   if (!user) {
-    if (bellLoaded) import('./sf-notify.js?v=1').then(n => n.unmountBell()).catch(() => {});
+    if (bellLoaded) import('./sf-notify.js?v=2').then(n => n.unmountBell()).catch(() => {});
+    if (mm) mm.style.display = 'none';
     a.className = 'sf-acct';
     a.href = loginHref();
     a.innerHTML = '👤<span class="sf-acct-label"> Log in</span>';
@@ -202,8 +210,9 @@ onAuthStateChanged(auth, async user => {
   a.title = (name || 'My account') + ' · My account';
   a.setAttribute('aria-label', 'My account');
   if (m) { m.href = 'account.html'; m.textContent = '👤 My account' + (name ? ' (' + name + ')' : ''); }
+  if (mm) mm.style.display = '';
   try {
-    const n = await import('./sf-notify.js?v=1');
+    const n = await import('./sf-notify.js?v=2');
     bellLoaded = true;
     if (auth.currentUser && auth.currentUser.uid === user.uid) n.mountBell({ db, uid: user.uid, anchor: a });
   } catch (e) { console.log('Notifications not available:', e.message || e); }

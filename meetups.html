@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your Strong Foodie meetups: see who's going, answer invitations and invite people you follow.">
+<meta name="robots" content="noindex, follow">
+<title>Meetups | Strong Foodie</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="A meetup on Strong Foodie">
+<meta property="og:description" content="Eat together with other foodies. See who's going and join on Strong Foodie.">
+<meta property="og:url" content="https://strongfoodie.com/meetups.html">
+<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .msg a { color: var(--accent); }
+
+
+  .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .lab { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1rem 0 0.4rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .field:focus { outline: none; border-color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; color: var(--ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .chip:disabled { opacity: 0.55; cursor: default; }
+  .chip.danger { color: #A32323; border-color: rgba(163,35,35,0.35); }
+  .btn-main { display: inline-block; margin-top: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 24px; padding: 12px 24px; font: 600 15px 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  .btn-main:disabled { opacity: 0.5; cursor: default; }
+  .share-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .share-row .field { flex: 1 1 220px; min-width: 0; }
+  .count { font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ── Meetups (meetups.html): your meetups, who's going and invitations, the same as the app (Rork batch 54) ── */
+  .wrapper { max-width: 760px; }
+  .m-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 2.6rem); line-height: 1.1; margin-bottom: 0.4rem; }
+  .m-intro { color: #6E604E; font-size: 15px; margin-bottom: 1.6rem; }
+  .m-back { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); text-decoration: none; font-weight: 500; margin-bottom: 0.4rem; }
+  .m-back:hover { color: var(--accent); }
+  .m-sec { margin-bottom: 2rem; }
+  .m-sec > .section-label { margin-bottom: 0.4rem; }
+  .m-list { list-style: none; display: flex; flex-direction: column; }
+  .m-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(26,18,8,0.08); }
+  .m-go { display: flex; align-items: center; gap: 14px; flex: 1 1 auto; min-width: 0; color: var(--ink); text-decoration: none; }
+  a.m-go:hover .m-name { color: var(--accent); }
+  .m-date { flex: none; width: 60px; height: 60px; border-radius: 14px; background: var(--accent-pale); color: #B8461A; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+  .m-date b { font: 700 22px 'DM Sans', sans-serif; }
+  .m-date small { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+  .m-date.past { background: var(--tag-bg); color: #6E604E; }
+  .m-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .m-name { font-size: 16px; font-weight: 700; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .m-meta { font-size: 14px; color: #6E604E; line-height: 1.4; }
+  .m-pill { align-self: flex-start; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 9px; background: var(--tag-bg); color: var(--ink-soft); }
+  .m-pill.host { background: #1A1208; color: #fff; }
+  .m-pill.going { background: var(--green-light); color: var(--green); }
+  .m-pill.invited { background: var(--accent-pale); color: #B8461A; }
+  .m-btns { flex: none; display: flex; gap: 8px; }
+  .m-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 112px; height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--ink); background: #fff; color: var(--ink); font: 500 15px 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  .m-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .m-btn:disabled { opacity: 0.6; cursor: default; }
+  .m-btn.fill { border-color: #B8461A; background: #B8461A; color: #fff; font-weight: 700; }
+  .m-btn.fill:hover:not(:disabled) { color: #fff; opacity: 0.92; }
+  .m-btn.grey { border-color: rgba(26,18,8,0.2); background: var(--tag-bg); color: var(--ink-soft); }
+  .m-btn.danger { border-color: rgba(163,35,35,0.45); color: #A32323; }
+  .m-empty { padding: 1.2rem 0; color: var(--ink-soft); font-size: 15px; }
+  .m-loading { padding: 1.5rem 0; color: #6E604E; }
+  .m-past summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--ink-soft); font-weight: 500; }
+  .m-past summary:hover { color: var(--accent); }
+
+  /* One meetup */
+  .m-head { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 1rem; }
+  .m-head .m-date { width: 72px; height: 72px; border-radius: 16px; }
+  .m-head .m-date b { font-size: 26px; }
+  .m-head h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.15; overflow-wrap: anywhere; }
+  .m-head .m-meta { font-size: 15px; margin-top: 4px; }
+  .m-head .m-meta a { color: var(--accent); }
+  .m-note { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1.1rem; margin-bottom: 1rem; white-space: pre-line; overflow-wrap: anywhere; }
+  .m-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; margin-bottom: 1.6rem; }
+  .m-bar.invite { border-color: #B8461A; background: var(--accent-pale); }
+  .m-bar p { flex: 1 1 220px; min-width: 0; font-size: 15px; line-height: 1.45; }
+  .m-bar p small { display: block; color: #6E604E; font-size: 13px; }
+  .m-av { position: relative; flex: none; width: 48px; height: 48px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; font-weight: 700; }
+  .m-av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .m-tag { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 9px; background: #1A1208; color: #fff; }
+  .m-nameline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+  .m-hidden-note { font-size: 14px; color: #6E604E; padding: 0.6rem 0; }
+
+  /* Invite sheet */
+  .m-sheet { border: none; padding: 0; margin: auto; width: min(560px, calc(100vw - 32px)); max-height: min(80vh, 720px); border-radius: 20px; background: var(--cream); color: var(--ink); box-shadow: 0 24px 64px rgba(26,18,8,0.3); }
+  .m-sheet::backdrop { background: rgba(26,18,8,0.45); }
+  .m-sheet-in { display: flex; flex-direction: column; max-height: min(80vh, 720px); }
+  .m-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem 0.6rem; }
+  .m-sheet-head h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .m-x { flex: none; width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--tag-bg); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; }
+  .m-sheet .field { margin: 0 1.2rem 0.4rem; width: auto; }
+  .m-full { margin: 0.2rem 1.2rem 0.4rem; padding: 0.6rem 0.9rem; border-radius: 12px; background: var(--accent-pale); color: #B8461A; font-weight: 700; font-size: 14px; }
+  .m-sheet-list { overflow-y: auto; padding: 0 1.2rem 1rem; }
+
+  @media (max-width: 640px) {
+    .m-row { gap: 12px; padding: 10px 0; flex-wrap: wrap; }
+    .m-go { gap: 12px; }
+    .m-date { width: 52px; height: 52px; border-radius: 12px; }
+    .m-date b { font-size: 19px; }
+    .m-name { font-size: 15px; }
+    .m-meta { font-size: 13px; }
+    .m-btn { min-width: 92px; font-size: 14px; padding: 0 12px; }
+    .m-row .m-btns { width: 100%; padding-left: 64px; }
+    .m-row .m-btns .m-btn { flex: 1 1 0; }
+    .m-row.person .m-btns { width: auto; padding-left: 0; }
+    .m-row.person .m-btns .m-btn { flex: none; }
+    .m-av { width: 44px; height: 44px; font-size: 15px; }
+    .m-bar p { flex-basis: 100%; }
+    .m-bar .m-btn { flex: 1 1 0; }
+    .m-sheet { width: 100vw; max-width: 100vw; max-height: 92vh; margin: auto 0 0; border-radius: 20px 20px 0 0; }
+    .m-sheet-in { max-height: 92vh; }
+  }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .wrapper { padding: 1.5rem 16px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+</style>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {
+    if (window.__mcLoaded) return;
+    window.__mcLoaded = true;
+    var m = document.createElement('script');
+    m.id = 'mcjs'; m.async = true;
+    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
+    document.head.appendChild(m);
+  }
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
+  <a href="index.html">🏠 Home</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
+  <a href="videos.html">🎬 Videos</a>
+  <a href="about.html">👤 About</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Strong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="reviews.html">Eat</a></li>
+    <li><a href="drink.html">Drink</a></li>
+    <li><a href="hotel.html">Stay</a></li>
+    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
+    <li><a href="map.html">Map</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+
+<main class="wrapper" id="mMain"><p class="m-loading">Loading…</p></main>
+<dialog class="m-sheet" id="mSheet" aria-labelledby="mSheetTitle">
+  <div class="m-sheet-in">
+    <div class="m-sheet-head"><h2 id="mSheetTitle">Invite</h2><button type="button" class="m-x" data-act="sheet-close" aria-label="Close">×</button></div>
+    <input class="field" id="mFind" type="search" autocomplete="off" placeholder="Search people you follow or who follow you" aria-label="Search people you follow or who follow you">
+    <div id="mFull"></div>
+    <div class="m-sheet-list" id="mSheetList"></div>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Strong Hotel</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+    loadMailchimp();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+  loadMailchimp();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script type="module">
+  // Meetups: your meetups, who's going and invitations, the same as the app (Rork batch 54).
+  // Meetups are planned in the app. meetups/{id} holds hostId, attendees (uids going,
+  // the host included), pendingRequests + requestNames (asked to join), declinedRequests,
+  // invited + inviteNames + invitedAt (invited by the host, no answer yet) and
+  // declinedInvites (said no to the invitation).
+  //   meetups.html          your meetups: invitations, upcoming (host, going, asked) and past
+  //   meetups.html?id={id}  one meetup: who's going; requests and invitations for the host;
+  //                         Join or Decline for someone invited; Ask to join for others.
+  // Who's going: the full list for the host, the people going and the people invited;
+  // everyone else sees the number only. The writes are the same as the app's, so the
+  // rules (VERSIE 13 OKTOBER) and the push notifications (notifyMeetupRequest) work the same.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, arrayUnion, arrayRemove, deleteField, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { esc, fold, photoTools } from "./js/sf-places.js?v=7";
+  import { loadFlags, isBlocked, trustedMark } from "./js/sf-moderation.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const { hydratePhotos } = photoTools(db);
+
+  const $ = id => document.getElementById(id);
+  const main = $('mMain'), sheet = $('mSheet'), find = $('mFind'), sheetList = $('mSheetList');
+  const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
+  const colourOf = s => COLOURS[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLOURS.length];
+  const initialsOf = name => String(name || '?').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
+  const approved = s => s === undefined || s === null || s === 'accepted' || s === 'approved';
+  const safeKey = u => /^[A-Za-z0-9_-]{1,128}$/.test(u);
+  const loginHref = () => '/account.html?next=' + encodeURIComponent('/meetups.html' + location.search);
+
+  // ── The meetup document, read the same way whatever the app named a field ──
+  const DATE_KEYS = ['date', 'dateTime', 'datetime', 'startDate', 'startsAt', 'startTime', 'start', 'when', 'scheduledAt', 'meetupDate', 'time'];
+  const MAX_KEYS = ['maxGuests', 'maxAttendees', 'maxPeople', 'maxParticipants', 'capacity', 'spots', 'groupSize'];
+  const NOTE_KEYS = ['note', 'description', 'details', 'message', 'text'];
+  function toMs(v) {
+    if (!v) return 0;
+    if (typeof v.toDate === 'function') return v.toDate().getTime();
+    if (v instanceof Date) return v.getTime();
+    if (typeof v === 'object' && typeof v.seconds === 'number') return v.seconds * 1000;
+    if (typeof v === 'number') return v > 1e12 ? v : (v > 1e9 ? v * 1000 : 0);
+    if (typeof v === 'string' && /\d{4}-\d{2}-\d{2}/.test(v)) { const t = Date.parse(v); return isNaN(t) ? 0 : t; }
+    return 0;
+  }
+  const list = v => Array.isArray(v) ? v.filter(x => typeof x === 'string' && x) : [];
+  const whenOf = m => { for (const k of DATE_KEYS) { const t = toMs(m[k]); if (t) return t; } return 0; };
+  const maxOf = m => { for (const k of MAX_KEYS) { const n = Number(m[k]); if (Number.isFinite(n) && n > 0) return Math.round(n); } return 0; };
+  const noteOf = m => { for (const k of NOTE_KEYS) if (typeof m[k] === 'string' && m[k].trim()) return m[k].trim().slice(0, 1000); return ''; };
+  // placeName, or locationText for a meetup without a place (a park, a padel court).
+  const titleOf = m => String(m.placeName || m.locationText || m.title || m.name || 'Meetup').trim().slice(0, 120) || 'Meetup';
+  const addressOf = m => typeof m.address === 'string' ? m.address.trim().slice(0, 200) : '';
+  const isCancelled = m => ['cancelled', 'canceled'].includes(String(m.status || '').toLowerCase());
+  const cityOf = m => String(typeof m.city === 'string' ? m.city : (typeof m.placeCity === 'string' ? m.placeCity : '')).trim();
+  const isDating = m => [m.intent, m.type, m.mode, m.kind].some(v => String(v || '').toLowerCase() === 'dating');
+  const goingOf = m => [...new Set([m.hostId, ...list(m.attendees)].filter(Boolean))];
+  const isFull = m => { const max = maxOf(m); return !!max && goingOf(m).length >= max; };
+  const started = m => { const t = whenOf(m); return !!t && t <= Date.now(); };
+  // The app stores placeId without its collection: plek.html finds the place by its id
+  // (Strong Foodie places and members' places alike).
+  function placeHref(m) {
+    const id = typeof m.placeDocId === 'string' ? m.placeDocId : (typeof m.placeId === 'string' ? m.placeId : '');
+    if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) return '';
+    const coll = typeof m.placeCollection === 'string' && /^[A-Za-z]{2,40}$/.test(m.placeCollection) ? m.placeCollection : '';
+    return coll ? `plek.html?c=${encodeURIComponent(coll)}&id=${encodeURIComponent(id)}` : `plek.html?id=${encodeURIComponent(id)}`;
+  }
+  const fmtDay = t => new Date(t).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).replace(',', '');
+  const fmtTime = t => new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const whenText = t => t ? `${fmtDay(t)} · ${fmtTime(t)}` : 'Date to be set';
+  function dateTile(t, past) {
+    if (!t) return '<span class="m-date" aria-hidden="true"><b>🍽️</b></span>';
+    const d = new Date(t);
+    return `<span class="m-date${past ? ' past' : ''}" aria-hidden="true"><b>${d.getDate()}</b><small>${esc(d.toLocaleDateString('en-GB', { month: 'short' }))}</small></span>`;
+  }
+
+  const S = { me: null, myName: '', flags: null, got: new Map(), asked: new Map(), myBlocks: new Set(), blockedMe: new Map(), id: '', m: null, mine: new Map(), circle: null, busy: false, leaveArmed: false };
+
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // ── Members ───────────────────────────────────────────────────────────
+  function person(uid) {
+    if (!S.asked.has(uid)) {
+      S.asked.set(uid, getDoc(doc(db, 'profiles', uid)).then(s => {
+        if (!s.exists()) return null;
+        const p = s.data();
+        const r = { uid, name: (typeof p.displayName === 'string' && p.displayName.trim()) || 'A member', city: typeof p.city === 'string' ? p.city.trim() : '',
+          photo: typeof p.photoUrl === 'string' ? p.photoUrl : '', gone: !!p.deletedAt || p.isTestProfile === true };
+        S.got.set(uid, r);
+        return r;
+      }).catch(() => null));
+    }
+    return S.asked.get(uid);
+  }
+  async function loadMyBlocks() {
+    S.myBlocks = new Set();
+    if (!S.me) return;
+    const s = await getDocs(query(collection(db, 'blocks'), where('blockerId', '==', S.me.uid))).catch(() => ({ docs: [] }));
+    s.docs.forEach(d => { const x = d.data(); if (x.blockedId) S.myBlocks.add(x.blockedId); });
+  }
+  // Has this member blocked you? Once per member.
+  async function checkBlockedMe(ids) {
+    if (!S.me) return;
+    const todo = ids.filter(u => u && u !== S.me.uid && !S.blockedMe.has(u)).slice(0, 300);
+    todo.forEach(u => S.blockedMe.set(u, false));
+    const res = await Promise.all(todo.map(u => getDoc(doc(db, 'blocks', `${u}_${S.me.uid}`)).then(s => s.exists()).catch(() => false)));
+    todo.forEach((u, i) => { if (res[i]) S.blockedMe.set(u, true); });
+  }
+  const hiddenMember = u => isBlocked(S.flags, u) || S.myBlocks.has(u) || S.blockedMe.get(u) === true || !!(S.got.get(u) && S.got.get(u).gone);
+  const nameOf = (u, fallback) => (S.got.get(u) && S.got.get(u).name) || fallback || 'A member';
+
+  function roleOf(m) {
+    const me = S.me && S.me.uid;
+    if (!me) return '';
+    if (m.hostId === me) return 'host';
+    if (list(m.attendees).includes(me)) return 'going';
+    if (list(m.invited).includes(me)) return 'invited';
+    if (list(m.pendingRequests).includes(me)) return 'requested';
+    if (list(m.declinedRequests).includes(me)) return 'declined';
+    if (list(m.declinedInvites).includes(me)) return 'saidno';
+    return '';
+  }
+
+  function personRow(uid, { tag = '', btns = '', fallback = '' } = {}) {
+    const p = S.got.get(uid);
+    const name = nameOf(uid, fallback);
+    return `<li class="m-row person">
+      <a class="m-go" href="member.html?u=${encodeURIComponent(uid)}">
+        <span class="m-av" style="background:${colourOf(uid)};" aria-hidden="true">${esc(initialsOf(name))}${p && p.photo ? `<img alt="" data-photo="${esc(p.photo)}" data-full hidden>` : ''}</span>
+        <span class="m-txt">
+          <span class="m-nameline"><span class="m-name">${esc(name)}</span>${tag ? `<span class="m-tag">${esc(tag)}</span>` : ''}${trustedMark(S.flags, uid)}</span>
+          ${p && p.city ? `<span class="m-meta">${esc(p.city)}</span>` : ''}
+        </span>
+      </a>${btns ? `<span class="m-btns">${btns}</span>` : ''}
+    </li>`;
+  }
+
+  // ── Your meetups ──────────────────────────────────────────────────────
+  const INTRO = '<h1 class="m-title">Meetups</h1><p class="m-intro">Plan a meetup in the Strong Foodie app. Here you see who\'s going, answer invitations and invite people.</p>';
+
+  function cardRow(m) {
+    const t = whenOf(m), past = !!t && t <= Date.now();
+    const role = roleOf(m);
+    const host = role === 'host' ? 'you' : nameOf(m.hostId, m.hostName);
+    const n = goingOf(m).length, max = maxOf(m);
+    const meta = [whenText(t), cityOf(m)].filter(Boolean).join(' · ');
+    const pill = { host: '<span class="m-pill host">Host</span>', going: '<span class="m-pill going">Going</span>', requested: '<span class="m-pill">Requested</span>', invited: '<span class="m-pill invited">Invited</span>' }[role] || '';
+    const sub = role === 'invited' ? `${esc(host)} invited you` : `Hosted by ${esc(host)} · ${n}${max ? '/' + max : ''} going`;
+    const btns = role === 'invited' && !past
+      ? `<span class="m-btns"><button type="button" class="m-btn fill" data-act="join" data-id="${esc(m.id)}"${isFull(m) ? ' disabled' : ''}>${isFull(m) ? 'Full' : 'Join'}</button><button type="button" class="m-btn" data-act="decline" data-id="${esc(m.id)}">Decline</button></span>`
+      : '';
+    return `<li class="m-row">
+      <a class="m-go" href="meetups.html?id=${encodeURIComponent(m.id)}">
+        ${dateTile(t, past)}
+        <span class="m-txt"><span class="m-name">${esc(titleOf(m))}</span><span class="m-meta">${esc(meta)}</span><span class="m-meta">${sub}</span>${pill}</span>
+      </a>${btns}
+    </li>`;
+  }
+
+  async function openList() {
+    if (!S.me) {
+      main.innerHTML = INTRO + `<div class="msg"><h2>Your meetups</h2><p>Log in to see the meetups you host, join and are invited to.</p><a class="btn-main" href="${loginHref()}">Log in</a></div>`;
+      return;
+    }
+    const none = { docs: [] };
+    const col = collection(db, 'meetups');
+    const me = S.me.uid;
+    const snaps = await Promise.all([
+      query(col, where('hostId', '==', me)),
+      query(col, where('attendees', 'array-contains', me)),
+      query(col, where('invited', 'array-contains', me)),
+      query(col, where('pendingRequests', 'array-contains', me)),
+    ].map(q => getDocs(q).catch(e => { console.log('Meetups not loaded:', e.code || e); return none; })));
+    S.mine = new Map();
+    snaps.forEach(s => s.docs.forEach(d => S.mine.set(d.id, { id: d.id, ...d.data() })));
+    const all = [...S.mine.values()].filter(m => m.hostId && !isDating(m) && !isCancelled(m) && (m.hostId === me || !isBlocked(S.flags, m.hostId)));
+    await Promise.all([...new Set(all.map(m => m.hostId))].map(person));
+    await checkBlockedMe([...new Set(all.map(m => m.hostId))]);
+    const visible = all.filter(m => m.hostId === me || (!S.myBlocks.has(m.hostId) && S.blockedMe.get(m.hostId) !== true));
+    const later = (a, b) => (whenOf(a) || 9e15) - (whenOf(b) || 9e15);
+    const invites = visible.filter(m => roleOf(m) === 'invited' && !started(m)).sort(later);
+    const upcoming = visible.filter(m => ['host', 'going', 'requested'].includes(roleOf(m)) && !started(m)).sort(later);
+    const past = visible.filter(m => ['host', 'going'].includes(roleOf(m)) && started(m)).sort((a, b) => whenOf(b) - whenOf(a)).slice(0, 20);
+    let html = INTRO;
+    if (invites.length) html += `<section class="m-sec" aria-label="Invitations"><p class="section-label">Invitations <span class="count">(${invites.length})</span></p><ul class="m-list">${invites.map(cardRow).join('')}</ul></section>`;
+    html += `<section class="m-sec" aria-label="Upcoming meetups"><p class="section-label">Upcoming <span class="count">(${upcoming.length})</span></p>`
+      + (upcoming.length ? `<ul class="m-list">${upcoming.map(cardRow).join('')}</ul>` : '<p class="m-empty">No meetups planned yet. Plan one in the Strong Foodie app, or open a meetup link a friend sent you.</p>')
+      + '</section>';
+    if (past.length) html += `<details class="m-sec m-past"><summary>Past meetups (${past.length})</summary><ul class="m-list">${past.map(cardRow).join('')}</ul></details>`;
+    main.innerHTML = html;
+  }
+
+  // ── One meetup ────────────────────────────────────────────────────────
+  const BACK = '<a class="m-back" href="meetups.html">← My meetups</a>';
+  const notFound = () => { main.innerHTML = BACK + '<div class="msg"><h2>Meetup not found</h2><p>This meetup was cancelled, or the link is not right.</p></div>'; };
+
+  async function openMeetup() {
+    let snap = null;
+    try { snap = await getDoc(doc(db, 'meetups', S.id)); } catch (e) { console.log('Meetup not loaded:', e.code || e); }
+    if (!snap || !snap.exists()) return notFound();
+    const m = { id: snap.id, ...snap.data() };
+    const me = S.me && S.me.uid;
+    if (!m.hostId || isDating(m) || isCancelled(m) || (m.hostId !== me && isBlocked(S.flags, m.hostId))) return notFound();
+    const ids = [...new Set([m.hostId, ...list(m.attendees), ...list(m.invited), ...list(m.pendingRequests), ...list(m.declinedInvites)])].slice(0, 200);
+    await Promise.all(ids.map(person));
+    await checkBlockedMe(ids);
+    if (me && m.hostId !== me && (S.blockedMe.get(m.hostId) === true || S.myBlocks.has(m.hostId))) return notFound();
+    S.m = m;
+    document.title = `${titleOf(m)} · Meetups | Strong Foodie`;
+    renderMeetup();
+  }
+
+  function renderMeetup() {
+    const m = S.m, me = S.me && S.me.uid, role = roleOf(m);
+    const t = whenOf(m), done = started(m);
+    const going = goingOf(m), n = going.length, max = maxOf(m), full = isFull(m);
+    const host = role === 'host' ? 'you' : nameOf(m.hostId, m.hostName);
+    const place = placeHref(m);
+    const meta = [whenText(t), cityOf(m)].filter(Boolean).map(esc).join(' · ') + (place ? ` · <a href="${esc(place)}">View the place</a>` : '');
+    const note = noteOf(m);
+    const address = addressOf(m);
+    const share = '<button type="button" class="m-btn" data-act="share">Share</button>';
+    let bar = '';
+    if (done) bar = `<div class="m-bar"><p><b>This meetup has passed.</b></p></div>`;
+    else if (!me) bar = `<div class="m-bar"><p><b>Want to come along?</b><small>Log in to ask the host if you can join.</small></p><a class="m-btn fill" href="${loginHref()}">Log in</a>${share}</div>`;
+    else if (role === 'host') bar = `<div class="m-bar"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button>${share}</div>`;
+    else if (role === 'invited') bar = `<div class="m-bar invite"><p><b>${esc(host)} invited you</b><small>${full ? 'This meetup is full.' : 'Are you coming?'}</small></p><button type="button" class="m-btn fill" data-act="join"${full ? ' disabled' : ''}>Join</button><button type="button" class="m-btn" data-act="decline">Decline</button></div>`;
+    else if (role === 'going') bar = `<div class="m-bar"><p><b>You're going</b><small>See you there.</small></p>${S.leaveArmed ? '<button type="button" class="m-btn danger" data-act="leave">Tap again to leave</button>' : '<button type="button" class="m-btn" data-act="leave">Leave</button>'}${share}</div>`;
+    else if (role === 'requested') bar = `<div class="m-bar"><p><b>Requested</b><small>The host will answer your request.</small></p><button type="button" class="m-btn" data-act="cancel-request">Cancel request</button></div>`;
+    else if (role === 'declined') bar = `<div class="m-bar"><p><b>Not this time</b><small>There are more meetups to join on Strong Foodie.</small></p></div>`;
+    else if (full) bar = `<div class="m-bar"><p><b>This meetup is full.</b></p>${share}</div>`;
+    else bar = `<div class="m-bar"><p><b>Want to come along?</b><small>The host decides who joins.</small></p><button type="button" class="m-btn fill" data-act="ask">Ask to join</button>${share}</div>`;
+
+    const canSee = role === 'host' || role === 'going' || role === 'invited';
+    const shown = [m.hostId, ...going.filter(u => u !== m.hostId)].filter(u => u === me || !hiddenMember(u));
+    let html = BACK + `<div class="m-head">${dateTile(t, done)}<div><h1>${esc(titleOf(m))}</h1><p class="m-meta">${meta}</p>${address && address !== titleOf(m) ? `<p class="m-meta">📍 ${esc(address)}</p>` : ''}<p class="m-meta">Hosted by ${role === 'host' ? 'you' : `<a href="member.html?u=${encodeURIComponent(m.hostId)}">${esc(host)}</a>`}</p></div></div>`
+      + (note ? `<p class="m-note">${esc(note)}</p>` : '') + bar
+      + `<section class="m-sec" aria-label="Going"><p class="section-label">Going <span class="count">(${n}${max ? '/' + max : ''})</span></p>`
+      + (canSee ? `<ul class="m-list">${shown.map(u => personRow(u, { tag: u === m.hostId ? 'Host' : '', fallback: u === m.hostId ? m.hostName : '' })).join('')}</ul>`
+        : `<p class="m-hidden-note">${n} going. Only the host and the people going can see who's going.</p>`)
+      + '</section>';
+
+    if (role === 'host') {
+      const names = m.requestNames && typeof m.requestNames === 'object' ? m.requestNames : {};
+      const inviteNames = m.inviteNames && typeof m.inviteNames === 'object' ? m.inviteNames : {};
+      const pending = list(m.pendingRequests).filter(u => !hiddenMember(u));
+      const invited = list(m.invited).filter(u => !hiddenMember(u));
+      const said = list(m.declinedInvites).filter(u => !hiddenMember(u));
+      if (pending.length) html += `<section class="m-sec" aria-label="Requests"><p class="section-label">Requests <span class="count">(${pending.length})</span></p><ul class="m-list">${pending.map(u => personRow(u, { fallback: names[u],
+        btns: done ? '' : `<button type="button" class="m-btn fill" data-act="accept" data-uid="${esc(u)}"${full ? ' disabled' : ''}>Accept</button><button type="button" class="m-btn" data-act="refuse" data-uid="${esc(u)}">Decline</button>` })).join('')}</ul></section>`;
+      if (invited.length) html += `<section class="m-sec" aria-label="Invited"><p class="section-label">Invited <span class="count">(${invited.length})</span></p><ul class="m-list">${invited.map(u => personRow(u, { fallback: inviteNames[u],
+        btns: done ? '' : `<button type="button" class="m-btn" data-act="uninvite" data-uid="${esc(u)}">Cancel invite</button>` })).join('')}</ul></section>`;
+      if (said.length) html += `<section class="m-sec" aria-label="Can't make it"><p class="section-label">Can't make it <span class="count">(${said.length})</span></p><ul class="m-list">${said.map(u => personRow(u, { fallback: inviteNames[u] })).join('')}</ul></section>`;
+    }
+    main.innerHTML = html;
+    hydratePhotos(main);
+  }
+
+  // ── Invite sheet (host) ───────────────────────────────────────────────
+  async function loadCircle() {
+    const none = { docs: [] };
+    const me = S.me.uid;
+    const [a, b] = await Promise.all([
+      getDocs(query(collection(db, 'follows'), where('followerId', '==', me))).catch(() => none),
+      getDocs(query(collection(db, 'follows'), where('followingId', '==', me))).catch(() => none),
+    ]);
+    const ids = new Set();
+    a.docs.forEach(d => { const x = d.data(); if (approved(x.status) && x.followingId) ids.add(x.followingId); });
+    b.docs.forEach(d => { const x = d.data(); if (approved(x.status) && x.followerId) ids.add(x.followerId); });
+    ids.delete(me);
+    const arr = [...ids].slice(0, 300);
+    await Promise.all(arr.map(person));
+    await checkBlockedMe(arr);
+    S.circle = arr.map(u => S.got.get(u)).filter(p => p && !hiddenMember(p.uid)).sort((x, y) => x.name.localeCompare(y.name));
+  }
+  function renderSheet() {
+    const m = S.m;
+    $('mSheetTitle').textContent = `Invite to ${titleOf(m)}`;
+    const full = isFull(m);
+    $('mFull').innerHTML = full ? '<p class="m-full">This meetup is full</p>' : '';
+    if (!S.circle) { sheetList.innerHTML = '<p class="m-loading">Loading…</p>'; return; }
+    if (!S.circle.length) { sheetList.innerHTML = '<p class="m-empty">Follow members, or get followers, and you can invite them here.</p>'; return; }
+    const q = fold(find.value.trim());
+    const rows = S.circle.filter(p => !q || fold(p.name + ' ' + p.city).includes(q));
+    if (!rows.length) { sheetList.innerHTML = `<p class="m-empty">No one found for “${esc(find.value.trim())}”.</p>`; return; }
+    const going = new Set(goingOf(m)), invited = new Set(list(m.invited)), asked = new Set(list(m.pendingRequests)), said = new Set(list(m.declinedInvites));
+    sheetList.innerHTML = `<ul class="m-list">${rows.map(p => {
+      const u = p.uid;
+      const btn = going.has(u) ? '<button type="button" class="m-btn grey" disabled>Going</button>'
+        : invited.has(u) ? '<button type="button" class="m-btn grey" disabled>Invited</button>'
+        : asked.has(u) ? '<button type="button" class="m-btn grey" disabled title="Answer it under Requests">Asked to join</button>'
+        : said.has(u) ? `<button type="button" class="m-btn" data-act="invite" data-uid="${esc(u)}"${full ? ' disabled' : ''} aria-label="Invite ${esc(p.name)} again">Invite again</button>`
+        : `<button type="button" class="m-btn fill" data-act="invite" data-uid="${esc(u)}"${full ? ' disabled' : ''} aria-label="Invite ${esc(p.name)}">Invite</button>`;
+      return personRow(u, { btns: btn });
+    }).join('')}</ul>`;
+    hydratePhotos(sheetList);
+  }
+  async function openSheet() {
+    find.value = '';
+    renderSheet();
+    if (typeof sheet.showModal === 'function') sheet.showModal(); else sheet.setAttribute('open', '');
+    if (window.matchMedia('(pointer: fine)').matches) find.focus();
+    if (!S.circle) { await loadCircle(); renderSheet(); }
+  }
+  function closeSheet() { if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open'); }
+
+  // ── Writes: the same as the app ───────────────────────────────────────
+  async function fresh(id) {
+    const s = await getDoc(doc(db, 'meetups', id));
+    return s.exists() ? { id: s.id, ...s.data() } : null;
+  }
+  async function act(name, id, uid, btn) {
+    if (name === 'share') return shareLink();
+    if (name === 'sheet-open') return openSheet();
+    if (name === 'sheet-close') return closeSheet();
+    if (!S.me) { location.href = loginHref(); return; }
+    if (name === 'leave' && !S.leaveArmed) { S.leaveArmed = true; renderMeetup(); return; }
+    if (S.busy) return;
+    S.busy = true;
+    if (btn) btn.disabled = true;
+    const me = S.me.uid;
+    let msg = '';
+    try {
+      const m = await fresh(id);
+      if (!m) { toast('This meetup was cancelled.'); return; }
+      const ref = doc(db, 'meetups', id);
+      const has = (f, u) => list(m[f]).includes(u);
+      const ch = {};
+      if (name === 'join') {
+        if (!has('invited', me)) { msg = 'This invitation is no longer open.'; }
+        else if (isFull(m)) { msg = 'This meetup is full'; }
+        else {
+          ch.invited = arrayRemove(me); ch.attendees = arrayUnion(me);
+          if (has('pendingRequests', me)) ch.pendingRequests = arrayRemove(me);
+          msg = "You're going!";
+        }
+      } else if (name === 'decline') {
+        if (has('invited', me)) { ch.invited = arrayRemove(me); ch.declinedInvites = arrayUnion(me); msg = 'Invitation declined'; }
+      } else if (name === 'ask') {
+        if (isFull(m)) msg = 'This meetup is full';
+        else if (!has('pendingRequests', me) && !has('attendees', me)) { ch.pendingRequests = arrayUnion(me); if (safeKey(me)) ch[`requestNames.${me}`] = S.myName || 'A member'; msg = 'Request sent to the host'; }
+      } else if (name === 'cancel-request') {
+        ch.pendingRequests = arrayRemove(me); if (safeKey(me)) ch[`requestNames.${me}`] = deleteField(); msg = 'Request cancelled';
+      } else if (name === 'leave') {
+        if (m.hostId !== me && has('attendees', me)) { ch.attendees = arrayRemove(me); msg = 'You left this meetup'; }
+      } else if (m.hostId === me && uid && safeKey(uid)) {
+        if (name === 'invite') {
+          if (isFull(m)) msg = 'This meetup is full';
+          else if (!has('invited', uid) && !goingOf(m).includes(uid)) {
+            ch.invited = arrayUnion(uid);
+            ch[`inviteNames.${uid}`] = nameOf(uid);
+            ch[`invitedAt.${uid}`] = serverTimestamp();
+            if (has('declinedInvites', uid)) ch.declinedInvites = arrayRemove(uid);
+            if (has('declinedRequests', uid)) ch.declinedRequests = arrayRemove(uid);
+            msg = `${nameOf(uid)} is invited`;
+          }
+        } else if (name === 'uninvite') {
+          ch.invited = arrayRemove(uid); ch[`inviteNames.${uid}`] = deleteField(); ch[`invitedAt.${uid}`] = deleteField(); msg = 'Invitation cancelled';
+        } else if (name === 'accept') {
+          if (isFull(m)) msg = 'This meetup is full';
+          else if (has('pendingRequests', uid)) { ch.pendingRequests = arrayRemove(uid); ch.attendees = arrayUnion(uid); if (has('invited', uid)) ch.invited = arrayRemove(uid); msg = `${nameOf(uid, (m.requestNames || {})[uid])} is going`; }
+        } else if (name === 'refuse') {
+          if (has('pendingRequests', uid)) { ch.pendingRequests = arrayRemove(uid); ch.declinedRequests = arrayUnion(uid); msg = 'Request declined'; }
+        }
+      }
+      if (Object.keys(ch).length) await updateDoc(ref, ch);
+    } catch (e) {
+      console.log('Meetup not saved:', e.code || e);
+      msg = 'That did not work. Please try again.';
+    } finally {
+      S.busy = false;
+      S.leaveArmed = false;
+    }
+    if (msg) toast(msg);
+    if (S.id) {
+      const m2 = await fresh(S.id).catch(() => null);
+      if (m2) S.m = m2;
+      renderMeetup();
+      if (sheet.open) renderSheet();
+    } else {
+      await openList();
+    }
+  }
+
+  async function shareLink() {
+    const m = S.m;
+    if (!m) return;
+    const url = `https://strongfoodie.com/meetups.html?id=${encodeURIComponent(m.id)}`;
+    const t = whenOf(m);
+    const text = `Join me at ${titleOf(m)}${t ? ' on ' + fmtDay(t) : ''}, on Strong Foodie`;
+    if (navigator.share && window.matchMedia('(pointer: coarse)').matches) {
+      try { await navigator.share({ title: titleOf(m), text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    try { await navigator.clipboard.writeText(url); toast('Link copied'); }
+    catch (e) { toast(url); }
+  }
+
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-act]');
+    if (!t || t.disabled) return;
+    if (!main.contains(t) && !sheet.contains(t)) return;
+    act(t.dataset.act, t.dataset.id || S.id, t.dataset.uid || '', t);
+  });
+  sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
+  find.addEventListener('input', renderSheet);
+
+  // ── Start ─────────────────────────────────────────────────────────────
+  S.id = (new URLSearchParams(location.search).get('id') || '').slice(0, 128);
+  if (!/^[A-Za-z0-9_-]+$/.test(S.id)) S.id = '';
+  let first = true;
+  onAuthStateChanged(auth, async user => {
+    S.me = user;
+    S.circle = null; S.blockedMe = new Map();
+    if (!first) main.innerHTML = '<p class="m-loading">Loading…</p>';
+    first = false;
+    S.flags = await loadFlags(db);
+    if (user) {
+      const p = await person(user.uid);
+      S.myName = (p && p.name !== 'A member' ? p.name : '') || user.displayName || 'A member';
+      await loadMyBlocks();
+    }
+    if (S.id) await openMeetup(); else await openList();
+  });
+</script>
+
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
+</body>
+</html>
