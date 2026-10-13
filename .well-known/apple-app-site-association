@@ -5,7 +5,7 @@
       {
         "appID": "XG99TUL7K7.app.rork.mia79cz0112thtz7aygip",
         "appIDs": ["XG99TUL7K7.app.rork.mia79cz0112thtz7aygip"],
-        "paths": ["/p/*", "/stad/*", "/best/*", "/guide/*", "/plek.html", "/member.html", "/battle.html", "/wishlist.html", "/list.html", "/list/*", "/where-to-eat.html", "/recap.html", "/search.html"],
+        "paths": ["/p/*", "/stad/*", "/best/*", "/guide/*", "/plek.html", "/member.html", "/battle.html", "/wishlist.html", "/list.html", "/list/*", "/where-to-eat.html", "/recap.html", "/search.html", "/meetups.html"],
         "components": [
           {"/": "/p/*", "comment": "A place"},
           {"/": "/stad/*", "comment": "A destination"},
@@ -20,6 +20,7 @@
           {"/": "/where-to-eat.html", "comment": "Where are we eating? A vote"},
           {"/": "/recap.html", "comment": "Your year on Strong Foodie"},
           {"/": "/search.html", "comment": "Search places and people"},
+          {"/": "/meetups.html", "comment": "A meetup"},
           {"/": "/account.html", "?": {"ref": "?*"}, "comment": "An invite link"}
         ]
       }
