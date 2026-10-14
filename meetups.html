@@ -411,6 +411,8 @@ function declineCookies(){
   const goingOf = m => [...new Set([m.hostId, ...list(m.attendees)].filter(Boolean))];
   const isFull = m => { const max = maxOf(m); return !!max && goingOf(m).length >= max; };
   const started = m => { const t = whenOf(m); return !!t && t <= Date.now(); };
+  // Past from one hour after the start, the same rule as the app (Rork batch 60).
+  const ended = m => { const t = whenOf(m); return !!t && t + 3600000 <= Date.now(); };
   // The app stores placeId without its collection: plek.html finds the place by its id
   // (Strong Foodie places and members' places alike).
   function placeHref(m) {
@@ -499,14 +501,16 @@ function declineCookies(){
   const INTRO = '<h1 class="m-title">Meetups</h1><p class="m-intro">Plan a meetup in the Strong Foodie app. Here you see who\'s going, answer invitations and invite people.</p>';
 
   function cardRow(m) {
-    const t = whenOf(m), past = !!t && t <= Date.now();
+    const t = whenOf(m), past = ended(m);
     const role = roleOf(m);
     const host = role === 'host' ? 'you' : nameOf(m.hostId, m.hostName);
     const n = goingOf(m).length, max = maxOf(m);
     const meta = [whenText(t), cityOf(m)].filter(Boolean).join(' · ');
-    const pill = { host: '<span class="m-pill host">Host</span>', going: '<span class="m-pill going">Going</span>', requested: '<span class="m-pill">Requested</span>', invited: '<span class="m-pill invited">Invited</span>' }[role] || '';
-    const sub = role === 'invited' ? `${esc(host)} invited you` : `Hosted by ${esc(host)} · ${n}${max ? '/' + max : ''} going`;
-    const btns = role === 'invited' && !past
+    const pill = (past
+      ? { host: '<span class="m-pill host">Hosted</span>', going: '<span class="m-pill going">Joined</span>' }
+      : { host: '<span class="m-pill host">Host</span>', going: '<span class="m-pill going">Going</span>', requested: '<span class="m-pill">Requested</span>', invited: '<span class="m-pill invited">Invited</span>' })[role] || '';
+    const sub = role === 'invited' ? `${esc(host)} invited you` : past ? `Hosted by ${esc(host)} · ${n} went` : `Hosted by ${esc(host)} · ${n}${max ? '/' + max : ''} going`;
+    const btns = role === 'invited' && !started(m)
       ? `<span class="m-btns"><button type="button" class="m-btn fill" data-act="join" data-id="${esc(m.id)}"${isFull(m) ? ' disabled' : ''}>${isFull(m) ? 'Full' : 'Join'}</button><button type="button" class="m-btn" data-act="decline" data-id="${esc(m.id)}">Decline</button></span>`
       : '';
     return `<li class="m-row">
@@ -539,8 +543,8 @@ function declineCookies(){
     const visible = all.filter(m => m.hostId === me || (!S.myBlocks.has(m.hostId) && S.blockedMe.get(m.hostId) !== true));
     const later = (a, b) => (whenOf(a) || 9e15) - (whenOf(b) || 9e15);
     const invites = visible.filter(m => roleOf(m) === 'invited' && !started(m)).sort(later);
-    const upcoming = visible.filter(m => ['host', 'going', 'requested'].includes(roleOf(m)) && !started(m)).sort(later);
-    const past = visible.filter(m => ['host', 'going'].includes(roleOf(m)) && started(m)).sort((a, b) => whenOf(b) - whenOf(a)).slice(0, 20);
+    const upcoming = visible.filter(m => ['host', 'going', 'requested'].includes(roleOf(m)) && !ended(m)).sort(later);
+    const past = visible.filter(m => ['host', 'going'].includes(roleOf(m)) && ended(m)).sort((a, b) => whenOf(b) - whenOf(a)).slice(0, 20);
     let html = INTRO;
     if (invites.length) html += `<section class="m-sec" aria-label="Invitations"><p class="section-label">Invitations <span class="count">(${invites.length})</span></p><ul class="m-list">${invites.map(cardRow).join('')}</ul></section>`;
     html += `<section class="m-sec" aria-label="Upcoming meetups"><p class="section-label">Upcoming <span class="count">(${upcoming.length})</span></p>`
@@ -572,7 +576,7 @@ function declineCookies(){
 
   function renderMeetup() {
     const m = S.m, me = S.me && S.me.uid, role = roleOf(m);
-    const t = whenOf(m), done = started(m);
+    const t = whenOf(m), done = ended(m);
     const going = goingOf(m), n = going.length, max = maxOf(m), full = isFull(m);
     const host = role === 'host' ? 'you' : nameOf(m.hostId, m.hostName);
     const place = placeHref(m);
@@ -581,7 +585,7 @@ function declineCookies(){
     const address = addressOf(m);
     const share = '<button type="button" class="m-btn" data-act="share">Share</button>';
     let bar = '';
-    if (done) bar = `<div class="m-bar"><p><b>This meetup has passed.</b></p></div>`;
+    if (done) bar = `<div class="m-bar"><p><b>This meetup has ended.</b></p></div>`;
     else if (!me) bar = `<div class="m-bar"><p><b>Want to come along?</b><small>Log in to ask the host if you can join.</small></p><a class="m-btn fill" href="${loginHref()}">Log in</a>${share}</div>`;
     else if (role === 'host') bar = `<div class="m-bar"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button>${share}</div>`;
     else if (role === 'invited') bar = `<div class="m-bar invite"><p><b>${esc(host)} invited you</b><small>${full ? 'This meetup is full.' : 'Are you coming?'}</small></p><button type="button" class="m-btn fill" data-act="join"${full ? ' disabled' : ''}>Join</button><button type="button" class="m-btn" data-act="decline">Decline</button></div>`;
@@ -595,9 +599,10 @@ function declineCookies(){
     const shown = [m.hostId, ...going.filter(u => u !== m.hostId)].filter(u => u === me || !hiddenMember(u));
     let html = BACK + `<div class="m-head">${dateTile(t, done)}<div><h1>${esc(titleOf(m))}</h1><p class="m-meta">${meta}</p>${address && address !== titleOf(m) ? `<p class="m-meta">📍 ${esc(address)}</p>` : ''}<p class="m-meta">Hosted by ${role === 'host' ? 'you' : `<a href="member.html?u=${encodeURIComponent(m.hostId)}">${esc(host)}</a>`}</p></div></div>`
       + (note ? `<p class="m-note">${esc(note)}</p>` : '') + bar
-      + `<section class="m-sec" aria-label="Going"><p class="section-label">Going <span class="count">(${n}${max ? '/' + max : ''})</span></p>`
+      + (done ? `<section class="m-sec" aria-label="Went"><p class="section-label">Went <span class="count">(${n})</span></p>`
+        : `<section class="m-sec" aria-label="Going"><p class="section-label">Going <span class="count">(${n}${max ? '/' + max : ''})</span></p>`)
       + (canSee ? `<ul class="m-list">${shown.map(u => personRow(u, { tag: u === m.hostId ? 'Host' : '', fallback: u === m.hostId ? m.hostName : '' })).join('')}</ul>`
-        : `<p class="m-hidden-note">${n} going. Only the host and the people going can see who's going.</p>`)
+        : `<p class="m-hidden-note">${done ? `${n} went.` : `${n} going. Only the host and the people going can see who's going.`}</p>`)
       + '</section>';
 
     if (role === 'host') {
