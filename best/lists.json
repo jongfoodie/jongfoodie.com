@@ -31,6 +31,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/j1oE7MPVa90t4nL1ogfs",
     "reviews/cZcUoOd24YdT9ZqBM2Bm",
     "reviews/QhefRFX9Bk4fyPI1EaNd",
@@ -262,6 +263,22 @@
    ]
   },
   {
+   "slug": "food-amsterdam",
+   "url": "/best/food-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Food",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Food in Amsterdam",
+   "places": [
+    "reviews/9i1MoYhNTLsp9GGIhYqo",
+    "reviews/aV7neu8odXP0dotTMdZz"
+   ]
+  },
+  {
    "slug": "hotels-las-vegas",
    "url": "/best/hotels-las-vegas/",
    "kind": "cat",
@@ -403,6 +420,22 @@
    "places": [
     "reviews/kGD3v5GXnB7Sm2gny66A",
     "reviews/fYdFvqjKS78yznbt0zT6"
+   ]
+  },
+  {
+   "slug": "steak-amsterdam",
+   "url": "/best/steak-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Steak",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Steak in Amsterdam",
+   "places": [
+    "reviews/XgxTz6Noh7G7D4rP1lIa",
+    "reviews/9i1MoYhNTLsp9GGIhYqo"
    ]
   },
   {
@@ -797,6 +830,21 @@
    ]
   },
   {
+   "slug": "casual-amsterdam",
+   "url": "/best/casual-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Casual",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Casual in Amsterdam",
+   "places": [
+    "reviews/9i1MoYhNTLsp9GGIhYqo"
+   ]
+  },
+  {
    "slug": "celebrity-spot-los-angeles",
    "url": "/best/celebrity-spot-los-angeles/",
    "kind": "tag",
@@ -1064,21 +1112,6 @@
    "title": "Best Fine Dining in San Diego",
    "places": [
     "reviews/tOdWHBI8vo2yySrV3vfL"
-   ]
-  },
-  {
-   "slug": "food-amsterdam",
-   "url": "/best/food-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Food",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Food in Amsterdam",
-   "places": [
-    "reviews/aV7neu8odXP0dotTMdZz"
    ]
   },
   {
@@ -1907,21 +1940,6 @@
    ]
   },
   {
-   "slug": "steak-amsterdam",
-   "url": "/best/steak-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Steak",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Steak in Amsterdam",
-   "places": [
-    "reviews/XgxTz6Noh7G7D4rP1lIa"
-   ]
-  },
-  {
    "slug": "street-food-los-angeles",
    "url": "/best/street-food-los-angeles/",
    "kind": "tag",
@@ -2169,6 +2187,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/tOdWHBI8vo2yySrV3vfL",
     "reviews/oifDeYKcXnKRjyELkTRr",
     "reviews/QpGCqcCPj99TkqR2nuVa",
