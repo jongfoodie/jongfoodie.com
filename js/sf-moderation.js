@@ -246,6 +246,7 @@ const KIND_ALIASES = {
   member: 'member', user: 'member', users: 'member', profile: 'member', account: 'member',
   spot: 'spot', place: 'spot', userplace: 'spot', userplaces: 'spot',
   list: 'list', lists: 'list', memberlist: 'list', memberlists: 'list',
+  message: 'message', messages: 'message', chat: 'message', chatmessage: 'message',
 };
 const COLL_OF = { review: 'userReviews', highlight: 'highlights', member: 'profiles', spot: 'userPlaces', list: 'memberLists' };
 export function normReport(r) {

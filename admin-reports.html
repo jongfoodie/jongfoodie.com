@@ -104,7 +104,7 @@
 
   // What members can report (js/sf-moderation.js) and where it lives.
   const REASON = Object.fromEntries(REASONS);
-  const KIND = { review: 'Review', highlight: 'Highlight', spot: 'Member spot', member: 'Member', list: 'Member list', reply: 'Owner reply' };
+  const KIND = { review: 'Review', highlight: 'Highlight', spot: 'Member spot', member: 'Member', list: 'Member list', reply: 'Owner reply', message: 'Chat message' };
   const COLL = { review: 'userReviews', highlight: 'highlights', spot: 'userPlaces', member: 'profiles' };
   const ACTION = { hidden: 'Hidden', deleted: 'Deleted', blocked: 'Member blocked', dismissed: 'Nothing wrong', gone: 'Was already gone' };
 
@@ -179,7 +179,7 @@
     const gs = groups();
     const done = reports.filter(r => r.status === 'done');
     root.innerHTML = `
-      <p class="lead">Members report reviews, highlights, spots, lists and other members here. Apple asks that reports are handled within 24 hours. Hiding keeps it for you to undo; blocking hides everything of that member on the site, and in the app after Rork batch 14.</p>
+      <p class="lead">Members report reviews, highlights, spots, lists, chat messages and other members here. Apple asks that reports are handled within 24 hours. Hiding keeps it for you to undo; blocking hides everything of that member on the site, and in the app after Rork batch 14.</p>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" data-tab="open" aria-selected="${tab === 'open'}">Open${gs.length ? `<span class="n">${gs.length}</span>` : ''}</button>
         <button class="tab" role="tab" data-tab="done" aria-selected="${tab === 'done'}">Handled · ${done.length}</button>
@@ -241,6 +241,17 @@
         <p class="t-text">${esc(t.text || '')}</p>
         <p class="t-by">By ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.updatedAt) || toDate(t.createdAt)))}</p></div></div>`;
     }
+    if (g.kind === 'message') {
+      // A chat message (app, Rork batch 61): coll is chats/{thread}/messages.
+      const thread = String(g.coll || '').split('/')[1] || '';
+      const where = thread.startsWith('meetup_') ? `<a href="meetups.html?id=${encodeURIComponent(thread.slice(7))}" target="_blank" rel="noopener">a meetup chat</a>`
+        : thread.startsWith('place_') ? 'a place chat' : thread.startsWith('room_') ? 'a room' : 'a chat';
+      return `<div class="target"><div>
+        <p class="t-title">💬 Message in ${where}</p>
+        <p class="t-text">${esc(t.text || (t.photoUrl ? '(photo)' : ''))}</p>
+        <p class="t-by">By ${who(t.authorId || g.ownerId)} · ${esc(ago(toDate(t.createdAt)))}</p></div>
+        ${t.photoUrl ? `<div class="thumb"><img data-photo="${esc(t.photoUrl)}" alt="" hidden></div>` : ''}</div>`;
+    }
     if (g.kind === 'spot') {
       return `<div class="target"><div>
         <p class="t-title"><a href="plek.html?c=userPlaces&id=${encodeURIComponent(g.targetId)}" target="_blank" rel="noopener">${esc(t.name || 'Spot')}</a>${hidden}</p>
@@ -262,6 +273,7 @@
       const blocked = !!(owner && flags[owner] && flags[owner].blocked);
       const exists = !!t && t !== 'unknown';
       const buttons = [];
+      if (g.kind === 'message' && exists) buttons.push(`<button class="btn btn-danger" data-act="delete" data-g="${i}">Delete message</button>`);
       if (g.kind !== 'member' && exists && ['review', 'highlight', 'spot', 'list', 'reply'].includes(g.kind)) {
         buttons.push(t.hidden === true
           ? `<button class="btn" data-act="keep" data-g="${i}">Keep hidden, close</button>`
@@ -317,7 +329,9 @@
         else if (g.kind === 'highlight') await deleteHighlight(db, { id: g.targetId, photoUrl: t.photoUrl });
         else if (g.kind === 'list') await deleteDoc(doc(db, 'memberLists', g.targetId));
         else if (g.kind === 'reply') await deleteDoc(doc(db, 'ownerReplies', g.targetId));
-        else await deleteSpot(db, { id: g.targetId, photoUrl: t.photoUrl, photos: t.photos || [] });
+        else if (g.kind === 'message') await deleteDoc(doc(db, g.coll, g.targetId));
+        else if (g.kind === 'spot') await deleteSpot(db, { id: g.targetId, photoUrl: t.photoUrl, photos: t.photos || [] });
+        else throw new Error('Unknown kind: ' + g.kind);
         targets.set(g.key, null);
         await closeReports(g, 'deleted');
         toast('Deleted.');

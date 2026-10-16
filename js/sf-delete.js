@@ -5,7 +5,7 @@
 // Firestore rules decide in the end; a refused delete throws, and the page
 // tells the member.
 
-import { collection, doc, getDocs, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { collection, doc, getDocs, deleteDoc, updateDoc, query, where, arrayRemove, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Photos added in the app or on the site: "fsimg://<id>" is a document in `images`.
 const imageIds = (...urls) => [...new Set(urls.flat().filter(u => typeof u === 'string' && u.startsWith('fsimg://')).map(u => u.slice(8)))];
@@ -84,6 +84,13 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('owner replies', query(collection(db, 'ownerReplies'), where('authorId', '==', uid)), d => deleteDoc(d.ref), true);
   await each('claims', query(collection(db, 'claims'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
   await each('places you manage', query(collection(db, 'businessOwners'), where('uid', '==', uid)), d => deleteDoc(d.ref), true);
+  // Meetups (the same as the app, Rork batch 61): the ones they host go, and
+  // they leave every other meetup (going, asked, invited, said no).
+  await each('meetups you host', query(collection(db, 'meetups'), where('hostId', '==', uid)), d => deleteDoc(d.ref), true);
+  const leave = d => updateDoc(d.ref, { attendees: arrayRemove(uid), pendingRequests: arrayRemove(uid), invited: arrayRemove(uid), declinedInvites: arrayRemove(uid), [`requestNames.${uid}`]: deleteField() });
+  for (const f of ['attendees', 'pendingRequests', 'invited', 'declinedInvites']) {
+    await each('meetups you joined', query(collection(db, 'meetups'), where(f, 'array-contains', uid)), d => (d.data().hostId === uid ? null : leave(d)), true);
+  }
   await each('follows', query(collection(db, 'follows'), where('followerId', '==', uid)), d => deleteDoc(d.ref));
   await each('followers', query(collection(db, 'follows'), where('followingId', '==', uid)), d => deleteDoc(d.ref), true);
   // Members they blocked (js/sf-blocks.js). Soft: before the blocks rules exist, nothing is there.
