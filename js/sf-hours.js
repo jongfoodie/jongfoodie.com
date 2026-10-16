@@ -75,9 +75,10 @@ export function parseHours(text) {
 
   const TIME = /^(\d{1,2})(?:[:.](\d{2}))?(am|pm)?\s*-\s*(\d{1,2})(?:[:.](\d{2}))?(am|pm)?\+?/;
   let i = 0;
-  const startDays = days => {
-    // "Mon, Wed 12-14": one group. A new group after times, after "closed" or after holidays.
-    if (!cur || cur.times || cur.closed || skip) { cur = { days: new Set(), times: false, closed: false }; groups.push(cur); }
+  const startDays = (days, keyword = false) => {
+    // "Mon, Wed 12-14": one group. A new group after times, after "closed", after holidays,
+    // and after "daily" or "weekdays" ("Open 7 days a week. Monday - Friday 7-10:30 ...").
+    if (!cur || cur.times || cur.closed || cur.keyword || keyword || skip) { cur = { days: new Set(), times: false, closed: false, keyword }; groups.push(cur); }
     skip = false;
     days.forEach(d => cur.days.add(d));
     if (pendingClosed) { cur.closed = true; pendingClosed = false; }   // "closed Monday"
@@ -109,7 +110,7 @@ export function parseHours(text) {
     if (w) {
       const word = w[0];
       const grp = GROUPS.find(([re]) => re.test(word));
-      if (grp) { startDays(grp[1]); i += word.length; continue; }
+      if (grp) { startDays(grp[1], true); i += word.length; continue; }
       if (/^(closed|gesloten|dicht|off)$/.test(word)) {
         if (cur && !cur.times && !skip) cur.closed = true; else if (!skip) pendingClosed = true;
         i += word.length; continue;

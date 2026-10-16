@@ -324,14 +324,14 @@
   }
 
   function setFilter(el) {
-    document.querySelectorAll('.filters:first-of-type .filter-pill:not(.open-pill)').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('[data-filter]').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
     activeFilter = el.dataset.filter || 'all';
     applyFilters();
   }
 
   function setCountry(el) {
-    document.querySelectorAll('.filters:last-of-type .filter-pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('[data-country]').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
     activeCountry = el.dataset.country || 'all';
     applyFilters();
