@@ -12,6 +12,7 @@
 // loaded only for members).
 // A magnifier before it opens search.html (places and people), on every page.
 // Signed in, the phone menu also has "My meetups" (meetups.html).
+// Signed in, a badge earned since the last visit is celebrated (js/sf-badges.js).
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -216,4 +217,11 @@ onAuthStateChanged(auth, async user => {
     bellLoaded = true;
     if (auth.currentUser && auth.currentUser.uid === user.uid) n.mountBell({ db, uid: user.uid, anchor: a });
   } catch (e) { console.log('Notifications not available:', e.message || e); }
+  // A badge earned since the last visit: celebrate it (js/sf-badges.js, at most
+  // every 30 minutes). The account page does this itself with its own numbers.
+  if (page() !== 'account.html') {
+    import('./sf-badges.js?v=3')
+      .then(b => { if (auth.currentUser && auth.currentUser.uid === user.uid) return b.checkBadges(db, user.uid); })
+      .catch(e => console.log('Badges not checked:', e.message || e));
+  }
 });

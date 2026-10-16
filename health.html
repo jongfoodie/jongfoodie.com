@@ -54,7 +54,13 @@
   .hero h1 em { color: var(--gold); font-style: italic; }
   .hero p { color: rgba(255,255,255,0.55); font-size: 15px; margin-top: 0.75rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6; }
 
-  .search-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: center; gap: 0.75rem; }
+  .search-bar { background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+  /* Open now (js/sf-hours.js), as in the app: orange when it's on */
+  .open-line { flex-basis: 100%; display: flex; justify-content: center; }
+  .search-bar .open-pill { background: #fff; color: var(--ink); border: 1px solid var(--border); border-radius: 20px; padding: 7px 16px; font-size: 13px; min-height: 36px; }
+  .search-bar .open-pill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .open-empty { text-align: center; padding: 2rem 1rem; color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; }
+  .open-empty button { margin-top: 0.75rem; background: var(--accent); color: #fff; border: none; border-radius: 20px; padding: 9px 18px; font: 600 13.5px 'DM Sans', sans-serif; cursor: pointer; }
   .search-bar input { width: 100%; max-width: 540px; border: 1px solid var(--border); border-radius: 30px; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--cream); outline: none; }
   .search-bar button { background: var(--navy); color: #fff; border: none; border-radius: 30px; padding: 10px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
 
@@ -210,6 +216,7 @@
 <div class="search-bar">
   <input type="text" id="searchInput" placeholder="Search gyms, spas, cities..." oninput="filterSpots(this.value)">
   <button onclick="filterSpots(document.getElementById('searchInput').value)">Search</button>
+  <div class="open-line"><button class="open-pill" id="openNowPill" type="button" aria-pressed="false">🕐 Open now</button></div>
 </div>
 
 <div class="main">
@@ -242,6 +249,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
+  import { openState } from "./js/sf-hours.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -332,6 +340,11 @@
 
   function renderSpots(list) {
     const container = document.getElementById('spotList');
+    if (list.length === 0 && openOnly && allSpots.length) {
+      container.innerHTML = `<div class="open-empty"><p>Nothing here is open right now, as far as we know their hours. Turn off Open now to see everything.</p><button type="button" id="openReset">Reset filters</button></div>`;
+      document.getElementById('openReset').addEventListener('click', resetFilters);
+      return;
+    }
     if (list.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
@@ -397,13 +410,31 @@
   }
 
   window.filterSpots = function(val) {
-    const v = val.toLowerCase();
+    const v = String(val || '').toLowerCase();
     renderSpots(allSpots.filter(s =>
-      (s.name || '').toLowerCase().includes(v) ||
+      ((s.name || '').toLowerCase().includes(v) ||
       (s.city || '').toLowerCase().includes(v) ||
-      (s.tags || []).some(t => t.toLowerCase().includes(v))
+      (s.tags || []).some(t => t.toLowerCase().includes(v)))
+      && (!openOnly || openState(s) === 'open')
     ));
   };
+
+  // Open now: only places whose hours say they are open right now. Member
+  // spots below follow it too (js/member-places.js listens for sf:opennow).
+  let openOnly = false;
+  const searchBox = document.getElementById('searchInput');
+  function setOpenOnly(on) {
+    openOnly = on;
+    window.__sfOpenNow = on;
+    document.getElementById('openNowPill').setAttribute('aria-pressed', String(on));
+    window.filterSpots(searchBox.value);
+    window.dispatchEvent(new CustomEvent('sf:opennow', { detail: on }));
+  }
+  function resetFilters() {
+    if (searchBox.value) { searchBox.value = ''; searchBox.dispatchEvent(new Event('input')); }
+    setOpenOnly(false);
+  }
+  document.getElementById('openNowPill').addEventListener('click', () => setOpenOnly(!openOnly));
 
   async function loadSpots() {
     try {
@@ -415,7 +446,7 @@
         const pubDate = s.publishAt.toDate ? s.publishAt.toDate() : new Date(s.publishAt);
         return pubDate <= now;
       });
-      renderSpots(allSpots);
+      window.filterSpots(searchBox.value);
     } catch (e) {
       document.getElementById('spotList').innerHTML = `
         <div class="empty-state">

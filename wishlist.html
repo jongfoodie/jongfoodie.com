@@ -70,6 +70,40 @@
   .wl-save:hover { border-color: var(--accent); color: var(--accent); }
   .wl-save.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
   .wl-save:disabled { opacity: 0.6; cursor: default; }
+  /* Want to go together? (app build 25): plan a meetup here and invite the owner */
+  .wl-btns { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .wl-together { border: none; background: var(--accent); color: #fff; border-radius: 20px; padding: 8px 14px; font: 600 13px 'DM Sans', sans-serif; cursor: pointer; min-height: 36px; }
+  .wl-together:hover { opacity: 0.92; }
+  .plan { margin: auto; border: none; border-radius: 20px; padding: 0; width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 24px); background: var(--warm-white, #FFFDF9); color: var(--ink); box-shadow: 0 20px 60px rgba(26,18,8,0.3); }
+  .plan::backdrop { background: rgba(26,18,8,0.45); }
+  .plan form { padding: 1.25rem 1.25rem 1.1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .plan h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; }
+  .plan-place { font-weight: 700; overflow-wrap: anywhere; }
+  .plan-place small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
+  .plan-invite { background: var(--accent-pale); color: var(--accent); border-radius: 10px; padding: 0.55rem 0.75rem; font-size: 13.5px; font-weight: 600; }
+  .plan-label { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 0.35rem; display: block; }
+  .plan-kinds { display: flex; flex-direction: column; gap: 0.45rem; }
+  .plan-kind { display: flex; gap: 0.6rem; align-items: center; border: 1px solid var(--border); border-radius: 14px; padding: 0.6rem 0.75rem; cursor: pointer; background: #fff; }
+  .plan-kind:has(input:checked) { border-color: var(--accent); background: var(--accent-pale); }
+  .plan-kind input { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; }
+  .plan-kind b { display: block; font-size: 14.5px; }
+  .plan-kind span { font-size: 12.5px; color: var(--ink-soft); }
+  .plan-when { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .plan input[type="date"], .plan input[type="time"], .plan textarea { border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.75rem; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); min-height: 44px; }
+  .plan textarea { width: 100%; resize: vertical; min-height: 70px; }
+  .plan-count { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .plan-count output { font-size: 20px; font-weight: 700; min-width: 2ch; }
+  .plan-step { display: inline-flex; border: 1px solid var(--border); border-radius: 22px; overflow: hidden; background: #fff; }
+  .plan-step button { border: none; background: none; width: 48px; height: 40px; font-size: 20px; cursor: pointer; color: var(--ink); }
+  .plan-step button + button { border-left: 1px solid var(--border); }
+  .plan-step button:disabled { color: var(--muted); cursor: default; }
+  .plan-error { color: #A32323; font-size: 13.5px; }
+  .plan-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .plan-actions .go { flex: 1; border: none; background: var(--accent); color: #fff; border-radius: 24px; min-height: 46px; padding: 0 1.25rem; font: 600 15px 'DM Sans', sans-serif; cursor: pointer; }
+  .plan-actions .go:disabled { opacity: 0.6; }
+  .plan-actions .no { border: 1px solid var(--border); background: #fff; color: var(--ink); border-radius: 24px; min-height: 46px; padding: 0 1.1rem; font: 500 15px 'DM Sans', sans-serif; cursor: pointer; }
+  .plan-done { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.8rem; }
+  .plan-done a { align-self: flex-start; background: var(--accent); color: #fff; text-decoration: none; border-radius: 24px; padding: 11px 18px; font-weight: 600; }
   .ideas { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
   .idea { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.85rem 1rem; }
   .idea-name { font-weight: 700; overflow-wrap: anywhere; }
@@ -209,6 +243,7 @@
 
 <main class="wrapper" id="root"><p class="msg">Loading the wishlist…</p></main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog class="plan" id="plan" aria-labelledby="planTitle"></dialog>
 
 <script>
   if ('serviceWorker' in navigator) {
@@ -283,7 +318,7 @@ function declineCookies(){
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, addDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, query, where, serverTimestamp, arrayUnion, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { CATS, esc, toDate, loadPlaces, placeKey, miniCard, photoTools } from "./js/sf-places.js?v=7";
   import { loadFlags, isBlocked } from "./js/sf-moderation.js?v=1";
@@ -364,7 +399,7 @@ function declineCookies(){
       ${me && me.uid === uid ? `<p class="wl-own">This is how others see your wishlist. <a href="account.html#wishlist">Change it or stop sharing →</a></p>` : ''}
       <div class="wl-head"><span class="wl-count">${total} ${total === 1 ? 'place' : 'places'}</span></div>
       ${total ? '' : `<div class="msg"><h2>Nothing on it yet</h2><p>${esc(name)} hasn't saved any places yet.</p></div>`}
-      ${places.length ? `<div class="cards-grid">${places.map(({ r, p }) => `<div class="wl-item">${miniCard(p)}${r.note ? `<p class="wl-note">${esc(String(r.note).slice(0, 300))}</p>` : ''}${saveBtn(placeKey(p))}</div>`).join('')}</div>` : ''}
+      ${places.length ? `<div class="cards-grid">${places.map(({ r, p }) => `<div class="wl-item">${miniCard(p)}${r.note ? `<p class="wl-note">${esc(String(r.note).slice(0, 300))}</p>` : ''}<div class="wl-btns">${togetherBtn(p)}${saveBtn(placeKey(p))}</div></div>`).join('')}</div>` : ''}
       ${ideas.length ? `<p class="section-label">Not on Strong Foodie yet</p><div class="ideas">${ideas.map(r => {
         const title = r.kind === 'place' ? (r.placeName || 'A place') : (r.name || 'A place');
         const cat = CATS[r.kind === 'place' ? r.placeCategory : r.category];
@@ -378,6 +413,7 @@ function declineCookies(){
       ${me && me.uid === uid ? '' : cta()}`;
     hydratePhotos(root);
     root.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => save(b)));
+    root.querySelectorAll('[data-together]').forEach(b => b.addEventListener('click', () => openPlan(b.dataset.together)));
   }
 
   // 🔖 Save: onto the visitor's own wishlist, the same way as on the place itself.
@@ -401,6 +437,114 @@ function declineCookies(){
       btn.disabled = false;
     }
   }
+
+  // ── 🍽️ Want to go together? (app build 25) ──────────────────────────
+  // Only for a signed-in visitor, never on your own list. Plans a normal
+  // meetup (the same fields as the app) and invites the wishlist's owner,
+  // the same host invitation as "Invite people" on a meetup (meetups.html).
+  function togetherBtn(p) {
+    if (!me || me.uid === uid) return '';
+    return `<button class="wl-together" type="button" data-together="${esc(placeKey(p))}">🍽️ Want to go together?</button>`;
+  }
+  const plan = document.getElementById('plan');
+  let planFor = null, planCount = 2;
+  const pad = n => String(n).padStart(2, '0');
+  const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  function openPlan(key) {
+    const p = byKey.get(key);
+    if (!p || !me || me.uid === uid) return;
+    planFor = p; planCount = 2;
+    const name = firstName(owner.name);
+    const day = new Date(Date.now() + 3 * 864e5);
+    plan.innerHTML = `<form id="planForm" method="dialog" novalidate>
+      <h2 id="planTitle">Plan a meetup</h2>
+      <p class="plan-place">${CATS[p.cat] ? CATS[p.cat].emoji + ' ' : ''}${esc(p.name)}${p.where ? `<small>📍 ${esc(p.where)}</small>` : ''}</p>
+      <p class="plan-invite">${esc(name)} gets an invitation as soon as you plan it.</p>
+      <div><span class="plan-label" id="planKindLabel">What kind of meetup?</span>
+        <div class="plan-kinds" role="radiogroup" aria-labelledby="planKindLabel">
+          <label class="plan-kind"><input type="radio" name="kind" value="friends"${p.cat === 'health' ? '' : ' checked'}><span><b>🍽️ Just food</b><span>Meet other foodies. No romance involved.</span></span></label>
+          <label class="plan-kind"><input type="radio" name="kind" value="sport"${p.cat === 'health' ? ' checked' : ''}><span><b>🏃 Sport</b><span>Run, train or play a game together. Any spot works.</span></span></label>
+        </div></div>
+      <div><span class="plan-label">When</span>
+        <div class="plan-when"><input type="date" id="planDate" aria-label="Date" min="${ymd(new Date())}" value="${ymd(day)}" required><input type="time" id="planTime" aria-label="Time" value="19:00" step="300" required></div></div>
+      <div class="plan-count"><span class="plan-label" style="margin:0;">How many people can join, including you</span>
+        <span style="display:flex;align-items:center;gap:0.6rem;"><output id="planN" aria-live="polite">2</output><span class="plan-step"><button type="button" id="planMinus" aria-label="One less" disabled>−</button><button type="button" id="planPlus" aria-label="One more">+</button></span></span></div>
+      <div><label class="plan-label" for="planNote">Anything they should know</label>
+        <textarea id="planNote" maxlength="300" placeholder="Going for the tasting menu, happy to split a starter."></textarea></div>
+      <p class="plan-error" id="planError" hidden></p>
+      <div class="plan-actions"><button type="submit" class="go" id="planGo">Plan meetup</button><button type="button" class="no" id="planNo">Cancel</button></div>
+    </form>`;
+    const n = plan.querySelector('#planN'), minus = plan.querySelector('#planMinus'), plus = plan.querySelector('#planPlus');
+    const setN = v => { planCount = Math.max(2, Math.min(20, v)); n.textContent = planCount; minus.disabled = planCount <= 2; plus.disabled = planCount >= 20; };
+    minus.addEventListener('click', () => setN(planCount - 1));
+    plus.addEventListener('click', () => setN(planCount + 1));
+    plan.querySelector('#planNo').addEventListener('click', () => plan.close());
+    plan.querySelector('#planForm').addEventListener('submit', e => { e.preventDefault(); submitPlan(); });
+    if (typeof plan.showModal === 'function') plan.showModal(); else plan.setAttribute('open', '');
+  }
+  function planError(msg) { const el = plan.querySelector('#planError'); el.textContent = msg; el.hidden = !msg; }
+  async function submitPlan() {
+    const p = planFor;
+    if (!p || !me) return;
+    const d = plan.querySelector('#planDate').value, t = plan.querySelector('#planTime').value;
+    const when = d && t ? new Date(`${d}T${t}`) : null;
+    if (!when || isNaN(when)) return planError('Pick a date and a time.');
+    if (when.getTime() < Date.now() + 15 * 60e3) return planError('Pick a time in the future.');
+    const kind = (plan.querySelector('input[name="kind"]:checked') || {}).value === 'sport' ? 'sport' : 'friends';
+    const note = plan.querySelector('#planNote').value.trim().slice(0, 300);
+    const go = plan.querySelector('#planGo');
+    go.disabled = true; go.textContent = 'Planning…'; planError('');
+    const ownerName = String(owner.name || '').trim() || 'A member';
+    let ref = null;
+    try {
+      // The host's name and photo, and the place's address and pin.
+      const [mine, place] = await Promise.all([
+        getDoc(doc(db, 'profiles', me.uid)).then(x => x.exists() ? x.data() : {}).catch(() => ({})),
+        getDoc(doc(db, p.coll, p.id)).then(x => x.exists() ? x.data() : {}).catch(() => ({})),
+      ]);
+      const num = v => typeof v === 'number' && isFinite(v) && v !== 0;
+      const rawCity = String(place.city || '');
+      const address = String(place.address || (rawCity.includes(',') ? rawCity.split(',')[0] : '') || '').trim().slice(0, 200);
+      const m = {
+        hostId: me.uid,
+        hostName: String(mine.displayName || '').trim() || 'A member',
+        hostPhoto: typeof mine.photoUrl === 'string' ? mine.photoUrl : '',
+        placeId: p.id,
+        placeName: p.name,
+        locationText: p.name,
+        placeCategory: p.cat,
+        city: p.town || p.destination || '',
+        address,
+        date: Timestamp.fromDate(when),
+        intent: kind,
+        maxGuests: planCount,
+        note,
+        attendees: [me.uid],
+        pendingRequests: [],
+        requestNames: {},
+        declinedRequests: [],
+        status: 'open',
+        source: 'web',
+        createdAt: serverTimestamp(),
+      };
+      if (num(place.lat) && num(place.lng)) { m.lat = place.lat; m.lng = place.lng; }
+      ref = await addDoc(collection(db, 'meetups'), m);
+    } catch (e) {
+      console.log('Meetup not planned:', e.code || e);
+      go.disabled = false; go.textContent = 'Plan meetup';
+      return planError('Your meetup could not be planned. Please try again.');
+    }
+    let invited = true;
+    try {
+      await updateDoc(ref, { invited: arrayUnion(uid), [`inviteNames.${uid}`]: ownerName, [`invitedAt.${uid}`]: serverTimestamp() });
+    } catch (e) { console.log('Invite not sent:', e.code || e); invited = false; }
+    const link = `meetups.html?id=${encodeURIComponent(ref.id)}`;
+    if (invited) { location.href = link; return; }
+    plan.innerHTML = `<div class="plan-done"><h2 id="planTitle">Meetup planned</h2>
+      <p>Meetup planned, but ${esc(firstName(owner.name))} could not be invited. Invite them from the meetup.</p>
+      <a href="${link}">Open the meetup →</a></div>`;
+  }
+  plan.addEventListener('click', e => { if (e.target === plan) plan.close(); });
 
   // Which of these places the visitor already has on their own wishlist.
   async function loadMine() {

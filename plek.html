@@ -108,10 +108,25 @@
   .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .tag { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--cream); color: var(--ink-soft); }
   .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem 1.5rem; }
+  /* Open now / Closed now above the hours (js/sf-hours.js), as in the app */
+  .open-state { display: block; font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  .open-state.is-open { color: #2D7A46; }
+  .open-state.is-shut { color: #B42318; }
+  /* Friends who've been here (app build 25) */
+  .friends-been { display: flex; align-items: center; gap: 0.8rem; margin-top: 1rem; background: #FBEDE4; border: 1px solid rgba(212,82,26,0.18); border-radius: 14px; padding: 0.7rem 0.9rem; }
+  .fb-faces { display: flex; flex-shrink: 0; }
+  .fb-face { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #FBEDE4; background: #D4521A; color: #fff; font: 700 12px 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+  .fb-face + .fb-face { margin-left: -10px; }
+  .fb-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fb-main { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+  .fb-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 1px; }
+  .fb-sub b { color: #C8901A; font-weight: 600; }
+  /* We kept your draft (app build 25) */
+  .draft-note { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; background: var(--cream); border: 1px solid var(--border); border-radius: 10px; padding: 0.5rem 0.75rem; font-size: 13.5px; color: var(--ink-soft); margin-bottom: 0.6rem; }
   .facts dt { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
   .facts dd { font-size: 14px; color: var(--ink); overflow-wrap: anywhere; }
   .facts dd a { color: var(--accent); text-decoration: none; }
-  .place-map { height: 260px; border-radius: 12px; overflow: hidden; }
+  .place-map { height: 260px; border-radius: 12px; overflow: hidden; position: relative; z-index: 0; isolation: isolate; } /* the map's + and − stay under the menu bar */
   .member-reviews { display: flex; flex-direction: column; gap: 0.9rem; }
   #placeHighlights .hl-sec { margin-bottom: 0; }
   .mr { border-top: 1px solid var(--border); padding-top: 0.9rem; }
@@ -277,6 +292,8 @@
   import { rememberRef, recordInvite } from "./js/sf-invites.js?v=1";
   import { loadDeals } from "./js/sf-deals.js?v=1";
   import { PRO_ON } from "./js/sf-flags.js?v=1";
+  import { hoursOf, openState } from "./js/sf-hours.js?v=1";
+  import { checkBadges } from "./js/sf-badges.js?v=3";
   import { openCorrection } from "./js/sf-corrections.js?v=1";
   import { loadOwner, myClaim, openClaim, loadReplies, saveReply, deleteReply, suggestPhoto, REPLY_MAX } from "./js/sf-claims.js?v=1";
   rememberRef();
@@ -380,7 +397,7 @@
       review: r.review || '',
       rating: typeof r.rating === 'number' ? r.rating : null,
       price: r.price || '',
-      hours: r.hours || '',
+      hours: hoursOf(r),
       phone: r.phone || '',
       date: r.date || '',
       tags: Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [],
@@ -476,9 +493,14 @@
       ? `<span class="badge badge-member">Member spot</span>`
       : `<span class="badge badge-sf">Strong Foodie review</span>`;
 
+    // "Open now" in green or "Closed now" in red above the hours; nothing when they can't be read.
+    function hoursHtml(p) {
+      const st = openState(p);
+      return (st === 'open' ? '<span class="open-state is-open">Open now</span>' : st === 'closed' ? '<span class="open-state is-shut">Closed now</span>' : '') + esc(p.hours);
+    }
     const facts = [
       p.address && ['📍', 'Address', esc(p.address)],
-      p.hours && ['🕐', 'Opening hours', esc(p.hours)],
+      p.hours && ['🕐', 'Opening hours', hoursHtml(p)],
       p.price && ['💰', 'Price', esc(p.price)],
       p.type && ['🏷️', 'Type', esc(p.type)],
       p.phone && ['📞', 'Phone', `<a href="tel:${esc(p.phone.replace(/\s/g, ''))}">${esc(p.phone)}</a>`],
@@ -510,6 +532,7 @@
           ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
+          <div class="friends-been" id="friendsBeen" hidden></div>
           <div class="actions">
             ${bookingButtonHtml(p.book)}
             ${routeUrl ? `<a class="btn${p.book ? '' : ' btn-primary'}" href="${routeUrl}" target="_blank" rel="noopener">Route ↗</a>` : ''}
@@ -853,6 +876,77 @@
 
   const myReview = () => me ? reviewRows.find(r => r.authorId === me.uid) : null;
 
+  // ── Friends who've been here (app build 25) ───────────────────────────
+  // Members you follow (an approved follow, not a request) who reviewed this
+  // place: one review per person, highest rating first. Only for you, signed in.
+  let follows = null, followsFor = '';
+  async function loadFollows() {
+    if (!me) { follows = null; followsFor = ''; return; }
+    if (followsFor === me.uid && follows) return;
+    followsFor = me.uid;
+    try {
+      const s = await getDocs(query(collection(db, 'follows'), where('followerId', '==', me.uid)));
+      follows = new Set(s.docs.map(d => d.data()).filter(f => f.followingId && f.status !== 'pending').map(f => f.followingId));
+    } catch (e) { console.log('Follows not read:', e.code || e); follows = new Set(); }
+  }
+  const firstOf = n => String(n || '').trim().split(/\s+/)[0] || 'A friend';
+  async function renderFriends() {
+    const box = document.getElementById('friendsBeen');
+    if (!box) return;
+    const hide = () => { box.hidden = true; box.innerHTML = ''; };
+    if (!me || !reviewPlace) return hide();
+    const uid = me.uid;
+    await loadFollows();
+    if (!me || me.uid !== uid || !follows) return hide();
+    const best = new Map();
+    reviewRows.forEach(r => {
+      if (!r.authorId || r.authorId === uid || r.hidden === true || r.authorId === 'strongfoodie' || typeof r.rating !== 'number') return;
+      if (!follows.has(r.authorId) || isBlocked(modFlags, r.authorId)) return;
+      const prev = best.get(r.authorId);
+      if (!prev || r.rating > prev.rating) best.set(r.authorId, r);
+    });
+    const list = [...best.values()].sort((a, b) => b.rating - a.rating);
+    if (!list.length) return hide();
+    const names = list.map(r => firstOf(r.authorName || (authorInfo[r.authorId] || {}).name));
+    const more = names.length - 2;
+    const main = names.length === 1 ? `${esc(names[0])} has been here`
+      : names.length === 2 ? `${esc(names[0])} and ${esc(names[1])} have been here`
+      : `${esc(names[0])}, ${esc(names[1])} and ${more} other${more === 1 ? '' : 's'} have been here`;
+    const faces = list.slice(0, 4).map((r, i) => {
+      const n = names[i] === 'A friend' ? '' : names[i];
+      const ini = n ? n.slice(0, 1).toUpperCase() : '👤';
+      return `<span class="fb-face" aria-hidden="true">${esc(ini)}${r.authorPhoto ? `<img data-photo="${esc(r.authorPhoto)}" alt="" hidden>` : ''}</span>`;
+    }).join('');
+    const rates = list.slice(0, 3).map((r, i) => `${esc(names[i])} <b>★${Math.round(r.rating)}</b>`).join(' · ');
+    box.innerHTML = `<span class="fb-faces">${faces}</span><span><span class="fb-main" style="display:block;">${main}</span><span class="fb-sub" style="display:block;">${rates}</span></span>`;
+    box.hidden = false;
+    hydratePhotos(box);
+  }
+
+  // ── Review draft (app build 25) ──────────────────────────────────────
+  // A new review you leave halfway is kept in this browser (stars and text,
+  // no photo) for 30 days, under the same key as in the app.
+  const draftKey = () => me && reviewPlace ? `reviewDraft.${me.uid}.${reviewPlace.cat}_${reviewPlace.id}` : '';
+  function readSavedDraft() {
+    const k = draftKey();
+    if (!k) return null;
+    try {
+      const d = JSON.parse(localStorage.getItem(k) || 'null');
+      if (!d) return null;
+      if (!d.savedAt || Date.now() - d.savedAt > 30 * 864e5 || (!d.rating && !String(d.text || '').trim())) { localStorage.removeItem(k); return null; }
+      return d;
+    } catch (e) { return null; }
+  }
+  function saveDraftNow() {
+    const k = draftKey();
+    if (!k || draft.editing) return;
+    try {
+      if (!draft.rating && !String(draft.text || '').trim()) localStorage.removeItem(k);
+      else localStorage.setItem(k, JSON.stringify({ rating: draft.rating || 0, text: String(draft.text || ''), savedAt: Date.now() }));
+    } catch (e) { /* storage blocked: no draft */ }
+  }
+  function dropDraft() { const k = draftKey(); if (k) { try { localStorage.removeItem(k); } catch (e) {} } }
+
   function renderMemberReviews() {
     const box = document.getElementById('memberReviewsBody');
     if (!box) return;
@@ -893,6 +987,7 @@
     box.innerHTML = list + `<div class="composer" id="composer">${composerHtml(mine)}</div>`;
     hydratePhotos(box);
     wireComposer(mine);
+    renderFriends();
     wireReplies(box);
     wireReports(db, box, b => {
       if (b.dataset.replyRid) {
@@ -1008,6 +1103,7 @@
     return `<div class="composer-card">
       <p class="composer-title">${mine ? 'Edit your review' : 'Your review of ' + esc(reviewPlace.name)}</p>
       <form id="reviewForm" class="composer-form" novalidate>
+        ${!mine && draft.restored ? '<div class="draft-note"><span>We kept your draft</span><button class="link-btn" type="button" data-act="startover">Start over</button></div>' : ''}
         <div class="star-input" role="radiogroup" aria-label="Your rating">
           ${[1, 2, 3, 4, 5].map(n => `<button type="button" class="star${n <= r ? ' on' : ''}" data-star="${n}" role="radio" aria-checked="${n === r}" aria-label="${n} star${n === 1 ? '' : 's'}">★</button>`).join('')}
         </div>
@@ -1028,9 +1124,10 @@
   }
 
   function startDraft(mine) {
+    const saved = mine ? null : readSavedDraft();
     draft = mine
-      ? { rating: mine.rating, text: mine.text || '', photo: mine.photoUrl && mine.photoUrl.startsWith('data:') ? mine.photoUrl : '', keepPhoto: mine.photoUrl || '' }
-      : { rating: 0, text: '', photo: '', keepPhoto: '' };
+      ? { rating: mine.rating, text: mine.text || '', photo: mine.photoUrl && mine.photoUrl.startsWith('data:') ? mine.photoUrl : '', keepPhoto: mine.photoUrl || '', editing: true }
+      : { rating: saved ? Math.max(0, Math.min(5, +saved.rating || 0)) : 0, text: saved ? String(saved.text || '').slice(0, 1500) : '', photo: '', keepPhoto: '', restored: !!saved };
   }
 
   function wireComposer(mine) {
@@ -1040,6 +1137,7 @@
       const act = b.dataset.act;
       if (act === 'open' || act === 'edit') { composerOpen = true; startDraft(act === 'edit' ? mine : null); renderMemberReviews(); focusComposer(); }
       if (act === 'cancel') { composerOpen = false; authMode = 'login'; renderMemberReviews(); }
+      if (act === 'startover') { dropDraft(); startDraft(null); renderMemberReviews(); focusComposer(); }
       if (act === 'tosignup') { authMode = 'signup'; renderMemberReviews(); focusComposer(); }
       if (act === 'tologin') { authMode = 'login'; renderMemberReviews(); focusComposer(); }
       if (act === 'logout') { await signOut(auth); composerOpen = false; toast('Logged out'); }
@@ -1136,11 +1234,12 @@
     if (!form) return;
     form.querySelectorAll('[data-star]').forEach(s => s.addEventListener('click', () => {
       draft.rating = +s.dataset.star;
+      saveDraftNow();
       form.querySelectorAll('[data-star]').forEach(x => { const on = +x.dataset.star <= draft.rating; x.classList.toggle('on', on); x.setAttribute('aria-checked', +x.dataset.star === draft.rating); });
     }));
     const text = document.getElementById('reviewText');
     const count = () => { document.getElementById('reviewCount').textContent = `${text.value.length} / 1500`; };
-    text.addEventListener('input', () => { draft.text = text.value; count(); });
+    text.addEventListener('input', () => { draft.text = text.value; count(); saveDraftNow(); });
     count();
     document.getElementById('reviewPhoto').addEventListener('change', async e => {
       const file = e.target.files && e.target.files[0];
@@ -1179,8 +1278,10 @@
           });
         }
         composerOpen = false;
+        if (!mineNow) dropDraft();
         toast(mineNow ? 'Review updated' : 'Thanks! Your review is live');
         loadMemberReviews(reviewPlace);
+        if (!mineNow) checkBadges(db, me.uid, { force: true }).catch(() => {});
       } catch (err) {
         console.error('Review could not be saved:', err);
         btn.disabled = false; btn.textContent = mineNow ? 'Save changes' : 'Post review';

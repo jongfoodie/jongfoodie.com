@@ -8,10 +8,12 @@
 // It reads the same userPlaces collection as the app, so a place a member adds
 // in the app appears here straight away. Places of members with a private
 // account are left out, and so are hidden spots and blocked members.
+// With "Open now" on (the page sends sf:opennow), only spots that are open now show.
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { loadFlags, isBlocked } from "./sf-moderation.js?v=1";
+import { hoursOf, openState } from "./sf-hours.js?v=1";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -118,7 +120,8 @@ async function loadPlaces(catKey) {
       city: r.city || '',
       tip: r.type || '',
       review: r.review || '',
-      hours: r.hours || '',
+      hours: hoursOf(r),
+      open: openState(r),
       rating: typeof r.rating === 'number' ? r.rating : null,
       photo: r.photoUrl || (Array.isArray(r.photos) ? r.photos[0] : '') || '',
       addedBy: r.addedByName || 'a member',
@@ -193,13 +196,17 @@ async function mount(section) {
 
   const render = (term) => {
     const t = (term || '').toLowerCase().trim();
+    const openNow = window.__sfOpenNow === true;
     let shown = t ? places.filter(p => `${p.name} ${p.address} ${p.tip} ${p.review}`.toLowerCase().includes(t)) : places;
-    if (limit && !t) shown = shown.slice(0, limit);
+    if (openNow) shown = shown.filter(p => p.open === 'open');
+    if (limit && !t && !openNow) shown = shown.slice(0, limit);
     section.querySelector('.mp-label span').textContent = `From our members · ${label}` + (places.length ? ` · ${places.length}` : '');
     if (!places.length) {
       list.innerHTML = `<div class="mp-empty">No member spots${all ? '' : ' in ' + label} yet.<br>Members add places here and in the Strong Foodie app, and they show up straight away.</div>`;
     } else if (!shown.length) {
-      list.innerHTML = `<div class="mp-empty">No member spots match your search.</div>`;
+      list.innerHTML = openNow
+        ? `<div class="mp-empty">No member spots are open right now, as far as we know their hours.</div>`
+        : `<div class="mp-empty">No member spots match your search.</div>`;
     } else {
       list.innerHTML = shown.map(cardHtml).join('');
       hydratePhotos(list);
@@ -210,6 +217,7 @@ async function mount(section) {
   const searchSel = section.getAttribute('data-search');
   const input = searchSel ? document.querySelector(searchSel) : null;
   if (input) input.addEventListener('input', () => render(input.value));
+  window.addEventListener('sf:opennow', () => render(input ? input.value : ''));
 }
 
 document.querySelectorAll('[data-member-places]').forEach(mount);

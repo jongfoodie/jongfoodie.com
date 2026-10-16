@@ -81,6 +81,11 @@
   .chip { background: var(--warm-white); color: var(--ink); border: 1px solid var(--border); padding: 5px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
   .chip small { opacity: 0.6; margin-left: 2px; }
   .chip.active { background: #1A1208; color: #fff; border-color: #1A1208; }
+  /* Open now (js/sf-hours.js), first in the country row as in the app: orange when it's on */
+  .chip.open-chip { background: #fff; color: var(--ink); border-color: var(--border); }
+  .chip.open-chip[aria-pressed="true"] { background: #D4521A; border-color: #D4521A; color: #fff; }
+  .open-empty { padding: 1.25rem 1rem; text-align: center; color: var(--ink-soft, #5A4A36); font-size: 13.5px; line-height: 1.5; }
+  .open-empty button { margin-top: 0.6rem; background: #D4521A; color: #fff; border: none; border-radius: 20px; padding: 8px 16px; font: 600 13px 'DM Sans', sans-serif; cursor: pointer; }
   .filter-sep { width: 1px; align-self: stretch; background: var(--border); margin: 0 0.25rem; flex-shrink: 0; }
   .map-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 11px; color: var(--muted); padding: 0.5rem 1rem; border-bottom: 1px solid var(--border); }
   .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; margin-right: 3px; }
@@ -181,6 +186,7 @@
   <p>Every Strong Foodie review and every place our members added in the app, on one map</p>
 </div>
 <div class="filter-row" id="countryFilters" aria-label="Filter by country">
+  <button class="chip open-chip" id="openNowChip" type="button" aria-pressed="false" onclick="toggleOpenNow()">🕐 Open now</button>
   <button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>
 </div>
 <div class="filter-row filter-row-alt" id="categoryFilters" aria-label="Filter by category">
@@ -302,6 +308,7 @@ window.LEGACY_SPOTS = [
   import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { loadFlags, isBlocked } from "./js/sf-moderation.js?v=1";
+  import { hoursOf, openState } from "./js/sf-hours.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -448,7 +455,7 @@ window.LEGACY_SPOTS = [
   const pinLayer = L.layerGroup().addTo(map);
 
   let places = [];
-  let filters = { country: 'all', cat: 'all' };
+  let filters = { country: 'all', cat: 'all', open: false };
 
   // Whose place it is, the same colours as the map in the app: You, Strong Foodie,
   // People you follow (approved follows only) and, for everyone else, other members.
@@ -535,6 +542,7 @@ window.LEGACY_SPOTS = [
     if (!allowed(p)) return false;
     if (filters.country !== 'all' && p.country !== filters.country) return false;
     if (filters.cat !== 'all' && p.cat !== filters.cat) return false;
+    if (filters.open && p.open !== 'open') return false;
     const q = (document.querySelector('.search-input').value || '').toLowerCase().trim();
     if (q && !(`${p.name} ${p.address} ${p.city}`.toLowerCase().includes(q))) return false;
     return true;
@@ -584,6 +592,19 @@ window.LEGACY_SPOTS = [
   }
   window.filterByCountry = c => { filters.country = c; setActive('country', c); applyFilters(true); };
   window.filterByCategory = c => { filters.cat = c; setActive('cat', c); applyFilters(true); };
+  // Open now: only places whose hours say they are open right now.
+  window.toggleOpenNow = on => {
+    filters.open = typeof on === 'boolean' ? on : !filters.open;
+    const chip = document.getElementById('openNowChip');
+    if (chip) chip.setAttribute('aria-pressed', String(filters.open));
+    applyFilters(true);
+  };
+  window.resetMapFilters = () => {
+    filters.country = 'all'; filters.cat = 'all';
+    setActive('country', 'all'); setActive('cat', 'all');
+    const q = document.querySelector('.search-input'); if (q) q.value = '';
+    window.toggleOpenNow(false);
+  };
 
   function buildList(shown) {
     const list = document.getElementById('spotsList');
@@ -619,6 +640,7 @@ window.LEGACY_SPOTS = [
       };
       list.appendChild(div);
     });
+    if (!shown.length && filters.open) list.innerHTML = `<div class="open-empty"><p>Nothing here is open right now, as far as we know their hours. Turn off Open now to see everything.</p><button type="button" onclick="resetMapFilters()">Reset filters</button></div>`;
     hydratePhotos(list);
   }
 
@@ -632,7 +654,8 @@ window.LEGACY_SPOTS = [
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || counts[b] - counts[a];
     });
     const row = document.getElementById('countryFilters');
-    row.innerHTML = `<button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>` +
+    row.innerHTML = `<button class="chip open-chip" id="openNowChip" type="button" aria-pressed="${filters.open}" onclick="toggleOpenNow()">🕐 Open now</button>`
+      + `<button class="chip chip-dark active" data-country="all" onclick="filterByCountry('all')">🌍 All</button>` +
       keys.map(k => `<button class="chip chip-dark" data-country="${esc(k)}" onclick="filterByCountry('${esc(k)}')">${countryLabel(k)} <small>${counts[k]}</small></button>`).join('');
     if (filters.country !== 'all' && !counts[filters.country]) filters.country = 'all';
     setActive('country', filters.country);
@@ -656,7 +679,7 @@ window.LEGACY_SPOTS = [
       out.push({
         id: d.id, coll: CATS[cat].coll, cat, source: 'sf',
         name: r.name, address: r.city || r.address || '', city: r.city || '',
-        type: r.type || '', hours: r.hours || '', rating: r.rating || null,
+        type: r.type || '', hours: hoursOf(r), open: openState(r), rating: r.rating || null,
         emoji: r.emoji || CATS[cat].emoji, photo: r.photoUrl || (Array.isArray(r.photos) && typeof r.photos[0] === 'string' ? r.photos[0] : ''),
         lat, lng, country: normCountry(r.country, lat, lng),
         isNew: !r.importedFromHtml && !!created && (now - created) < 30 * 864e5,
@@ -683,7 +706,7 @@ window.LEGACY_SPOTS = [
       const address = [r.address, r.city].filter(Boolean).join(', ');
       return {
         id: r.id, coll: 'userPlaces', cat, source: 'member',
-        name: r.name, address, city: r.city || '', type: r.type || '', hours: r.hours || '',
+        name: r.name, address, city: r.city || '', type: r.type || '', hours: hoursOf(r), open: openState(r),
         rating: r.rating || null, emoji: r.emoji || CATS[cat].emoji,
         photo: r.photoUrl || (Array.isArray(r.photos) ? r.photos[0] : '') || '',
         addedBy: r.addedByName || '', ownerId: r.addedByUserId || '', privateOwner: privateOwners.has(r.addedByUserId), lat, lng,
@@ -729,7 +752,7 @@ window.LEGACY_SPOTS = [
       const lat = c ? c[0] : num(s.lat), lng = c ? c[1] : num(s.lng);
       out.push({
         id: 'legacy-' + s.name, coll: 'legacy', cat: 'eat', source: 'sf',
-        name: s.name, address: s.address || '', city: '', type: '', hours: s.hours || '',
+        name: s.name, address: s.address || '', city: '', type: '', hours: s.hours || '', open: openState({ hours: s.hours, address: s.address, country: s.country, lat, lng }),
         rating: starsToNumber(s.rating), emoji: s.emoji || '🍽️', photo: s.photoUrl || '',
         lat, lng, country: normCountry(s.country, lat, lng), isNew: false,
       });
