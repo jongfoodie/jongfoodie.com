@@ -86,6 +86,9 @@
   .deal-note { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; background: var(--accent-pale); border: 1px dashed var(--accent); color: var(--ink); text-decoration: none; border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 14px; line-height: 1.35; }
   .deal-note b { color: var(--accent); }
   .deal-note span:last-child { white-space: nowrap; font-weight: 600; color: var(--accent); }
+  .meet-note { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.9rem; background: var(--warm-white); border: 1px solid var(--border); color: var(--ink); border-radius: 12px; padding: 0.7rem 0.9rem; min-height: 44px; font: 14px 'DM Sans', sans-serif; line-height: 1.35; text-align: left; cursor: pointer; }
+  .meet-note:hover { border-color: var(--accent); }
+  .meet-note span:last-child { white-space: nowrap; font-weight: 600; color: #B8461A; }
   .battle-note span:last-child { white-space: nowrap; font-weight: 600; }
   .block { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; margin-top: 1rem; }
   .block h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 0.75rem; }
@@ -287,6 +290,7 @@
   import { PRO_ON } from "./js/sf-flags.js?v=1";
   import { hoursOf, openState } from "./js/sf-hours.js?v=1";
   import { checkBadges } from "./js/sf-badges.js?v=3";
+  import { openPlanMeetup } from "./js/sf-plan.js?v=1";
   import { openCorrection } from "./js/sf-corrections.js?v=1";
   import { loadOwner, myClaim, openClaim, loadReplies, saveReply, deleteReply, suggestPhoto, REPLY_MAX } from "./js/sf-claims.js?v=1";
   rememberRef();
@@ -511,6 +515,8 @@
 
     // The destination page this place belongs to (same logic as the homepage and stad.html).
     const dest = locate(p.address, p.country).destination;
+    // Meetups are for food, drinks and sport (the app's Just food and Sport), at open places.
+    const canMeet = ['eat', 'drink', 'health'].includes(p.cat) && !p.closedStatus;
 
     document.getElementById('placeRoot').innerHTML = `
       <div class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> › ${dest
@@ -535,6 +541,7 @@
             ${hasCoords ? `<a class="btn" href="map.html?cat=${p.cat}${p.member ? '&source=member' : ''}">On the map</a>` : ''}
           </div>
           ${partnerNoteHtml(p.book)}
+          ${canMeet ? '<button type="button" class="meet-note" id="planBtn"><span>🍽️ Going with others? Plan a meetup here.</span><span>Plan →</span></button>' : ''}
           ${p.deal ? `<a class="deal-note" href="deals.html#d-${esc(p.deal.id)}"><span>🎟️ Pro deal: <b>${esc(p.deal.title)}</b></span><span>See it →</span></a>` : ''}
           ${p.battle ? `<a class="battle-note" href="battle.html"><span>⚔️ In a battle: <b>${esc(p.battle.title || 'Battle')}</b></span><span>Vote →</span></a>` : ''}
         </div>
@@ -587,6 +594,12 @@
     document.getElementById('wishBtn').addEventListener('click', toggleWish);
     document.getElementById('beenBtn').addEventListener('click', toggleBeen);
     document.getElementById('fixBtn').addEventListener('click', () => openCorrection(db, p, auth.currentUser));
+    const planBtn = document.getElementById('planBtn');
+    if (planBtn) planBtn.addEventListener('click', () => {
+      if (!me) { location.href = '/account.html?next=' + encodeURIComponent(location.pathname + location.search); return; }
+      const loc = locate(p.address, p.country);
+      openPlanMeetup(db, { me, place: { coll: p.coll, id: p.id, name: p.name, cat: p.cat, emoji: p.emoji, where: p.address, city: loc.town || loc.destination || '' } });
+    });
     ownerPlace = p;
     drawOwnerBox();
     refreshWish();
