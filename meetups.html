@@ -123,6 +123,27 @@
   .m-sheet .field { margin: 0 1.2rem 0.4rem; width: auto; }
   .m-full { margin: 0.2rem 1.2rem 0.4rem; padding: 0.6rem 0.9rem; border-radius: 12px; background: var(--accent-pale); color: #B8461A; font-weight: 700; font-size: 14px; }
   .m-sheet-list { overflow-y: auto; padding: 0 1.2rem 1rem; }
+  /* Edit meetup and Remove (host) */
+  .m-form { display: flex; flex-direction: column; gap: 0.85rem; padding: 0 1.2rem 1.2rem; overflow-y: auto; }
+  .m-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 0.35rem; }
+  .m-when { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .m-form input[type="date"], .m-form input[type="time"], .m-form textarea { border: 1px solid var(--border); border-radius: 12px; padding: 0.6rem 0.75rem; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); min-height: 44px; }
+  .m-form textarea { width: 100%; resize: vertical; min-height: 80px; }
+  .m-count { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .m-count output { font-size: 20px; font-weight: 700; min-width: 2ch; text-align: right; }
+  .m-step { display: inline-flex; border: 1px solid var(--border); border-radius: 22px; overflow: hidden; background: #fff; }
+  .m-step button { border: none; background: none; width: 48px; height: 44px; font-size: 20px; cursor: pointer; color: var(--ink); }
+  .m-step button + button { border-left: 1px solid var(--border); }
+  .m-step button:disabled { color: var(--muted); cursor: default; }
+  .m-small { font-size: 13px; color: #6E604E; }
+  .m-err { color: #A32323; font-size: 14px; }
+  .m-acts { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .m-acts .m-btn { flex: 1 1 0; }
+  .m-btn.red { border-color: #A32323; background: #A32323; color: #fff; font-weight: 700; }
+  .m-btn.red:hover:not(:disabled) { color: #fff; opacity: 0.92; }
+  .m-ask { width: min(420px, calc(100vw - 32px)); }
+  .m-ask p { padding: 0 1.2rem; }
+  .m-ask .m-acts { padding: 1rem 1.2rem 1.2rem; }
 
   @media (max-width: 640px) {
     .m-row { gap: 12px; padding: 10px 0; flex-wrap: wrap; }
@@ -139,6 +160,7 @@
     .m-av { width: 44px; height: 44px; font-size: 15px; }
     .m-bar p { flex-basis: 100%; }
     .m-bar .m-btn { flex: 1 1 0; }
+    .m-bar.host .m-btn.fill { flex-basis: 100%; }
     .m-sheet { width: 100vw; max-width: 100vw; max-height: 92vh; margin: auto 0 0; border-radius: 20px 20px 0 0; }
     .m-sheet-in { max-height: 92vh; }
   }
@@ -273,6 +295,8 @@
     <div class="m-sheet-list" id="mSheetList"></div>
   </div>
 </dialog>
+<dialog class="m-sheet" id="mEdit" aria-labelledby="mEditTitle"></dialog>
+<dialog class="m-sheet m-ask" id="mAsk" aria-labelledby="mAskTitle"></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -355,11 +379,14 @@ function declineCookies(){
   //   meetups.html          your meetups: invitations, upcoming (host, going, asked) and past
   //   meetups.html?id={id}  one meetup: who's going; requests and invitations for the host;
   //                         Join or Decline for someone invited; Ask to join for others.
+  // The host can also edit the date, time, number of people and note, and remove someone
+  // who is going (app batch 58: out of attendees, pendingRequests and invited, into
+  // declinedRequests, in one write, without a push).
   // Who's going: the full list for the host, the people going and the people invited;
   // everyone else sees the number only. The writes are the same as the app's, so the
   // rules (VERSIE 13 OKTOBER) and the push notifications (notifyMeetupRequest) work the same.
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, arrayUnion, arrayRemove, deleteField, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, arrayUnion, arrayRemove, deleteField, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { esc, fold, photoTools } from "./js/sf-places.js?v=7";
   import { loadFlags, isBlocked, trustedMark } from "./js/sf-moderation.js?v=1";
@@ -377,7 +404,7 @@ function declineCookies(){
   const { hydratePhotos } = photoTools(db);
 
   const $ = id => document.getElementById(id);
-  const main = $('mMain'), sheet = $('mSheet'), find = $('mFind'), sheetList = $('mSheetList');
+  const main = $('mMain'), sheet = $('mSheet'), find = $('mFind'), sheetList = $('mSheetList'), editBox = $('mEdit'), askBox = $('mAsk');
   const COLOURS = ['#D4521A', '#2D5A3D', '#6B2A5C', '#2F5D7C', '#8A6A0A', '#A32323'];
   const colourOf = s => COLOURS[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLOURS.length];
   const initialsOf = name => String(name || '?').trim().split(/\s+/).map(w => w[0] || '').join('').slice(0, 2).toUpperCase() || '?';
@@ -446,7 +473,8 @@ function declineCookies(){
       S.asked.set(uid, getDoc(doc(db, 'profiles', uid)).then(s => {
         if (!s.exists()) return null;
         const p = s.data();
-        const r = { uid, name: (typeof p.displayName === 'string' && p.displayName.trim()) || 'A member', city: typeof p.city === 'string' ? p.city.trim() : '',
+        const named = typeof p.displayName === 'string' && !!p.displayName.trim();
+        const r = { uid, named, name: named ? p.displayName.trim() : 'A member', city: typeof p.city === 'string' ? p.city.trim() : '',
           photo: typeof p.photoUrl === 'string' ? p.photoUrl : '', gone: !!p.deletedAt || p.isTestProfile === true };
         S.got.set(uid, r);
         return r;
@@ -469,7 +497,8 @@ function declineCookies(){
     todo.forEach((u, i) => { if (res[i]) S.blockedMe.set(u, true); });
   }
   const hiddenMember = u => isBlocked(S.flags, u) || S.myBlocks.has(u) || S.blockedMe.get(u) === true || !!(S.got.get(u) && S.got.get(u).gone);
-  const nameOf = (u, fallback) => (S.got.get(u) && S.got.get(u).name) || fallback || 'A member';
+  // The profile's name; without one, the name the meetup kept (requestNames, inviteNames).
+  const nameOf = (u, fallback) => { const p = S.got.get(u); return (p && p.named && p.name) || fallback || 'A member'; };
 
   function roleOf(m) {
     const me = S.me && S.me.uid;
@@ -498,7 +527,7 @@ function declineCookies(){
   }
 
   // ── Your meetups ──────────────────────────────────────────────────────
-  const INTRO = '<h1 class="m-title">Meetups</h1><p class="m-intro">Plan a meetup in the Strong Foodie app. Here you see who\'s going, answer invitations and invite people.</p>';
+  const INTRO = '<h1 class="m-title">Meetups</h1><p class="m-intro">Plan a meetup from any place to eat, drink or work out, here or in the Strong Foodie app. Here you see who\'s going, answer invitations and invite people.</p>';
 
   function cardRow(m) {
     const t = whenOf(m), past = ended(m);
@@ -548,7 +577,7 @@ function declineCookies(){
     let html = INTRO;
     if (invites.length) html += `<section class="m-sec" aria-label="Invitations"><p class="section-label">Invitations <span class="count">(${invites.length})</span></p><ul class="m-list">${invites.map(cardRow).join('')}</ul></section>`;
     html += `<section class="m-sec" aria-label="Upcoming meetups"><p class="section-label">Upcoming <span class="count">(${upcoming.length})</span></p>`
-      + (upcoming.length ? `<ul class="m-list">${upcoming.map(cardRow).join('')}</ul>` : '<p class="m-empty">No meetups planned yet. Plan one in the Strong Foodie app, or open a meetup link a friend sent you.</p>')
+      + (upcoming.length ? `<ul class="m-list">${upcoming.map(cardRow).join('')}</ul>` : '<p class="m-empty">No meetups planned yet. Open a place and tap Plan a meetup here, or open a meetup link a friend sent you.</p>')
       + '</section>';
     if (past.length) html += `<details class="m-sec m-past"><summary>Past meetups (${past.length})</summary><ul class="m-list">${past.map(cardRow).join('')}</ul></details>`;
     main.innerHTML = html;
@@ -587,7 +616,7 @@ function declineCookies(){
     let bar = '';
     if (done) bar = `<div class="m-bar"><p><b>This meetup has ended.</b></p></div>`;
     else if (!me) bar = `<div class="m-bar"><p><b>Want to come along?</b><small>Log in to ask the host if you can join.</small></p><a class="m-btn fill" href="${loginHref()}">Log in</a>${share}</div>`;
-    else if (role === 'host') bar = `<div class="m-bar"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button>${share}</div>`;
+    else if (role === 'host') bar = `<div class="m-bar host"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button><button type="button" class="m-btn" data-act="edit-open">Edit</button>${share}</div>`;
     else if (role === 'invited') bar = `<div class="m-bar invite"><p><b>${esc(host)} invited you</b><small>${full ? 'This meetup is full.' : 'Are you coming?'}</small></p><button type="button" class="m-btn fill" data-act="join"${full ? ' disabled' : ''}>Join</button><button type="button" class="m-btn" data-act="decline">Decline</button></div>`;
     else if (role === 'going') bar = `<div class="m-bar"><p><b>You're going</b><small>See you there.</small></p>${S.leaveArmed ? '<button type="button" class="m-btn danger" data-act="leave">Tap again to leave</button>' : '<button type="button" class="m-btn" data-act="leave">Leave</button>'}${share}</div>`;
     else if (role === 'requested') bar = `<div class="m-bar"><p><b>Requested</b><small>The host will answer your request.</small></p><button type="button" class="m-btn" data-act="cancel-request">Cancel request</button></div>`;
@@ -601,7 +630,8 @@ function declineCookies(){
       + (note ? `<p class="m-note">${esc(note)}</p>` : '') + bar
       + (done ? `<section class="m-sec" aria-label="Went"><p class="section-label">Went <span class="count">(${n})</span></p>`
         : `<section class="m-sec" aria-label="Going"><p class="section-label">Going <span class="count">(${n}${max ? '/' + max : ''})</span></p>`)
-      + (canSee ? `<ul class="m-list">${shown.map(u => personRow(u, { tag: u === m.hostId ? 'Host' : '', fallback: u === m.hostId ? m.hostName : '' })).join('')}</ul>`
+      + (canSee ? `<ul class="m-list">${shown.map(u => personRow(u, { tag: u === m.hostId ? 'Host' : '', fallback: u === m.hostId ? m.hostName : '',
+          btns: role === 'host' && !done && u !== m.hostId ? `<button type="button" class="m-btn danger" data-act="remove-ask" data-uid="${esc(u)}" aria-label="Remove ${esc(nameOf(u))}">Remove</button>` : '' })).join('')}</ul>`
         : `<p class="m-hidden-note">${done ? `${n} went.` : `${n} going. Only the host and the people going can see who's going.`}</p>`)
       + '</section>';
 
@@ -610,7 +640,8 @@ function declineCookies(){
       const inviteNames = m.inviteNames && typeof m.inviteNames === 'object' ? m.inviteNames : {};
       const pending = list(m.pendingRequests).filter(u => !hiddenMember(u));
       const invited = list(m.invited).filter(u => !hiddenMember(u));
-      const said = list(m.declinedInvites).filter(u => !hiddenMember(u));
+      // Invited again (the app may leave them in declinedInvites) or going after all: not here.
+      const said = list(m.declinedInvites).filter(u => !hiddenMember(u) && !list(m.invited).includes(u) && !going.includes(u));
       if (pending.length) html += `<section class="m-sec" aria-label="Requests"><p class="section-label">Requests <span class="count">(${pending.length})</span></p><ul class="m-list">${pending.map(u => personRow(u, { fallback: names[u],
         btns: done ? '' : `<button type="button" class="m-btn fill" data-act="accept" data-uid="${esc(u)}"${full ? ' disabled' : ''}>Accept</button><button type="button" class="m-btn" data-act="refuse" data-uid="${esc(u)}">Decline</button>` })).join('')}</ul></section>`;
       if (invited.length) html += `<section class="m-sec" aria-label="Invited"><p class="section-label">Invited <span class="count">(${invited.length})</span></p><ul class="m-list">${invited.map(u => personRow(u, { fallback: inviteNames[u],
@@ -668,6 +699,101 @@ function declineCookies(){
     if (!S.circle) { await loadCircle(); renderSheet(); }
   }
   function closeSheet() { if (typeof sheet.close === 'function') sheet.close(); else sheet.removeAttribute('open'); }
+  const showBox = box => { if (typeof box.showModal === 'function') box.showModal(); else box.setAttribute('open', ''); };
+  const closeBox = box => { if (typeof box.close === 'function' && box.open) box.close(); else box.removeAttribute('open'); };
+
+  // ── Edit (host): date, time, number of people and note ───────────────
+  // The same fields as the app: date (Timestamp), maxGuests, note. Only what changed is
+  // written. The maximum can't go below the number of people going.
+  const pad = n => String(n).padStart(2, '0');
+  const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const hm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  let editMax = 2, editLow = 2;
+  function setEditMax(v) {
+    editMax = Math.max(editLow, Math.min(20, v));
+    $('mEditN').textContent = editMax;
+    $('mEditMinus').disabled = editMax <= editLow;
+    $('mEditPlus').disabled = editMax >= 20;
+  }
+  function openEdit() {
+    const m = S.m;
+    if (!m || roleOf(m) !== 'host' || ended(m)) return;
+    const d = new Date(whenOf(m) || Date.now() + 3 * 864e5);
+    const n = goingOf(m).length, note = noteOf(m);
+    editLow = Math.min(20, Math.max(2, n));
+    editBox.innerHTML = `<div class="m-sheet-in">
+      <div class="m-sheet-head"><h2 id="mEditTitle">Edit meetup</h2><button type="button" class="m-x" data-act="edit-close" aria-label="Close">×</button></div>
+      <form class="m-form" id="mEditForm" novalidate>
+        <div><span class="m-label">When</span>
+          <div class="m-when"><input type="date" id="mEditDate" aria-label="Date" min="${ymd(new Date())}" value="${ymd(d)}" required><input type="time" id="mEditTime" aria-label="Time" value="${hm(d)}" step="300" required></div></div>
+        <div><div class="m-count"><span class="m-label" style="margin:0;">How many people can join, including you</span>
+          <span style="display:flex;align-items:center;gap:0.6rem;"><output id="mEditN" aria-live="polite"></output><span class="m-step"><button type="button" id="mEditMinus" aria-label="One less">−</button><button type="button" id="mEditPlus" aria-label="One more">+</button></span></span></div>
+          ${n > 2 ? `<p class="m-small">${n} people are going, so it can't be fewer than ${n}.</p>` : ''}</div>
+        <div><label class="m-label" for="mEditNote">Anything they should know</label>
+          <textarea id="mEditNote" maxlength="${Math.max(300, note.length)}" placeholder="Going for the tasting menu, happy to split a starter.">${esc(note)}</textarea></div>
+        <p class="m-small">Everyone going and invited sees the new details on the meetup.</p>
+        <p class="m-err" id="mEditErr" role="alert" hidden></p>
+        <div class="m-acts"><button type="submit" class="m-btn fill" id="mEditGo">Save changes</button><button type="button" class="m-btn" data-act="edit-close">Cancel</button></div>
+      </form></div>`;
+    setEditMax(maxOf(m) || editLow);
+    showBox(editBox);
+  }
+  function editError(msg) { const el = $('mEditErr'); if (!el) return; el.textContent = msg; el.hidden = !msg; }
+  async function saveEdit() {
+    if (!S.m || !S.me || S.busy) return;
+    const d = $('mEditDate').value, t = $('mEditTime').value;
+    const when = d && t ? new Date(`${d}T${t}`) : null;
+    if (!when || isNaN(when)) return editError('Pick a date and a time.');
+    if (when.getTime() < Date.now() + 15 * 60e3) return editError('Pick a time in the future.');
+    const note = $('mEditNote').value.trim();
+    const go = $('mEditGo');
+    go.disabled = true; go.textContent = 'Saving…'; editError('');
+    S.busy = true;
+    let msg = '';
+    try {
+      const m = await fresh(S.m.id);
+      if (!m) { closeBox(editBox); toast('This meetup was cancelled.'); return; }
+      if (m.hostId !== S.me.uid) throw new Error('not the host');
+      const n = goingOf(m).length;
+      if (editMax < n) { editError(`${n} people are going. Pick ${n} or more.`); return; }
+      const ch = {};
+      if (Math.abs(whenOf(m) - when.getTime()) >= 60000) ch.date = Timestamp.fromDate(when);
+      if (maxOf(m) !== editMax) ch.maxGuests = editMax;
+      if (noteOf(m) !== note) ch.note = note;
+      if (Object.keys(ch).length) await updateDoc(doc(db, 'meetups', m.id), ch);
+      msg = Object.keys(ch).length ? 'Meetup updated' : 'Nothing changed';
+      closeBox(editBox);
+    } catch (e) {
+      console.log('Meetup not saved:', e.code || e);
+      editError('Your changes could not be saved. Please try again.');
+    } finally {
+      S.busy = false;
+      if (editBox.open) { go.disabled = false; go.textContent = 'Save changes'; }
+    }
+    if (!msg) return;
+    toast(msg);
+    const m2 = await fresh(S.m.id).catch(() => null);
+    if (m2) S.m = m2;
+    renderMeetup();
+  }
+  editBox.addEventListener('submit', e => { e.preventDefault(); saveEdit(); });
+  editBox.addEventListener('click', e => {
+    if (e.target === editBox) return closeBox(editBox);
+    if (e.target.closest('#mEditMinus')) setEditMax(editMax - 1);
+    else if (e.target.closest('#mEditPlus')) setEditMax(editMax + 1);
+  });
+
+  // ── Remove (host): ask first, the same words as the app ───────────────
+  function openAsk(uid) {
+    const m = S.m;
+    if (!m || roleOf(m) !== 'host' || !safeKey(uid) || uid === m.hostId) return;
+    askBox.innerHTML = `<div class="m-sheet-in">
+      <div class="m-sheet-head"><h2 id="mAskTitle">Remove ${esc(nameOf(uid))} from this meetup?</h2></div>
+      <p>They won't be able to ask to join again.</p>
+      <div class="m-acts"><button type="button" class="m-btn red" data-act="remove" data-uid="${esc(uid)}">Remove</button><button type="button" class="m-btn" data-act="ask-close">Cancel</button></div></div>`;
+    showBox(askBox);
+  }
+  askBox.addEventListener('click', e => { if (e.target === askBox) closeBox(askBox); });
 
   // ── Writes: the same as the app ───────────────────────────────────────
   async function fresh(id) {
@@ -678,11 +804,16 @@ function declineCookies(){
     if (name === 'share') return shareLink();
     if (name === 'sheet-open') return openSheet();
     if (name === 'sheet-close') return closeSheet();
+    if (name === 'edit-open') return openEdit();
+    if (name === 'edit-close') return closeBox(editBox);
+    if (name === 'remove-ask') return openAsk(uid);
+    if (name === 'ask-close') return closeBox(askBox);
     if (!S.me) { location.href = loginHref(); return; }
     if (name === 'leave' && !S.leaveArmed) { S.leaveArmed = true; renderMeetup(); return; }
     if (S.busy) return;
     S.busy = true;
     if (btn) btn.disabled = true;
+    if (name === 'remove') closeBox(askBox);
     const me = S.me.uid;
     let msg = '';
     try {
@@ -726,6 +857,12 @@ function declineCookies(){
           else if (has('pendingRequests', uid)) { ch.pendingRequests = arrayRemove(uid); ch.attendees = arrayUnion(uid); if (has('invited', uid)) ch.invited = arrayRemove(uid); msg = `${nameOf(uid, (m.requestNames || {})[uid])} is going`; }
         } else if (name === 'refuse') {
           if (has('pendingRequests', uid)) { ch.pendingRequests = arrayRemove(uid); ch.declinedRequests = arrayUnion(uid); msg = 'Request declined'; }
+        } else if (name === 'remove') {
+          // App batch 58: one write, no push (notifyMeetupRequest skips declinedRequests).
+          if (uid !== m.hostId && (has('attendees', uid) || has('pendingRequests', uid) || has('invited', uid))) {
+            ch.attendees = arrayRemove(uid); ch.pendingRequests = arrayRemove(uid); ch.invited = arrayRemove(uid); ch.declinedRequests = arrayUnion(uid);
+            msg = `${nameOf(uid)} was removed`;
+          }
         }
       }
       if (Object.keys(ch).length) await updateDoc(ref, ch);
@@ -763,7 +900,7 @@ function declineCookies(){
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-act]');
     if (!t || t.disabled) return;
-    if (!main.contains(t) && !sheet.contains(t)) return;
+    if (!main.contains(t) && !sheet.contains(t) && !editBox.contains(t) && !askBox.contains(t)) return;
     act(t.dataset.act, t.dataset.id || S.id, t.dataset.uid || '', t);
   });
   sheet.addEventListener('click', e => { if (e.target === sheet) closeSheet(); });
