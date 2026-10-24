@@ -161,6 +161,7 @@
     .m-bar p { flex-basis: 100%; }
     .m-bar .m-btn { flex: 1 1 0; }
     .m-bar.host .m-btn.fill { flex-basis: 100%; }
+    .m-bar.host .m-btn.danger { flex-basis: 100%; }
     .m-sheet { width: 100vw; max-width: 100vw; max-height: 92vh; margin: auto 0 0; border-radius: 20px 20px 0 0; }
     .m-sheet-in { max-height: 92vh; }
   }
@@ -381,12 +382,14 @@ function declineCookies(){
   //                         Join or Decline for someone invited; Ask to join for others.
   // The host can also edit the date, time, number of people and note, and remove someone
   // who is going (app batch 58: out of attendees, pendingRequests and invited, into
-  // declinedRequests, in one write, without a push).
+  // declinedRequests, in one write, without a push). Cancel meetup deletes meetups/{id},
+  // the same as the app; notifyMeetupDeleted tells the people going and invited and
+  // deletes the meetup chat.
   // Who's going: the full list for the host, the people going and the people invited;
   // everyone else sees the number only. The writes are the same as the app's, so the
   // rules (VERSIE 13 OKTOBER) and the push notifications (notifyMeetupRequest) work the same.
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, where, arrayUnion, arrayRemove, deleteField, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, arrayUnion, arrayRemove, deleteField, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { esc, fold, photoTools } from "./js/sf-places.js?v=7";
   import { loadFlags, isBlocked, trustedMark } from "./js/sf-moderation.js?v=1";
@@ -616,7 +619,7 @@ function declineCookies(){
     let bar = '';
     if (done) bar = `<div class="m-bar"><p><b>This meetup has ended.</b></p></div>`;
     else if (!me) bar = `<div class="m-bar"><p><b>Want to come along?</b><small>Log in to ask the host if you can join.</small></p><a class="m-btn fill" href="${loginHref()}">Log in</a>${share}</div>`;
-    else if (role === 'host') bar = `<div class="m-bar host"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button><button type="button" class="m-btn" data-act="edit-open">Edit</button>${share}</div>`;
+    else if (role === 'host') bar = `<div class="m-bar host"><p><b>You're the host.</b><small>Invite people you follow or who follow you.</small></p><button type="button" class="m-btn fill" data-act="sheet-open">Invite people</button><button type="button" class="m-btn" data-act="edit-open">Edit</button>${share}<button type="button" class="m-btn danger" data-act="cancel-ask">Cancel meetup</button></div>`;
     else if (role === 'invited') bar = `<div class="m-bar invite"><p><b>${esc(host)} invited you</b><small>${full ? 'This meetup is full.' : 'Are you coming?'}</small></p><button type="button" class="m-btn fill" data-act="join"${full ? ' disabled' : ''}>Join</button><button type="button" class="m-btn" data-act="decline">Decline</button></div>`;
     else if (role === 'going') bar = `<div class="m-bar"><p><b>You're going</b><small>See you there.</small></p>${S.leaveArmed ? '<button type="button" class="m-btn danger" data-act="leave">Tap again to leave</button>' : '<button type="button" class="m-btn" data-act="leave">Leave</button>'}${share}</div>`;
     else if (role === 'requested') bar = `<div class="m-bar"><p><b>Requested</b><small>The host will answer your request.</small></p><button type="button" class="m-btn" data-act="cancel-request">Cancel request</button></div>`;
@@ -730,7 +733,7 @@ function declineCookies(){
           <span style="display:flex;align-items:center;gap:0.6rem;"><output id="mEditN" aria-live="polite"></output><span class="m-step"><button type="button" id="mEditMinus" aria-label="One less">−</button><button type="button" id="mEditPlus" aria-label="One more">+</button></span></span></div>
           ${n > 2 ? `<p class="m-small">${n} people are going, so it can't be fewer than ${n}.</p>` : ''}</div>
         <div><label class="m-label" for="mEditNote">Anything they should know</label>
-          <textarea id="mEditNote" maxlength="${Math.max(300, note.length)}" placeholder="Going for the tasting menu, happy to split a starter.">${esc(note)}</textarea></div>
+          <textarea id="mEditNote" maxlength="${Math.max(500, note.length)}" placeholder="Going for the tasting menu, happy to split a starter.">${esc(note)}</textarea></div>
         <p class="m-small">Everyone going and invited sees the new details on the meetup.</p>
         <p class="m-err" id="mEditErr" role="alert" hidden></p>
         <div class="m-acts"><button type="submit" class="m-btn fill" id="mEditGo">Save changes</button><button type="button" class="m-btn" data-act="edit-close">Cancel</button></div>
@@ -744,7 +747,11 @@ function declineCookies(){
     const d = $('mEditDate').value, t = $('mEditTime').value;
     const when = d && t ? new Date(`${d}T${t}`) : null;
     if (!when || isNaN(when)) return editError('Pick a date and a time.');
-    if (when.getTime() < Date.now() + 15 * 60e3) return editError('Pick a time in the future.');
+    // Only a new date or time has to be in the future, so the host can still fix
+    // the note or the number of people shortly before the start.
+    const before = whenOf(S.m);
+    const moved = !before || Math.abs(before - when.getTime()) >= 60000;
+    if (moved && when.getTime() < Date.now() + 15 * 60e3) return editError('Pick a time in the future.');
     const note = $('mEditNote').value.trim();
     const go = $('mEditGo');
     go.disabled = true; go.textContent = 'Saving…'; editError('');
@@ -795,6 +802,40 @@ function declineCookies(){
   }
   askBox.addEventListener('click', e => { if (e.target === askBox) closeBox(askBox); });
 
+  // ── Cancel meetup (host): ask first, then delete meetups/{id} like the app ──
+  function openCancel() {
+    const m = S.m;
+    if (!m || roleOf(m) !== 'host' || ended(m)) return;
+    askBox.innerHTML = `<div class="m-sheet-in">
+      <div class="m-sheet-head"><h2 id="mAskTitle">Cancel this meetup?</h2></div>
+      <p>Everyone going and invited gets a notification. The meetup and its chat are deleted. This can't be undone.</p>
+      <div class="m-acts"><button type="button" class="m-btn red" data-act="cancel-meetup">Cancel meetup</button><button type="button" class="m-btn" data-act="ask-close">Keep it</button></div></div>`;
+    showBox(askBox);
+  }
+  async function cancelMeetup(id) {
+    if (!S.me || S.busy) return;
+    S.busy = true;
+    closeBox(askBox);
+    let done = false;
+    try {
+      const m = await fresh(id);
+      if (!m) done = true;
+      else if (m.hostId !== S.me.uid) throw new Error('not the host');
+      else { await deleteDoc(doc(db, 'meetups', id)); done = true; }
+    } catch (e) {
+      console.log('Meetup not cancelled:', e.code || e);
+      toast('That did not work. Please try again.');
+    } finally {
+      S.busy = false;
+    }
+    if (!done) return;
+    toast('Meetup cancelled');
+    S.id = ''; S.m = null;
+    history.replaceState(null, '', 'meetups.html');
+    document.title = 'Meetups | Strong Foodie';
+    await openList();
+  }
+
   // ── Writes: the same as the app ───────────────────────────────────────
   async function fresh(id) {
     const s = await getDoc(doc(db, 'meetups', id));
@@ -808,7 +849,9 @@ function declineCookies(){
     if (name === 'edit-close') return closeBox(editBox);
     if (name === 'remove-ask') return openAsk(uid);
     if (name === 'ask-close') return closeBox(askBox);
+    if (name === 'cancel-ask') return openCancel();
     if (!S.me) { location.href = loginHref(); return; }
+    if (name === 'cancel-meetup') return cancelMeetup(id);
     if (name === 'leave' && !S.leaveArmed) { S.leaveArmed = true; renderMeetup(); return; }
     if (S.busy) return;
     S.busy = true;
