@@ -143,7 +143,7 @@
       return {
         uid: p.id, name, city: p.city || '', since: toDate(p.createdAt), priv: p.isPrivate === true,
         spots: nSpots[p.id] || 0, reviews: nReviews[p.id] || 0, highlights: nHl[p.id] || 0, reports: nReports[p.id] || 0,
-        trusted: f.trusted === true, blocked: f.blocked === true, creator: f.creator === true, creatorUrl: f.creatorUrl || '', _q: fold(name + ' ' + (p.city || '')),
+        trusted: f.trusted === true, blocked: f.blocked === true, unlisted: f.unlisted === true, creator: f.creator === true, creatorUrl: f.creatorUrl || '', _q: fold(name + ' ' + (p.city || '')),
       };
     }).sort((a, b) => (b.reports - a.reports) || ((b.spots + b.reviews + b.highlights) - (a.spots + a.reviews + a.highlights)) || a.name.localeCompare(b.name));
     shell();
@@ -155,7 +155,7 @@
       <div class="bar">
         <input type="search" id="find" placeholder="Search by name or city" aria-label="Search members" autocomplete="off">
         <div class="chips" role="group" aria-label="Show">
-          ${[['all', 'All'], ['reported', 'Reported'], ['trusted', 'Trusted'], ['creator', 'Creators'], ['blocked', 'Blocked']].map(([k, t]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${t}</button>`).join('')}
+          ${[['all', 'All'], ['reported', 'Reported'], ['trusted', 'Trusted'], ['creator', 'Creators'], ['unlisted', 'Unlisted'], ['blocked', 'Blocked']].map(([k, t]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${filter === k}">${t}</button>`).join('')}
         </div>
       </div>
       ${publicBlocks.length ? `<div class="notice" id="blocksNotice"><p><b>🔒 ${publicBlocks.length} ${publicBlocks.length === 1 ? 'member still has' : 'members still have'} a public block list.</b> Anyone can see on their profile who they blocked. Move those blocks to private block documents that only the two members involved can read.</p><button class="btn" type="button" id="moveBlocks">Make blocks private</button></div>` : ''}
@@ -188,7 +188,7 @@
 
   function visible() {
     const q = fold(document.getElementById('find').value).trim();
-    return members.filter(m => (filter === 'all' || (filter === 'reported' && m.reports) || (filter === 'trusted' && m.trusted) || (filter === 'creator' && m.creator) || (filter === 'blocked' && m.blocked))
+    return members.filter(m => (filter === 'all' || (filter === 'reported' && m.reports) || (filter === 'trusted' && m.trusted) || (filter === 'creator' && m.creator) || (filter === 'unlisted' && m.unlisted) || (filter === 'blocked' && m.blocked))
       && (!q || q.split(/\s+/).every(t => m._q.includes(t))));
   }
 
@@ -204,12 +204,13 @@
       return `<div class="mem">
         <div class="av" style="background:${colourOf(m.uid)};">${esc(initialsOf(m.name))}</div>
         <div>
-          <p class="mem-name"><a href="member.html?u=${encodeURIComponent(m.uid)}" target="_blank" rel="noopener">${esc(m.name)}</a>${brand ? '<span class="pill pill-brand">Strong Foodie</span>' : ''}${m.creator ? '<span class="pill pill-creator">Creator</span>' : ''}${m.trusted ? '<span class="pill pill-trusted">Trusted</span>' : ''}${m.blocked ? '<span class="pill pill-blocked">Blocked</span>' : ''}${m.priv ? '<span class="pill pill-private">Private</span>' : ''}</p>
+          <p class="mem-name"><a href="member.html?u=${encodeURIComponent(m.uid)}" target="_blank" rel="noopener">${esc(m.name)}</a>${brand ? '<span class="pill pill-brand">Strong Foodie</span>' : ''}${m.creator ? '<span class="pill pill-creator">Creator</span>' : ''}${m.trusted ? '<span class="pill pill-trusted">Trusted</span>' : ''}${m.blocked ? '<span class="pill pill-blocked">Blocked</span>' : ''}${m.unlisted ? '<span class="pill pill-private">Unlisted</span>' : ''}${m.priv ? '<span class="pill pill-private">Private</span>' : ''}</p>
           <p class="mem-meta">${esc(bits.join(' · '))}${m.reports ? ` · <a href="admin-reports.html">${m.reports} open ${m.reports === 1 ? 'report' : 'reports'}</a>` : ''}</p>
         </div>
         ${brand ? '' : `<div class="tools">
           <button class="btn${m.trusted ? ' btn-on' : ''}" type="button" data-trust="${esc(m.uid)}" aria-pressed="${m.trusted}">${m.trusted ? '✓ Trusted' : 'Make trusted'}</button>
           <button class="btn${m.creator ? ' btn-on' : ''}" type="button" data-creator="${esc(m.uid)}" aria-expanded="false">${m.creator ? '✓ Creator' : 'Make creator'}</button>
+          <button class="btn${m.unlisted ? ' btn-on' : ''}" type="button" data-unlist="${esc(m.uid)}" aria-pressed="${m.unlisted}" title="Keeps this member out of public member lists. Their account and content stay as they are.">${m.unlisted ? '✓ Hidden from lists' : 'Hide from lists'}</button>
           <button class="btn${m.blocked ? '' : ' btn-danger'}" type="button" data-block="${esc(m.uid)}">${m.blocked ? 'Unblock' : 'Block'}</button>
           <button class="btn${m.madeAdmin ? ' btn-on' : ''}" type="button" data-admin="${esc(m.uid)}"${m.madeAdmin ? ' disabled' : ''}>${m.madeAdmin ? '✓ Admin' : 'Make admin'}</button>
         </div>`}
@@ -218,6 +219,7 @@
     document.getElementById('more').hidden = rows.length <= shown;
     list.querySelectorAll('[data-trust]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.trust, 'trusted')));
     list.querySelectorAll('[data-creator]').forEach(b => b.addEventListener('click', () => creatorEditor(b, b.dataset.creator)));
+    list.querySelectorAll('[data-unlist]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.unlist, 'unlisted')));
     list.querySelectorAll('[data-block]').forEach(b => b.addEventListener('click', () => flag(b, b.dataset.block, 'blocked')));
     list.querySelectorAll('[data-admin]').forEach(b => b.addEventListener('click', () => makeAdmin(b, b.dataset.admin)));
   }
@@ -301,6 +303,8 @@
       m[key] = on;
       toast(key === 'trusted'
         ? (on ? `${m.name} is now a trusted reviewer.` : `${m.name} is no longer marked as trusted.`)
+        : key === 'unlisted'
+        ? (on ? `${m.name} is hidden from member lists. Their account and content stay as they are.` : `${m.name} shows in member lists again.`)
         : (on ? `${m.name} is blocked. Their content is gone from the site.` : `${m.name} is unblocked.`));
       drawList();
     } catch (e) {

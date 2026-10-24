@@ -7,6 +7,9 @@
 // memberFlags/{uid}: set by the admin (admin-members.html), readable by everyone.
 //   { trusted: true } puts a "Trusted" mark next to the member's name;
 //   { blocked: true } hides everything of that member on the site and in the app.
+//   { unlisted: true } keeps the member out of public member lists (Most active
+//   members on community.html, member lists in the app). Their account, profile
+//   page and content stay as they are. Used for the App Review demo account.
 // Lists made by members (memberLists) are reported the same way, kind "list".
 // Hiding one review, highlight or spot keeps the field the app already uses:
 //   hidden: true on that document.
@@ -64,16 +67,17 @@ export function loadFlags(db) {
   if (!flagsPromise) {
     flagsPromise = getDocs(collection(db, 'memberFlags'))
       .then(snap => {
-        const f = { blocked: new Set(), trusted: new Set(), creator: new Map() };
+        const f = { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set() };
         snap.docs.forEach(d => {
           const x = d.data();
           if (x.blocked === true) f.blocked.add(d.id);
+          if (x.unlisted === true) f.unlisted.add(d.id);
           if (x.trusted === true) f.trusted.add(d.id);
           if (x.creator === true) f.creator.set(d.id, creatorUrlOk(x.creatorUrl));
         });
         return f;
       })
-      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set(), creator: new Map() }; });
+      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set() }; });
   }
   return flagsPromise;
 }

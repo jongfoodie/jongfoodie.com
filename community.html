@@ -399,7 +399,9 @@
     document.getElementById('reviewsSection').hidden = false;
   }
 
-  // Members with the most spots and reviews.
+  // Members with the most spots and reviews. Members Strong Foodie marked as unlisted
+  // (memberFlags/{uid} { unlisted: true }, such as the App Review demo account) are left out.
+  const unlisted = id => !!(id && flags && flags.unlisted && flags.unlisted.has(id));
   function renderTopMembers(members, reviews) {
     const people = new Map();
     const add = (id, name, key) => {
@@ -411,7 +413,7 @@
     };
     members.forEach(p => add(p.authorId, p.author, 'spots'));
     reviews.forEach(r => add(r.authorId, r.authorName, 'reviews'));
-    const top = [...people.values()].sort((a, b) => (b.spots + b.reviews) - (a.spots + a.reviews)).slice(0, 5);
+    const top = [...people.values()].filter(p => !unlisted(p.id)).sort((a, b) => (b.spots + b.reviews) - (a.spots + a.reviews)).slice(0, 5);
     const list = document.getElementById('topMembersList');
     if (!top.length) { list.innerHTML = '<p style="font-size:12px;color:var(--muted);">No member activity yet.</p>'; return; }
     list.innerHTML = top.map((m, i) => {
