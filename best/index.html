@@ -444,6 +444,8 @@
 
     hydratePhotos(root);
     document.getElementById('shareBtn').addEventListener('click', () => share(l.title));
+    // A generated page (tools/build-pages.mjs) already has it in its HTML.
+    if (document.querySelector('script[data-sf="ld"]')) return;
     const s = document.createElement('script');
     s.type = 'application/ld+json';
     s.textContent = JSON.stringify({

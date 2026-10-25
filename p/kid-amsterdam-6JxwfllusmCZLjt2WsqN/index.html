@@ -6,11 +6,11 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KID Amsterdam, Amsterdam | Strong Foodie</title>
+<title>KID Amsterdam, Amsterdam: review 5/5 | Strong Foodie</title>
 <meta name="description" content="Rated 5/5 by Strong Foodie. One of Amsterdam's hottest all-day spots. Asian-inspired menu with the best fried chicken burger in the city. Beautiful…">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="KID Amsterdam, Amsterdam">
+<meta property="og:title" content="KID Amsterdam, Amsterdam: review 5/5">
 <meta property="og:description" content="Rated 5/5 by Strong Foodie. One of Amsterdam's hottest all-day spots. Asian-inspired menu with the best fried chicken burger in the city. Beautiful…">
 <meta property="og:image" content="https://strongfoodie.com/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -234,6 +234,8 @@
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://strongfoodie.com/p/kid-amsterdam-6JxwfllusmCZLjt2WsqN/">
 <script>window.SF_PARAMS = {"c":"reviews","id":"6JxwfllusmCZLjt2WsqN"};</script>
+<script type="application/ld+json" data-sf="ld">{"@context":"https://schema.org","@type":"Restaurant","name":"KID Amsterdam","url":"https://strongfoodie.com/p/kid-amsterdam-6JxwfllusmCZLjt2WsqN/","address":"Frederik Hendrikplantsoen 36, Amsterdam","geo":{"@type":"GeoCoordinates","latitude":52.3798818,"longitude":4.8770334},"review":{"@type":"Review","author":{"@type":"Person","name":"Merdan Koc"},"publisher":{"@type":"Organization","name":"Strong Foodie"},"reviewRating":{"@type":"Rating","ratingValue":5,"bestRating":5,"worstRating":1},"reviewBody":"One of Amsterdam's hottest all-day spots. Asian-inspired menu with the best fried chicken burger in the city. Beautiful interior, great vibes, community feel.","datePublished":"2026-09-06"}}</script>
+<style>.sf-pre{max-width:820px;margin:0 auto;padding:2rem 1.25rem 3rem;line-height:1.6}.sf-pre h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.2;margin:.35rem 0 .6rem}.sf-pre .sf-crumb,.sf-pre .sf-meta{font-size:14px;color:var(--muted,#8A7A66)}.sf-pre .sf-stars{color:#D4521A;letter-spacing:1px}.sf-pre img{display:block;width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin:1rem 0}.sf-pre ol{padding-left:1.3rem}.sf-pre li{margin:.5rem 0}.sf-pre a{color:var(--accent,#D4521A)}.sf-pre .sf-wait{color:var(--muted,#8A7A66);font-size:14px;margin-top:1.5rem}</style>
 </head>
 <body>
 <div class="mobile-nav" id="mobileNav">
@@ -266,7 +268,7 @@
 </nav>
 
 <main class="place-wrap" id="placeRoot">
-  <div class="place-loading">Loading place…</div>
+  <article class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/stad/amsterdam/">Amsterdam</a> › Eat</p><h1>KID Amsterdam</h1><p class="sf-meta"><span class="sf-stars">★★★★★</span> 5/5 · Reviewed by Strong Foodie · Asian / Burgers / Cafe · Amsterdam, Netherlands</p><p>One of Amsterdam's hottest all-day spots. Asian-inspired menu with the best fried chicken burger in the city. Beautiful interior, great vibes, community feel.</p><p class="sf-wait">Loading photos, the map and member reviews…</p></article>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -630,8 +632,11 @@
       ld.review = { '@type': 'Review', author: { '@type': 'Person', name: 'Merdan Koc' }, publisher: { '@type': 'Organization', name: 'Strong Foodie' },
         reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5, worstRating: 1 }, reviewBody: p.review.slice(0, 500) };
     }
-    const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
-    document.head.appendChild(s);
+    // A generated page (tools/build-pages.mjs) already has it in its HTML.
+    if (!document.querySelector('script[data-sf="ld"]')) {
+      const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
+      document.head.appendChild(s);
+    }
   }
 
   // Member reviews appear here once reviews carry placeDocId (Rork batch Q).

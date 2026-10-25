@@ -243,6 +243,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://strongfoodie.com/best/hidden-gem-amsterdam/">
 <script>window.SF_PARAMS = {"l":"hidden-gem-amsterdam"};</script>
+<script type="application/ld+json" data-sf="ld">{"@context":"https://schema.org","@type":"ItemList","name":"Best Hidden Gem in Amsterdam","itemListOrder":"https://schema.org/ItemListOrderDescending","numberOfItems":4,"itemListElement":[{"@type":"ListItem","position":1,"url":"https://strongfoodie.com/p/zero-zero-j1oE7MPVa90t4nL1ogfs/","name":"Zero Zero"},{"@type":"ListItem","position":2,"url":"https://strongfoodie.com/p/et-claire-pistachio-cube-croissant-ZNOGJC8ToeqsNZfIKxrS/","name":"et CLAIRE: Pistachio Cube Croissant"},{"@type":"ListItem","position":3,"url":"https://strongfoodie.com/p/salvo-bake-house-ho0RfyOC8STBgXVqoSnD/","name":"Salvo Bake House"},{"@type":"ListItem","position":4,"url":"https://strongfoodie.com/p/beef-chief-transit-bar-emeqDtJYsN0KTCAqruAu/","name":"Beef Chief // Transit Bar"}]}</script>
+<style>.sf-pre{max-width:820px;margin:0 auto;padding:2rem 1.25rem 3rem;line-height:1.6}.sf-pre h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.2;margin:.35rem 0 .6rem}.sf-pre .sf-crumb,.sf-pre .sf-meta{font-size:14px;color:var(--muted,#8A7A66)}.sf-pre .sf-stars{color:#D4521A;letter-spacing:1px}.sf-pre img{display:block;width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin:1rem 0}.sf-pre ol{padding-left:1.3rem}.sf-pre li{margin:.5rem 0}.sf-pre a{color:var(--accent,#D4521A)}.sf-pre .sf-wait{color:var(--muted,#8A7A66);font-size:14px;margin-top:1.5rem}</style>
 </head>
 <body>
 <div class="mobile-nav" id="mobileNav">
@@ -274,7 +276,7 @@
 </nav>
 
 <main class="wrap" id="root">
-  <div class="loading">Loading the lists…</div>
+  <section class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/best.html">Best of</a> › Amsterdam</p><h1>Best Hidden Gem in Amsterdam</h1><p>The 4 best hidden gem in Amsterdam, picked from every place Strong Foodie visited and rated. Number one: Zero Zero (4/5).</p><ol><li><a href="/p/zero-zero-j1oE7MPVa90t4nL1ogfs/">Zero Zero</a> · 4/5<br><span class="sf-meta">Incredible pizza sandwiches with top-quality ingredients. Long queues but worth every minute. The Bresaola and Capocollo are standouts. Great canal-side eating.</span></li><li><a href="/p/et-claire-pistachio-cube-croissant-ZNOGJC8ToeqsNZfIKxrS/">et CLAIRE: Pistachio Cube Croissant</a> · 3/5<br><span class="sf-meta">The Pistachio Cube is eye-catching and creative, buttery, flaky layers with pistachio cream. However the price is steep and the pistachio flavour could be…</span></li><li><a href="/p/salvo-bake-house-ho0RfyOC8STBgXVqoSnD/">Salvo Bake House</a> · 5/5<br><span class="sf-meta">A hidden bakery gem in Amsterdam-West. Italian pastries made with exceptional craft: maritozzi, bomboloni and cornetti. One of Amsterdam's best kept secrets.</span></li><li><a href="/p/beef-chief-transit-bar-emeqDtJYsN0KTCAqruAu/">Beef Chief // Transit Bar</a> · 5/5<br><span class="sf-meta">Hidden gem in Amsterdam-Noord. Thick, juicy burgers in a cool bar setting, try the Kimchief. Worth the trip across the water for some of the best beef in the…</span></li></ol><p class="sf-wait">Loading photos and more lists…</p></section>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -435,6 +437,8 @@
 
     hydratePhotos(root);
     document.getElementById('shareBtn').addEventListener('click', () => share(l.title));
+    // A generated page (tools/build-pages.mjs) already has it in its HTML.
+    if (document.querySelector('script[data-sf="ld"]')) return;
     const s = document.createElement('script');
     s.type = 'application/ld+json';
     s.textContent = JSON.stringify({
