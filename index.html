@@ -1482,6 +1482,7 @@
   import { loadOpenings, openingsWithPlaces, openingCard } from "./js/sf-openings.js?v=1";
   import { loadBattles, liveBattles } from "./js/sf-battles.js?v=1";
   import { placeKey } from "./js/sf-places.js?v=7";
+  import { loadFlags } from "./js/sf-moderation.js?v=1";
   import { loadPartners, bookingComLink, bookingSearchUrl, readGygSetting, gygLink, gygSearchUrl, toursQuery, readOpentableSetting, opentableLink, opentableSearchUrl, PARTNER_NOTE } from "./js/sf-booking.js?v=4";
 
   const firebaseConfig = {
@@ -1534,9 +1535,16 @@
   // collections the app uses (see js/sf-places.js, shared with stad.html).
   const { hydratePhotos } = photoTools(db);
   let CATALOG = [], MEMBERS = [], ALL = [], LATEST = [];
+  // Spots from members Strong Foodie marked as unlisted (memberFlags/{uid}
+  // { unlisted: true }, such as the App Review demo account) stay on their
+  // place page, the map and search, but not in the "latest" and "new" rows.
+  let UNLISTED = new Set();
+  const listed = p => !(p.member && p.authorId && UNLISTED.has(p.authorId));
+  const hasPhoto = p => !!(p.photos && p.photos[0]);
 
   async function loadAll() {
     ({ catalog: CATALOG, members: MEMBERS, all: ALL } = await loadPlaces(db));
+    UNLISTED = (await loadFlags(db)).unlisted || new Set();
     let home, promos, openings, battles;
     [LISTS, home, promos, openings, battles] = await Promise.all([loadLists(db, ALL), loadHome(db), loadPromos(db), loadOpenings(db), loadBattles(db)]);
     const byKey = new Map(ALL.map(p => [placeKey(p), p]));
@@ -1549,7 +1557,12 @@
     const featured = renderFeatured(home, byKey);
     renderTopPicks(featured, home, byKey);
     renderDestinations();
-    LATEST = ALL.filter(p => p !== featured).sort((a, b) => (b.created || 0) - (a.created || 0));
+    // Latest: newest first, only places with a photo (the rest stay in search,
+    // the map and the categories). Too few with a photo: show them all.
+    const newestFirst = (a, b) => (b.created || 0) - (a.created || 0);
+    const candidates = ALL.filter(p => p !== featured && listed(p));
+    const withPhoto = candidates.filter(hasPhoto);
+    LATEST = (withPhoto.length >= PAGE ? withPhoto : candidates).sort(newestFirst);
     showList(LATEST, 'Latest on Strong Foodie', false);
     renderCategoryCounts();
     renderMemberPlaces();
@@ -1560,7 +1573,7 @@
   function renderMemberPlaces() {
     const grid = document.getElementById('memberGrid');
     if (!grid) return;
-    const newest = MEMBERS.slice().sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 4);
+    const newest = MEMBERS.filter(listed).sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 4);
     grid.innerHTML = newest.map(miniCard).join('');
     hydratePhotos(grid);
   }
@@ -1575,7 +1588,7 @@
     set('heroCountries', countries.size);
     set('statReviews', CATALOG.filter(p => p.cat === 'eat').length);
     set('statSaved', CATALOG.filter(p => p.cat === 'stay').length);
-    set('statMemberSpots', MEMBERS.length);
+    set('statMemberSpots', MEMBERS.filter(listed).length);
   }
 
   function renderCategoryCounts() {

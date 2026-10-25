@@ -382,7 +382,7 @@
   }
 
   function renderReviews(reviews) {
-    const linked = reviews.filter(r => r.placeDocId && r.placeCollection);
+    const linked = reviews.filter(r => r.placeDocId && r.placeCollection && !unlisted(r.authorId));
     if (!linked.length) return;
     document.getElementById('reviewList').innerHTML = linked.slice(0, 8).map(r => {
       const url = `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}`;
@@ -447,7 +447,9 @@
 
   try {
     const [{ all, members }, reviews] = await Promise.all([loadPlaces(db), loadMemberReviews()]);
-    newest = members.slice().sort((a, b) => (b.created || 0) - (a.created || 0));
+    // Spots and reviews from unlisted members stay on the place pages, not in these rows.
+    const listedSpots = members.filter(p => !unlisted(p.authorId));
+    newest = listedSpots.sort((a, b) => (b.created || 0) - (a.created || 0));
     const grid = document.getElementById('memberGrid');
     grid.innerHTML = newest.length ? '' : '<p class="grid-empty">No member spots yet. <a href="add.html">Add the first one</a>.</p>';
     renderMore();
@@ -455,8 +457,8 @@
     renderTopMembers(members, reviews);
 
     const dests = destinations(all);
-    set('statSpots', members.length);
-    set('statReviews', reviews.length);
+    set('statSpots', listedSpots.length);
+    set('statReviews', reviews.filter(r => !unlisted(r.authorId)).length);
     set('statDestinations', dests.length);
     document.getElementById('destList').innerHTML = dests.slice(0, 10).map(d =>
       `<a class="topic-pill" href="${d.url}">${esc(d.name)} <span style="opacity:0.6;">${d.count}</span></a>`).join('')
