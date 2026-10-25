@@ -637,8 +637,11 @@
       ld.review = { '@type': 'Review', author: { '@type': 'Person', name: 'Merdan Koc' }, publisher: { '@type': 'Organization', name: 'Strong Foodie' },
         reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5, worstRating: 1 }, reviewBody: p.review.slice(0, 500) };
     }
-    const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
-    document.head.appendChild(s);
+    // A generated page (tools/build-pages.mjs) already has it in its HTML.
+    if (!document.querySelector('script[data-sf="ld"]')) {
+      const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld);
+      document.head.appendChild(s);
+    }
   }
 
   // Member reviews appear here once reviews carry placeDocId (Rork batch Q).

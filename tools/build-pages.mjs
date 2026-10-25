@@ -15,7 +15,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   CATS, SITE, slugOf, placeUrl, destinationUrl, guideUrl, normalise, isPublished,
-  destinations, applyListEdits, buildLists, placeKey, normaliseDish, byQuality, LIST_CATS, toDate,
+  destinations, applyListEdits, buildLists, placeKey, normaliseDish, byQuality, LIST_CATS, toDate, starStr,
 } from '../js/sf-core.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -167,13 +167,14 @@ const oneLine = (s, n = 155) => { const t = String(s ?? '').replace(/\s+/g, ' ')
 function setMeta(html, attrName, key, value) {
   const re = new RegExp(`<meta ${attrName}="${key}" content="[^"]*">`);
   const tag = `<meta ${attrName}="${key}" content="${attr(value)}">`;
-  return re.test(html) ? html.replace(re, tag) : html.replace('</head>', `${tag}\n</head>`);
+  return re.test(html) ? html.replace(re, () => tag) : html.replace('</head>', () => `${tag}\n</head>`);
 }
-function makePage(template, { title, description, canonical, image, type = 'website', params }) {
+function makePage(template, { title, description, canonical, image, type = 'website', params, ld, pre, slot }) {
   let html = template;
   // Every link on the template is written from the site's root.
   html = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<base href="/">');
-  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${text(title)}</title>`);
+  // Replacements go through a function, so a "$" in a name or review stays a "$".
+  html = html.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${text(title)}</title>`);
   html = setMeta(html, 'name', 'description', description);
   html = setMeta(html, 'property', 'og:type', type);
   html = setMeta(html, 'property', 'og:title', title.replace(/ \| Strong Foodie$/, ''));
@@ -184,9 +185,87 @@ function makePage(template, { title, description, canonical, image, type = 'webs
   // The template works out its canonical address in the browser; here it is fixed.
   html = html.replace(/<script>\s*\/\/ The canonical address is set here[\s\S]*?<\/script>\s*/, '');
   html = html.replace(/<link rel="canonical" href="[^"]*">\s*/g, '');
-  html = html.replace('</head>', `<link rel="canonical" href="${attr(canonical)}">\n<script>window.SF_PARAMS = ${JSON.stringify(params).replace(/</g, '\\u003c')};</script>\n</head>`);
+  html = html.replace('</head>', () => `<link rel="canonical" href="${attr(canonical)}">\n<script>window.SF_PARAMS = ${JSON.stringify(params).replace(/</g, '\\u003c')};</script>\n</head>`);
+  // Structured data in the page itself, so search engines read it without
+  // running JavaScript. The template's script then adds no second copy.
+  if (ld) html = html.replace('</head>', () => `<script type="application/ld+json" data-sf="ld">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>\n</head>`);
+  // The essentials of the page (name, rating, review, the list) in plain HTML,
+  // where the template shows "Loading…". Its script replaces this when it runs.
+  if (pre && slot) {
+    if (html.includes(slot)) html = html.replace(slot, () => pre).replace('</head>', () => `${PRE_CSS}\n</head>`);
+    else console.log('No spot for the page content in the template:', slot);
+  }
   return html;
 }
+
+// ── Content in the page itself ────────────────────────────────────────────
+const SLOTS = {
+  plek: '<div class="place-loading">Loading place…</div>',
+  stad: '<div class="loading">Loading destinations…</div>',
+  best: '<div class="loading">Loading the lists…</div>',
+};
+const PRE_CSS = `<style>.sf-pre{max-width:820px;margin:0 auto;padding:2rem 1.25rem 3rem;line-height:1.6}.sf-pre h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.2;margin:.35rem 0 .6rem}.sf-pre .sf-crumb,.sf-pre .sf-meta{font-size:14px;color:var(--muted,#8A7A66)}.sf-pre .sf-stars{color:#D4521A;letter-spacing:1px}.sf-pre img{display:block;width:100%;max-height:420px;object-fit:cover;border-radius:14px;margin:1rem 0}.sf-pre ol{padding-left:1.3rem}.sf-pre li{margin:.5rem 0}.sf-pre a{color:var(--accent,#D4521A)}.sf-pre .sf-wait{color:var(--muted,#8A7A66);font-size:14px;margin-top:1.5rem}</style>`;
+const SCHEMA = { eat: 'Restaurant', drink: 'BarOrPub', shop: 'Store', culture: 'TouristAttraction', health: 'HealthClub', stay: 'Hotel' };
+// What a destination has, in words: "3 places to eat, 1 bar or café".
+const KIND = { eat: ['place to eat', 'places to eat'], drink: ['bar or café', 'bars and cafés'], shop: ['shop', 'shops'], culture: ['culture spot', 'culture spots'], health: ['health spot', 'health spots'], stay: ['place to stay', 'places to stay'] };
+const kinds = counts => counts.map(([k, n]) => `${n} ${KIND[k] ? KIND[k][n === 1 ? 0 : 1] : CATS[k].label.toLowerCase()}`).join(', ');
+const score = r => String(Math.round(r * 10) / 10);
+const hasGeo = p => typeof p.lat === 'number' && typeof p.lng === 'number' && isFinite(p.lat) && isFinite(p.lng) && !(p.lat === 0 && p.lng === 0);
+const paras = s => String(s || '').split(/\n+/).map(x => x.trim()).filter(Boolean).map(x => `<p>${text(x)}</p>`).join('');
+const urlOfItem = p => placeUrl(p.dish ? p.place : p);
+const nameOfItem = p => p.dish ? `${p.name}, ${p.place.name}` : p.name;
+
+function placeLd(p, raw, url, image) {
+  const ld = { '@context': 'https://schema.org', '@type': SCHEMA[p.cat] || 'LocalBusiness', name: p.name, url };
+  const address = raw.address || raw.city;
+  if (address) ld.address = String(address);
+  if (hasGeo(p)) ld.geo = { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng };
+  if (p.price) ld.priceRange = String(p.price);
+  if (image) ld.image = image;
+  if (!p.member && p.rating && p.review) {
+    ld.review = { '@type': 'Review', author: { '@type': 'Person', name: 'Merdan Koc' }, publisher: { '@type': 'Organization', name: 'Strong Foodie' },
+      reviewRating: { '@type': 'Rating', ratingValue: p.rating, bestRating: 5, worstRating: 1 }, reviewBody: p.review.slice(0, 500) };
+    if (p.created) ld.review.datePublished = day(p.created);
+  }
+  return ld;
+}
+function placePre(p, raw, image) {
+  const crumb = ['<a href="/">Strong Foodie</a>', p.destination ? `<a href="${attr(destinationUrl(p.destination))}">${text(p.destination)}</a>` : '', text(CATS[p.cat].label)].filter(Boolean).join(' › ');
+  const where = [p.town, p.destination, p.country].filter((v, i, a) => v && a.indexOf(v) === i).join(', ');
+  const meta = [
+    p.rating ? `<span class="sf-stars">${starStr(p.rating)}</span> ${score(p.rating)}/5` : '',
+    p.member ? `Spot added by ${text(p.author)}, a Strong Foodie member` : 'Reviewed by Strong Foodie',
+    text(p.type || p.tip),
+    text(raw.address || where),
+  ].filter(Boolean).join(' · ');
+  return `<article class="sf-pre"><p class="sf-crumb">${crumb}</p><h1>${text(p.name)}</h1><p class="sf-meta">${meta}</p>`
+    + (image ? `<img src="${attr(image)}" alt="${attr(p.name)}">` : '')
+    + paras(p.review)
+    + (p.closed ? '<p><b>This place has closed.</b></p>' : '')
+    + '<p class="sf-wait">Loading photos, the map and member reviews…</p></article>';
+}
+function destPre(d, counts) {
+  const top = d.places.slice().sort(byQuality).slice(0, 20);
+  const best = top.filter(p => p.rating).slice(0, 3);
+  const intro = `${d.count} ${d.count === 1 ? 'place' : 'places'} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''}, visited and rated by Strong Foodie and its members: ${kinds(counts)}.`
+    + (best.length ? ` Highest rated: ${best.map(p => `${p.name} (${score(p.rating)}/5)`).join(', ')}.` : '');
+  const items = top.map(p => `<li><a href="${attr(placeUrl(p))}">${text(p.name)}</a> · ${text(CATS[p.cat].label)}${p.rating ? ` · ${score(p.rating)}/5` : ''}${p.town && p.town !== d.name ? ` · ${text(p.town)}` : ''}</li>`).join('');
+  return `<section class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/stad.html">Destinations</a></p><h1>Best places in ${text(d.name)}</h1><p>${text(intro)}</p><ol>${items}</ol><p class="sf-wait">Loading the map and every place…</p></section>`;
+}
+function listPre(l, top, what) {
+  const intro = l.intro || `The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, picked from every place Strong Foodie visited and rated.${top[0] ? ` Number one: ${nameOfItem(top[0])}${top[0].rating ? ` (${score(top[0].rating)}/5)` : ''}.` : ''}`;
+  const items = top.map(p => {
+    const loc = (p.dish ? p.place.town || p.place.destination : p.town || p.destination) || '';
+    return `<li><a href="${attr(urlOfItem(p))}">${text(nameOfItem(p))}</a>${p.rating ? ` · ${score(p.rating)}/5` : ''}${loc && loc !== l.dest ? ` · ${text(loc)}` : ''}${p.review ? `<br><span class="sf-meta">${text(oneLine(p.review, 160))}</span>` : ''}</li>`;
+  }).join('');
+  return `<section class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/best.html">Best of</a>${l.dest ? ` › ${text(l.dest)}` : ''}</p><h1>${text(l.title)}</h1>${paras(intro)}<ol>${items}</ol><p class="sf-wait">Loading photos and more lists…</p></section>`;
+}
+const listLd = (name, items, ordered) => ({
+  '@context': 'https://schema.org', '@type': 'ItemList', name,
+  ...(ordered ? { itemListOrder: 'https://schema.org/ItemListOrderDescending' } : {}),
+  numberOfItems: items.length,
+  itemListElement: items.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + urlOfItem(p), name: nameOfItem(p) })),
+});
 async function writePage(url, html) {
   const dir = path.join(ROOT, url.replace(/^\/|\/$/g, ''));
   await mkdir(dir, { recursive: true });
@@ -239,11 +318,14 @@ async function main() {
     if (!/^[A-Za-z0-9_-]+$/.test(p.id)) continue;
     const url = placeUrl(p);
     const where = p.town || p.destination || p.country;
-    const title = `${p.name}${where ? ', ' + where : ''} | Strong Foodie`;
-    const lead = p.rating ? `Rated ${String(p.rating).replace('.', ',')}/5 by Strong Foodie. ` : (p.member ? `Spot added by ${p.author}, a Strong Foodie member. ` : '');
+    // "review" is what people search for: "in-n-out review".
+    const reviewed = !p.member && p.rating;
+    const title = `${p.name}${where ? ', ' + where : ''}${reviewed ? `: review ${score(p.rating)}/5` : ''} | Strong Foodie`;
+    const lead = p.rating ? `Rated ${score(p.rating)}/5 by Strong Foodie. ` : (p.member ? `Spot added by ${p.author}, a Strong Foodie member. ` : '');
     const body = p.review || p.tip || `${CATS[p.cat].label} spot${p.where ? ' in ' + p.where : ''}.`;
     const image = await ogImage(p.photos[0], `${p.coll}-${p.id}`);
-    await writePage(url, makePage(plek, { title, description: oneLine(lead + body), canonical: SITE + url, image, type: 'article', params: { c: p.coll, id: p.id } }));
+    await writePage(url, makePage(plek, { title, description: oneLine(lead + body), canonical: SITE + url, image, type: 'article', params: { c: p.coll, id: p.id },
+      ld: placeLd(p, raw, SITE + url, image), pre: placePre(p, raw, image), slot: SLOTS.plek }));
     changedOf.set(p, toDate(raw.updatedAt) || p.created);
     sitemap.push({ loc: SITE + url, lastmod: day(changedOf.get(p)), priority: p.member ? '0.5' : '0.7' });
   }
@@ -255,10 +337,11 @@ async function main() {
     const counts = Object.keys(CATS).map(k => [k, d.places.filter(p => p.cat === k).length]).filter(([, n]) => n);
     const members = d.places.filter(p => p.member).length;
     const title = `Best places in ${d.name}: where to eat, drink and stay | Strong Foodie`;
-    const description = `${d.count} ${d.count === 1 ? 'place' : 'places'} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''} (${counts.map(([k, n]) => `${n} ${CATS[k].label.toLowerCase()}`).join(', ')}). Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`;
+    const description = `${d.count} ${d.count === 1 ? 'place' : 'places'} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''}: ${kinds(counts)}. Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`;
     const cover = d.places.filter(p => p.photos.length).sort(byQuality)[0];
     const image = cover ? await ogImage(cover.photos[0], `${cover.coll}-${cover.id}`) : '';
-    await writePage(url, makePage(stad, { title, description, canonical: SITE + url, image, params: { d: d.slug } }));
+    await writePage(url, makePage(stad, { title, description, canonical: SITE + url, image, params: { d: d.slug },
+      ld: listLd(`Best places in ${d.name}`, d.places.slice().sort(byQuality).slice(0, 20), false), pre: destPre(d, counts), slot: SLOTS.stad }));
     sitemap.push({ loc: SITE + url, lastmod: newest(d.places, changed), priority: '0.8' });
   }
 
@@ -272,7 +355,8 @@ async function main() {
     const what = l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
     const description = l.intro ? oneLine(l.intro) : oneLine(`The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(', ')} and more.`);
     const image = l.cover ? await ogImage(l.cover, `list-${l.slug}`) : '';
-    if (best) await writePage(l.url, makePage(best, { title, description, canonical: SITE + l.url, image, params: { l: l.slug } }));
+    if (best) await writePage(l.url, makePage(best, { title, description, canonical: SITE + l.url, image, params: { l: l.slug },
+      ld: listLd(l.title, top, true), pre: listPre(l, top, what), slot: SLOTS.best }));
     sitemap.push({ loc: SITE + l.url, lastmod: newest(l.places, changed), priority: '0.8' });
   }
 
