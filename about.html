@@ -374,7 +374,8 @@ function declineCookies(){
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { loadPlaces } from "./js/sf-places.js?v=7";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -393,21 +394,18 @@ function declineCookies(){
   const HOTEL_OFFSET = 0; // was 6, maar hotel.html heeft nu geen vaste hotels meer, alles komt uit Firebase
 
   try {
-    const [foodSnap, hotelSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
-      getDocs(collection(db, 'reviews')),
-      getDocs(collection(db, 'hotelreviews')),
-      getDocs(collection(db, 'drinkspots')),
-      getDocs(collection(db, 'shopspots')),
-      getDocs(collection(db, 'culturespots')),
-      getDocs(collection(db, 'healthspots'))
-    ]);
-
-    const foodTotal = foodSnap.size + FOOD_OFFSET;
-    const hotelTotal = hotelSnap.size + HOTEL_OFFSET;
-    const drinkTotal = drinkSnap.size;
-    const shopTotal = shopSnap.size;
-    const cultureTotal = cultureSnap.size;
-    const healthTotal = healthSnap.size;
+    // The same count as the homepage: Strong Foodie's own published reviews
+    // (no drafts, hidden or scheduled ones, and no member spots).
+    const { catalog } = await loadPlaces(db);
+    const count = cat => catalog.filter(p => p.cat === cat).length;
+    const foodTotal = count('eat') + FOOD_OFFSET;
+    const hotelTotal = count('stay') + HOTEL_OFFSET;
+    const drinkTotal = count('drink');
+    const shopTotal = count('shop');
+    const cultureTotal = count('culture');
+    const healthTotal = count('health');
+    const countriesTotal = new Set(catalog.map(p => p.country).filter(Boolean)).size;
+    if (countriesTotal) document.getElementById('statCountries').textContent = countriesTotal;
 
     document.getElementById('statFood').textContent = foodTotal;
     document.getElementById('statHotels').textContent = hotelTotal;

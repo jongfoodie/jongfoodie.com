@@ -1255,7 +1255,7 @@
       <div class="user-stats-row">
         <div class="user-stat">
           <div class="user-stat-num" id="statReviews">…</div>
-          <div class="user-stat-lbl">Reviews</div>
+          <div class="user-stat-lbl">Restaurants</div>
         </div>
         <div class="user-stat">
           <div class="user-stat-num" id="statSaved">…</div>
@@ -1581,8 +1581,9 @@
   // ── Stats
   function renderStats() {
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    const dests = new Set(ALL.map(p => p.destination).filter(Boolean));
-    const countries = new Set(ALL.map(p => p.country).filter(Boolean));
+    // Destinations and countries of Strong Foodie's own reviews, like "Places reviewed".
+    const dests = new Set(CATALOG.map(p => p.destination).filter(Boolean));
+    const countries = new Set(CATALOG.map(p => p.country).filter(Boolean));
     set('heroReviews', CATALOG.length);
     set('heroDestinations', dests.size);
     set('heroCountries', countries.size);
@@ -1593,7 +1594,8 @@
 
   function renderCategoryCounts() {
     document.querySelectorAll('#catList .cat-row[data-cat]').forEach(row => {
-      const n = ALL.filter(p => p.cat === row.dataset.cat).length;
+      // Strong Foodie's own reviews per category, the same numbers as the About page.
+      const n = CATALOG.filter(p => p.cat === row.dataset.cat).length;
       row.querySelector('.cat-count').textContent = n ? n : '';
     });
   }
