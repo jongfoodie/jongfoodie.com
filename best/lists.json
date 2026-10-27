@@ -31,6 +31,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/j1oE7MPVa90t4nL1ogfs",
     "reviews/cZcUoOd24YdT9ZqBM2Bm",
@@ -94,6 +95,24 @@
     "reviews/7kF3cJcL7Y5Hg0shmhL1",
     "reviews/oVMxei3H5d6wjEwE3iEB",
     "reviews/24A2DkgfME8ApQNR7vIG"
+   ]
+  },
+  {
+   "slug": "sandwiche-amsterdam",
+   "url": "/best/sandwiche-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Sandwiches",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Sandwiches in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
+    "reviews/j1oE7MPVa90t4nL1ogfs",
+    "reviews/wIqFSvnI5vZlKyhooz9K",
+    "reviews/d1pk2sXlJXdzZDP6Y6yy"
    ]
   },
   {
@@ -165,6 +184,23 @@
    ]
   },
   {
+   "slug": "lunch-amsterdam",
+   "url": "/best/lunch-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Lunch",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Lunch in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
+    "reviews/aV7neu8odXP0dotTMdZz",
+    "reviews/PfqRE8mVWRgLIEiM6Q8p"
+   ]
+  },
+  {
    "slug": "palm-beach-aruba",
    "url": "/best/palm-beach-aruba/",
    "kind": "tag",
@@ -179,23 +215,6 @@
     "reviews/8OZrZVTWjYxCidYDCtto",
     "reviews/7kF3cJcL7Y5Hg0shmhL1",
     "reviews/oVMxei3H5d6wjEwE3iEB"
-   ]
-  },
-  {
-   "slug": "sandwiche-amsterdam",
-   "url": "/best/sandwiche-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Sandwiches",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Sandwiches in Amsterdam",
-   "places": [
-    "reviews/j1oE7MPVa90t4nL1ogfs",
-    "reviews/wIqFSvnI5vZlKyhooz9K",
-    "reviews/d1pk2sXlJXdzZDP6Y6yy"
    ]
   },
   {
@@ -324,22 +343,6 @@
    "places": [
     "reviews/n1JGGaAOlKwe0eC7YBvi",
     "reviews/wKLfK0YaqXAiZrkrSjxi"
-   ]
-  },
-  {
-   "slug": "lunch-amsterdam",
-   "url": "/best/lunch-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Lunch",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Lunch in Amsterdam",
-   "places": [
-    "reviews/aV7neu8odXP0dotTMdZz",
-    "reviews/PfqRE8mVWRgLIEiM6Q8p"
    ]
   },
   {
@@ -920,6 +923,21 @@
    ]
   },
   {
+   "slug": "coffee-amsterdam",
+   "url": "/best/coffee-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Coffee",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Coffee in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB"
+   ]
+  },
+  {
    "slug": "cosy-amsterdam",
    "url": "/best/cosy-amsterdam/",
    "kind": "tag",
@@ -1115,6 +1133,21 @@
    ]
   },
   {
+   "slug": "focaccia-amsterdam",
+   "url": "/best/focaccia-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Focaccia",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Focaccia in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB"
+   ]
+  },
+  {
    "slug": "french-amsterdam",
    "url": "/best/french-amsterdam/",
    "kind": "tag",
@@ -1202,6 +1235,21 @@
    "title": "Best Fusion in Amsterdam",
    "places": [
     "reviews/oQllGqyBpEJfgaz6bQvF"
+   ]
+  },
+  {
+   "slug": "gluten-free-option-amsterdam",
+   "url": "/best/gluten-free-option-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Gluten-free Option",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Gluten-free Option in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB"
    ]
   },
   {
@@ -2015,6 +2063,21 @@
    ]
   },
   {
+   "slug": "takeaway-amsterdam",
+   "url": "/best/takeaway-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Takeaway",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Takeaway in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB"
+   ]
+  },
+  {
    "slug": "tequila-san-diego",
    "url": "/best/tequila-san-diego/",
    "kind": "tag",
@@ -2187,6 +2250,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/tOdWHBI8vo2yySrV3vfL",
     "reviews/oifDeYKcXnKRjyELkTRr",

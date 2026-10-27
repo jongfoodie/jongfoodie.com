@@ -143,6 +143,9 @@
   .star:focus-visible { outline: 2px solid var(--accent); border-radius: 6px; }
   .photo-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
   .photo-btn { display: inline-flex; align-items: center; gap: 4px; }
+  .rights { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45; margin-top: 0.6rem; cursor: pointer; }
+  .rights[hidden] { display: none; }
+  .rights input { width: 17px; height: 17px; margin-top: 1px; accent-color: #D4521A; flex-shrink: 0; }
   .photo-preview { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
   .composer-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
   .form-error { background: #FFF1EC; color: #A3300B !important; border-radius: 8px; padding: 8px 10px; font-size: 13px; }
@@ -704,11 +707,15 @@
           <button class="btn" id="opPhoto" type="button">Add a photo</button>
           <input type="file" id="opFile" accept="image/*" hidden>
         </div>
+        <label class="rights"><input type="checkbox" id="opRights"> These photos are our own, or we have permission to use them.</label>
         <p>${kit ? kit.trim() + '<br>' : ''}Want more guests? <a href="press.html">Ask about a featured spot →</a></p>
       </section>`;
       document.getElementById('opFix').addEventListener('click', () => openCorrection(db, p, auth.currentUser));
       const file = document.getElementById('opFile');
-      document.getElementById('opPhoto').addEventListener('click', () => file.click());
+      document.getElementById('opPhoto').addEventListener('click', () => {
+        if (!document.getElementById('opRights').checked) { showToast('Tick the box first: only photos that are your own or that you may use.'); return; }
+        file.click();
+      });
       file.addEventListener('change', async () => {
         const f = file.files && file.files[0];
         if (!f) return;
@@ -1124,6 +1131,7 @@
           <label class="btn photo-btn">📷 ${draft.photo ? 'Change photo' : 'Add a photo'}<input type="file" id="reviewPhoto" accept="image/*" hidden></label>
           ${draft.photo ? `<img class="photo-preview" src="${esc(draft.photo)}" alt=""><button class="link-btn" type="button" data-act="nophoto">Remove</button>` : ''}
         </div>
+        ${draft.photo ? `<label class="rights"><input type="checkbox" id="reviewRights"${draft.rights ? ' checked' : ''}> I took this photo myself, or I have permission to use it.</label>` : ''}
         <p class="form-error" id="reviewError" hidden></p>
         <div class="composer-actions">
           <button class="btn btn-primary" type="submit" id="reviewSubmit">${mine ? 'Save changes' : 'Post review'}</button>
@@ -1252,10 +1260,11 @@
     const count = () => { document.getElementById('reviewCount').textContent = `${text.value.length} / 1500`; };
     text.addEventListener('input', () => { draft.text = text.value; count(); saveDraftNow(); });
     count();
+    { const rb = document.getElementById('reviewRights'); if (rb) rb.addEventListener('change', () => { draft.rights = rb.checked; }); }
     document.getElementById('reviewPhoto').addEventListener('change', async e => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
-      try { draft.photo = await shrinkPhoto(file); draft.keepPhoto = ''; keepText(); renderMemberReviews(); }
+      try { draft.photo = await shrinkPhoto(file); draft.keepPhoto = ''; draft.rights = false; keepText(); renderMemberReviews(); }
       catch (err) { showError('reviewError', 'This photo could not be read. Try a JPG or PNG.'); }
     });
     form.addEventListener('submit', async e => {
@@ -1264,6 +1273,9 @@
       if (!draft.rating) return showError('reviewError', 'Tap the stars to give a rating.');
       const body = text.value.trim();
       if (body.length > 1500) return showError('reviewError', 'Keep your review under 1500 characters.');
+      // A new photo: the member confirms they took it or may use it (copyright).
+      const rightsBox = document.getElementById('reviewRights');
+      if (draft.photo && !(rightsBox && rightsBox.checked)) return showError('reviewError', 'Tick the box under the photo. Only add photos you took yourself or have permission to use.');
       const btn = document.getElementById('reviewSubmit');
       btn.disabled = true; btn.textContent = 'Saving…';
       const mineNow = myReview();
