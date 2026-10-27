@@ -61,6 +61,9 @@
   .link-btn { background: none; border: none; padding: 0; font: inherit; font-size: 14px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; align-self: flex-start; }
   .form-error { background: #FFF1EC; color: #A3300B; border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.45; }
   .form-error[hidden] { display: none; }
+  .rights { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.45; margin-top: 0.6rem; cursor: pointer; }
+  .rights[hidden] { display: none; }
+  .rights input { width: 17px; height: 17px; margin-top: 1px; accent-color: #D4521A; flex-shrink: 0; }
   .acct-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .acct-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .acct-who { flex: 1; min-width: 0; }
@@ -282,6 +285,7 @@
           <label class="btn photo-btn"><input type="file" id="sPhoto" accept="image/*"><span id="sPhotoLabel">📷 Add a photo</span></label>
           <div class="photo-preview" id="sPhotoPreview" hidden><img id="sPhotoImg" alt="Your photo"><button type="button" class="link-btn" id="sPhotoRemove">Remove photo</button></div>
         </div>
+        <label class="rights" id="sRights" hidden><input type="checkbox" id="sRightsBox"> I took this photo myself, or I have permission to use it.</label>
 
         <p class="small">Only add real places that you would recommend. Your spot shows your name, ${esc(profile.displayName || 'Foodie')}. You can remove it later on your <a href="account.html">account page</a>.</p>
         <p class="form-error" id="sError" hidden></p>
@@ -352,6 +356,7 @@
         $('sPhotoImg').src = photoData;
         $('sPhotoPreview').hidden = false;
         $('sPhotoLabel').textContent = '📷 Change photo';
+        $('sRights').hidden = false; $('sRightsBox').checked = false;
       } catch (err) {
         photoData = '';
         $('sPhotoLabel').textContent = '📷 Add a photo';
@@ -359,7 +364,7 @@
       }
       e.target.value = '';
     });
-    $('sPhotoRemove').addEventListener('click', () => { photoData = ''; $('sPhotoPreview').hidden = true; $('sPhotoLabel').textContent = '📷 Add a photo'; });
+    $('sPhotoRemove').addEventListener('click', () => { photoData = ''; $('sPhotoPreview').hidden = true; $('sPhotoLabel').textContent = '📷 Add a photo'; $('sRights').hidden = true; $('sRightsBox').checked = false; });
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -374,6 +379,8 @@
       if (!category) return showError('Choose a category: Eat, Drink, Shop, Culture, Health or Stay.');
       if (town.length < 2) return showError('Fill in the city.');
       if (land.length < 2) return showError('Fill in the country.');
+      // Only photos the member took or may use (copyright): they confirm it for every photo.
+      if (photoData && !$('sRightsBox').checked) return showError('Tick the box under the photo. Only add photos you took yourself or have permission to use.');
 
       const btn = $('sSubmit');
       btn.disabled = true; btn.textContent = 'Adding…';

@@ -21,6 +21,7 @@ export const REASONS = [
   ['offensive', 'Offensive, hateful or inappropriate'],
   ['fake', 'Fake, or not a real visit'],
   ['wrong', 'Wrong information'],
+  ['copyright', "Someone else's photo (copyright)"],
   ['other', 'Something else'],
 ];
 export const KINDS = { review: 'review', highlight: 'highlight', member: 'member', spot: 'spot', list: 'list' };
@@ -218,8 +219,9 @@ export function openReport(db, target) {
             targetId: String(target.targetId || ''),
             ownerId: target.ownerId || '',
             label: String(target.label || '').slice(0, 200),
-            reason: picked.value,
-            note: card.querySelector('#sfrNote').value.trim().slice(0, 500),
+            // Saved as "other" with "Copyright:" in the note, so it fits the reasons the app and the rules already know.
+            reason: picked.value === 'copyright' ? 'other' : picked.value,
+            note: ((picked.value === 'copyright' ? 'Copyright: ' : '') + card.querySelector('#sfrNote').value.trim()).slice(0, 500),
             reportedBy: user.uid,
             status: 'open',
             createdAt: serverTimestamp(),

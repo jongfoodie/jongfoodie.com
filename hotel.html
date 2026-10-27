@@ -248,7 +248,7 @@ function renderGalleryDots() {
 }
 
 function updateGalleryImg() {
-  document.getElementById('galleryImg').src = window.__galleryPhotos[window.__galleryIndex];
+  { const gi = document.getElementById('galleryImg'), gu = window.__galleryPhotos[window.__galleryIndex]; (window.sfResolve ? window.sfResolve(gu) : Promise.resolve(gu)).then(src => { if (window.__galleryPhotos[window.__galleryIndex] === gu) gi.src = src; }); }
   const multi = window.__galleryPhotos.length > 1;
   document.getElementById('galleryPrev').style.display = multi ? 'flex' : 'none';
   document.getElementById('galleryNext').style.display = multi ? 'flex' : 'none';
@@ -336,7 +336,7 @@ function renderHotels(list) {
       : '';
     const imgHtml = photos.length
       ? `<div class="hotel-img hotel-img-clickable" style="position:relative;padding:0;overflow:hidden;" onclick="openGallery('${galleryId}', 0)">
-           <img src="${thumb || photos[0]}" ${thumb ? `data-full="${photos[0]}"` : ''} loading="lazy" decoding="async" onerror="if(this.dataset.full&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}" alt="${h.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
+           <img ${window.sfSrc ? window.sfSrc(thumb || photos[0]) : `src="${thumb || photos[0]}"`} ${thumb ? `data-full="${photos[0]}"` : ''} loading="lazy" decoding="async" onerror="if(this.dataset.full&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}" alt="${h.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
            ${partnerBadge}
            ${photoCountBadge}
            ${closedOverlay}
@@ -365,6 +365,7 @@ function renderHotels(list) {
     </div>
   `;
   }).join('');
+  if (window.sfHydrate) window.sfHydrate(container);
 }
 
 // hotel.html?search=… (from the search box on the homepage) fills in the search.
@@ -394,6 +395,7 @@ applySearchParam();
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
+  import { initPhotos } from "./js/sf-photo-fix.js?v=1";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -406,6 +408,7 @@ applySearchParam();
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  initPhotos(db); // photos the app stored in Firestore (fsimg://)
   highlightsRow(db, document.getElementById('hlCat'), { category: 'stay', title: 'Highlights' });
 
   async function loadFirebaseHotels() {
@@ -422,6 +425,9 @@ applySearchParam();
           const pubDate = r.publishAt.toDate ? r.publishAt.toDate() : new Date(r.publishAt);
           return pubDate <= now;
         });
+      // Newest first: the publish date when there is one, otherwise when it was added.
+      const when = r => { const t = r.publishAt || r.createdAt; const d = t && t.toDate ? t.toDate() : (t ? new Date(t) : null); return d && !isNaN(d) ? d.getTime() : 0; };
+      visible.sort((a, b) => when(b) - when(a));
 
       // Map Firebase fields onto the same shape renderHotels() expects
       const mapped = visible.map(r => ({

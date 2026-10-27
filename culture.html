@@ -249,6 +249,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
+  import { initPhotos } from "./js/sf-photo-fix.js?v=1";
   import { openState } from "./js/sf-hours.js?v=1";
 
   const firebaseConfig = {
@@ -262,6 +263,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  initPhotos(db); // photos the app stored in Firestore (fsimg://)
   // Pretty place address, the same rule as js/sf-core.js (placeUrl).
   const prettyUrl = (name, id) => '/p/' + (String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'place') + '-' + id + '/';
   highlightsRow(db, document.getElementById('hlCat'), { category: 'culture', title: 'Highlights' });
@@ -281,7 +283,7 @@
   }
 
   function updateGalleryImg() {
-    document.getElementById('galleryImg').src = window.__galleryPhotos[window.__galleryIndex];
+    { const gi = document.getElementById('galleryImg'), gu = window.__galleryPhotos[window.__galleryIndex]; (window.sfResolve ? window.sfResolve(gu) : Promise.resolve(gu)).then(src => { if (window.__galleryPhotos[window.__galleryIndex] === gu) gi.src = src; }); }
     const multi = window.__galleryPhotos.length > 1;
     document.getElementById('galleryPrev').style.display = multi ? 'flex' : 'none';
     document.getElementById('galleryNext').style.display = multi ? 'flex' : 'none';
@@ -378,7 +380,7 @@
         : '';
       const imgHtml = photos.length
         ? `<div class="spot-img spot-img-clickable" style="position:relative;padding:0;overflow:hidden;" onclick="openGallery('${galleryId}', 0)">
-             <img src="${thumb || photos[0]}" ${thumb ? `data-full="${photos[0]}"` : ''} loading="lazy" decoding="async" onerror="if(this.dataset.full&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
+             <img ${window.sfSrc ? window.sfSrc(thumb || photos[0]) : `src="${thumb || photos[0]}"`} ${thumb ? `data-full="${photos[0]}"` : ''} loading="lazy" decoding="async" onerror="if(this.dataset.full&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.full}else{this.remove()}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:${isClosed ? 'grayscale(60%)' : 'none'};">
              ${partnerBadge}
              ${photoCountBadge}
              ${closedOverlay}
@@ -407,6 +409,7 @@
       </div>
     `;
     }).join('');
+    if (window.sfHydrate) window.sfHydrate(container);
   }
 
   window.filterSpots = function(val) {
@@ -446,6 +449,9 @@
         const pubDate = s.publishAt.toDate ? s.publishAt.toDate() : new Date(s.publishAt);
         return pubDate <= now;
       });
+      // Newest first: the publish date when there is one, otherwise when it was added.
+      const when = r => { const t = r.publishAt || r.createdAt; const d = t && t.toDate ? t.toDate() : (t ? new Date(t) : null); return d && !isNaN(d) ? d.getTime() : 0; };
+      allSpots.sort((a, b) => when(b) - when(a));
       window.filterSpots(searchBox.value);
     } catch (e) {
       document.getElementById('spotList').innerHTML = `
