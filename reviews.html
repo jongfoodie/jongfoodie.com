@@ -485,7 +485,8 @@
       visibleDocs.forEach((d, i) => {
         const r = d.data();
         console.log('📖 Review loaded:', r.name, '| photoUrl:', r.photoUrl || '(geen foto)');
-        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        // No rating yet: no stars (instead of five empty ones).
+        const stars = r.rating >= 1 ? '★'.repeat(Math.floor(r.rating)) + '☆'.repeat(5 - Math.floor(r.rating)) : '';
         const tagsHtml = (r.tags || []).map(t => `<span class="review-tag">${t}</span>`).join('');
         const color = bgColors[i % bgColors.length];
 
@@ -534,7 +535,7 @@
                ${photoCountBadge}
                ${closedOverlay}
              </div>`
-          : `<div class="review-img ${color}" style="position:relative;display:flex;align-items:center;justify-content:center;font-size:60px;width:160px;">
+          : `<div class="review-img ${color}" style="position:relative;display:flex;align-items:center;justify-content:center;font-size:60px;width:160px;min-height:160px;flex-shrink:0;">
                ${r.emoji || '🍽️'}
                ${i === 0 && !r.sponsored && !isClosed ? '<span style="position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.08em;">NEW</span>' : ''}
                ${partnerBadge}
