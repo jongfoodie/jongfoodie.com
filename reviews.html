@@ -76,18 +76,30 @@
   .review-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .review-tag { background: var(--accent-pale); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
   .price-tag { background: var(--tag-bg); color: var(--ink-soft); font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
-  .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
-  .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
-  .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
+  .bg-ramen { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-burger { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-pastry { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
   .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
-  .bg-sandwich { background: linear-gradient(135deg, #2D5A3D, #1A3A28); }
-  .bg-sushi { background: linear-gradient(135deg, #185FA5, #0C447C); }
-  .bg-steak { background: linear-gradient(135deg, #6B2D2D, #3D1A1A); }
-  .bg-fries { background: linear-gradient(135deg, #C8901A, #8B5A0A); }
-  .bg-seafood { background: linear-gradient(135deg, #0F6E56, #085041); }
+  .bg-sandwich { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-sushi { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-steak { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-fries { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-seafood { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .review-card.more-hidden { display: none !important; }
+  .more-wrap { text-align: center; margin: -1.5rem 0 3rem; }
+  .more-btn { background: none; border: 1px solid var(--border); color: var(--ink); padding: 10px 28px; border-radius: 30px; font: 500 14px 'DM Sans', sans-serif; cursor: pointer; }
+  .more-btn:hover { border-color: var(--ink); }
+  .more-btn[hidden] { display: none; }
+  .hours-badge.is-open { color: #2D5A3D; font-weight: 600; }
+  .hours-badge.is-closed { color: var(--muted); }
   @media (max-width: 600px) {
     .review-card { grid-template-columns: 1fr; }
     .review-img { min-height: 120px; }
+    /* Phones: photo on top, text below, so the text gets the full width */
+    .review-card.new-review { flex-direction: column; }
+    .review-card.new-review > .review-photo-clickable,
+    .review-card.new-review > .review-img { width: 100% !important; min-height: 0 !important; height: 200px; }
+    .review-card.new-review .review-body { min-height: 0; }
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
   }
@@ -214,6 +226,10 @@
 <button class="filter-pill" data-filter="pizza" onclick="setFilter(this)">🍕 Pizza</button>
 <button class="filter-pill" data-filter="mexican" onclick="setFilter(this)">🌮 Mexican</button>
 <button class="filter-pill" data-filter="seafood" onclick="setFilter(this)">🦞 Seafood</button>
+<button class="filter-pill" data-filter="vega" onclick="setFilter(this)">🌱 Vega</button>
+<button class="filter-pill" data-filter="vegan" onclick="setFilter(this)">🌿 Vegan</button>
+<button class="filter-pill" data-filter="halal" onclick="setFilter(this)">Halal</button>
+<button class="filter-pill" data-filter="budget" onclick="setFilter(this)">💶 Under €15</button>
 <button class="filter-pill" data-filter="top" onclick="setFilter(this)">⭐ Top Rated</button>
 </div>
 <div class="filters" style="background:#F0EBE3;">
@@ -250,6 +266,8 @@
 
 
 </div>
+<div class="more-wrap"><button type="button" class="more-btn" id="reviewsMore" hidden onclick="loadMoreReviewsPage()">Load more</button></div>
+<div class="open-empty" id="filterEmpty" hidden><p>No places with this filter yet.</p><button type="button" onclick="resetFilters()">Reset filters</button></div>
 
 
 <!-- NEW RESTAURANTS - Netherlands -->
@@ -358,6 +376,11 @@
         else if (activeFilter === 'mexican') typeMatch = type.includes('mexican') || text.includes('mexican') || text.includes('taco') || text.includes('birria');
         else if (activeFilter === 'seafood') typeMatch = type.includes('seafood') || text.includes('seafood') || text.includes('lobster');
         else if (activeFilter === 'top') typeMatch = text.includes('★★★★★');
+        // Diet and price: from the tags, the type and the review text (fill in tags like "Vega" or "Halal" in the admin)
+        else if (activeFilter === 'vega') typeMatch = /\b(vega|vegan|vegetarian|veggie|plant[- ]based)\b/.test((card.dataset.tags || '') + ' ' + type + ' ' + text);
+        else if (activeFilter === 'vegan') typeMatch = /\b(vegan|plant[- ]based)\b/.test((card.dataset.tags || '') + ' ' + type + ' ' + text);
+        else if (activeFilter === 'halal') typeMatch = /\bhalal\b/.test((card.dataset.tags || '') + ' ' + type + ' ' + text);
+        else if (activeFilter === 'budget') { const pr = parseFloat(card.dataset.price); typeMatch = pr > 0 && pr <= 15; }
       }
 
       const openMatch = !window.__sfOpenNow || card.dataset.open === 'open';
@@ -365,7 +388,29 @@
     });
     const empty = document.getElementById('openEmpty');
     if (empty) empty.hidden = !(window.__sfOpenNow && ![...cards].some(c => c.style.display !== 'none'));
+    limitCards();
   }
+
+  // 12 places at a time. With a filter, a country, Open now or a search, all matches show.
+  window.__sfShow = 12;
+  function limitCards() {
+    const q = ((document.getElementById('reviewSearchInput') || {}).value || '').trim();
+    const active = activeFilter !== 'all' || activeCountry !== 'all' || window.__sfOpenNow || !!q;
+    const cards = [...document.querySelectorAll('.reviews-list .review-card')];
+    let n = 0;
+    cards.forEach(c => {
+      c.classList.remove('more-hidden');
+      if (active || c.style.display === 'none') return;
+      n++;
+      if (n > window.__sfShow) c.classList.add('more-hidden');
+    });
+    const rest = active ? 0 : Math.max(0, n - window.__sfShow);
+    const btn = document.getElementById('reviewsMore');
+    if (btn) { btn.hidden = !rest; btn.textContent = `Load more (${rest})`; }
+    const fe = document.getElementById('filterEmpty');
+    if (fe) fe.hidden = !cards.length || window.__sfOpenNow || cards.some(c => c.style.display !== 'none');
+  }
+  function loadMoreReviewsPage() { window.__sfShow += 12; limitCards(); }
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -502,6 +547,8 @@
         else if (cityText.includes('turkey') || cityText.includes('istanbul') || cityText.includes('antalya') || cityText.includes('izmir') || cityText.includes('bodrum')) country = 'turkey';
         card.dataset.country = country;
         card.dataset.type = (r.type || '').toLowerCase();
+        card.dataset.tags = (Array.isArray(r.tags) ? r.tags.join(' ') : '').toLowerCase();
+        { const pm = String(r.price || '').replace(',', '.').match(/\d+(\.\d+)?/); card.dataset.price = pm ? pm[0] : ''; }
         card.dataset.open = openState(r) || '';
 
         const photos = (r.photos && r.photos.length) ? r.photos : (r.photoUrl ? [r.photoUrl] : []);
@@ -546,7 +593,7 @@
           ${imageHtml}
           <div class="review-body">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              ${r.hours ? `<span class="hours-badge" style="font-size:10px;">🕐 ${r.hours}</span>` : '<span></span>'}
+              ${card.dataset.open === 'open' ? '<span class="hours-badge is-open" style="font-size:11px;">● Open now</span>' : card.dataset.open === 'closed' ? '<span class="hours-badge is-closed" style="font-size:11px;">Closed now</span>' : '<span></span>'}
               <span class="stars" style="color:#C8901A;font-size:14px;letter-spacing:1px;">${stars}</span>
             </div>
             <div class="review-top"><h2 class="review-title"><a class="place-link" href="${prettyUrl(r.name, d.id)}">${r.name}</a></h2></div>
@@ -574,6 +621,7 @@
         countEl.textContent = visibleDocs.length;
       }
       if (window.__sfOpenNow) applyFilters();
+      if (window.limitCards) window.limitCards();
     } catch(e) {
       console.error('Could not load new reviews:', e);
     }
@@ -595,6 +643,7 @@
         card.style.display = 'none';
       }
     });
+    if (window.limitCards) window.limitCards();
   }
 
   // The search field calls searchReviews() from HTML, so it must be global.

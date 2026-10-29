@@ -137,7 +137,7 @@
     const newest = catalog.filter(p => !p.closed).sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 3);
     const box = document.getElementById('newest');
     box.innerHTML = newest.map(p => `<a class="rev" href="${placeUrl(p)}">
-      <span class="ph" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">${esc(p.emoji)}${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" hidden>` : ''}</span>
+      <span class="ph" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">${esc(p.emoji)}${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" hidden>` : ''}</span>
       <span><strong>${esc(p.name)}</strong><small>${p.rating ? `<span class="st">${starStr(p.rating)}</span> · ` : ''}${esc(p.where)}</small></span>
     </a>`).join('') || '<p class="loading">No reviews yet.</p>';
     hydratePhotos(box);

@@ -232,7 +232,7 @@
           <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
           <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
-          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Strong Hotel</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>
@@ -338,7 +338,7 @@ function declineCookies(){
         : `<a class="bt-vote" href="account.html?next=${encodeURIComponent('battle.html')}">Log in to vote</a>`;
     }
     return `<div class="bt-side${win ? ' win' : ''}${mine ? ' mine' : ''}">
-      <div class="bt-img" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">
+      <div class="bt-img" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
         ${win ? '<span class="bt-crown">👑 Winner</span>' : ''}
         <span>${esc(p ? p.emoji : '🍽️')}</span>
         ${p && p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}

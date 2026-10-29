@@ -141,7 +141,7 @@ function cardHtml(p) {
   const stars = p.rating ? '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating)) : '';
   return `
   <article class="mp-card">
-    <a class="mp-img" href="${placeUrl}" aria-label="${esc(p.name)}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
+    <a class="mp-img" href="${placeUrl}" aria-label="${esc(p.name)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
       <span>${cat.emoji}</span>
       ${p.photo ? `<img data-photo="${esc(p.photo)}" alt="" hidden>` : ''}
     </a>

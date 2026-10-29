@@ -304,7 +304,7 @@
   }
   .featured-img {
     height: 320px;
-    background: linear-gradient(135deg, #C8520A 0%, #8B3A1A 100%);
+    background: linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -789,12 +789,12 @@
   .modal { position: relative; }
 
   /* FOOD EMOJI COLOR BACKGROUNDS */
-  .bg-ramen { background: linear-gradient(135deg, #C8521A, #8B2E0A); }
-  .bg-burger { background: linear-gradient(135deg, #8B5A1A, #5A3A0A); }
-  .bg-pastry { background: linear-gradient(135deg, #C8901A, #8B6010); }
+  .bg-ramen { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-burger { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-pastry { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
   .bg-cafe { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
-  .bg-sushi { background: linear-gradient(135deg, #C83030, #8B1A1A); }
-  .bg-tacos { background: linear-gradient(135deg, #60871A, #3D5A0A); }
+  .bg-sushi { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
+  .bg-tacos { background: linear-gradient(135deg, #3D2F1A, #1A1208); }
 
   /* ANIMATIONS */
   @keyframes fadeIn {
@@ -990,7 +990,19 @@
   @media (max-width: 385px) {
     nav:has(.sf-bell) .nav-app { display: none; }
   }
+  /* Phones: the round logo makes the header wider than the screen. The name stays. */
+  @media (max-width: 440px) {
+    nav .nav-logo svg { display: none; }
+    nav .nav-actions { gap: 0.5rem; }
+  }
   #memberGrid:empty { display: none; }
+  .meet-banner { background: linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; color: #fff; }
+  .meet-banner-kicker { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #F3A57E; margin-bottom: 0.5rem; font-weight: 500; }
+  .meet-banner h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 0.5rem; }
+  .meet-banner h3 em { color: #F5C896; }
+  .meet-banner p:not(.meet-banner-kicker) { font-size: 13px; color: rgba(255,255,255,0.7); max-width: 440px; line-height: 1.6; }
+  .meet-banner-btn { background: var(--accent); color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .meet-banner-btn:hover { opacity: 0.92; }
 
   @media (max-width: 900px) {
     .top-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1157,7 +1169,9 @@
   <button class="tag-pill" onclick="setTag(this)">🍣 Sushi</button>
   <button class="tag-pill" onclick="setTag(this)">🌮 Street Food</button>
   <button class="tag-pill" onclick="setTag(this)">🍰 Desserts</button>
-  <button class="tag-pill" onclick="setTag(this)">💰 Budget</button>
+  <button class="tag-pill" onclick="setTag(this)">🌱 Vega</button>
+  <button class="tag-pill" onclick="setTag(this)">Halal</button>
+  <button class="tag-pill" onclick="setTag(this)">💶 Under €15</button>
   <button class="tag-pill" onclick="setTag(this)">✨ Fine Dining</button>
 </div>
 
@@ -1218,17 +1232,14 @@
       <button class="btn-outline" id="loadMoreBtn" onclick="loadMoreReviews()">Load more</button>
     </div>
 
-    <!-- JONG HOTEL BANNER -->
-    <div style="background:linear-gradient(135deg,#1A3A5C,#2D6A9F);border-radius:16px;padding:2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <!-- MEETUPS BANNER (was the "Strong Hotel is here!" banner) -->
+    <div class="meet-banner">
       <div>
-        <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#A8C4E0;margin-bottom:0.5rem;">New</p>
-        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:#fff;margin-bottom:0.5rem;">Strong <em style="color:#F5C896;">Hotel</em> is here!</h3>
-        <p style="font-size:13px;color:rgba(255,255,255,0.7);">Hotel reviews + share your favourite stays around the world.</p>
+        <p class="meet-banner-kicker">Meetups</p>
+        <h3>Eat <em>together</em></h3>
+        <p>Plan a dinner, drinks or a workout at any place on Strong Foodie, and see who's going. Free, on the website and in the app.</p>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <input type="text" id="hotelSearchHome" placeholder="Search hotels..." onkeydown="if(event.key==='Enter')doHotelSearch()" style="border:none;border-radius:20px;padding:10px 18px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:200px;">
-        <button onclick="doHotelSearch()" style="background:#F5C896;color:#1A3A5C;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Search Hotels →</button>
-      </div>
+      <a class="meet-banner-btn" href="meetups.html">See meetups →</a>
     </div>
 
     <!-- MEMBERS: rating and adding places happens in the app; everything shows up here -->
@@ -1535,6 +1546,9 @@
   // collections the app uses (see js/sf-places.js, shared with stad.html).
   const { hydratePhotos } = photoTools(db);
   let CATALOG = [], MEMBERS = [], ALL = [], LATEST = [];
+  // Places already shown higher up (featured, top picks, the first destination), so "Latest" doesn't repeat them.
+  const ABOVE = new Set();
+  let aboveDestDone = false;
   // Spots from members Strong Foodie marked as unlisted (memberFlags/{uid}
   // { unlisted: true }, such as the App Review demo account) stay on their
   // place page, the map and search, but not in the "latest" and "new" rows.
@@ -1560,7 +1574,8 @@
     // Latest: newest first, only places with a photo (the rest stay in search,
     // the map and the categories). Too few with a photo: show them all.
     const newestFirst = (a, b) => (b.created || 0) - (a.created || 0);
-    const candidates = ALL.filter(p => p !== featured && listed(p));
+    if (featured) ABOVE.add(featured);
+    const candidates = ALL.filter(p => p !== featured && listed(p) && !ABOVE.has(p));
     const withPhoto = candidates.filter(hasPhoto);
     LATEST = (withPhoto.length >= PAGE ? withPhoto : candidates).sort(newestFirst);
     showList(LATEST, 'Latest on Strong Foodie', false);
@@ -1647,7 +1662,7 @@
     const url = placeUrl(p);
     const meta = [p.where, p.type || cat.label, p.price].filter(Boolean);
     card.innerHTML = `
-      <a class="featured-img" href="${url}" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);" aria-label="${esc(p.name)}">
+      <a class="featured-img" href="${url}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);" aria-label="${esc(p.name)}">
         <span>${esc(p.emoji)}</span>
         ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" hidden>` : ''}
       </a>
@@ -1710,8 +1725,9 @@
     shuffled.forEach(p => { if (picks.length < 4 && !seen.has(p.destination)) { picks.push(p); seen.add(p.destination); } });
     shuffled.forEach(p => { if (picks.length < 4 && !picks.includes(p)) picks.push(p); });
     if (!picks.length) { grid.previousElementSibling.hidden = true; grid.previousElementSibling.previousElementSibling.hidden = true; grid.hidden = true; return; }
+    picks.forEach(p => ABOVE.add(p));
     grid.innerHTML = picks.map((p, i) => `
-      <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">
+      <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
         <span class="top-emoji">${esc(p.emoji)}</span>
         <img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>
         <span class="top-rank">#${i + 1}</span>
@@ -1728,7 +1744,8 @@
   function renderDestinations() {
     const chips = document.getElementById('destChips');
     if (!chips) return;
-    DESTS = destinations(ALL);
+    // Destinations of Strong Foodie's own reviews, the same 10 as in the hero.
+    DESTS = destinations(CATALOG);
     const dl = document.getElementById('tripDests');
     if (dl) dl.innerHTML = DESTS.map(d => `<option value="${esc(d.name)}"></option>`).join('');
     if (!DESTS.length) { chips.previousElementSibling.hidden = true; chips.previousElementSibling.previousElementSibling.hidden = true; chips.hidden = true; return; }
@@ -1745,7 +1762,9 @@
   function showDestination(d) {
     if (!d) return;
     const grid = document.getElementById('destGrid');
-    grid.innerHTML = d.places.slice().sort(byQuality).slice(0, 4).map(miniCard).join('');
+    const top4 = d.places.slice().sort(byQuality).slice(0, 4);
+    if (!aboveDestDone) { top4.forEach(p => ABOVE.add(p)); aboveDestDone = true; }
+    grid.innerHTML = top4.map(miniCard).join('');
     hydratePhotos(grid);
     const link = document.getElementById('destMoreBtn');
     link.href = d.url;
@@ -1793,6 +1812,8 @@
     'sushi': ['sushi', 'japanese', 'izakaya', 'omakase', 'poke'],
     'street food': ['street food', 'fries', 'friet', 'frites', 'taco', 'kebab', 'doner', 'hot dog', 'food truck', 'shawarma'],
     'desserts': ['dessert', 'donut', 'doughnut', 'ice cream', 'gelato', 'mochi', 'cake', 'cookie', 'chocolate', 'waffle', 'pancake'],
+    'vega': ['vega', 'vegan', 'vegetarian', 'veggie', 'plant-based', 'plant based'],
+    'halal': ['halal'],
     'fine dining': ['fine dining', 'michelin', 'tasting menu', 'luxury', 'omakase'],
   };
   function priceValue(p) {
@@ -1800,9 +1821,13 @@
     return m ? parseFloat(m[0]) : (/^[$€]$/.test(String(p.price).trim()) ? 1 : null);
   }
   function matchesTag(p, tag) {
-    if (tag === 'budget') { const v = priceValue(p); return v != null && v <= 15; }
+    if (tag === 'budget' || tag.startsWith('under')) { const v = priceValue(p); return v != null && v > 0 && v <= 15; }
     const words = TAG_WORDS[tag] || [tag];
-    const hay = p._name + ' ' + p._kind;
+    // Diet filters also read the review text ("great vegan options")
+    const diet = tag === 'vega' || tag === 'halal';
+    const hay = p._name + ' ' + p._kind + (diet ? ' ' + p._text : '');
+    // Whole words for diet tags, so "Las Vegas" is not "vega"
+    if (diet) return words.some(w => new RegExp('\\b' + w.replace(/[-\s]/g, '[- ]') + '\\b').test(hay));
     return words.some(w => hay.includes(w));
   }
   window.setTag = async function (el) {

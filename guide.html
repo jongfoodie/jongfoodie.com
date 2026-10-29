@@ -431,7 +431,7 @@
         const text = p.review || p.tip || p.type || '';
         const bits = [c.label, p.where, p.price].filter(Boolean);
         return `${leg ? `<li class="walk-leg"><span>🚶 ${fmtDistance(leg.m)} · ${leg.min} min walk${leg.to - leg.from > 1 ? ` from stop ${leg.from + 1}` : ''}</span></li>` : ''}<li class="rank-item">
-          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
+          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
             <span>${esc(p.emoji)}</span>
             ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
             <span class="ri-rank">${i + 1}</span>

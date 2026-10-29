@@ -571,7 +571,7 @@
       const spots = state.spots.filter(p => cityOf(p) === d.name).length;
       const revs = state.reviews.filter(r => cityOf(r.place) === d.name).length;
       const parts = [spots ? plural(spots, 'spot', 'spots') : '', revs ? plural(revs, 'review', 'reviews') : ''].filter(Boolean).join(' · ');
-      return `<button type="button" class="city-tile${state.city === d.name ? ' active' : ''}" data-city="${esc(d.name)}" aria-pressed="${state.city === d.name}" style="background:linear-gradient(135deg, ${COLOURS[i % COLOURS.length]} 0%, #1A1208 100%);">
+      return `<button type="button" class="city-tile${state.city === d.name ? ' active' : ''}" data-city="${esc(d.name)}" aria-pressed="${state.city === d.name}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
         ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" loading="lazy" hidden>` : `<span class="ct-emoji">📍</span>`}
         <span class="ct-text"><span class="ct-name">${esc(d.name)}</span><span class="ct-count">${esc(parts)}${d.country && d.country !== d.name ? ' · ' + esc(d.country) : ''}</span></span>
       </button>`;

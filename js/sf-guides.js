@@ -40,7 +40,7 @@ export function guideCard(g) {
   const s = SEASONS[g.season];
   const count = Array.isArray(g.places) ? g.places.length : 0;
   const label = String(g.moment || '').trim() || (g.walk === true ? 'Food walk' : s ? s.label : 'Guide');
-  return `<a class="list-card" href="${esc(guideUrl(g.slug))}" style="background:linear-gradient(135deg, ${s ? s.color : '#D4521A'} 0%, #1A1208 100%);">
+  return `<a class="list-card" href="${esc(guideUrl(g.slug))}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
     <span class="lc-emoji">${g.walk === true ? '🚶' : s ? s.emoji : '📖'}</span>
     ${g.cover ? `<img data-photo="${esc(g.cover)}" alt="" loading="lazy" hidden>` : ''}
     <span class="lc-info">

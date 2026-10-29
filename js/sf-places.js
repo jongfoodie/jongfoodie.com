@@ -114,7 +114,7 @@ export function miniCard(p) {
     ? `<span class="mini-rating">${starStr(p.rating)} ${p.rating}</span>`
     : `<span class="mini-meta" style="margin:0;">${p.member ? 'Added by ' + esc(p.author) : ''}</span>`;
   return `<a class="mini-card" href="${placeUrl(p)}">
-    <div class="mini-img" style="background:linear-gradient(135deg, ${cat.color} 0%, #1A1208 100%);">
+    <div class="mini-img" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
       <span>${esc(p.emoji)}</span>
       ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
     </div>

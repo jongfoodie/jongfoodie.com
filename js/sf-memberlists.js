@@ -62,7 +62,7 @@ export async function listPlaces(db, l, flags = null) {
 
 const CSS = `
 .ml-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-.ml-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; color: #fff; text-decoration: none; background: linear-gradient(135deg, #D4521A 0%, #1A1208 100%); }
+.ml-card { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; color: #fff; text-decoration: none; background: linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%); }
 .ml-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
 .ml-card:hover img { transform: scale(1.04); }
 .ml-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,18,8,0.05) 20%, rgba(26,18,8,0.9) 100%); }

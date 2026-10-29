@@ -445,7 +445,7 @@
         const bits = [c.label, p.where, p.price].filter(Boolean);
         const key = `${p.coll}/${p.id}`, on = mine.has(key);
         return `<li class="rank-item">
-          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${c.color} 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
+          <a class="ri-photo" href="${placeUrl(p)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);" tabindex="-1" aria-hidden="true">
             <span>${esc(p.emoji)}</span>
             ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
             <span class="ri-rank">${i + 1}</span>

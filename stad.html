@@ -108,6 +108,7 @@
   .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
   .chip.active span { color: rgba(255,255,255,0.6); }
   .chip-sm { padding: 5px 12px; font-size: 12px; }
+  [hidden] { display: none !important; }
   .map-toggle { display: none; }
   .result-count { font-size: 13px; color: var(--muted); }
 
@@ -322,7 +323,7 @@
         const counts = catCounts(d.places).sort((a, b) => b[1] - a[1]);
         const cats = counts.map(([k]) => CATS[k].emoji).join(' ');
         const main = CATS[counts[0][0]];
-        return `<a class="dest-card" href="${d.url}" style="background:linear-gradient(135deg, ${main.color} 0%, #1A1208 100%);">
+        return `<a class="dest-card" href="${d.url}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
           <span class="dc-emoji">${main.emoji}</span>
           ${cover ? `<img data-photo="${esc(cover.photos[0])}" alt="" loading="lazy" hidden>` : ''}
           <span class="dc-info">
@@ -390,7 +391,7 @@
       ${favs.length ? `
       <p class="section-label">Strong Foodie's favourites in ${esc(d.name)}</p>
       <div class="fav-grid">${favs.map((p, i) => `
-        <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, ${CATS[p.cat].color} 0%, #1A1208 100%);">
+        <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
           <span class="top-emoji">${esc(p.emoji)}</span>
           <img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>
           <span class="top-rank">#${i + 1}</span>

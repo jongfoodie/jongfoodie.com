@@ -181,7 +181,7 @@ function openViewer(list, start, resolvePhoto, ctx = {}) {
     viewer.innerHTML = `
       <button class="hl-arrow prev" type="button" aria-label="Previous highlight"${i === 0 ? ' hidden' : ''}>‹</button>
       <div class="hl-card">
-        <div class="hl-media" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">
+        <div class="hl-media" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
           <span>${cat ? cat.emoji : '✨'}</span>
           ${h.photoUrl ? `<img id="hlImg" alt="${esc(h.title || '')}" hidden>` : ''}
         </div>
@@ -316,7 +316,7 @@ export async function highlightsRow(db, el, opts = {}) {
       const cat = catOf(h);
       const label = [h.title || 'Highlight', h.mediaType === 'video' ? 'video' : '', showAuthor && h.authorName ? 'by ' + h.authorName : ''].filter(Boolean).join(', ');
       return `<button class="hl-item${h._featured ? ' hl-feat' : ''}" type="button" data-k="${k}" aria-label="${esc((h._featured ? 'Featured: ' : '') + label)}">
-        <span class="hl-ring">${h._featured ? '<span class="hl-star" aria-hidden="true">★</span>' : ''}<span class="hl-thumb" style="background:linear-gradient(135deg, ${cat ? cat.color : '#3D2F1A'} 0%, #1A1208 100%);">${cat ? cat.emoji : '✨'}${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}</span>${h.mediaType === 'video' ? '<span class="hl-play" aria-hidden="true">▶</span>' : ''}</span>
+        <span class="hl-ring">${h._featured ? '<span class="hl-star" aria-hidden="true">★</span>' : ''}<span class="hl-thumb" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">${cat ? cat.emoji : '✨'}${h.photoUrl ? `<img data-src="${esc(h.photoUrl)}" alt="" hidden>` : ''}</span>${h.mediaType === 'video' ? '<span class="hl-play" aria-hidden="true">▶</span>' : ''}</span>
         <span class="hl-cap">${esc(h.title || 'Highlight')}</span>
         ${showAuthor && h.authorName ? `<span class="hl-by">${esc(h.authorName)}</span>` : ''}
       </button>`;
