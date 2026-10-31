@@ -3,7 +3,7 @@
 // Tap the left half of a star for a half star, the right half for a full star.
 // Below the stars: "4.5 out of 5". Saved as a number in the same field (rating: 4.5).
 // Only works when HALF_STARS_ON is true in js/sf-flags.js.
-import { HALF_STARS_ON } from "./sf-flags.js?v=2";
+import { HALF_STARS_ON } from "./sf-flags.js?v=3";
 
 const css = `
 .star-select span.half { background: linear-gradient(90deg, #C8901A 50%, #D4C4A8 50%); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -26,6 +26,7 @@ function setup() {
     const m = first && first.getAttribute('onclick').match(/^(\w+)\(/);
     if (!m) return;
     const name = m[1];
+    if (!box.parentElement.querySelector('.sf-rate-val')) { const hint = document.createElement('span'); hint.className = 'sf-rate-val'; hint.textContent = 'Tap the left half of a star for a half star.'; box.after(hint); }
     const orig = window[name];
     if (typeof orig !== 'function' || orig.__half) return;
     // Every way the rating is set (a tap, or loading a review to edit) paints the half star.
