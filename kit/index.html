@@ -300,7 +300,9 @@
     setTimeout(() => t.classList.remove('show'), 2600);
   }
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
-  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  function sfStarsText(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-h);}
+  // Canvas text: 4.5 is ★★★★½.
+  const stars = n => sfStarsText(n);
   async function copy(text) {
     try { await navigator.clipboard.writeText(text); toast('Copied!'); }
     catch { window.prompt('Copy this:', text); }

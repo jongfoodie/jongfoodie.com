@@ -339,7 +339,8 @@
   const num = v => (typeof v === 'number' && isFinite(v) && v !== 0) ? v : null;
   const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
   const catOf = raw => { const c = String(raw || '').toLowerCase().trim(); return Object.keys(CATS).find(k => CATS[k].aliases.includes(c)) || 'eat'; };
-  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+  const stars = n => sfStars(n);
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
   function distanceM(a, b) {
     const R = 6371000, t = x => x * Math.PI / 180;
