@@ -152,8 +152,8 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://strongfoodie.com/p/bisous-amsterdam-poulet-supreme-MjLyTl2iM8OTafGRiO29/</loc>
-    <lastmod>2026-09-06</lastmod>
+    <loc>https://strongfoodie.com/p/bisous-amsterdam-MjLyTl2iM8OTafGRiO29/</loc>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -317,8 +317,8 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://strongfoodie.com/p/bonnie-kimchi-croque-oQllGqyBpEJfgaz6bQvF/</loc>
-    <lastmod>2026-09-06</lastmod>
+    <loc>https://strongfoodie.com/p/bar-bonnie-oQllGqyBpEJfgaz6bQvF/</loc>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -368,7 +368,7 @@
   </url>
   <url>
     <loc>https://strongfoodie.com/p/bagelboy-wIqFSvnI5vZlKyhooz9K/</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -493,7 +493,7 @@
   </url>
   <url>
     <loc>https://strongfoodie.com/stad/amsterdam/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -542,6 +542,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://strongfoodie.com/stad/kerkrade/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://strongfoodie.com/stad/overveen/</loc>
     <lastmod>2026-09-06</lastmod>
     <priority>0.8</priority>
@@ -558,7 +563,7 @@
   </url>
   <url>
     <loc>https://strongfoodie.com/best/restaurants-amsterdam/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -568,7 +573,12 @@
   </url>
   <url>
     <loc>https://strongfoodie.com/best/sandwiche-amsterdam/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strongfoodie.com/best/lunch-amsterdam/</loc>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -597,11 +607,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://strongfoodie.com/best/lunch-amsterdam/</loc>
-    <lastmod>2026-10-26</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://strongfoodie.com/best/palm-beach-aruba/</loc>
     <lastmod>2026-09-06</lastmod>
     <priority>0.8</priority>
@@ -609,6 +614,16 @@
   <url>
     <loc>https://strongfoodie.com/best/pizza-amsterdam/</loc>
     <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strongfoodie.com/best/spicy-amsterdam/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://strongfoodie.com/best/steak-amsterdam/</loc>
+    <lastmod>2026-10-31</lastmod>
     <priority>0.8</priority>
   </url>
   <url>

@@ -42,7 +42,6 @@
     "reviews/lmMZhBP91ExJ8hxNVwQV",
     "reviews/XuIv4nh3GmG3hFwDulQK",
     "reviews/fYdFvqjKS78yznbt0zT6",
-    "reviews/MjLyTl2iM8OTafGRiO29",
     "reviews/riStQ7BvVWcOX06ycKYm",
     "reviews/aV7neu8odXP0dotTMdZz",
     "reviews/ixFdSSrfLTc46Jhe9pCM",
@@ -79,6 +78,25 @@
    ]
   },
   {
+   "slug": "lunch-amsterdam",
+   "url": "/best/lunch-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Lunch",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Lunch in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
+    "reviews/oQllGqyBpEJfgaz6bQvF",
+    "reviews/aV7neu8odXP0dotTMdZz",
+    "reviews/wIqFSvnI5vZlKyhooz9K",
+    "reviews/PfqRE8mVWRgLIEiM6Q8p"
+   ]
+  },
+  {
    "slug": "restaurants-aruba",
    "url": "/best/restaurants-aruba/",
    "kind": "cat",
@@ -111,6 +129,7 @@
    "places": [
     "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/j1oE7MPVa90t4nL1ogfs",
+    "reviews/oQllGqyBpEJfgaz6bQvF",
     "reviews/wIqFSvnI5vZlKyhooz9K",
     "reviews/d1pk2sXlJXdzZDP6Y6yy"
    ]
@@ -184,23 +203,6 @@
    ]
   },
   {
-   "slug": "lunch-amsterdam",
-   "url": "/best/lunch-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Lunch",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Lunch in Amsterdam",
-   "places": [
-    "reviews/Hf9gwbI6jGUcwmGz4xxB",
-    "reviews/aV7neu8odXP0dotTMdZz",
-    "reviews/PfqRE8mVWRgLIEiM6Q8p"
-   ]
-  },
-  {
    "slug": "palm-beach-aruba",
    "url": "/best/palm-beach-aruba/",
    "kind": "tag",
@@ -218,6 +220,40 @@
    ]
   },
   {
+   "slug": "spicy-amsterdam",
+   "url": "/best/spicy-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Spicy",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Spicy in Amsterdam",
+   "places": [
+    "reviews/kGD3v5GXnB7Sm2gny66A",
+    "reviews/oQllGqyBpEJfgaz6bQvF",
+    "reviews/fYdFvqjKS78yznbt0zT6"
+   ]
+  },
+  {
+   "slug": "steak-amsterdam",
+   "url": "/best/steak-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Steak",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Steak in Amsterdam",
+   "places": [
+    "reviews/XgxTz6Noh7G7D4rP1lIa",
+    "reviews/9i1MoYhNTLsp9GGIhYqo",
+    "reviews/oQllGqyBpEJfgaz6bQvF"
+   ]
+  },
+  {
    "slug": "bars-aruba",
    "url": "/best/bars-aruba/",
    "kind": "cat",
@@ -231,6 +267,22 @@
    "places": [
     "drinkspots/taCjjlMhPx423uh1hCGE",
     "drinkspots/Uly6eE4KS73GSrnu6HCE"
+   ]
+  },
+  {
+   "slug": "breakfast-amsterdam",
+   "url": "/best/breakfast-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Breakfast",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Breakfast in Amsterdam",
+   "places": [
+    "reviews/LEiApv7dDg20qRqPyjMo",
+    "reviews/wIqFSvnI5vZlKyhooz9K"
    ]
   },
   {
@@ -410,38 +462,6 @@
    ]
   },
   {
-   "slug": "spicy-amsterdam",
-   "url": "/best/spicy-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Spicy",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Spicy in Amsterdam",
-   "places": [
-    "reviews/kGD3v5GXnB7Sm2gny66A",
-    "reviews/fYdFvqjKS78yznbt0zT6"
-   ]
-  },
-  {
-   "slug": "steak-amsterdam",
-   "url": "/best/steak-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Steak",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Steak in Amsterdam",
-   "places": [
-    "reviews/XgxTz6Noh7G7D4rP1lIa",
-    "reviews/9i1MoYhNTLsp9GGIhYqo"
-   ]
-  },
-  {
    "slug": "steak-istanbul",
    "url": "/best/steak-istanbul/",
    "kind": "tag",
@@ -455,6 +475,22 @@
    "places": [
     "reviews/1ilEfXYd4noTERuGQcey",
     "reviews/nr46PlxBHPTQAMGJv7hG"
+   ]
+  },
+  {
+   "slug": "takeaway-amsterdam",
+   "url": "/best/takeaway-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Takeaway",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Takeaway in Amsterdam",
+   "places": [
+    "reviews/Hf9gwbI6jGUcwmGz4xxB",
+    "reviews/wIqFSvnI5vZlKyhooz9K"
    ]
   },
   {
@@ -695,21 +731,6 @@
    "title": "Best Boutique in Amsterdam",
    "places": [
     "hotelreviews/2q9ZpEGot16jnstKrOPm"
-   ]
-  },
-  {
-   "slug": "breakfast-amsterdam",
-   "url": "/best/breakfast-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Breakfast",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Breakfast in Amsterdam",
-   "places": [
-    "reviews/LEiApv7dDg20qRqPyjMo"
    ]
   },
   {
@@ -1028,6 +1049,21 @@
    ]
   },
   {
+   "slug": "dinner-kerkrade",
+   "url": "/best/dinner-kerkrade/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Dinner",
+   "dishKind": "",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
+   "country": "Netherlands",
+   "title": "Best Dinner in Kerkrade",
+   "places": [
+    "reviews/MjLyTl2iM8OTafGRiO29"
+   ]
+  },
+  {
    "slug": "disappointing-amsterdam",
    "url": "/best/disappointing-amsterdam/",
    "kind": "tag",
@@ -1253,16 +1289,16 @@
    ]
   },
   {
-   "slug": "good-value-amsterdam",
-   "url": "/best/good-value-amsterdam/",
+   "slug": "good-value-kerkrade",
+   "url": "/best/good-value-kerkrade/",
    "kind": "tag",
    "cat": "",
    "tag": "Good Value",
    "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
    "country": "Netherlands",
-   "title": "Best Good Value in Amsterdam",
+   "title": "Best Good Value in Kerkrade",
    "places": [
     "reviews/MjLyTl2iM8OTafGRiO29"
    ]
@@ -1490,6 +1526,21 @@
    "title": "Best Live Music in Las Vegas",
    "places": [
     "hotelreviews/FsBmcsEv3gR9DXC8Hhl9"
+   ]
+  },
+  {
+   "slug": "lively-kerkrade",
+   "url": "/best/lively-kerkrade/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Lively",
+   "dishKind": "",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
+   "country": "Netherlands",
+   "title": "Best Lively in Kerkrade",
+   "places": [
+    "reviews/MjLyTl2iM8OTafGRiO29"
    ]
   },
   {
@@ -1793,6 +1844,21 @@
    ]
   },
   {
+   "slug": "restaurants-kerkrade",
+   "url": "/best/restaurants-kerkrade/",
+   "kind": "cat",
+   "cat": "eat",
+   "tag": "",
+   "dishKind": "",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
+   "country": "Netherlands",
+   "title": "Best Restaurants in Kerkrade",
+   "places": [
+    "reviews/MjLyTl2iM8OTafGRiO29"
+   ]
+  },
+  {
    "slug": "restaurants-overveen",
    "url": "/best/restaurants-overveen/",
    "kind": "cat",
@@ -2060,21 +2126,6 @@
    "title": "Best Tacos in Los Angeles",
    "places": [
     "reviews/eJCQZfsR1HUEP9i4zaiM"
-   ]
-  },
-  {
-   "slug": "takeaway-amsterdam",
-   "url": "/best/takeaway-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Takeaway",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Takeaway in Amsterdam",
-   "places": [
-    "reviews/Hf9gwbI6jGUcwmGz4xxB"
    ]
   },
   {
