@@ -243,7 +243,8 @@
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
-  const stars = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+  const stars = n => sfStars(n);
   const fmtDate = d => d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
   const shareLink = uid => 'https://strongfoodie.com/wishlist.html?u=' + encodeURIComponent(uid);
   function toast(msg) {

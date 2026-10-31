@@ -277,6 +277,11 @@ function declineCookies(){
   document.getElementById('cookieBanner').style.display='none';
 }
 </script>
+<script>
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+  function sfStarsText(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-h);}
+  window.sfStars = sfStars; window.sfStarsText = sfStarsText;
+</script>
 <script type="module">
   // "Your year on Strong Foodie": the signed-in member's own numbers for one year,
   // and a story image (1080 × 1920) to share on Instagram. Only the member sees it:
@@ -369,7 +374,7 @@ function declineCookies(){
     root.innerHTML = `
       ${t ? `<section class="rc-type"><span class="rc-emoji">${CATS[x.topCat].emoji}</span><div><p class="lab">Your foodie type</p><h2>${esc(t[0])}</h2><p>${esc(t[1])}</p></div></section>` : ''}
       <section class="rc-grid">${stats.map(([l, v, sub]) => `<div class="rc-stat"><p class="rc-num">${v}</p><p class="rc-lab">${esc(l)}</p>${sub ? `<p class="small">${esc(sub)}</p>` : ''}</div>`).join('')}</section>
-      ${x.fav ? `<section class="rc-fav"><p class="lab">Your favourite of ${YEAR}</p><p class="rc-favname">${esc(x.fav.name)}</p><p class="rc-stars">${'★'.repeat(x.fav.rating)}${'☆'.repeat(5 - x.fav.rating)}</p></section>` : ''}
+      ${x.fav ? `<section class="rc-fav"><p class="lab">Your favourite of ${YEAR}</p><p class="rc-favname">${esc(x.fav.name)}</p><p class="rc-stars">${sfStars(x.fav.rating)}</p></section>` : ''}
       <section class="rc-share">
         <p class="lab">Share your year</p>
         <canvas id="rcCanvas" width="1080" height="1920" aria-label="Your ${YEAR} on Strong Foodie as a story image"></canvas>
@@ -419,7 +424,7 @@ function declineCookies(){
     if (x.fav && y < H - 330) {
       c.fillStyle = 'rgba(250,247,242,0.7)'; c.font = '500 38px "DM Sans", sans-serif'; c.fillText('FAVOURITE', 90, y);
       c.fillStyle = '#FAF7F2'; c.font = '700 64px "Playfair Display", Georgia, serif'; c.fillText(fit(c, x.fav.name, 900), 90, y + 80);
-      c.fillStyle = '#E8A23A'; c.font = '500 52px "DM Sans", sans-serif'; c.fillText('★'.repeat(x.fav.rating), 90, y + 150);
+      c.fillStyle = '#E8A23A'; c.font = '500 52px "DM Sans", sans-serif'; c.fillText(sfStarsText(x.fav.rating).replace(/☆/g, ''), 90, y + 150);
     }
     c.fillStyle = '#D4521A'; c.fillRect(90, H - 170, 120, 8);
     c.fillStyle = '#FAF7F2'; c.font = '500 44px "DM Sans", sans-serif'; c.fillText('strongfoodie.com', 90, H - 100);

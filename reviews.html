@@ -531,7 +531,8 @@
         const r = d.data();
         console.log('📖 Review loaded:', r.name, '| photoUrl:', r.photoUrl || '(geen foto)');
         // No rating yet: no stars (instead of five empty ones).
-        const stars = r.rating >= 1 ? '★'.repeat(Math.floor(r.rating)) + '☆'.repeat(5 - Math.floor(r.rating)) : '';
+        const stars = r.rating > 0 ? sfStars(r.rating) : '';
+        function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
         const tagsHtml = (r.tags || []).map(t => `<span class="review-tag">${t}</span>`).join('');
         const color = bgColors[i % bgColors.length];
 

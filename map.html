@@ -383,11 +383,8 @@ window.LEGACY_SPOTS = [
     return '📍 ' + c.charAt(0).toUpperCase() + c.slice(1);
   }
 
-  function starsHtml(n) {
-    if (!n) return '';
-    const full = Math.floor(n), half = n - full >= 0.5;
-    return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - (half ? 1 : 0));
-  }
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+  function starsHtml(n) { return sfStars(n); }
   function starsToNumber(s) {
     if (!s) return null;
     const n = (s.match(/★/g) || []).length + (s.includes('½') ? 0.5 : 0);

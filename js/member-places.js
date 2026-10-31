@@ -14,6 +14,7 @@ import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebase
 import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { loadFlags, isBlocked } from "./sf-moderation.js?v=1";
 import { hoursOf, openState } from "./sf-hours.js?v=1";
+import { starStr } from "./sf-core.js?v=3";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -138,7 +139,7 @@ function cardHtml(p) {
   const route = (p.lat != null && p.lng != null)
     ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`
     : (p.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + ', ' + p.address)}` : '');
-  const stars = p.rating ? '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating)) : '';
+  const stars = p.rating ? starStr(p.rating) : '';
   return `
   <article class="mp-card">
     <a class="mp-img" href="${placeUrl}" aria-label="${esc(p.name)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">

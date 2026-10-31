@@ -211,7 +211,7 @@
       <div class="row">
         <div class="field"><label for="fName">Dish</label><input type="text" id="fName" maxlength="80" placeholder="Double Smash with pickles" value="${esc(d.name || '')}"></div>
         <div class="field"><label for="fKind">Kind</label><input type="text" id="fKind" list="kinds" maxlength="40" placeholder="Smash burger" value="${esc(d.kind || '')}"><p class="hint">Same kind, same list: use the same word each time.</p></div>
-        <div class="field"><label for="fRating">Your score</label><select id="fRating">${RATINGS.map(r => `<option value="${r}"${(d.rating || 5) === r ? ' selected' : ''}>${fmt1(r)} ${'★'.repeat(Math.round(r))}</option>`).join('')}</select></div>
+        <div class="field"><label for="fRating">Your score</label><select id="fRating">${RATINGS.map(r => `<option value="${r}"${(d.rating || 5) === r ? ' selected' : ''}>${fmt1(r)} ${'★'.repeat(Math.floor(r)) + (r % 1 ? '½' : '')}</option>`).join('')}</select></div>
       </div>
       <div class="field"><label for="fNote">What makes it good (optional)</label><textarea id="fNote" maxlength="400" placeholder="Crispy edges, soft bun, go for the double.">${esc(d.note || '')}</textarea></div>
       <div class="field"><label for="fPhoto">Photo</label><select id="fPhoto">

@@ -16,7 +16,11 @@ export const CATS = {
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const fold = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 export const toDate = ts => !ts ? null : (ts.toDate ? ts.toDate() : (isNaN(new Date(ts)) ? null : new Date(ts)));
-export const starStr = n => { const r = Math.round(n || 0); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+// Stars round to the nearest half: 4.5 shows four full stars and one half star (HTML).
+export const HALF_STAR = '<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>';
+export const starStr = n => { const r = Math.round((Number(n) || 0) * 2) / 2, f = Math.floor(r), h = r - f ? 1 : 0; return '★'.repeat(f) + (h ? HALF_STAR : '') + '☆'.repeat(5 - f - h); };
+// The same as plain text (canvas, share texts, select options): 4.5 is ★★★★½.
+export const starText = n => { const r = Math.round((Number(n) || 0) * 2) / 2, f = Math.floor(r), h = r - f ? 1 : 0; return '★'.repeat(f) + (h ? '½' : '') + '☆'.repeat(5 - f - h); };
 export const slugOf = name => fold(name).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 export const SITE = 'https://strongfoodie.com';
 // Pretty addresses. The pages behind them are made by tools/build-pages.mjs;

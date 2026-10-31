@@ -302,7 +302,8 @@ document.addEventListener('keydown', (e) => {
 })();
 
 function renderStars(n) {
-  return '★'.repeat(n) + '☆'.repeat(5 - n);
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+    return sfStars(n);
 }
 
 function renderHotels(list) {
