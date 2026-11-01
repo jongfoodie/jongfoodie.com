@@ -17,6 +17,7 @@ import {
   CATS, SITE, slugOf, placeUrl, destinationUrl, guideUrl, normalise, isPublished,
   destinations, applyListEdits, buildLists, placeKey, normaliseDish, byQuality, LIST_CATS, toDate, starStr,
 } from '../js/sf-core.js';
+import { pickTopPicks, pickFeatured } from '../js/sf-toppicks.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.FIRESTORE_BASE || 'https://firestore.googleapis.com/v1/projects/jongfoodie/databases/(default)/documents';
@@ -368,6 +369,24 @@ async function main() {
   }));
   await mkdir(path.join(ROOT, 'best'), { recursive: true });
   await writeFile(path.join(ROOT, 'best', 'lists.json'), JSON.stringify({ version: 1, lists: autoLists }, null, 1) + '\n');
+
+  // "Top picks · {month}" for the app: the same four as the homepage (js/sf-toppicks.js).
+  // The month is the one in Amsterdam. The app reads https://strongfoodie.com/best/top-picks.json.
+  try {
+    const home = (await getDoc('site/home').catch(() => null)) || {};
+    const own = catalog.map(e => e.place);
+    const featured = pickFeatured({ catalog: own, featuredKey: home.featuredKey || '', byKey: placeByKey });
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Amsterdam', year: 'numeric', month: 'numeric' })
+      .formatToParts(now).filter(x => x.type !== 'literal').map(x => [x.type, Number(x.value)]));
+    const picks = pickTopPicks({ catalog: own, featured, pinnedKeys: home.topPicks, byKey: placeByKey, year: parts.year, month: parts.month });
+    const label = new Date(Date.UTC(parts.year, parts.month - 1, 15)).toLocaleString('en-GB', { month: 'long', timeZone: 'UTC' });
+    await writeFile(path.join(ROOT, 'best', 'top-picks.json'), JSON.stringify({
+      version: 1, month: `${parts.year}-${String(parts.month).padStart(2, '0')}`, label, title: `Top picks · ${label}`,
+      subtitle: 'Four of our highest-rated places. A new selection every month.',
+      featured: featured ? placeKey(featured) : '', picks: picks.map(placeKey),
+    }, null, 1) + '\n');
+    console.log(`Top picks ${label}: ${picks.map(p => p.name).join(', ')}`);
+  } catch (e) { console.log('Top picks not written:', e.message); }
 
   // Guides for a moment (written by Strong Foodie in guide-edit.html)
   // Only plain slugs: a guide's address becomes a folder on the website.
