@@ -181,8 +181,9 @@ function makePage(template, { title, description, canonical, image, type = 'webs
   html = setMeta(html, 'property', 'og:title', title.replace(/ \| Strong Foodie$/, ''));
   html = setMeta(html, 'property', 'og:description', description);
   html = setMeta(html, 'property', 'og:url', canonical);
-  html = setMeta(html, 'property', 'og:image', image || `${SITE}/icon-512.png`);
-  html = setMeta(html, 'name', 'twitter:card', image ? 'summary_large_image' : 'summary');
+  // No photo of its own: the Strong Foodie share image (1200 x 630).
+  html = setMeta(html, 'property', 'og:image', image || `${SITE}/images/og-strongfoodie.jpg`);
+  html = setMeta(html, 'name', 'twitter:card', 'summary_large_image');
   // The template works out its canonical address in the browser; here it is fixed.
   html = html.replace(/<script>\s*\/\/ The canonical address is set here[\s\S]*?<\/script>\s*/, '');
   html = html.replace(/<link rel="canonical" href="[^"]*">\s*/g, '');
@@ -438,7 +439,7 @@ async function main() {
   // Sitemap: the fixed pages first, then everything made above.
   const fixed = [
     ['', '1.0'], ['reviews.html', '0.9'], ['drink.html', '0.9'], ['shop.html', '0.8'], ['culture.html', '0.8'], ['health.html', '0.8'],
-    ['hotel.html', '0.9'], ['stad.html', '0.9'], ['best.html', '0.9'], ['guides.html', '0.8'], ['battle.html', '0.6'], ['deals.html', '0.5'], ['map.html', '0.7'], ['community.html', '0.7'],
+    ['hotel.html', '0.9'], ['stad.html', '0.9'], ['best.html', '0.9'], ['guides.html', '0.8'], ['battle.html', '0.6'], ['map.html', '0.7'], ['community.html', '0.7'],
     ['videos.html', '0.6'], ['about.html', '0.6'], ['press.html', '0.5'], ['links.html', '0.5'], ['privacy.html', '0.3'],
   ].map(([p, priority]) => ({ loc: `${SITE}/${p}`, lastmod: '', priority }));
   const urls = fixed.concat(sitemap);
