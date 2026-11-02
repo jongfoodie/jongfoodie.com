@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Strong Foodie">
 <meta property="og:title" content="Republiek Bloemendaal, Overveen: review 4/5">
 <meta property="og:description" content="Rated 4/5 by Strong Foodie. A beautiful beach club in Bloemendaal aan Zee, near Haarlem. Great food, sea views and a relaxed atmosphere. Perfect for a…">
-<meta property="og:image" content="https://strongfoodie.com/icon-512.png">
+<meta property="og:image" content="https://strongfoodie.com/images/og-strongfoodie.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -109,6 +109,10 @@
   /* Friends who've been here (app build 25) */
   [hidden] { display: none !important; }
   .trust-line { margin-top: 0.6rem; font-size: 12.5px; color: var(--muted); }
+  /* At the top, under the scores: seen at first sight (feedback on Reddit, 2 Nov). */
+  .trust-top { display: inline-block; margin-top: 0.75rem; padding: 6px 12px; border-radius: 10px; background: #E8F2EC; color: #2D5A3D; font-size: 12.5px; font-weight: 600; line-height: 1.55; }
+  .trust-top span, .trust-top a { white-space: nowrap; }
+  .trust-top a { color: #2D5A3D; text-decoration: underline; font-weight: 500; }
   .trust-line a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .block .muted a { color: var(--accent); }
   .friends-been { display: flex; align-items: center; gap: 0.8rem; margin-top: 1rem; background: #FBEDE4; border: 1px solid rgba(212,82,26,0.18); border-radius: 14px; padding: 0.7rem 0.9rem; }
@@ -240,7 +244,7 @@
   .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
 </style>
 <meta property="og:url" content="https://strongfoodie.com/p/republiek-bloemendaal-lDtb6Sh4mbz6Mi8d1ggL/">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://strongfoodie.com/p/republiek-bloemendaal-lDtb6Sh4mbz6Mi8d1ggL/">
 <script>window.SF_PARAMS = {"c":"reviews","id":"lDtb6Sh4mbz6Mi8d1ggL"};</script>
 <script type="application/ld+json" data-sf="ld">{"@context":"https://schema.org","@type":"Restaurant","name":"Republiek Bloemendaal","url":"https://strongfoodie.com/p/republiek-bloemendaal-lDtb6Sh4mbz6Mi8d1ggL/","address":"Zeeweg 94, Overveen","geo":{"@type":"GeoCoordinates","latitude":52.4013046,"longitude":4.5425025},"review":{"@type":"Review","author":{"@type":"Person","name":"Merdan Koc"},"publisher":{"@type":"Organization","name":"Strong Foodie"},"reviewRating":{"@type":"Rating","ratingValue":4,"bestRating":5,"worstRating":1},"reviewBody":"A beautiful beach club in Bloemendaal aan Zee, near Haarlem. Great food, sea views and a relaxed atmosphere. Perfect for a summer day trip from Amsterdam.","datePublished":"2026-09-06"}}</script>
@@ -526,7 +530,7 @@
 
     const reviewBlock = p.member
       ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>` : `<section class="block"><p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>`)
-      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}${p.date ? ' · Visited ' + esc(p.date) : ''}</p><p class="trust-line">✓ Visited by Strong Foodie · No paid reviews · <a href="about.html">How I review</a></p>${isOldVisit(p.date) ? '<p class="old-review">Older review. Things may have changed.</p>' : ''}</section>` : '');
+      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}</p>${isOldVisit(p.date) ? '<p class="old-review">Older review. Things may have changed.</p>' : ''}</section>` : '');
 
     const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
 
@@ -548,6 +552,7 @@
           ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
+          ${!p.member && p.review ? `<p class="trust-top"><span>✓ Visited by Strong Foodie</span>${p.date ? ' · <span>' + esc(p.date) + '</span>' : ''} · <span>No paid reviews</span> · <a href="about.html">How I review</a></p>` : ''}
           <div class="friends-been" id="friendsBeen" hidden></div>
           <div class="actions">
             ${bookingButtonHtml(p.book)}
