@@ -417,7 +417,7 @@
   import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
   import { initPhotos } from "./js/sf-photo-fix.js?v=1";
-  import { openState } from "./js/sf-hours.js?v=1";
+  import { openState, kitchenState } from "./js/sf-hours.js?v=2";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -551,6 +551,7 @@
         card.dataset.tags = (Array.isArray(r.tags) ? r.tags.join(' ') : '').toLowerCase();
         { const pm = String(r.price || '').replace(',', '.').match(/\d+(\.\d+)?/); card.dataset.price = pm ? pm[0] : ''; }
         card.dataset.open = openState(r) || '';
+        card.dataset.kitchen = kitchenState(r) || '';
 
         const photos = (r.photos && r.photos.length) ? r.photos : (r.photoUrl ? [r.photoUrl] : []);
       // Cards load the small copy from images/thumbs/, and the original if there is none.
@@ -594,7 +595,7 @@
           ${imageHtml}
           <div class="review-body">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              ${card.dataset.open === 'open' ? '<span class="hours-badge is-open" style="font-size:11px;">● Open now</span>' : card.dataset.open === 'closed' ? '<span class="hours-badge is-closed" style="font-size:11px;">Closed now</span>' : '<span></span>'}
+              ${card.dataset.kitchen === 'soon' ? '<span class="hours-badge" style="font-size:11px;color:#A8761A;font-weight:600;">● Kitchen closes soon</span>' : card.dataset.kitchen === 'closed' ? '<span class="hours-badge" style="font-size:11px;color:#A8761A;font-weight:600;">● Kitchen closed</span>' : card.dataset.open === 'open' ? '<span class="hours-badge is-open" style="font-size:11px;">● Open now</span>' : card.dataset.open === 'closed' ? '<span class="hours-badge is-closed" style="font-size:11px;">Closed now</span>' : '<span></span>'}
               <span class="stars" style="color:#C8901A;font-size:14px;letter-spacing:1px;">${stars}</span>
             </div>
             <div class="review-top"><h2 class="review-title"><a class="place-link" href="${prettyUrl(r.name, d.id)}">${r.name}</a></h2></div>
@@ -602,7 +603,7 @@
               <span>📍 ${r.city || ''}</span>
               <span>${r.type || ''}</span>
               ${r.price ? `<span>💰 ${r.price}</span>` : ''}
-              ${r.date ? `<span>📅 ${r.date}</span>` : ''}
+              ${r.date ? `<span>📅 Visited ${r.date}</span>` : ''}
             </div>
             ${closedNoteHtml}
             <p class="review-excerpt">${r.review || ''}</p>

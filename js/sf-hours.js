@@ -224,3 +224,22 @@ export function openState(r, now = new Date()) {
   return isOpenAt(parsed, day, min) ? 'open' : 'closed';
 }
 export const isOpenNow = (r, now) => openState(r, now) === 'open';
+
+// Kitchen closing time (field kitchenCloses, like "22:00"; the app uses the same field).
+// 'soon' in the last 60 minutes before the kitchen closes, 'closed' when the kitchen is closed
+// but the place is still open, null otherwise. Times before 05:00 count as after midnight.
+export function kitchenMinutes(text) {
+  const m = String(text || '').trim().match(/^(\d{1,2})[:.](\d{2})$/);
+  if (!m) return null;
+  const h = +m[1], min = +m[2];
+  return h < 24 && min < 60 ? h * 60 + min : null;
+}
+export function kitchenState(r, now = new Date()) {
+  if (!r || openState(r, now) !== 'open') return null;
+  const k = kitchenMinutes(r.kitchenCloses);
+  if (k == null) return null;
+  const { min } = clock(now, zoneOf(r));
+  const late = x => x < 300 ? x + 1440 : x;
+  const left = late(k) - late(min);
+  return left <= 0 ? 'closed' : left <= 60 ? 'soon' : null;
+}

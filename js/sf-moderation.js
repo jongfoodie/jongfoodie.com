@@ -10,11 +10,16 @@
 //   { unlisted: true } keeps the member out of public member lists (Most active
 //   members on community.html, member lists in the app). Their account, profile
 //   page and content stay as they are. Used for the App Review demo account.
+//   { sandbox: true } a test account (the App Review demo account): everything it makes
+//   is hidden for everyone else, like a blocked member, and it is left out of member lists.
+//   The account itself still sees its own things. Set by hand in the Firebase console.
+//   The app does the same (Rork batch 80).
 // Lists made by members (memberLists) are reported the same way, kind "list".
 // Hiding one review, highlight or spot keeps the field the app already uses:
 //   hidden: true on that document.
 
 import { collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 export const REASONS = [
   ['spam', 'Spam or advertising'],
@@ -68,22 +73,26 @@ export function loadFlags(db) {
   if (!flagsPromise) {
     flagsPromise = getDocs(collection(db, 'memberFlags'))
       .then(snap => {
-        const f = { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set() };
+        const f = { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set(), sandbox: new Set() };
         snap.docs.forEach(d => {
           const x = d.data();
           if (x.blocked === true) f.blocked.add(d.id);
+          if (x.sandbox === true) { f.sandbox.add(d.id); f.unlisted.add(d.id); }
           if (x.unlisted === true) f.unlisted.add(d.id);
           if (x.trusted === true) f.trusted.add(d.id);
           if (x.creator === true) f.creator.set(d.id, creatorUrlOk(x.creatorUrl));
         });
         return f;
       })
-      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set() }; });
+      .catch(e => { console.log('Member flags could not load:', e.code || e); return { blocked: new Set(), trusted: new Set(), creator: new Map(), unlisted: new Set(), sandbox: new Set() }; });
   }
   return flagsPromise;
 }
 
-export const isBlocked = (f, uid) => !!(f && uid && f.blocked.has(uid));
+// The signed-in visitor, so a sandbox account still sees its own things.
+const viewerUid = () => { try { const u = getAuth().currentUser; return u ? u.uid : ''; } catch (e) { return ''; } };
+export const isSandbox = (f, uid) => !!(f && uid && f.sandbox && f.sandbox.has(uid));
+export const isBlocked = (f, uid) => !!(f && uid && (f.blocked.has(uid) || (isSandbox(f, uid) && uid !== viewerUid())));
 // Is this review, highlight or spot one the visitor may see?
 export const isVisible = (f, item, authorKey = 'authorId') => !!item && item.hidden !== true && !isBlocked(f, item[authorKey]);
 

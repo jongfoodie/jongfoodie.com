@@ -276,6 +276,11 @@
       </div>
       <button type="button" onclick="addLocationRow('rLocations')" style="margin-top:2px;background:none;border:1px dashed #D4521A;color:#D4521A;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Add another location</button>
     </div>
+    <div class="form-group" style="margin-top:0.75rem;">
+      <label class="form-label" for="rKitchen">Kitchen closes</label>
+      <input class="form-input" type="text" id="rKitchen" placeholder="e.g. 22:00" style="max-width:180px;">
+      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Only if the kitchen closes before the place does. Shows "Kitchen closes soon" on the website and in the app.</p>
+    </div>
   </div>
 
   <div class="form-card">
@@ -1165,7 +1170,7 @@
   const EDIT_CONFIG = {
     reviews: {
       prefix: 'r', sectionId: 'eatSection',
-      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
+      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rKitchen: 'kitchenCloses', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
       emojiField: 'rEmoji', scheduleField: 'rSchedule',
       publishBtnId: 'publishBtn', publishLabel: '🚀 Publish Review',
       setRating: 'setAdminRating', hasPhotoWidget: true,
@@ -1585,6 +1590,7 @@
     const review = document.getElementById('rReview').value.trim();
     const tags = document.getElementById('rTags').value;
     const emoji = document.getElementById('rEmoji').value || '🍽️';
+    const kitchenCloses = document.getElementById('rKitchen').value.trim().replace('.', ':');
 
     const missing = [];
     if (!name) missing.push('restaurantnaam');
@@ -1592,6 +1598,7 @@
     if (!type) missing.push('food type (kies er een uit de lijst)');
     if (!review) missing.push('reviewtekst');
     if (!adminRating) missing.push('sterrenrating (klik op de sterren)');
+    if (kitchenCloses && !/^([01]?\d|2[0-3]):[0-5]\d$/.test(kitchenCloses)) missing.push('keuken sluit (zoals 22:00)');
     if (missing.length) {
       showToast('Nog invullen: ' + missing.join(', '));
       return;
@@ -1619,7 +1626,7 @@
         partnerName: rSponsored ? rPartnerName : '',
         closedStatus: rClosedStatus,
         closedNote: rClosedStatus !== 'open' ? rClosedNote : '',
-        name, city, type, price, date, hours, review, emoji,
+        name, city, type, price, date, hours, kitchenCloses, review, emoji,
         lat, lng,
         locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -1648,7 +1655,7 @@
       }
 
       // Clear form
-      ['rName','rPrice','rDate','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['rName','rPrice','rDate','rKitchen','rReview','rTags','rSchedule'].forEach(id => document.getElementById(id).value = '');
       resetLocations('rLocations');
       document.getElementById('rType').value = '';
       document.getElementById('rEmoji').value = '🍽️';

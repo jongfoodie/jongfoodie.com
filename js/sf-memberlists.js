@@ -49,7 +49,7 @@ export async function listPlaces(db, l, flags = null) {
       const r = s.data();
       const member = it.coll === 'userPlaces';
       if (!r.name || (member ? r.hidden === true : !isPublished(r, now))) return null;
-      if (member && flags && flags.blocked && flags.blocked.has(r.addedByUserId)) return null;
+      if (member && flags && ((flags.blocked && flags.blocked.has(r.addedByUserId)) || (flags.sandbox && flags.sandbox.has(r.addedByUserId)))) return null;
       if (member && r.addedByUserId && r.addedByUserId !== l.authorId) {
         if (!owners.has(r.addedByUserId)) owners.set(r.addedByUserId, getDoc(doc(db, 'profiles', r.addedByUserId)).then(o => o.exists() && o.data().isPrivate === true).catch(() => false));
         if (await owners.get(r.addedByUserId)) return null;

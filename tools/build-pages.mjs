@@ -288,7 +288,8 @@ async function main() {
     listAll('memberFlags').catch(e => { console.log('Member flags not read:', e.message); return []; }),
     publishedMemberLists().catch(e => { console.log('Member lists not read:', e.message); return []; }),
   ]);
-  const blockedIds = new Set(flagDocs.filter(d => d.blocked === true).map(d => d.id));
+  // Blocked members and sandbox test accounts (the App Review demo account): nothing of theirs is public.
+  const blockedIds = new Set(flagDocs.filter(d => d.blocked === true || d.sandbox === true).map(d => d.id));
   const privateIds = await privateMembers(memberDocs.map(r => r.addedByUserId).concat(memberListDocs.map(l => l.authorId)).filter(Boolean));
 
   const catalog = [];

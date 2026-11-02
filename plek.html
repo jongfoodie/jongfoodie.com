@@ -115,6 +115,8 @@
   .open-state { display: block; font-weight: 700; font-size: 13px; margin-bottom: 2px; }
   .open-state.is-open { color: #2D7A46; }
   .open-state.is-shut { color: #B42318; }
+  .open-state.is-kitchen { color: #A8761A; }
+  .old-review { margin-top: 0.4rem; font-size: 12.5px; color: var(--muted); font-style: italic; }
   /* Friends who've been here (app build 25) */
   [hidden] { display: none !important; }
   .trust-line { margin-top: 0.6rem; font-size: 12.5px; color: var(--muted); }
@@ -302,7 +304,8 @@
   import { rememberRef, recordInvite } from "./js/sf-invites.js?v=1";
   import { loadDeals } from "./js/sf-deals.js?v=1";
   import { PRO_ON } from "./js/sf-flags.js?v=1";
-  import { hoursOf, openState } from "./js/sf-hours.js?v=1";
+  import { hoursOf, openState, kitchenState } from "./js/sf-hours.js?v=2";
+  import { isOldVisit } from "./js/sf-core.js?v=4";
   import { checkBadges } from "./js/sf-badges.js?v=3";
   import { openPlanMeetup } from "./js/sf-plan.js?v=1";
   import { openCorrection } from "./js/sf-corrections.js?v=1";
@@ -410,6 +413,7 @@
       rating: typeof r.rating === 'number' ? r.rating : null,
       price: r.price || '',
       hours: hoursOf(r),
+      kitchenCloses: typeof r.kitchenCloses === 'string' ? r.kitchenCloses.trim() : '',
       phone: r.phone || '',
       date: r.date || '',
       tags: Array.isArray(r.tags) ? r.tags.filter(t => typeof t === 'string') : [],
@@ -508,11 +512,14 @@
     // "Open now" in green or "Closed now" in red above the hours; nothing when they can't be read.
     function hoursHtml(p) {
       const st = openState(p);
-      return (st === 'open' ? '<span class="open-state is-open">Open now</span>' : st === 'closed' ? '<span class="open-state is-shut">Closed now</span>' : '') + esc(p.hours);
+      const ks = kitchenState(p);
+      return (ks === 'soon' ? '<span class="open-state is-kitchen">Kitchen closes soon</span>' : ks === 'closed' ? '<span class="open-state is-kitchen">Kitchen closed</span>'
+        : st === 'open' ? '<span class="open-state is-open">Open now</span>' : st === 'closed' ? '<span class="open-state is-shut">Closed now</span>' : '') + esc(p.hours);
     }
     const facts = [
       p.address && ['📍', 'Address', esc(p.address)],
       p.hours && ['🕐', 'Opening hours', hoursHtml(p)],
+      p.kitchenCloses && ['🍳', 'Kitchen closes', esc(p.kitchenCloses)],
       p.price && ['💰', 'Price', esc(p.price)],
       p.type && ['🏷️', 'Type', esc(p.type)],
       p.phone && ['📞', 'Phone', `<a href="tel:${esc(p.phone.replace(/\s/g, ''))}">${esc(p.phone)}</a>`],
@@ -524,7 +531,7 @@
 
     const reviewBlock = p.member
       ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>` : `<section class="block"><p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>`)
-      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}${p.date ? ' · ' + esc(p.date) : ''}</p><p class="trust-line">✓ Visited by Strong Foodie · No paid reviews · <a href="about.html">How I review</a></p></section>` : '');
+      : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}${p.date ? ' · Visited ' + esc(p.date) : ''}</p><p class="trust-line">✓ Visited by Strong Foodie · No paid reviews · <a href="about.html">How I review</a></p>${isOldVisit(p.date) ? '<p class="old-review">Older review. Things may have changed.</p>' : ''}</section>` : '');
 
     const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
 

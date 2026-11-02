@@ -296,3 +296,30 @@ export function applyListEdits(all, edits = [], { min = 3, admin = false, dishes
     .sort(sortLists);
 }
 
+
+// The visit date (field date) is free text, like "Jan 2025", "26 Oct 2026" or "2026-10-26".
+// visitDateOf() reads it as a date, or null. isOldVisit(): more than 18 months ago.
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'ma', 'jun', 'jul', 'aug', 'sep', 'o', 'nov', 'dec'];
+const MONTH_RE = /\b(jan(?:uari|uary)?|feb(?:ruari|ruary)?|m(?:aa)?rt?|mar(?:ch)?|apr(?:il)?|mei|may|jun[ei]?|jul[iy]?|aug(?:ust(?:us)?)?|sep(?:t(?:ember)?)?|o[ck]t(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b/i;
+export function visitDateOf(text) {
+  const s = String(text || '').trim().toLowerCase();
+  if (!s) return null;
+  let m = s.match(/\b(\d{4})-(\d{1,2})(?:-(\d{1,2}))?\b/);
+  if (m) return new Date(+m[1], +m[2] - 1, +(m[3] || 1));
+  m = s.match(/\b(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})\b/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+  const y = s.match(/\b(19|20)\d{2}\b/);
+  const mo = s.match(MONTH_RE);
+  if (!y || !mo) return null;
+  const w = mo[1];
+  const idx = /^ma(a)?rt?$|^mar/.test(w) ? 2 : /^mei|^may/.test(w) ? 4 : /^o/.test(w) ? 9 : MONTHS.findIndex(x => w.startsWith(x));
+  if (idx < 0) return null;
+  const d = s.match(/\b(\d{1,2})\b(?!\d)/);
+  return new Date(+y[0], idx, d && +d[1] <= 31 ? +d[1] : 1);
+}
+export function isOldVisit(text, now = new Date()) {
+  const d = visitDateOf(text);
+  if (!d || isNaN(d)) return false;
+  const limit = new Date(now); limit.setMonth(limit.getMonth() - 18);
+  return d < limit;
+}
