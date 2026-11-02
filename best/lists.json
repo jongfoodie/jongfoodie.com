@@ -2009,6 +2009,21 @@
    ]
   },
   {
+   "slug": "shops-los-angeles",
+   "url": "/best/shops-los-angeles/",
+   "kind": "cat",
+   "cat": "shop",
+   "tag": "",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Shops in Los Angeles",
+   "places": [
+    "shopspots/sGRLhZgR8JWxv3zWz3T3"
+   ]
+  },
+  {
    "slug": "skyline-view-dubai",
    "url": "/best/skyline-view-dubai/",
    "kind": "tag",
@@ -2392,6 +2407,22 @@
    ]
   },
   {
+   "slug": "shops-worldwide",
+   "url": "/best/shops-worldwide/",
+   "kind": "cat",
+   "cat": "shop",
+   "tag": "",
+   "dishKind": "",
+   "dest": "",
+   "destSlug": "",
+   "country": "",
+   "title": "Best Shops Worldwide",
+   "places": [
+    "shopspots/sGRLhZgR8JWxv3zWz3T3",
+    "shopspots/wF4lk1FNhwgOWRD4P9QS"
+   ]
+  },
+  {
    "slug": "dish-ceppi-s-pizza-worldwide",
    "url": "/best/dish-ceppi-s-pizza-worldwide/",
    "kind": "dish",
@@ -2404,21 +2435,6 @@
    "title": "Best Ceppi’s Pizza Worldwide",
    "places": [
     "dishes/kkUWNYi4O6U7Ul42fOz4"
-   ]
-  },
-  {
-   "slug": "shops-worldwide",
-   "url": "/best/shops-worldwide/",
-   "kind": "cat",
-   "cat": "shop",
-   "tag": "",
-   "dishKind": "",
-   "dest": "",
-   "destSlug": "",
-   "country": "",
-   "title": "Best Shops Worldwide",
-   "places": [
-    "shopspots/wF4lk1FNhwgOWRD4P9QS"
    ]
   }
  ]
