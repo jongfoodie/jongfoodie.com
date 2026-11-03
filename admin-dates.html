@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Visit dates | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; flex-wrap: wrap; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; display: flex; gap: 1.1rem; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; white-space: nowrap; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.25rem; }
+  .card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; margin-bottom: 1.1rem; }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .card .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-bottom: 0.9rem; }
+  label.lab { display: block; font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0.8rem 0 0.35rem; }
+  input[type=search], input[type=date] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .checks { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 0.3rem; line-height: 1.5; }
+  .results { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+  .res { text-align: left; border: 1px dashed var(--border); background: #fff; border-radius: 10px; padding: 0.5rem 0.75rem; cursor: pointer; font: 14px 'DM Sans', sans-serif; color: var(--ink); }
+  .res:hover { border-color: var(--accent); border-style: solid; }
+  .res small { color: var(--muted); }
+  .picked { background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 0.6rem 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .btn { font: 500 14px 'DM Sans', sans-serif; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .grp { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 1.3rem 0 0.6rem; }
+  .ad { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; }
+  .ad-name { font-weight: 700; overflow-wrap: anywhere; }
+  .ad-meta { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .ad-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: 2px; }
+  .pill-live { background: var(--green-light); color: var(--green); }
+  .pill-soon { background: #EFE8DC; color: var(--ink-soft); }
+  .pill-ad { background: var(--ink); color: #fff; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 100; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .top { padding: 0.7rem 16px; }
+    .top nav { margin-left: 0; width: 100%; }
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .ad { grid-template-columns: 1fr; }
+    .ad-tools { justify-content: flex-start; }
+  }
+  input[type=text] { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .pill-new { background: var(--green); color: #fff; }
+</style>
+<style>
+  .bar { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; margin-bottom: 1rem; }
+  .bar .count { font-size: 14px; color: var(--ink-soft); }
+  .bar .count b { color: var(--green); }
+  .tog { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .tog input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .rows { display: flex; flex-direction: column; gap: 0.6rem; }
+  .row { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; display: grid; grid-template-columns: 1fr auto; gap: 0.6rem 1rem; align-items: center; }
+  .row.done { border-color: rgba(45,90,61,0.35); }
+  .row .name { font-weight: 700; }
+  .row .name a { color: var(--ink); text-decoration: none; }
+  .row .meta { font-size: 13px; color: var(--muted); margin-top: 0.15rem; }
+  .row .now { font-size: 13px; margin-top: 0.3rem; }
+  .row .now.miss { color: var(--accent); font-weight: 600; }
+  .row .now.ok { color: var(--green); font-weight: 600; }
+  .tools { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: flex-end; }
+  .tools input[type=month] { border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font: 14px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .btn-s { border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 8px 14px; font: 600 13px 'DM Sans', sans-serif; cursor: pointer; color: var(--ink); }
+  .btn-s.go { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-s:disabled { opacity: 0.5; cursor: default; }
+  @media (max-width: 700px) { .row { grid-template-columns: 1fr; } .tools { justify-content: flex-start; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>VISIT DATES</span></h1><nav><a href="admin-edits.html">✏️ Corrections</a><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Checking your account…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  // Visit dates: when Strong Foodie visited each place (the field `date`, like "Oct 2026").
+  // It shows in the green line on the place page ("Visited by Strong Foodie · Oct 2026 · No paid reviews")
+  // and after 18 months the place page adds "Older review. Things may have changed."
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, CATS, normalise, placeUrl } from "./js/sf-places.js?v=7";
+  import { visitDateOf } from "./js/sf-core.js?v=4";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthValue = d => d && !isNaN(d) ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` : '';
+  const monthText = v => { const m = /^(\d{4})-(\d{2})$/.exec(v || ''); return m ? `${MONTHS[+m[2] - 1]} ${m[1]}` : ''; };
+  const thisMonth = monthValue(new Date());
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  let places = [], onlyMissing = true;
+  // A visit date counts when it can be read as a date (the place page shows nothing otherwise).
+  const ok = x => !!(x.date && visitDateOf(x.date));
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { root.innerHTML = `<div class="msg"><h2>Sign in first</h2><p>This page is for Strong Foodie only. <a href="${nextLink()}">Sign in on the admin page</a> and you come straight back here.</p></div>`; return; }
+    let admin = user.uid === BRAND_UID;
+    try { const t = await user.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Only for Strong Foodie</h2><p>This account can't change visit dates.</p></div>`; return; }
+    if (!(await requireUnlock(auth, user))) return;
+    root.innerHTML = '<p class="msg">Loading…</p>';
+    try {
+      const keys = Object.keys(CATS);
+      const snaps = await Promise.all(keys.map(k => getDocs(collection(db, CATS[k].coll))));
+      places = [];
+      keys.forEach((k, i) => snaps[i].docs.forEach(d => {
+        const r = d.data();
+        if (!r.name) return;
+        const p = normalise(CATS[k].coll, d.id, r, false);
+        places.push({ p, date: typeof r.date === 'string' ? r.date.trim() : '' });
+      }));
+      places.sort((a, b) => (ok(a) ? 1 : 0) - (ok(b) ? 1 : 0) || (b.p.created || 0) - (a.p.created || 0));
+      draw();
+    } catch (e) {
+      console.log('Visit dates error:', e);
+      root.innerHTML = '<div class="msg"><h2>Could not load the places</h2><p>Refresh the page. If it keeps failing, sign out and in again on the admin page.</p></div>';
+    }
+  });
+
+  function draw() {
+    const withDate = places.filter(ok).length;
+    const shown = places.filter(x => !onlyMissing || !ok(x));
+    root.innerHTML = `
+      <p class="lead">When did you visit each place? The month shows in the green line on the place page, like <b>Visited by Strong Foodie · Oct 2026 · No paid reviews</b>. After 18 months the page adds "Older review. Things may have changed." <b>Use added month</b> fills in the month you added the place. Only use it if you visited it that month.</p>
+      <div class="bar">
+        <span class="count"><b>${withDate}</b> of ${places.length} places have a visit date</span>
+        <label class="tog"><input type="checkbox" id="onlyMissing" ${onlyMissing ? 'checked' : ''}> Only places without a date</label>
+      </div>
+      <div class="rows">${shown.length ? shown.map(row).join('') : '<p class="empty">Every place has a visit date. 🎉</p>'}</div>`;
+    document.getElementById('onlyMissing').addEventListener('change', e => { onlyMissing = e.target.checked; draw(); });
+    root.querySelectorAll('[data-added]').forEach(b => b.addEventListener('click', () => {
+      const input = document.getElementById('m-' + b.dataset.added); input.value = b.dataset.month; input.focus();
+    }));
+    root.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => save(b)));
+  }
+
+  function row(x, i) {
+    const { p } = x, key = `${p.coll}-${p.id}`;
+    const parsed = visitDateOf(x.date), added = monthValue(p.created);
+    const unreadable = x.date && !parsed;
+    return `<div class="row${x.date && !unreadable ? ' done' : ''}">
+      <div>
+        <div class="name"><a href="${placeUrl(p)}" target="_blank" rel="noopener">${esc(p.name)}</a></div>
+        <div class="meta">${esc(CATS[p.cat].label)}${p.where ? ' · ' + esc(p.where) : ''}${added ? ' · added ' + esc(monthText(added)) : ''}</div>
+        <div class="now ${x.date && !unreadable ? 'ok' : 'miss'}">${x.date ? (unreadable ? `"${esc(x.date)}" can't be read as a date` : 'Visited ' + esc(x.date)) : 'No visit date'}</div>
+      </div>
+      <div class="tools">
+        <input type="month" id="m-${esc(key)}" value="${esc(monthValue(parsed))}" max="${thisMonth}" aria-label="Visit month for ${esc(p.name)}">
+        ${added ? `<button class="btn-s" type="button" data-added="${esc(key)}" data-month="${esc(added)}">Use added month</button>` : ''}
+        <button class="btn-s go" type="button" data-save="${esc(key)}" data-coll="${esc(p.coll)}" data-id="${esc(p.id)}">Save</button>
+      </div>
+    </div>`;
+  }
+
+  async function save(btn) {
+    const value = document.getElementById('m-' + btn.dataset.save).value;
+    const text = monthText(value);
+    if (!text) { toast('Pick a month first.', true); return; }
+    if (value > thisMonth) { toast('A visit date can\'t be in the future.', true); return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await updateDoc(doc(db, btn.dataset.coll, btn.dataset.id), { date: text, updatedAt: serverTimestamp() });
+      const x = places.find(y => y.p.coll === btn.dataset.coll && y.p.id === btn.dataset.id);
+      if (x) x.date = text;
+      toast(`Saved: visited ${text}`);
+      draw();
+    } catch (e) {
+      console.log('Save visit date error:', e);
+      btn.disabled = false; btn.textContent = 'Save';
+      toast(e && e.code === 'permission-denied' ? 'Not allowed. Sign in again on the admin page.' : 'Could not save. Try again.', true);
+    }
+  }
+</script>
+</body>
+</html>

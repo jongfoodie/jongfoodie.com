@@ -1315,17 +1315,16 @@
 
     <!-- NEWSLETTER -->
     <div class="newsletter-widget">
-      <p class="widget-title">Weekly Bites</p>
-      <p>Get the best new reviews delivered to your inbox every Friday.</p>
-      <form class="nl-form" id="nlForm" novalidate>
+      <p class="widget-title">Strong Foodie by email</p>
+      <p>New reviews and what I'm building, straight to your inbox. Free, on Substack.</p>
+      <!-- The newsletter is on Substack (strongfoodie.substack.com). Substack opens in a new tab to confirm. -->
+      <form class="nl-form" id="nlSubstack" action="https://strongfoodie.substack.com/api/v1/free?nojs=true" method="post" target="_blank" onsubmit="if(window.gtag)gtag('event','sign_up',{method:'newsletter'})">
         <div class="nl-input-row">
-          <input class="nl-input" id="nlEmail" type="email" name="EMAIL" autocomplete="email" placeholder="your@email.com" aria-label="Your email address" required>
-          <button class="btn-green" id="nlBtn" type="submit">Subscribe</button>
+          <input class="nl-input" type="email" name="email" autocomplete="email" placeholder="your@email.com" aria-label="Your email address" required>
+          <button class="btn-green" type="submit">Subscribe</button>
         </div>
-        <!-- Left empty by people. Bots fill it in, and Mailchimp then ignores the signup. -->
-        <div class="nl-trap" aria-hidden="true"><input type="text" id="nlTrap" tabindex="-1" autocomplete="off" value=""></div>
       </form>
-      <p class="nl-note" id="nlNote" aria-live="polite">No spam. Unsubscribe anytime. <a href="privacy.html">Privacy</a></p>
+      <p class="nl-note">No spam. Unsubscribe anytime. <a href="https://strongfoodie.substack.com" target="_blank" rel="noopener">Read it on Substack</a> · <a href="privacy.html">Privacy</a></p>
     </div>
   </aside>
 </div>
