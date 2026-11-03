@@ -179,10 +179,27 @@ function setMeta(html, attrName, key, value) {
   const tag = `<meta ${attrName}="${key}" content="${attr(value)}">`;
   return re.test(html) ? html.replace(re, () => tag) : html.replace('</head>', () => `${tag}\n</head>`);
 }
+// "Explore": plain links to the destinations, the best-of lists and the newest reviews,
+// just above the footer of the homepage and of every page made here. Google finds
+// pages through links in the HTML itself; links made by JavaScript count for less.
+// Between <!--SF_EXPLORE--> and <!--/SF_EXPLORE--> in the templates and in index.html.
+let EXPLORE = '';
+const EXPLORE_RE = /<!--SF_EXPLORE-->[\s\S]*?<!--\/SF_EXPLORE-->/;
+const withExplore = html => EXPLORE ? html.replace(EXPLORE_RE, () => `<!--SF_EXPLORE-->${EXPLORE}<!--/SF_EXPLORE-->`) : html;
+const EXPLORE_CSS = `<style>.sf-explore{background:#FFFDF9;border-top:1px solid rgba(26,18,8,.1);margin-top:3rem;padding:2.5rem 1.5rem;font-family:'DM Sans',sans-serif}.sfx-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}.sfx-h{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#8A7A66;font-weight:500;margin:0 0 .75rem}.sf-explore ul{list-style:none;margin:0;padding:0}.sf-explore li{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.3rem 0;font-size:14px;line-height:1.4}.sf-explore a{color:#1A1208;text-decoration:none}.sf-explore a:hover{color:#D4521A}.sf-explore li span{color:#8A7A66;font-size:12.5px;white-space:nowrap}@media(max-width:760px){.sfx-in{grid-template-columns:1fr 1fr;gap:1.5rem}.sfx-col:last-child{grid-column:1/-1}}</style>`;
+function exploreBlock({ dests, lists, latest }) {
+  const col = (h, items) => items.length ? `<div class="sfx-col"><p class="sfx-h">${text(h)}</p><ul>${items.join('')}</ul></div>` : '';
+  return `<section class="sf-explore" aria-label="Explore Strong Foodie">${EXPLORE_CSS}<div class="sfx-in">`
+    + col('Destinations', dests.map(d => `<li><a href="${attr(d.url)}">${text(d.name)}</a><span>${d.count}</span></li>`))
+    + col('Best of', lists.map(l => `<li><a href="${attr(l.url)}">${text(l.title)}</a><span>${l.count}</span></li>`))
+    + col('Latest reviews', latest.map(p => `<li><a href="${attr(placeUrl(p))}">${text(p.name)}</a>${p.rating ? `<span>${score(p.rating)}/5</span>` : ''}</li>`))
+    + `</div></section>`;
+}
+
 function makePage(template, { title, description, canonical, image, type = 'website', params, ld, pre, slot }) {
   let html = template;
   // Every link on the template is written from the site's root.
-  html = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<base href="/">');
+  html = withExplore(html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<base href="/">'));
   // Replacements go through a function, so a "$" in a name or review stays a "$".
   html = html.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${text(title)}</title>`);
   html = setMeta(html, 'name', 'description', description);
@@ -352,6 +369,22 @@ async function main() {
 
   for (const dir of GENERATED) await rm(path.join(ROOT, dir), { recursive: true, force: true });
   await mkdir(path.join(ROOT, 'og'), { recursive: true });
+
+  // Explore links (see exploreBlock), before any page is written
+  {
+    const own = catalog.map(e => e.place).filter(p => !p.closed);
+    const ownDests = destinations(own);
+    const byKeyX = new Map(all.map(p => [placeKey(p), p]));
+    const dishesX = dishDocs.map(d => normaliseDish(d.id, d, byKeyX.get(`${d.placeColl}/${d.placeId}`))).filter(Boolean);
+    const listsX = applyListEdits(all, listEdits, { dishes: dishesX }).slice().sort((a, b) => b.count - a.count).slice(0, 12);
+    const latest = own.slice().sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 10);
+    EXPLORE = exploreBlock({ dests: ownDests.map(d => ({ name: d.name, url: destinationUrl(d.name), count: d.count })), lists: listsX, latest });
+    for (const f of ['index.html', 'stad.html', 'best.html', 'plek.html']) {
+      const file = path.join(ROOT, f), before = await readFile(file, 'utf8').catch(() => '');
+      const after = withExplore(before);
+      if (after !== before) await writeFile(file, after);
+    }
+  }
 
   const [plek, stad, best, guide, listPage] = await Promise.all(['plek.html', 'stad.html', 'best.html', 'guide.html', 'list.html']
     .map(f => readFile(path.join(ROOT, f), 'utf8').catch(() => '')));
