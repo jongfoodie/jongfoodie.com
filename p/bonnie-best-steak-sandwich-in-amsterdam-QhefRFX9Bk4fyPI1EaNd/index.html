@@ -6,11 +6,11 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bonnie: Best Steak Sandwich in Amsterdam, Amsterdam: review 4/5 | Strong Foodie</title>
+<title>Bonnie: Best Steak Sandwich in Amsterdam: review 4/5</title>
 <meta name="description" content="Rated 4/5 by Strong Foodie. This place has the best steak sandwich I've found in Amsterdam! It had all the components of a great sandwich, a crunchy…">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="Bonnie: Best Steak Sandwich in Amsterdam, Amsterdam: review 4/5">
+<meta property="og:title" content="Bonnie: Best Steak Sandwich in Amsterdam: review 4/5">
 <meta property="og:description" content="Rated 4/5 by Strong Foodie. This place has the best steak sandwich I've found in Amsterdam! It had all the components of a great sandwich, a crunchy…">
 <meta property="og:image" content="https://strongfoodie.com/images/bonnie-steak-sandwich.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -477,7 +477,13 @@
   function render(p) {
     const cat = CATS[p.cat];
     const town = townOf(p);
-    document.title = `${p.name}${town ? ', ' + town : ''} | Strong Foodie`;
+    // The same title as tools/build-pages.mjs (fitTitle): about 60 characters.
+    document.title = (() => {
+      const rev = !p.member && p.rating ? `: review ${String(Math.round(p.rating * 10) / 10)}/5` : '';
+      const opts = [town ? `${p.name}, ${town}${rev}` : '', `${p.name}${rev}`].filter(Boolean);
+      for (const o of opts) { if ((o + ' | Strong Foodie').length <= 60) return o + ' | Strong Foodie'; if (o.length <= 60) return o; }
+      return opts[opts.length - 1].slice(0, 59).replace(/\s+\S*$/, '') + '…';
+    })();
     const desc = (p.review || p.tip || `${cat.label} spot${p.address ? ' at ' + p.address : ''}`).slice(0, 155);
     document.querySelector('meta[name="description"]').setAttribute('content', desc);
     // The pretty address (strongfoodie.com/p/name-id/) is the one to share and to find in Google.

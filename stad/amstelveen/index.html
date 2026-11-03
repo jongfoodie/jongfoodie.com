@@ -6,11 +6,11 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Best places in Amstelveen: where to eat, drink and stay | Strong Foodie</title>
+<title>Best places in Amstelveen to eat, drink and stay</title>
 <meta name="description" content="1 place in Amstelveen, Netherlands: 1 place to eat. Honest ratings by Strong Foodie and tips from members.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Strong Foodie">
-<meta property="og:title" content="Best places in Amstelveen: where to eat, drink and stay">
+<meta property="og:title" content="Best places in Amstelveen to eat, drink and stay">
 <meta property="og:description" content="1 place in Amstelveen, Netherlands: 1 place to eat. Honest ratings by Strong Foodie and tips from members.">
 <meta property="og:image" content="https://strongfoodie.com/images/og-strongfoodie.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -38,6 +38,12 @@
   .mobile-nav a:last-child { border-bottom: none; }
 
   .wrap { max-width: 1240px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  /* "Good to know" under a destination (written by tools/build-pages.mjs) */
+  .sf-faq { padding-top: 0; }
+  .sf-faq .section-label { margin-top: 0; }
+  .sf-faq h3 { font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.35; color: var(--ink); margin: 1.25rem 0 0.35rem; max-width: 720px; }
+  .sf-faq p:not(.section-label) { color: var(--ink-soft); font-size: 15px; line-height: 1.65; max-width: 720px; }
+  .sf-faq a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .loading, .empty { text-align: center; padding: 4rem 1rem; color: var(--muted); line-height: 1.6; }
   .empty h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--ink); margin-bottom: 0.5rem; }
   .empty a, .crumbs a { color: var(--accent); text-decoration: none; }
@@ -255,6 +261,7 @@
 <main class="wrap" id="root">
   <section class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/stad.html">Destinations</a></p><h1>Best places in Amstelveen</h1><p>1 place in Amstelveen, Netherlands, visited and rated by Strong Foodie and its members: 1 place to eat.</p><ol><li><a href="/p/joe-the-juice-rqUxeDIcunFyaFvWEUqq/">Joe &amp; The Juice</a> · Eat</li></ol><p class="sf-wait">Loading the map and every place…</p></section>
 </main>
+<!--SF_FAQ-->
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -353,7 +360,7 @@
     const reviewed = d.places.filter(p => !p.member).length;
     const members = d.count - reviewed;
     const catWords = counts.map(([k, n]) => `${n} ${CATS[k].label.toLowerCase()}`).join(', ');
-    setMeta(`Best places in ${d.name}: where to eat, drink and stay | Strong Foodie`,
+    setMeta((t => (t + ' | Strong Foodie').length <= 60 ? t + ' | Strong Foodie' : t)(`Best places in ${d.name} to eat, drink and stay`),
       `${plural(d.count, 'place', 'places')} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''} (${catWords}). Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`,
       `stad/${d.slug}/`);
 
