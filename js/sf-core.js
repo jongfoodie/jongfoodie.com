@@ -171,8 +171,60 @@ export const LIST_CATS = {
   health:  { slug: 'wellness',    title: 'Gyms & Wellness' },
   stay:    { slug: 'hotels',      title: 'Hotels' },
 };
-const TAG_SKIP = new Set(['must try', 'must-try', 'musttry', 'new', 'top', 'favorite', 'favourite', 'recommended']);
-const tagKey = t => fold(t).replace(/[^a-z0-9]+/g, ' ').trim().replace(/s$/, '');
+const TAG_SKIP = new Set(['must try', 'must-try', 'musttry', 'new', 'top', 'favorite', 'favourite', 'recommended',
+  'disappointing', 'sexclub', 'food', 'drink', 'fun', 'unique', 'must visit', 'top pick', 'add avocado', 'creative', 'soho house']);
+// Tags that mean the same thing make one list ("Best Value" and "Great Value").
+const TAG_SAME = { 'great value': 'good value', 'value': 'good value', 'cosy': 'cozy', 'top service': 'great service', 'world class service': 'great service' };
+// "Best Sushi" as a tag is the same list as "Sushi".
+const tagKey = t => { const k = fold(t).replace(/[^a-z0-9]+/g, ' ').trim().replace(/^best /, '').replace(/s$/, ''); return TAG_SAME[k] || k; };
+// Tags that read badly as "Best {tag} in {city}": the title ({d} is the destination) and
+// the words for "the 5 best ...". Cuisines become "Best Italian Food in Amsterdam".
+const TAG_TITLES = {
+  'hidden gem': ['Hidden Gems in {d}', 'hidden gems'],
+  'spicy': ['Best Spicy Food in {d}', 'places for spicy food'],
+  'cafe': ['Best Cafés in {d}', 'cafés'],
+  'bar': ['Best Bars in {d}', 'bars'],
+  'bakery': ['Best Bakeries in {d}', 'bakeries'],
+  'speakeasy': ['Best Speakeasies in {d}', 'speakeasies'],
+  'wine bar': ['Best Wine Bars in {d}', 'wine bars'],
+  'beach club': ['Best Beach Clubs in {d}', 'beach clubs'],
+  'rooftop': ['Best Rooftops in {d}', 'rooftops'],
+  'rooftop bar': ['Best Rooftop Bars in {d}', 'rooftop bars'],
+  'rooftop pool': ['Best Rooftop Pools in {d}', 'rooftop pools'],
+  'infinity pool': ['Best Infinity Pools in {d}', 'infinity pools'],
+  'gym': ['Best Gyms in {d}', 'gyms'],
+  'boutique': ['Best Boutique Hotels in {d}', 'boutique hotels'],
+  'luxury': ['Best Luxury Stays in {d}', 'luxury stays'],
+  'all suite': ['Best All-Suite Hotels in {d}', 'all-suite hotels'],
+  'casino': ['Best Casinos in {d}', 'casinos'],
+  'art gallery': ['Best Art Galleries in {d}', 'art galleries'],
+  'clothing store': ['Best Clothing Stores in {d}', 'clothing stores'],
+  'lunch': ['Best Lunch Spots in {d}', 'lunch spots'],
+  'dinner': ['Best Dinner Spots in {d}', 'dinner spots'],
+  'cozy': ['Coziest Places in {d}', 'cozy places'],
+  'lively': ['Liveliest Places in {d}', 'lively places'],
+  'casual': ['Best Casual Spots in {d}', 'casual spots'],
+  'good value': ['Best Value in {d}', 'places for good value'],
+  'great service': ['Best Service in {d}', 'places for great service'],
+  'local favourite': ['Local Favourites in {d}', 'local favourites'],
+  'celebrity spot': ['Celebrity Spots in {d}', 'celebrity spots'],
+  'live music': ['Best Live Music in {d}', 'places with live music'],
+  'canal view': ['Best Canal Views in {d}', 'places with a canal view'],
+  'ocean view': ['Best Ocean Views in {d}', 'places with an ocean view'],
+  'river view': ['Best River Views in {d}', 'places with a river view'],
+  'skyline view': ['Best Skyline Views in {d}', 'places with a skyline view'],
+  'strip view': ['Best Strip Views in {d}', 'places with a Strip view'],
+  'off strip': ['Best Off-Strip Spots in {d}', 'off-Strip spots'],
+  'day trip': ['Best Day Trips from {d}', 'day trips'],
+  'dutch classic': ['Best Dutch Classics in {d}', 'Dutch classics'],
+  'california classic': ['Best California Classics in {d}', 'California classics'],
+  'gluten free option': ['Best Gluten-Free Options in {d}', 'places with gluten-free options'],
+  'palm beach': ['Best of Palm Beach, {d}', 'places in Palm Beach'],
+  'abbot kinney': ['Best of Abbot Kinney, {d}', 'places on Abbot Kinney'],
+  'melrose': ['Best of Melrose, {d}', 'places on Melrose'],
+  'sunset strip': ['Best of the Sunset Strip, {d}', 'places on the Sunset Strip'],
+};
+const CUISINES = new Set(['italian', 'french', 'japanese', 'korean', 'mexican', 'asian', 'vietnamese', 'caribbean', 'mediterranean', 'fusion']);
 
 // ── Dishes ───────────────────────────────────────────────────────────────
 // The dishes Strong Foodie rated, in the `dishes` collection (dish-edit.html):
@@ -219,8 +271,11 @@ export function buildLists(all, { min = 3, dishes = [] } = {}) {
     }));
     for (const [k, e] of tags) {
       const label = [...e.labels.entries()].sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)[0][0];
-      const nice = label.split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ');
-      add(`${slugOf(k)}-${d.slug}`, { kind: 'tag', tag: nice, dest: d.name, destSlug: d.slug, country: d.country, title: `Best ${nice} in ${d.name}` }, [...e.places]);
+      const nice = label.replace(/^best\s+/i, '').split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' ');
+      const own = TAG_TITLES[k], cuisine = CUISINES.has(k);
+      const title = own ? own[0].replace('{d}', d.name) : `Best ${nice}${cuisine ? ' Food' : ''} in ${d.name}`;
+      const what = own ? own[1] : cuisine ? nice + ' food' : nice.toLowerCase();
+      add(`${slugOf(k)}-${d.slug}`, { kind: 'tag', tag: nice, what, dest: d.name, destSlug: d.slug, country: d.country, title }, [...e.places]);
     }
   }
   // Dishes, per destination and worldwide, grouped by their kind

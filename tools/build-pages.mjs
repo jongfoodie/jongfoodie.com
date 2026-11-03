@@ -437,7 +437,7 @@ async function main() {
   for (const l of lists) {
     const top = l.places.slice(0, 10);
     const title = `${l.title} (${now.getFullYear()}) | Strong Foodie`;
-    const what = l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
+    const what = l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? (l.what || l.tag.toLowerCase()) : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
     const description = l.intro ? oneLine(l.intro) : oneLine(`The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, rated and reviewed by Strong Foodie: ${top.slice(0, 3).map(p => p.dish ? p.place.name : p.name).join(', ')} and more.`);
     const image = l.cover ? await ogImage(l.cover, `list-${l.slug}`) : '';
     if (best) await writePage(l.url, makePage(best, { title, description, canonical: SITE + l.url, image, params: { l: l.slug },

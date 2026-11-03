@@ -327,7 +327,7 @@
   const fmt1 = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
   const monthYear = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   const catOfList = l => CATS[l.kind === 'cat' ? l.cat : (l.cat || (l.places[0] && l.places[0].cat) || 'eat')];
-  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? l.tag.toLowerCase() : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
+  const what = l => l.kind === 'cat' ? LIST_CATS[l.cat].title.toLowerCase() : l.kind === 'tag' ? (l.what || l.tag.toLowerCase()) : l.kind === 'dish' ? l.dishKind.toLowerCase() + ' dishes' : 'places';
   // A dish links to the place that serves it.
   const urlOf = p => placeUrl(p.dish ? p.place : p);
 
@@ -436,7 +436,7 @@
 
       ${sameDest.length ? `<p class="section-label">More lists for ${esc(l.dest)}</p>
         <div class="list-grid">${sameDest.slice(0, 6).map(listCard).join('')}</div>` : ''}
-      ${sameKind.length ? `<p class="section-label">${esc(l.kind === 'cat' ? LIST_CATS[l.cat].title : l.kind === 'dish' ? l.dishKind : l.tag)} in other places</p>
+      ${sameKind.length ? `<p class="section-label">${esc(l.kind === 'cat' ? LIST_CATS[l.cat].title : l.kind === 'dish' ? l.dishKind : l.what ? l.what[0].toUpperCase() + l.what.slice(1) : l.tag)} in other places</p>
         <div class="others">${sameKind.map(x => `<a class="chip" href="${x.url}">${esc(x.dest || 'Worldwide')}<span>${x.count}</span></a>`).join('')}</div>` : ''}
       <p class="section-label">Everything</p>
       <div class="others"><a class="chip" href="best.html">All best-of lists →</a>${dest ? `<a class="chip" href="${dest.url}">${esc(dest.name)}: every place →</a>` : ''}<a class="chip" href="map.html">🗺️ Map</a></div>`;
