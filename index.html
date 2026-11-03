@@ -899,6 +899,7 @@
   .sr-meta { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sr-star { color: var(--gold); }
   .sr-empty { padding: 14px 16px; font-size: 13px; color: var(--muted); }
+  .sr-group { padding: 10px 16px 4px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
   .sr-more { display: block; width: 100%; padding: 12px 16px; font: 500 13px 'DM Sans', sans-serif; color: var(--accent); background: var(--cream); border: none; text-align: left; cursor: pointer; }
   .sr-more:hover { background: var(--accent-pale); }
 
@@ -1919,8 +1920,11 @@
     active = -1;
     if (!q.trim()) { closeResults(); return; }
     const top = results.slice(0, MAX_DROPDOWN);
-    box.innerHTML = (top.length
-      ? top.map((p, i) => {
+    // Nothing for all the words together ("sushi aruba")? Show what each word finds on its own.
+    const words = top.length ? [] : [...new Set(fold(q).split(/\s+/).filter(w => w.length >= 2))];
+    const groups = words.length > 1 ? words.map(w => ({ w, items: searchPlaces(w).slice(0, 3) })).filter(g => g.items.length) : [];
+    let n = 0;
+    const item = (p, i) => {
           const cat = CATS[p.cat];
           const meta = [cat.label, p.where].filter(Boolean).join(' · ');
           return `<a class="sr-item" role="option" id="sr-${i}" href="${placeUrl(p)}">
@@ -1929,8 +1933,13 @@
               <span class="sr-name" style="display:block;">${esc(p.name)}</span>
               <span class="sr-meta" style="display:block;">${esc(meta)}${p.rating ? ` · <span class="sr-star">★</span> ${p.rating}` : ''}${p.member ? ' · Member spot' : ''}${p.closed ? ' · Closed' : ''}</span>
             </span></a>`;
-        }).join('')
-      : `<div class="sr-empty">No places found for “${esc(q)}”. Try a dish, a city or a category.</div>`)
+        };
+    box.innerHTML = (top.length
+      ? top.map(p => item(p, n++)).join('')
+      : groups.length
+        ? `<div class="sr-empty">Nothing found for “${esc(q)}” yet. This is what we have for each word:</div>`
+          + groups.map(g => `<div class="sr-group">${esc(g.w)}</div>` + g.items.map(p => item(p, n++)).join('')).join('')
+        : `<div class="sr-empty">No places found for “${esc(q)}”. Try a dish, a city or a category.</div>`)
       + (results.length > MAX_DROPDOWN ? `<button class="sr-more" type="button" data-all>Show all ${results.length} results →</button>` : '')
       + `<a class="sr-more" style="text-decoration:none;" href="search.html?q=${encodeURIComponent(q.trim())}">Search all places and people →</a>`;
     box.hidden = false;

@@ -41,6 +41,9 @@
   .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
   .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
   .msg a { color: var(--accent); }
+  .msg-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 1.25rem; }
+  .msg-links a { display: inline-block; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--border); background: var(--warm-white); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 14px; }
+  .msg-links a:hover { border-color: var(--accent); color: var(--accent); }
 
   /* One battle */
   .bt { background: var(--warm-white); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; }
@@ -377,7 +380,7 @@ function declineCookies(){
     const past = endedBattles(battles, now).slice(0, 12);
     const top = live.length ? live : soon;
     root.innerHTML = `
-      ${top.length ? top.map(battleHtml).join('') : `<div class="msg"><h2>No battle right now</h2><p>The next one is coming soon. Follow <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">@strongfoodie_</a> on Instagram so you don't miss it.</p></div>`}
+      ${top.length ? top.map(battleHtml).join('') : `<div class="msg"><h2>No battle right now</h2><p>The next one is coming soon. Follow <a href="https://www.instagram.com/strongfoodie_/" target="_blank" rel="noopener">@strongfoodie_</a> on Instagram so you don't miss it.</p><p class="msg-links"><a href="best.html">🏆 The best-of lists</a><a href="index.html#topGrid">Top picks this month</a></p></div>`}
       ${past.length ? `<p class="section-label">Past battles</p>
         <div class="past">${past.map(b => {
           const s = score(b), w = s.winner ? (s.winner === 'a' ? (byKey.get(b.a) || {}).name || b.aName : (byKey.get(b.b) || {}).name || b.bName) : '';
