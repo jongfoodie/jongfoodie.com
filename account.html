@@ -48,6 +48,8 @@
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .form { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1rem; }
   .field { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; font: 15px 'DM Sans', sans-serif; color: var(--ink); background: #fff; outline: none; }
+  .dob { display: grid; grid-template-columns: 0.8fr 1.5fr 1fr; gap: 8px; }
+  .dob .field { padding-right: 6px; cursor: pointer; }
   .field:focus { border-color: var(--accent); }
   .field-label { font-size: 12px; color: var(--muted); margin-bottom: -0.3rem; }
   .check-row { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
@@ -273,9 +275,10 @@
   }
   function checkPerson(prefix) {
     const name = document.getElementById(prefix + 'Name').value.trim();
-    const birth = document.getElementById(prefix + 'Birth').value;
+    const birth = birthValue(prefix);
     const age = ageFrom(birth);
     if (name.length < 2) return 'Fill in a name of at least 2 characters.';
+    if (birth === 'x') return 'That date does not exist. Check the day and the month.';
     if (!birth || age < 0 || age > 120) return 'Fill in your date of birth.';
     if (age < 18) return 'You need to be 18 or older to create an account.';
     if (!document.getElementById(prefix + 'Consent').checked) return 'Tick the box to confirm you are 18+ and agree to the privacy policy.';
@@ -296,9 +299,29 @@
     try { await setDoc(doc(db, 'profiles', uid, 'private', 'account'), { isAdult: true }, { merge: true }); }
     catch (err) { console.log('Adult check not saved:', err.code || err); }
   }
+  // Date of birth as three lists (day, month, year) instead of a date picker:
+  // a tester could not type in the picker, and scrolling back from this year
+  // to his birth year was slow. The year list starts at 18 years ago.
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function birthValue(prefix) {
+    const d = +document.getElementById(prefix + 'BirthDay').value, m = +document.getElementById(prefix + 'BirthMonth').value, y = +document.getElementById(prefix + 'BirthYear').value;
+    if (!d || !m || !y) return '';
+    const dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return 'x';  // like 31 February
+    return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  }
   function birthFields(prefix) {
-    return `<label class="field-label" for="${prefix}Birth">Date of birth</label>
-      <input class="field" id="${prefix}Birth" type="date" max="${new Date().toISOString().slice(0, 10)}" required>
+    const top = new Date().getFullYear() - 18;
+    const opt = (v, t) => `<option value="${v}">${t}</option>`;
+    const days = Array.from({ length: 31 }, (_, i) => opt(i + 1, i + 1)).join('');
+    const months = MONTHS.map((n, i) => opt(i + 1, n)).join('');
+    const years = Array.from({ length: 83 }, (_, i) => opt(top - i, top - i)).join('');
+    return `<label class="field-label" for="${prefix}BirthDay">Date of birth</label>
+      <div class="dob" role="group" aria-label="Date of birth">
+        <select class="field" id="${prefix}BirthDay" aria-label="Day" required><option value="">Day</option>${days}</select>
+        <select class="field" id="${prefix}BirthMonth" aria-label="Month" required><option value="">Month</option>${months}</select>
+        <select class="field" id="${prefix}BirthYear" aria-label="Year" required><option value="">Year</option>${years}</select>
+      </div>
       <label class="check-row"><input type="checkbox" id="${prefix}Consent"><span>I am 18 or older and agree to the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</span></label>`;
   }
   function authMessage(err) {
