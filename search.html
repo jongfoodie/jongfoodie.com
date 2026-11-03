@@ -152,14 +152,7 @@
 </style>
 <script>
   // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
-  function loadMailchimp() {
-    if (window.__mcLoaded) return;
-    window.__mcLoaded = true;
-    var m = document.createElement('script');
-    m.id = 'mcjs'; m.async = true;
-    m.src = 'https://chimpstatic.com/mcjs-connected/js/users/0252a7809924477245601c5ff/d41b74b09ae03c3e97227b3ec.js';
-    document.head.appendChild(m);
-  }
+  function loadMailchimp() {} // the old Mailchimp popup is off: the newsletter is on Substack
 </script>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#D4521A">
