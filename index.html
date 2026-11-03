@@ -32,6 +32,7 @@
 }
 </script>
 <title>Strong Foodie, Honest Restaurant & Hotel Reviews Worldwide</title>
+<link rel="preload" href="best/home.json" as="fetch" crossorigin="anonymous">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -1133,8 +1134,8 @@
 <!-- HERO -->
 <section class="hero">
   <p class="hero-eyebrow">Real eats. Honest reviews.</p>
-  <h1>Discover your next<br><em>favourite bite</em></h1>
-  <p class="hero-sub">Curated restaurant reviews, hidden gems, and community picks, all in one place.</p>
+  <h1>Every place visited.<br><em>No paid reviews.</em></h1>
+  <p class="hero-sub">Going somewhere new? The short list of places worth it, from someone who actually went.</p>
   <div class="hero-search-wrap">
     <div class="hero-search" role="search">
       <input type="search" id="heroSearchInput" placeholder="Search a place, dish or city…" autocomplete="off" aria-label="Search places" aria-controls="heroResults" aria-expanded="false" onkeydown="if(event.key==='Enter'){event.preventDefault();doHeroSearch();}" />
@@ -1486,7 +1487,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools } from "./js/sf-places.js?v=7";
+  import { CATS, esc, fold, starStr, placeUrl, loadPlaces, destinations, loadLists, byQuality, miniCard, photoTools, normalise, isPublished } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
   import { loadHome, loadPromos, adsFor, adCard } from "./js/sf-promos.js?v=1";
   import { openSurprise } from "./js/sf-surprise.js?v=2";
@@ -1557,18 +1558,25 @@
   const listed = p => !(p.member && p.authorId && UNLISTED.has(p.authorId));
   const hasPhoto = p => !!(p.photos && p.photos[0]);
 
-  async function loadAll() {
-    ({ catalog: CATALOG, members: MEMBERS, all: ALL } = await loadPlaces(db));
-    UNLISTED = (await loadFlags(db)).unlisted || new Set();
-    let home, promos, openings, battles;
-    [LISTS, home, promos, openings, battles] = await Promise.all([loadLists(db, ALL), loadHome(db), loadPromos(db), loadOpenings(db), loadBattles(db)]);
-    const byKey = new Map(ALL.map(p => [placeKey(p), p]));
+  // The homepage draws twice: first from best/home.json, a copy of the places that
+  // GitHub makes every few hours (tools/build-pages.mjs), so there is something to
+  // see at once. Then from the database, a moment later. A section only redraws
+  // when what it shows changed, so the page does not flicker.
+  const drawn = new Map();
+  const changed = (name, sig) => { if (drawn.get(name) === sig) return false; drawn.set(name, sig); return true; };
+  const sigOf = p => p ? [placeKey(p), p.name, p.rating, p.photos[0] || '', p.price, p.where].join('~') : '';
+  let liveDone = false, userView = false, searchOpened = false, surpriseOn = false;
+  let markData;
+  const dataReady = new Promise(r => { markData = r; });
+
+  function useData(catalog, members, unlisted) {
+    CATALOG = catalog; MEMBERS = members; ALL = catalog.concat(members); UNLISTED = unlisted;
+  }
+  function paint(home, byKey) {
+    ABOVE.clear(); aboveDestDone = false;
     renderStats();
-    renderAds(promos, byKey);
-    renderBattle(battles, byKey);
-    renderOpenings(openings, byKey);
     const sb = document.getElementById('surpriseBtn');
-    if (sb) { sb.disabled = false; sb.addEventListener('click', () => openSurprise({ places: ALL, hydratePhotos })); }
+    if (sb && !surpriseOn) { surpriseOn = true; sb.disabled = false; sb.addEventListener('click', () => openSurprise({ places: ALL, hydratePhotos })); }
     const featured = renderFeatured(home, byKey);
     renderTopPicks(featured, home, byKey);
     renderDestinations();
@@ -1579,10 +1587,49 @@
     const candidates = ALL.filter(p => p !== featured && listed(p) && !ABOVE.has(p));
     const withPhoto = candidates.filter(hasPhoto);
     LATEST = (withPhoto.length >= PAGE ? withPhoto : candidates).sort(newestFirst);
-    showList(LATEST, 'Latest on Strong Foodie', false);
+    // A tag or search the visitor chose stays on screen.
+    if (!userView && changed('latest', LATEST.map(sigOf).join('|'))) showList(LATEST, 'Latest on Strong Foodie', false);
     renderCategoryCounts();
     renderMemberPlaces();
-    openSearchFromUrl();
+    if (!searchOpened) { searchOpened = true; openSearchFromUrl(); }
+    markData();
+  }
+
+  // First view: the copy from best/home.json (no database needed).
+  async function paintSnapshot() {
+    try {
+      const res = await fetch('best/home.json');
+      if (!res.ok) return false;
+      const s = await res.json();
+      if (liveDone || !s || s.version !== 1 || !s.places) return false;
+      const now = new Date();
+      const catalog = [];
+      Object.keys(CATS).forEach(k => (Array.isArray(s.places[CATS[k].coll]) ? s.places[CATS[k].coll] : [])
+        .filter(r => r && r.name && isPublished(r, now))
+        .forEach(r => catalog.push(normalise(CATS[k].coll, r.id, r, false))));
+      if (!catalog.length) return false;
+      const members = (Array.isArray(s.members) ? s.members : []).filter(r => r && r.name).map(r => normalise('userPlaces', r.id, r, true));
+      useData(catalog, members, new Set(Array.isArray(s.unlisted) ? s.unlisted : []));
+      LISTS = Array.isArray(s.lists) ? s.lists : [];
+      paint(s.home || {}, new Map(ALL.map(p => [placeKey(p), p])));
+      return true;
+    } catch (e) { console.log('Homepage copy not used:', e); return false; }
+  }
+
+  // Then the live data. What does not need the places loads at the same time.
+  async function loadAll() {
+    const extras = Promise.all([loadHome(db), loadPromos(db), loadOpenings(db), loadBattles(db)]);
+    const { catalog, members, all } = await loadPlaces(db);
+    const flags = await loadFlags(db);
+    const [[home, promos, openings, battles], lists] = await Promise.all([extras, loadLists(db, all)]);
+    liveDone = true;
+    useData(catalog, members, flags.unlisted || new Set());
+    LISTS = lists;
+    const byKey = new Map(ALL.map(p => [placeKey(p), p]));
+    renderAds(promos, byKey);
+    renderBattle(battles, byKey);
+    renderOpenings(openings, byKey);
+    paint(home, byKey);
   }
 
   // Newest places members added in the app
@@ -1590,6 +1637,7 @@
     const grid = document.getElementById('memberGrid');
     if (!grid) return;
     const newest = MEMBERS.filter(listed).sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 4);
+    if (!changed('members', newest.map(sigOf).join('|'))) return;
     grid.innerHTML = newest.map(miniCard).join('');
     hydratePhotos(grid);
   }
@@ -1659,6 +1707,7 @@
     const p = chosen && !chosen.closed ? chosen : CATALOG.filter(x => !x.closed).sort((a, b) => (b.created || 0) - (a.created || 0))[0];
     if (!card) return p;
     if (!p) { card.style.display = 'none'; return null; }
+    if (!changed('featured', sigOf(p) + p.review.slice(0, 160) + p.tags.slice(0, 3).join())) return p;
     const cat = CATS[p.cat];
     const url = placeUrl(p);
     const meta = [p.where, p.type || cat.label, p.price].filter(Boolean);
@@ -1710,6 +1759,7 @@
     const picks = pickTopPicks({ catalog: CATALOG, featured, pinnedKeys: home.topPicks, byKey, year: now.getFullYear(), month: now.getMonth() + 1 });
     if (!picks.length) { grid.previousElementSibling.hidden = true; grid.previousElementSibling.previousElementSibling.hidden = true; grid.hidden = true; return; }
     picks.forEach(p => ABOVE.add(p));
+    if (!changed('top', picks.map(sigOf).join('|'))) return;
     grid.innerHTML = picks.map((p, i) => `
       <a class="top-card" href="${placeUrl(p)}" style="background:linear-gradient(135deg, #3D2F1A 0%, #1A1208 100%);">
         <span class="top-emoji">${esc(p.emoji)}</span>
@@ -1733,9 +1783,13 @@
     const dl = document.getElementById('tripDests');
     if (dl) dl.innerHTML = DESTS.map(d => `<option value="${esc(d.name)}"></option>`).join('');
     if (!DESTS.length) { chips.previousElementSibling.hidden = true; chips.previousElementSibling.previousElementSibling.hidden = true; chips.hidden = true; return; }
+    const first = DESTS[0], firstTop = first.places.slice().sort(byQuality).slice(0, 4);
+    const firstBest = LISTS.find(l => l.destSlug === first.slug);
+    const sig = DESTS.map(d => d.slug + d.count).join() + '|' + firstTop.map(sigOf).join('|') + '|' + (firstBest ? firstBest.url + firstBest.title : '');
+    if (!changed('dest', sig)) { firstTop.forEach(p => ABOVE.add(p)); aboveDestDone = true; return; }
     chips.innerHTML = DESTS.map((d, i) =>
       `<button class="dest-chip${i === 0 ? ' active' : ''}" data-slug="${esc(d.slug)}" aria-pressed="${i === 0}">${esc(d.name)}<span>${d.count}</span></button>`).join('');
-    chips.addEventListener('click', e => {
+    if (!chips.dataset.bound) chips.dataset.bound = '1', chips.addEventListener('click', e => {
       const chip = e.target.closest('.dest-chip');
       if (!chip) return;
       chips.querySelectorAll('.dest-chip').forEach(c => { c.classList.toggle('active', c === chip); c.setAttribute('aria-pressed', c === chip); });
@@ -1781,11 +1835,13 @@
     if (btn) { btn.hidden = shown >= list.length; btn.textContent = `Load more (${list.length - shown})`; }
   }
 
-  const ready = loadAll().catch(e => {
+  const snapshot = paintSnapshot();
+  const ready = loadAll().catch(async e => {
     console.log('Homepage data error:', e);
-    document.getElementById('cardsGrid').innerHTML = '<p class="grid-empty">Could not load the latest places. Please refresh the page.</p>';
+    if (!(await snapshot)) document.getElementById('cardsGrid').innerHTML = '<p class="grid-empty">Could not load the latest places. Please refresh the page.</p>';
+    markData();
   });
-  window.loadMoreReviews = () => ready.then(renderMore);
+  window.loadMoreReviews = () => dataReady.then(renderMore);
 
   // ── Tag bar: filters every place, not only the cards on screen
   const TAG_WORDS = {
@@ -1817,10 +1873,11 @@
   window.setTag = async function (el) {
     document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    await ready;
+    await dataReady;
     const label = el.textContent.trim();
     const tag = label.toLowerCase().replace(/^[^\w]+/, '').trim();
-    if (tag === 'all') { showList(LATEST, 'Latest on Strong Foodie', true); return; }
+    userView = tag !== 'all';
+    if (tag === 'all') { showList(LATEST, 'Latest on Strong Foodie', true); drawn.set('latest', LATEST.map(sigOf).join('|')); return; }
     const items = ALL.filter(p => matchesTag(p, tag)).sort(byQuality);
     showList(items, `${label} · ${items.length} ${items.length === 1 ? 'place' : 'places'}`, true);
   };
@@ -1887,11 +1944,12 @@
   }
   function showAllResults() {
     closeResults();
+    userView = true;
     showList(results, `Results for “${lastQuery}” · ${results.length}`, true);
   }
 
-  input.addEventListener('input', () => ready.then(() => renderResults(input.value)));
-  input.addEventListener('focus', () => { if (input.value.trim()) ready.then(() => renderResults(input.value)); });
+  input.addEventListener('input', () => dataReady.then(() => renderResults(input.value)));
+  input.addEventListener('focus', () => { if (input.value.trim()) dataReady.then(() => renderResults(input.value)); });
   input.addEventListener('keydown', e => {
     if (box.hidden) return;
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
@@ -1904,7 +1962,7 @@
   // Enter / the Search button: open the highlighted place, the only match,
   // or show every match in the grid below.
   window.doHeroSearch = async function () {
-    await ready;
+    await dataReady;
     const q = input.value.trim();
     if (!q) { input.focus(); return; }
     if (q !== lastQuery) renderResults(q);

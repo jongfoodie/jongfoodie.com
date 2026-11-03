@@ -32,6 +32,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Only this website's own pages and files. The database, fonts and analytics
+  // go straight to the network, without a detour through this worker.
+  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(
     fetch(event.request).then(response => {
       const clone = response.clone();

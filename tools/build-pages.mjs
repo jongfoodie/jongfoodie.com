@@ -390,6 +390,32 @@ async function main() {
     console.log(`Top picks ${label}: ${picks.map(p => p.name).join(', ')}`);
   } catch (e) { console.log('Top picks not written:', e.message); }
 
+  // The homepage's first view: index.html shows best/home.json at once, then
+  // refreshes from the database. Only the fields the homepage reads, only what
+  // is public anyway (published places, members who are not private, blocked or a test account).
+  try {
+    const home = (await getDoc('site/home').catch(() => null)) || {};
+    const KEEP = ['name', 'city', 'address', 'country', 'countryLabel', 'type', 'review', 'rating', 'price', 'tags', 'emoji',
+      'photoUrl', 'photos', 'lat', 'lng', 'closedStatus', 'author', 'addedByName', 'addedByUserId', 'createdAt', 'category'];
+    const slim = r => {
+      const o = { id: r.id };
+      KEEP.forEach(k => { const v = r[k]; if (v === undefined || v === null || v === '') return; o[k] = v instanceof Date ? v.toISOString() : v; });
+      return o;
+    };
+    const places = Object.fromEntries(CATALOG.map(c => [c, []]));
+    catalog.forEach(e => places[e.place.coll].push(slim(e.raw)));
+    const memberRaw = members.map(e => slim(e.raw));
+    const owners = new Set(memberRaw.map(r => r.addedByUserId).filter(Boolean));
+    const unlisted = flagDocs.filter(d => d.unlisted === true && owners.has(d.id)).map(d => d.id);
+    const homeLists = lists.filter(l => l.destSlug).map(l => ({ url: l.url, title: l.title, destSlug: l.destSlug }));
+    await writeFile(path.join(ROOT, 'best', 'home.json'), JSON.stringify({
+      version: 1, built: now.toISOString(), places, members: memberRaw, unlisted,
+      home: { featuredKey: typeof home.featuredKey === 'string' ? home.featuredKey : '', topPicks: Array.isArray(home.topPicks) ? home.topPicks.filter(k => typeof k === 'string') : [] },
+      lists: homeLists,
+    }) + '\n');
+    console.log(`Homepage snapshot: ${catalog.length + memberRaw.length} places`);
+  } catch (e) { console.log('Homepage snapshot not written:', e.message); }
+
   // Guides for a moment (written by Strong Foodie in guide-edit.html)
   // Only plain slugs: a guide's address becomes a folder on the website.
   const guides = guideDocs.filter(g => g.status === 'published' && typeof g.slug === 'string' && /^[a-z0-9-]{1,80}$/.test(g.slug) && g.title);
