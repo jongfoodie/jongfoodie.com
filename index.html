@@ -1564,7 +1564,9 @@
   // when what it shows changed, so the page does not flicker.
   const drawn = new Map();
   const changed = (name, sig) => { if (drawn.get(name) === sig) return false; drawn.set(name, sig); return true; };
-  const sigOf = p => p ? [placeKey(p), p.name, p.rating, p.photos[0] || '', p.price, p.where].join('~') : '';
+  // App photos are text in the database and a file in og/ in the copy: the same photo.
+  const photoSig = u => !u ? '' : /^(data:|fsimg:\/\/)|\/og\//.test(u) ? 'app-photo' : u;
+  const sigOf = p => p ? [placeKey(p), p.name, p.rating, photoSig(p.photos[0]), p.price, p.where].join('~') : '';
   let liveDone = false, userView = false, searchOpened = false, surpriseOn = false;
   let markData;
   const dataReady = new Promise(r => { markData = r; });

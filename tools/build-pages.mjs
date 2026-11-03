@@ -163,6 +163,15 @@ async function ogImage(url, fallbackName) {
 // ── Pages from the site's own templates ───────────────────────────────────
 const attr = s => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const text = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Google shows about 60 characters of a title. Per option: with the brand, else
+// without it; then the next, shorter option; at last the name is shortened.
+const BRAND = ' | Strong Foodie';
+function fitTitle(...options) {
+  const list = options.filter(Boolean);
+  for (const o of list) { if ((o + BRAND).length <= 60) return o + BRAND; if (o.length <= 60) return o; }
+  const last = list[list.length - 1];
+  return last.slice(0, 59).replace(/\s+\S*$/, '') + '…';
+}
 const oneLine = (s, n = 155) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t; };
 
 function setMeta(html, attrName, key, value) {
@@ -254,6 +263,41 @@ function destPre(d, counts) {
   const items = top.map(p => `<li><a href="${attr(placeUrl(p))}">${text(p.name)}</a> · ${text(CATS[p.cat].label)}${p.rating ? ` · ${score(p.rating)}/5` : ''}${p.town && p.town !== d.name ? ` · ${text(p.town)}` : ''}</li>`).join('');
   return `<section class="sf-pre"><p class="sf-crumb"><a href="/">Strong Foodie</a> › <a href="/stad.html">Destinations</a></p><h1>Best places in ${text(d.name)}</h1><p>${text(intro)}</p><ol>${items}</ol><p class="sf-wait">Loading the map and every place…</p></section>`;
 }
+// "Good to know" on a destination page: questions people ask a search engine or an
+// AI assistant, answered only with what is on Strong Foodie (own reviews, not closed).
+// Visible on the page and as FAQPage data. No places of its own: no questions.
+const priceOf = p => { const m = String(p.price || '').replace(',', '.').match(/\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; };
+const andList = xs => xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1];
+function destFaq(d) {
+  const own = d.places.filter(p => !p.member && !p.closed && p.rating).sort(byQuality);
+  if (!own.length) return null;
+  const qa = [];
+  const link = p => `<a href="${attr(placeUrl(p))}">${text(p.name)}</a>`;
+  const best = (cat, q, one, also) => {
+    const xs = own.filter(p => p.cat === cat).slice(0, 3);
+    if (!xs.length) return;
+    const first = `${xs[0].name} (${score(xs[0].rating)}/5)`;
+    const rest = xs.slice(1).map(p => `${p.name} (${score(p.rating)}/5)`);
+    const plain = `${first}, ${one}.` + (rest.length ? ` ${also}: ${andList(rest)}.` : '');
+    const html = `${link(xs[0])} (${score(xs[0].rating)}/5), ${one}.` + (rest.length ? ` ${also}: ${andList(xs.slice(1).map(p => `${link(p)} (${score(p.rating)}/5)`))}.` : '');
+    qa.push({ q, plain, html });
+  };
+  best('eat', `What is the best place to eat in ${d.name}?`, 'according to Strong Foodie', 'Also highly rated');
+  const cheap = own.filter(p => p.cat === 'eat' && priceOf(p) > 0 && priceOf(p) <= 15).slice(0, 4);
+  if (cheap.length) qa.push({
+    q: `Where can you eat for under €15 in ${d.name}?`,
+    plain: `Places Strong Foodie rated with a price of €15 or less: ${andList(cheap.map(p => `${p.name} (${p.price})`))}.`,
+    html: `Places Strong Foodie rated with a price of €15 or less: ${andList(cheap.map(p => `${link(p)} (${text(p.price)})`))}.`,
+  });
+  best('drink', `What is the best bar or café in ${d.name}?`, 'according to Strong Foodie', 'Also highly rated');
+  best('stay', `Which hotel does Strong Foodie recommend in ${d.name}?`, 'the highest rated stay', 'Also rated');
+  const how = 'Every Strong Foodie review is based on a visit in person. No paid reviews: places cannot pay for a review or a score. Scores go from 1 to 5.';
+  qa.push({ q: 'How does Strong Foodie rate places?', plain: how, html: `${how} <a href="/about.html">How I review</a>.` });
+  return {
+    html: `<section class="wrap sf-faq"><p class="section-label">Good to know</p>${qa.map(x => `<h3>${text(x.q)}</h3><p>${x.html}</p>`).join('')}</section>`,
+    ld: { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: qa.map(x => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.plain } })) },
+  };
+}
 function listPre(l, top, what) {
   const intro = l.intro || `The ${top.length} best ${what}${l.dest ? ' in ' + l.dest : ' worldwide'}, picked from every place Strong Foodie visited and rated.${top[0] ? ` Number one: ${nameOfItem(top[0])}${top[0].rating ? ` (${score(top[0].rating)}/5)` : ''}.` : ''}`;
   const items = top.map(p => {
@@ -323,7 +367,8 @@ async function main() {
     const where = p.town || p.destination || p.country;
     // "review" is what people search for: "in-n-out review".
     const reviewed = !p.member && p.rating;
-    const title = `${p.name}${where ? ', ' + where : ''}${reviewed ? `: review ${score(p.rating)}/5` : ''} | Strong Foodie`;
+    const rev = reviewed ? `: review ${score(p.rating)}/5` : '';
+    const title = fitTitle(where ? `${p.name}, ${where}${rev}` : '', `${p.name}${rev}`);
     const lead = p.rating ? `Rated ${score(p.rating)}/5 by Strong Foodie. ` : (p.member ? `Spot added by ${p.author}, a Strong Foodie member. ` : '');
     const body = p.review || p.tip || `${CATS[p.cat].label} spot${p.where ? ' in ' + p.where : ''}.`;
     const image = await ogImage(p.photos[0], `${p.coll}-${p.id}`);
@@ -339,12 +384,16 @@ async function main() {
     const url = destinationUrl(d.name);
     const counts = Object.keys(CATS).map(k => [k, d.places.filter(p => p.cat === k).length]).filter(([, n]) => n);
     const members = d.places.filter(p => p.member).length;
-    const title = `Best places in ${d.name}: where to eat, drink and stay | Strong Foodie`;
-    const description = `${d.count} ${d.count === 1 ? 'place' : 'places'} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''}: ${kinds(counts)}. Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`;
+    const title = fitTitle(`Best places in ${d.name} to eat, drink and stay`, `Best places in ${d.name}`);
+    const description = oneLine(`${d.count} ${d.count === 1 ? 'place' : 'places'} in ${d.name}${d.country && d.country !== d.name ? ', ' + d.country : ''}: ${kinds(counts)}. Honest ratings by Strong Foodie${members ? ' and tips from members' : ''}.`);
     const cover = d.places.filter(p => p.photos.length).sort(byQuality)[0];
     const image = cover ? await ogImage(cover.photos[0], `${cover.coll}-${cover.id}`) : '';
-    await writePage(url, makePage(stad, { title, description, canonical: SITE + url, image, params: { d: d.slug },
-      ld: listLd(`Best places in ${d.name}`, d.places.slice().sort(byQuality).slice(0, 20), false), pre: destPre(d, counts), slot: SLOTS.stad }));
+    const faq = destFaq(d);
+    let page = makePage(stad, { title, description, canonical: SITE + url, image, params: { d: d.slug },
+      ld: listLd(`Best places in ${d.name}`, d.places.slice().sort(byQuality).slice(0, 20), false), pre: destPre(d, counts), slot: SLOTS.stad });
+    if (faq) page = page.replace('<!--SF_FAQ-->', () => faq.html)
+      .replace('</head>', () => `<script type="application/ld+json" data-sf="faq">${JSON.stringify(faq.ld).replace(/</g, '\\u003c')}</script>\n</head>`);
+    await writePage(url, page);
     sitemap.push({ loc: SITE + url, lastmod: newest(d.places, changed), priority: '0.8' });
   }
 
@@ -402,9 +451,19 @@ async function main() {
       KEEP.forEach(k => { const v = r[k]; if (v === undefined || v === null || v === '') return; o[k] = v instanceof Date ? v.toISOString() : v; });
       return o;
     };
+    // One photo per place is enough for the homepage. App photos are stored as text
+    // in the database (large); here they become the file in og/ the place page already uses.
+    const withPhoto = async e => {
+      const o = slim(e.raw); delete o.photos; delete o.photoUrl;
+      const first = e.place.photos[0];
+      const url = first ? await ogImage(first, `${e.place.coll}-${e.place.id}`) : '';
+      if (url) o.photoUrl = url;
+      return o;
+    };
     const places = Object.fromEntries(CATALOG.map(c => [c, []]));
-    catalog.forEach(e => places[e.place.coll].push(slim(e.raw)));
-    const memberRaw = members.map(e => slim(e.raw));
+    for (const e of catalog) places[e.place.coll].push(await withPhoto(e));
+    const memberRaw = [];
+    for (const e of members) memberRaw.push(await withPhoto(e));
     const owners = new Set(memberRaw.map(r => r.addedByUserId).filter(Boolean));
     const unlisted = flagDocs.filter(d => d.unlisted === true && owners.has(d.id)).map(d => d.id);
     const homeLists = lists.filter(l => l.destSlug).map(l => ({ url: l.url, title: l.title, destSlug: l.destSlug }));
