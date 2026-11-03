@@ -87,7 +87,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Lunch in Amsterdam",
+   "title": "Best Lunch Spots in Amsterdam",
    "places": [
     "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/oQllGqyBpEJfgaz6bQvF",
@@ -161,28 +161,11 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Cafe in Los Angeles",
+   "title": "Best Cafés in Los Angeles",
    "places": [
     "reviews/n1JGGaAOlKwe0eC7YBvi",
     "reviews/0B3wtVT0GtUHyUydKbNz",
     "reviews/RMhpQyIG0vrVL7yr6L5y"
-   ]
-  },
-  {
-   "slug": "hidden-gem-amsterdam",
-   "url": "/best/hidden-gem-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Hidden Gem",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Hidden Gem in Amsterdam",
-   "places": [
-    "reviews/ho0RfyOC8STBgXVqoSnD",
-    "reviews/emeqDtJYsN0KTCAqruAu",
-    "reviews/jcjirePMaWUjZKBBh9Wh"
    ]
   },
   {
@@ -195,7 +178,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Italian in Amsterdam",
+   "title": "Best Italian Food in Amsterdam",
    "places": [
     "reviews/xC6fNWJQnFuJxQI1F2VO",
     "reviews/xjsOZJYUwfs9mvMp7DNE",
@@ -212,7 +195,7 @@
    "dest": "Aruba",
    "destSlug": "aruba",
    "country": "Aruba",
-   "title": "Best Palm Beach in Aruba",
+   "title": "Best of Palm Beach, Aruba",
    "places": [
     "reviews/8OZrZVTWjYxCidYDCtto",
     "reviews/7kF3cJcL7Y5Hg0shmhL1",
@@ -229,7 +212,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Spicy in Amsterdam",
+   "title": "Best Spicy Food in Amsterdam",
    "places": [
     "reviews/kGD3v5GXnB7Sm2gny66A",
     "reviews/oQllGqyBpEJfgaz6bQvF",
@@ -251,6 +234,23 @@
     "reviews/XgxTz6Noh7G7D4rP1lIa",
     "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/oQllGqyBpEJfgaz6bQvF"
+   ]
+  },
+  {
+   "slug": "hidden-gem-amsterdam",
+   "url": "/best/hidden-gem-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Hidden Gem",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Hidden Gems in Amsterdam",
+   "places": [
+    "reviews/ho0RfyOC8STBgXVqoSnD",
+    "reviews/emeqDtJYsN0KTCAqruAu",
+    "reviews/jcjirePMaWUjZKBBh9Wh"
    ]
   },
   {
@@ -302,6 +302,22 @@
    ]
   },
   {
+   "slug": "coffee-amsterdam",
+   "url": "/best/coffee-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Coffee",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Coffee in Amsterdam",
+   "places": [
+    "reviews/jcjirePMaWUjZKBBh9Wh",
+    "reviews/Hf9gwbI6jGUcwmGz4xxB"
+   ]
+  },
+  {
    "slug": "fine-dining-amsterdam",
    "url": "/best/fine-dining-amsterdam/",
    "kind": "tag",
@@ -334,22 +350,6 @@
    ]
   },
   {
-   "slug": "food-amsterdam",
-   "url": "/best/food-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Food",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Food in Amsterdam",
-   "places": [
-    "reviews/9i1MoYhNTLsp9GGIhYqo",
-    "reviews/aV7neu8odXP0dotTMdZz"
-   ]
-  },
-  {
    "slug": "hotels-las-vegas",
    "url": "/best/hotels-las-vegas/",
    "kind": "cat",
@@ -375,7 +375,7 @@
    "dest": "Aruba",
    "destSlug": "aruba",
    "country": "Aruba",
-   "title": "Best Italian in Aruba",
+   "title": "Best Italian Food in Aruba",
    "places": [
     "reviews/8OZrZVTWjYxCidYDCtto",
     "reviews/7kF3cJcL7Y5Hg0shmhL1"
@@ -391,7 +391,7 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Italian in Los Angeles",
+   "title": "Best Italian Food in Los Angeles",
    "places": [
     "reviews/n1JGGaAOlKwe0eC7YBvi",
     "reviews/wKLfK0YaqXAiZrkrSjxi"
@@ -462,6 +462,22 @@
    ]
   },
   {
+   "slug": "great-service-amsterdam",
+   "url": "/best/great-service-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Great Service",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Service in Amsterdam",
+   "places": [
+    "reviews/rWTGvpBN8T0DRt5D5JO9",
+    "reviews/d6J10gQWGlgbejjoBL7S"
+   ]
+  },
+  {
    "slug": "steak-istanbul",
    "url": "/best/steak-istanbul/",
    "kind": "tag",
@@ -494,33 +510,19 @@
    ]
   },
   {
-   "slug": "abbot-kinney-los-angeles",
-   "url": "/best/abbot-kinney-los-angeles/",
+   "slug": "good-value-amsterdam",
+   "url": "/best/good-value-amsterdam/",
    "kind": "tag",
    "cat": "",
-   "tag": "Abbot Kinney",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Abbot Kinney in Los Angeles",
-   "places": [
-    "reviews/RMhpQyIG0vrVL7yr6L5y"
-   ]
-  },
-  {
-   "slug": "add-avocado-amsterdam",
-   "url": "/best/add-avocado-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Add Avocado!",
+   "tag": "Great Value",
    "dishKind": "",
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Add Avocado! in Amsterdam",
+   "title": "Best Value in Amsterdam",
    "places": [
-    "reviews/LEiApv7dDg20qRqPyjMo"
+    "reviews/ps4laEwX5k8iF5B4PD3r",
+    "reviews/ixFdSSrfLTc46Jhe9pCM"
    ]
   },
   {
@@ -533,7 +535,7 @@
    "dest": "Las Vegas",
    "destSlug": "las-vegas",
    "country": "United States",
-   "title": "Best All-Suite in Las Vegas",
+   "title": "Best All-Suite Hotels in Las Vegas",
    "places": [
     "hotelreviews/lKF4AcgPenl7jFruaVvG"
    ]
@@ -548,7 +550,7 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Art Gallery in Los Angeles",
+   "title": "Best Art Galleries in Los Angeles",
    "places": [
     "hotelreviews/HXa7KaWjZt5sK8eCi97B"
    ]
@@ -563,7 +565,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Asian in Amsterdam",
+   "title": "Best Asian Food in Amsterdam",
    "places": [
     "reviews/6JxwfllusmCZLjt2WsqN"
    ]
@@ -593,24 +595,9 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Bakery in Amsterdam",
+   "title": "Best Bakeries in Amsterdam",
    "places": [
     "reviews/ho0RfyOC8STBgXVqoSnD"
-   ]
-  },
-  {
-   "slug": "bar-los-angeles",
-   "url": "/best/bar-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Bar",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Bar in Los Angeles",
-   "places": [
-    "reviews/pURRAuQiW9upf0zIsKnI"
    ]
   },
   {
@@ -644,6 +631,21 @@
    ]
   },
   {
+   "slug": "bar-los-angeles",
+   "url": "/best/bar-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Bar",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Bars in Los Angeles",
+   "places": [
+    "reviews/pURRAuQiW9upf0zIsKnI"
+   ]
+  },
+  {
    "slug": "beach-club-overveen",
    "url": "/best/beach-club-overveen/",
    "kind": "tag",
@@ -653,69 +655,9 @@
    "dest": "Overveen",
    "destSlug": "overveen",
    "country": "Netherlands",
-   "title": "Best Beach Club in Overveen",
+   "title": "Best Beach Clubs in Overveen",
    "places": [
     "reviews/lDtb6Sh4mbz6Mi8d1ggL"
-   ]
-  },
-  {
-   "slug": "best-coffee-amsterdam",
-   "url": "/best/best-coffee-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Best Coffee",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Best Coffee in Amsterdam",
-   "places": [
-    "reviews/jcjirePMaWUjZKBBh9Wh"
-   ]
-  },
-  {
-   "slug": "best-steak-sandwich-amsterdam",
-   "url": "/best/best-steak-sandwich-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Best Steak Sandwich",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Best Steak Sandwich in Amsterdam",
-   "places": [
-    "reviews/QhefRFX9Bk4fyPI1EaNd"
-   ]
-  },
-  {
-   "slug": "best-sushi-amsterdam",
-   "url": "/best/best-sushi-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Best Sushi",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Best Sushi in Amsterdam",
-   "places": [
-    "reviews/aVtr5RNi7aXhSMdYPHB8"
-   ]
-  },
-  {
-   "slug": "best-value-amsterdam",
-   "url": "/best/best-value-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Best Value",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Best Value in Amsterdam",
-   "places": [
-    "reviews/ps4laEwX5k8iF5B4PD3r"
    ]
   },
   {
@@ -728,7 +670,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Boutique in Amsterdam",
+   "title": "Best Boutique Hotels in Amsterdam",
    "places": [
     "hotelreviews/2q9ZpEGot16jnstKrOPm"
    ]
@@ -788,7 +730,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Cafe in Amsterdam",
+   "title": "Best Cafés in Amsterdam",
    "places": [
     "reviews/cZcUoOd24YdT9ZqBM2Bm"
    ]
@@ -803,7 +745,7 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best California Classic in Los Angeles",
+   "title": "Best California Classics in Los Angeles",
    "places": [
     "reviews/x9QF2yqsWHnNFYT8xaro"
    ]
@@ -818,7 +760,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Canal View in Amsterdam",
+   "title": "Best Canal Views in Amsterdam",
    "places": [
     "hotelreviews/2q9ZpEGot16jnstKrOPm"
    ]
@@ -833,7 +775,7 @@
    "dest": "Aruba",
    "destSlug": "aruba",
    "country": "Aruba",
-   "title": "Best Caribbean in Aruba",
+   "title": "Best Caribbean Food in Aruba",
    "places": [
     "reviews/V6smAGuczzTNS1VAM7Nw"
    ]
@@ -848,7 +790,7 @@
    "dest": "Las Vegas",
    "destSlug": "las-vegas",
    "country": "United States",
-   "title": "Best Casino in Las Vegas",
+   "title": "Best Casinos in Las Vegas",
    "places": [
     "hotelreviews/FsBmcsEv3gR9DXC8Hhl9"
    ]
@@ -863,24 +805,9 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Casual in Amsterdam",
+   "title": "Best Casual Spots in Amsterdam",
    "places": [
     "reviews/9i1MoYhNTLsp9GGIhYqo"
-   ]
-  },
-  {
-   "slug": "celebrity-spot-los-angeles",
-   "url": "/best/celebrity-spot-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Celebrity Spot",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Celebrity Spot in Los Angeles",
-   "places": [
-    "reviews/wKLfK0YaqXAiZrkrSjxi"
    ]
   },
   {
@@ -908,7 +835,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Clothing Store in Amsterdam",
+   "title": "Best Clothing Stores in Amsterdam",
    "places": [
     "shopspots/wF4lk1FNhwgOWRD4P9QS"
    ]
@@ -944,36 +871,6 @@
    ]
   },
   {
-   "slug": "coffee-amsterdam",
-   "url": "/best/coffee-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Coffee",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Coffee in Amsterdam",
-   "places": [
-    "reviews/Hf9gwbI6jGUcwmGz4xxB"
-   ]
-  },
-  {
-   "slug": "cosy-amsterdam",
-   "url": "/best/cosy-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Cosy",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Cosy in Amsterdam",
-   "places": [
-    "reviews/jcjirePMaWUjZKBBh9Wh"
-   ]
-  },
-  {
    "slug": "craft-beer-aruba",
    "url": "/best/craft-beer-aruba/",
    "kind": "tag",
@@ -986,36 +883,6 @@
    "title": "Best Craft Beer in Aruba",
    "places": [
     "reviews/24A2DkgfME8ApQNR7vIG"
-   ]
-  },
-  {
-   "slug": "creative-amsterdam",
-   "url": "/best/creative-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Creative",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Creative in Amsterdam",
-   "places": [
-    "reviews/ZNOGJC8ToeqsNZfIKxrS"
-   ]
-  },
-  {
-   "slug": "creative-istanbul",
-   "url": "/best/creative-istanbul/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Creative",
-   "dishKind": "",
-   "dest": "Istanbul",
-   "destSlug": "istanbul",
-   "country": "Turkey",
-   "title": "Best Creative in Istanbul",
-   "places": [
-    "reviews/nr46PlxBHPTQAMGJv7hG"
    ]
   },
   {
@@ -1043,7 +910,7 @@
    "dest": "Overveen",
    "destSlug": "overveen",
    "country": "Netherlands",
-   "title": "Best Day Trip in Overveen",
+   "title": "Best Day Trips from Overveen",
    "places": [
     "reviews/lDtb6Sh4mbz6Mi8d1ggL"
    ]
@@ -1058,24 +925,9 @@
    "dest": "Kerkrade",
    "destSlug": "kerkrade",
    "country": "Netherlands",
-   "title": "Best Dinner in Kerkrade",
+   "title": "Best Dinner Spots in Kerkrade",
    "places": [
     "reviews/MjLyTl2iM8OTafGRiO29"
-   ]
-  },
-  {
-   "slug": "disappointing-amsterdam",
-   "url": "/best/disappointing-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Disappointing",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Disappointing in Amsterdam",
-   "places": [
-    "reviews/i4UyswnakzExVqlhAG5v"
    ]
   },
   {
@@ -1094,21 +946,6 @@
    ]
   },
   {
-   "slug": "drink-las-vegas",
-   "url": "/best/drink-las-vegas/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Drinks",
-   "dishKind": "",
-   "dest": "Las Vegas",
-   "destSlug": "las-vegas",
-   "country": "United States",
-   "title": "Best Drinks in Las Vegas",
-   "places": [
-    "drinkspots/22xIvvHTFLTUH5VlCYWt"
-   ]
-  },
-  {
    "slug": "dutch-classic-amsterdam",
    "url": "/best/dutch-classic-amsterdam/",
    "kind": "tag",
@@ -1118,7 +955,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Dutch Classic in Amsterdam",
+   "title": "Best Dutch Classics in Amsterdam",
    "places": [
     "reviews/3USc2cZdzhwysxMKSZwJ"
    ]
@@ -1193,7 +1030,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best French in Amsterdam",
+   "title": "Best French Food in Amsterdam",
    "places": [
     "reviews/XgxTz6Noh7G7D4rP1lIa"
    ]
@@ -1208,7 +1045,7 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best French in Los Angeles",
+   "title": "Best French Food in Los Angeles",
    "places": [
     "reviews/W9QELDdyqBTWb0vOTBY8"
    ]
@@ -1244,21 +1081,6 @@
    ]
   },
   {
-   "slug": "fun-las-vegas",
-   "url": "/best/fun-las-vegas/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Fun",
-   "dishKind": "",
-   "dest": "Las Vegas",
-   "destSlug": "las-vegas",
-   "country": "United States",
-   "title": "Best Fun in Las Vegas",
-   "places": [
-    "drinkspots/22xIvvHTFLTUH5VlCYWt"
-   ]
-  },
-  {
    "slug": "fusion-amsterdam",
    "url": "/best/fusion-amsterdam/",
    "kind": "tag",
@@ -1268,7 +1090,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Fusion in Amsterdam",
+   "title": "Best Fusion Food in Amsterdam",
    "places": [
     "reviews/oQllGqyBpEJfgaz6bQvF"
    ]
@@ -1283,84 +1105,9 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Gluten-free Option in Amsterdam",
+   "title": "Best Gluten-Free Options in Amsterdam",
    "places": [
     "reviews/Hf9gwbI6jGUcwmGz4xxB"
-   ]
-  },
-  {
-   "slug": "good-value-kerkrade",
-   "url": "/best/good-value-kerkrade/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Good Value",
-   "dishKind": "",
-   "dest": "Kerkrade",
-   "destSlug": "kerkrade",
-   "country": "Netherlands",
-   "title": "Best Good Value in Kerkrade",
-   "places": [
-    "reviews/MjLyTl2iM8OTafGRiO29"
-   ]
-  },
-  {
-   "slug": "great-service-amsterdam",
-   "url": "/best/great-service-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Great Service",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Great Service in Amsterdam",
-   "places": [
-    "reviews/d6J10gQWGlgbejjoBL7S"
-   ]
-  },
-  {
-   "slug": "great-value-amsterdam",
-   "url": "/best/great-value-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Great Value",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Great Value in Amsterdam",
-   "places": [
-    "reviews/ixFdSSrfLTc46Jhe9pCM"
-   ]
-  },
-  {
-   "slug": "gym-amsterdam",
-   "url": "/best/gym-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Gym",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Gym in Amsterdam",
-   "places": [
-    "healthspots/NLyQLKEyTIimJAtYe8Qj"
-   ]
-  },
-  {
-   "slug": "gym-aruba",
-   "url": "/best/gym-aruba/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Gym",
-   "dishKind": "",
-   "dest": "Aruba",
-   "destSlug": "aruba",
-   "country": "Aruba",
-   "title": "Best Gym in Aruba",
-   "places": [
-    "healthspots/BvdrQsC4wyabEstW21Hg"
    ]
   },
   {
@@ -1389,6 +1136,36 @@
    "destSlug": "aruba",
    "country": "Aruba",
    "title": "Best Gyms & Wellness in Aruba",
+   "places": [
+    "healthspots/BvdrQsC4wyabEstW21Hg"
+   ]
+  },
+  {
+   "slug": "gym-amsterdam",
+   "url": "/best/gym-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Gym",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Gyms in Amsterdam",
+   "places": [
+    "healthspots/NLyQLKEyTIimJAtYe8Qj"
+   ]
+  },
+  {
+   "slug": "gym-aruba",
+   "url": "/best/gym-aruba/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Gym",
+   "dishKind": "",
+   "dest": "Aruba",
+   "destSlug": "aruba",
+   "country": "Aruba",
+   "title": "Best Gyms in Aruba",
    "places": [
     "healthspots/BvdrQsC4wyabEstW21Hg"
    ]
@@ -1463,7 +1240,7 @@
    "dest": "Dubai",
    "destSlug": "dubai",
    "country": "United Arab Emirates",
-   "title": "Best Infinity Pool in Dubai",
+   "title": "Best Infinity Pools in Dubai",
    "places": [
     "hotelreviews/Wv8JwvQT7KyesvEXJnVE"
    ]
@@ -1478,7 +1255,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Japanese in Amsterdam",
+   "title": "Best Japanese Food in Amsterdam",
    "places": [
     "reviews/uulxjyt2vOXEYS7cUAxv"
    ]
@@ -1493,7 +1270,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Korean in Amsterdam",
+   "title": "Best Korean Food in Amsterdam",
    "places": [
     "reviews/oQllGqyBpEJfgaz6bQvF"
    ]
@@ -1529,36 +1306,6 @@
    ]
   },
   {
-   "slug": "lively-kerkrade",
-   "url": "/best/lively-kerkrade/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Lively",
-   "dishKind": "",
-   "dest": "Kerkrade",
-   "destSlug": "kerkrade",
-   "country": "Netherlands",
-   "title": "Best Lively in Kerkrade",
-   "places": [
-    "reviews/MjLyTl2iM8OTafGRiO29"
-   ]
-  },
-  {
-   "slug": "local-favourite-aruba",
-   "url": "/best/local-favourite-aruba/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Local Favourite",
-   "dishKind": "",
-   "dest": "Aruba",
-   "destSlug": "aruba",
-   "country": "Aruba",
-   "title": "Best Local Favourite in Aruba",
-   "places": [
-    "reviews/24A2DkgfME8ApQNR7vIG"
-   ]
-  },
-  {
    "slug": "local-ingredient-amsterdam",
    "url": "/best/local-ingredient-amsterdam/",
    "kind": "tag",
@@ -1583,7 +1330,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Luxury in Amsterdam",
+   "title": "Best Luxury Stays in Amsterdam",
    "places": [
     "reviews/aVtr5RNi7aXhSMdYPHB8"
    ]
@@ -1598,24 +1345,9 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Mediterranean in Los Angeles",
+   "title": "Best Mediterranean Food in Los Angeles",
    "places": [
     "reviews/7KSOfJoq8aX551vEH4ls"
-   ]
-  },
-  {
-   "slug": "melrose-los-angeles",
-   "url": "/best/melrose-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Melrose",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Melrose in Los Angeles",
-   "places": [
-    "reviews/n1JGGaAOlKwe0eC7YBvi"
    ]
   },
   {
@@ -1628,7 +1360,7 @@
    "dest": "Aruba",
    "destSlug": "aruba",
    "country": "Aruba",
-   "title": "Best Mexican in Aruba",
+   "title": "Best Mexican Food in Aruba",
    "places": [
     "reviews/oVMxei3H5d6wjEwE3iEB"
    ]
@@ -1643,84 +1375,9 @@
    "dest": "San Diego",
    "destSlug": "san-diego",
    "country": "United States",
-   "title": "Best Mexican in San Diego",
+   "title": "Best Mexican Food in San Diego",
    "places": [
     "reviews/oifDeYKcXnKRjyELkTRr"
-   ]
-  },
-  {
-   "slug": "must-visit-amsterdam",
-   "url": "/best/must-visit-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Must Visit",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Must Visit in Amsterdam",
-   "places": [
-    "hotelreviews/2q9ZpEGot16jnstKrOPm"
-   ]
-  },
-  {
-   "slug": "must-visit-bangkok",
-   "url": "/best/must-visit-bangkok/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Must Visit",
-   "dishKind": "",
-   "dest": "Bangkok",
-   "destSlug": "bangkok",
-   "country": "Thailand",
-   "title": "Best Must Visit in Bangkok",
-   "places": [
-    "hotelreviews/VBrmEbGA5F1dKTsXR01K"
-   ]
-  },
-  {
-   "slug": "must-visit-dubai",
-   "url": "/best/must-visit-dubai/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Must Visit",
-   "dishKind": "",
-   "dest": "Dubai",
-   "destSlug": "dubai",
-   "country": "United Arab Emirates",
-   "title": "Best Must Visit in Dubai",
-   "places": [
-    "hotelreviews/Wv8JwvQT7KyesvEXJnVE"
-   ]
-  },
-  {
-   "slug": "must-visit-las-vegas",
-   "url": "/best/must-visit-las-vegas/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Must Visit",
-   "dishKind": "",
-   "dest": "Las Vegas",
-   "destSlug": "las-vegas",
-   "country": "United States",
-   "title": "Best Must Visit in Las Vegas",
-   "places": [
-    "hotelreviews/lKF4AcgPenl7jFruaVvG"
-   ]
-  },
-  {
-   "slug": "must-visit-los-angeles",
-   "url": "/best/must-visit-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Must Visit",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Must Visit in Los Angeles",
-   "places": [
-    "hotelreviews/HXa7KaWjZt5sK8eCi97B"
    ]
   },
   {
@@ -1748,9 +1405,54 @@
    "dest": "San Diego",
    "destSlug": "san-diego",
    "country": "United States",
-   "title": "Best Ocean View in San Diego",
+   "title": "Best Ocean Views in San Diego",
    "places": [
     "reviews/tOdWHBI8vo2yySrV3vfL"
+   ]
+  },
+  {
+   "slug": "abbot-kinney-los-angeles",
+   "url": "/best/abbot-kinney-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Abbot Kinney",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best of Abbot Kinney, Los Angeles",
+   "places": [
+    "reviews/RMhpQyIG0vrVL7yr6L5y"
+   ]
+  },
+  {
+   "slug": "melrose-los-angeles",
+   "url": "/best/melrose-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Melrose",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best of Melrose, Los Angeles",
+   "places": [
+    "reviews/n1JGGaAOlKwe0eC7YBvi"
+   ]
+  },
+  {
+   "slug": "sunset-strip-los-angeles",
+   "url": "/best/sunset-strip-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Sunset Strip",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best of the Sunset Strip, Los Angeles",
+   "places": [
+    "reviews/SlSwyMClb1IlhljbN4yg"
    ]
   },
   {
@@ -1763,7 +1465,7 @@
    "dest": "Las Vegas",
    "destSlug": "las-vegas",
    "country": "United States",
-   "title": "Best Off-Strip in Las Vegas",
+   "title": "Best Off-Strip Spots in Las Vegas",
    "places": [
     "hotelreviews/FsBmcsEv3gR9DXC8Hhl9"
    ]
@@ -1913,24 +1615,9 @@
    "dest": "Dubai",
    "destSlug": "dubai",
    "country": "United Arab Emirates",
-   "title": "Best Rooftop Bar in Dubai",
+   "title": "Best Rooftop Bars in Dubai",
    "places": [
     "hotelreviews/Wv8JwvQT7KyesvEXJnVE"
-   ]
-  },
-  {
-   "slug": "rooftop-los-angeles",
-   "url": "/best/rooftop-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Rooftop",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Rooftop in Los Angeles",
-   "places": [
-    "reviews/SlSwyMClb1IlhljbN4yg"
    ]
   },
   {
@@ -1943,9 +1630,24 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Rooftop Pool in Los Angeles",
+   "title": "Best Rooftop Pools in Los Angeles",
    "places": [
     "hotelreviews/HXa7KaWjZt5sK8eCi97B"
+   ]
+  },
+  {
+   "slug": "rooftop-los-angeles",
+   "url": "/best/rooftop-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Rooftop",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Rooftops in Los Angeles",
+   "places": [
+    "reviews/SlSwyMClb1IlhljbN4yg"
    ]
   },
   {
@@ -1979,18 +1681,18 @@
    ]
   },
   {
-   "slug": "sexclub-las-vegas",
-   "url": "/best/sexclub-las-vegas/",
+   "slug": "great-service-bangkok",
+   "url": "/best/great-service-bangkok/",
    "kind": "tag",
    "cat": "",
-   "tag": "Sexclub",
+   "tag": "World Class Service",
    "dishKind": "",
-   "dest": "Las Vegas",
-   "destSlug": "las-vegas",
-   "country": "United States",
-   "title": "Best Sexclub in Las Vegas",
+   "dest": "Bangkok",
+   "destSlug": "bangkok",
+   "country": "Thailand",
+   "title": "Best Service in Bangkok",
    "places": [
-    "drinkspots/22xIvvHTFLTUH5VlCYWt"
+    "hotelreviews/VBrmEbGA5F1dKTsXR01K"
    ]
   },
   {
@@ -2039,21 +1741,6 @@
    ]
   },
   {
-   "slug": "soho-house-amsterdam",
-   "url": "/best/soho-house-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Soho House",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Soho House in Amsterdam",
-   "places": [
-    "reviews/xjsOZJYUwfs9mvMp7DNE"
-   ]
-  },
-  {
    "slug": "speakeasy-aruba",
    "url": "/best/speakeasy-aruba/",
    "kind": "tag",
@@ -2063,9 +1750,24 @@
    "dest": "Aruba",
    "destSlug": "aruba",
    "country": "Aruba",
-   "title": "Best Speakeasy in Aruba",
+   "title": "Best Speakeasies in Aruba",
    "places": [
     "drinkspots/taCjjlMhPx423uh1hCGE"
+   ]
+  },
+  {
+   "slug": "steak-sandwich-amsterdam",
+   "url": "/best/steak-sandwich-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Steak Sandwich",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Steak Sandwich in Amsterdam",
+   "places": [
+    "reviews/QhefRFX9Bk4fyPI1EaNd"
    ]
   },
   {
@@ -2093,24 +1795,24 @@
    "dest": "Las Vegas",
    "destSlug": "las-vegas",
    "country": "United States",
-   "title": "Best Strip View in Las Vegas",
+   "title": "Best Strip Views in Las Vegas",
    "places": [
     "hotelreviews/lKF4AcgPenl7jFruaVvG"
    ]
   },
   {
-   "slug": "sunset-strip-los-angeles",
-   "url": "/best/sunset-strip-los-angeles/",
+   "slug": "sushi-amsterdam",
+   "url": "/best/sushi-amsterdam/",
    "kind": "tag",
    "cat": "",
-   "tag": "Sunset Strip",
+   "tag": "Sushi",
    "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Sunset Strip in Los Angeles",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Sushi in Amsterdam",
    "places": [
-    "reviews/SlSwyMClb1IlhljbN4yg"
+    "reviews/aVtr5RNi7aXhSMdYPHB8"
    ]
   },
   {
@@ -2159,48 +1861,18 @@
    ]
   },
   {
-   "slug": "top-pick-amsterdam",
-   "url": "/best/top-pick-amsterdam/",
+   "slug": "good-value-kerkrade",
+   "url": "/best/good-value-kerkrade/",
    "kind": "tag",
    "cat": "",
-   "tag": "Top Pick",
+   "tag": "Good Value",
    "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
    "country": "Netherlands",
-   "title": "Best Top Pick in Amsterdam",
+   "title": "Best Value in Kerkrade",
    "places": [
-    "reviews/d6J10gQWGlgbejjoBL7S"
-   ]
-  },
-  {
-   "slug": "top-service-amsterdam",
-   "url": "/best/top-service-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Top Service",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Top Service in Amsterdam",
-   "places": [
-    "reviews/rWTGvpBN8T0DRt5D5JO9"
-   ]
-  },
-  {
-   "slug": "unique-amsterdam",
-   "url": "/best/unique-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Unique",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Unique in Amsterdam",
-   "places": [
-    "reviews/lmMZhBP91ExJ8hxNVwQV"
+    "reviews/MjLyTl2iM8OTafGRiO29"
    ]
   },
   {
@@ -2228,7 +1900,7 @@
    "dest": "Amsterdam",
    "destSlug": "amsterdam",
    "country": "Netherlands",
-   "title": "Best Vietnamese in Amsterdam",
+   "title": "Best Vietnamese Food in Amsterdam",
    "places": [
     "reviews/kGD3v5GXnB7Sm2gny66A"
    ]
@@ -2243,7 +1915,7 @@
    "dest": "Los Angeles",
    "destSlug": "los-angeles",
    "country": "United States",
-   "title": "Best Wine Bar in Los Angeles",
+   "title": "Best Wine Bars in Los Angeles",
    "places": [
     "reviews/7KSOfJoq8aX551vEH4ls"
    ]
@@ -2264,18 +1936,63 @@
    ]
   },
   {
-   "slug": "world-class-service-bangkok",
-   "url": "/best/world-class-service-bangkok/",
+   "slug": "celebrity-spot-los-angeles",
+   "url": "/best/celebrity-spot-los-angeles/",
    "kind": "tag",
    "cat": "",
-   "tag": "World Class Service",
+   "tag": "Celebrity Spot",
    "dishKind": "",
-   "dest": "Bangkok",
-   "destSlug": "bangkok",
-   "country": "Thailand",
-   "title": "Best World Class Service in Bangkok",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Celebrity Spots in Los Angeles",
    "places": [
-    "hotelreviews/VBrmEbGA5F1dKTsXR01K"
+    "reviews/wKLfK0YaqXAiZrkrSjxi"
+   ]
+  },
+  {
+   "slug": "cozy-amsterdam",
+   "url": "/best/cozy-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Cosy",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Coziest Places in Amsterdam",
+   "places": [
+    "reviews/jcjirePMaWUjZKBBh9Wh"
+   ]
+  },
+  {
+   "slug": "lively-kerkrade",
+   "url": "/best/lively-kerkrade/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Lively",
+   "dishKind": "",
+   "dest": "Kerkrade",
+   "destSlug": "kerkrade",
+   "country": "Netherlands",
+   "title": "Liveliest Places in Kerkrade",
+   "places": [
+    "reviews/MjLyTl2iM8OTafGRiO29"
+   ]
+  },
+  {
+   "slug": "local-favourite-aruba",
+   "url": "/best/local-favourite-aruba/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Local Favourite",
+   "dishKind": "",
+   "dest": "Aruba",
+   "destSlug": "aruba",
+   "country": "Aruba",
+   "title": "Local Favourites in Aruba",
+   "places": [
+    "reviews/24A2DkgfME8ApQNR7vIG"
    ]
   },
   {
