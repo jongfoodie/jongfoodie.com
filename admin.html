@@ -25,6 +25,32 @@
   .admin-panel { max-width: 700px; margin: 3rem auto; padding: 0 1rem; }
   .admin-panel h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 0.5rem; }
   .admin-panel p { color: var(--muted); font-size: 14px; margin-bottom: 2rem; }
+  /* Te doen */
+  .todo-wrap { margin-bottom: 2.5rem; }
+  .todo-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .admin-panel .todo-title { font-size: 28px; margin-bottom: 0.15rem; }
+  .admin-panel .todo-sub { margin: 0; font-size: 13px; }
+  .todo-refresh { background: none; border: 1px solid var(--border); border-radius: 18px; padding: 6px 14px; font: 500 12.5px 'DM Sans', sans-serif; color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .todo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .todo-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .todo-card.hot { background: #FBEDE4; border-color: rgba(212,82,26,0.35); }
+  .todo-card.ok { background: #E8F2EC; border-color: rgba(45,90,61,0.2); }
+  .todo-n { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .todo-card.ok .todo-n, .todo-card.ok .todo-go { color: #2D5A3D; }
+  .todo-t { font-size: 13px; color: var(--ink); line-height: 1.4; }
+  .todo-go { margin-top: auto; padding-top: 6px; font-size: 13px; font-weight: 500; color: var(--accent); text-decoration: none; }
+  .todo-go.muted { color: var(--muted); }
+  .todo-list { margin-top: auto; padding-top: 6px; }
+  .todo-list summary { font-size: 13px; font-weight: 500; color: var(--accent); cursor: pointer; list-style: none; }
+  .todo-list summary::after { content: ' ▾'; }
+  .todo-list[open] summary::after { content: ' ▴'; }
+  .todo-list ul { list-style: none; margin: 8px 0 0; padding: 0; max-height: 240px; overflow-y: auto; border-top: 1px solid var(--border); }
+  .todo-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+  .todo-list li span { min-width: 0; line-height: 1.35; }
+  .todo-list li small { color: var(--muted); }
+  .todo-list li button { flex-shrink: 0; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 3px 10px; font: 500 12px 'DM Sans', sans-serif; color: var(--accent); cursor: pointer; }
+  .social-fold { margin-top: 2rem; }
+  .social-fold > summary { cursor: pointer; font-size: 14px; font-weight: 500; color: #5C2A8A; padding: 0.75rem 1rem; background: #F3E8FB; border-radius: 12px; list-style: none; }
   .form-card { background: #fff; border-radius: 16px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
   .form-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
@@ -168,58 +194,15 @@
 <div id="adminPanel" class="admin-panel" style="display:none;">
 
 
-  <!-- NEWSLETTER BANNER, shown after publishing a review -->
-  <div id="newsletterBanner" class="newsletter-banner">
-    <h3>📧 Send Newsletter?</h3>
-    <p>A new review was just published. Let your subscribers know!</p>
-    <div class="review-preview" id="newsletterPreview">0</div>
-    <button class="btn-newsletter" onclick="openMailchimp()">Open Mailchimp → Send Campaign</button>
-    <button class="btn-dismiss" onclick="dismissNewsletter()">Dismiss</button>
-  </div>
-
-  <!-- LIVE COUNTER DASHBOARD -->
-  <div id="liveDashboard" style="margin-bottom:2rem;">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍽️ Food Reviews</p>
-        <p id="cntFood" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🏨 Hotel Reviews</p>
-        <p id="cntHotel" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A3A5C;line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">👥 Members</p>
-        <p id="cntUsers" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--green);line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">📌 Community Picks</p>
-        <p id="cntPicks" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8B5A0A;line-height:1;">0</p>
-      </div>
+  <!-- TE DOEN: wat er openstaat, met een link naar de plek waar je het oplost.
+       Vervangt de 8 tellers (die zeiden niet wat je moest doen). -->
+  <section id="todo" class="todo-wrap">
+    <div class="todo-head">
+      <div><h2 class="todo-title">Te doen</h2><p class="todo-sub" id="todoSub">Laden…</p></div>
+      <button class="todo-refresh" type="button" onclick="loadLiveStats()">↻ Vernieuwen</button>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🍸 Drink Spots</p>
-        <p id="cntDrink" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#6B2A5C;line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🛍️ Shop Spots</p>
-        <p id="cntShop" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#A32323;line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">🎭 Culture Spots</p>
-        <p id="cntCulture" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#8A6A0A;line-height:1;">0</p>
-      </div>
-      <div style="background:#fff;border-radius:16px;padding:1.25rem;border:1px solid var(--border);text-align:center;">
-        <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:0.4rem;">💪 Health Spots</p>
-        <p id="cntHealth" style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:#1A5C2E;line-height:1;">0</p>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:0.75rem 1.25rem;border:1px solid var(--border);">
-      <span id="lastRefresh" style="font-size:12px;color:var(--muted);">Last updated: loading...</span>
-      <button onclick="loadLiveStats()" style="background:var(--accent);color:#fff;border:none;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">↻ Refresh</button>
-    </div>
-  </div>
+    <div class="todo-grid" id="todoGrid"><p class="todo-sub">Laden…</p></div>
+  </section>
 
   <h2 id="eatSection">Add New Review</h2>
   <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
@@ -233,24 +216,8 @@
       </div>
       <div class="form-group">
         <label class="form-label">Food Type *</label>
-        <select class="form-input" id="rType">
-          <option value="">Select type...</option>
-          <option>Sushi / Japanese</option>
-          <option>Burgers</option>
-          <option>Cafe</option>
-          <option>Pastries</option>
-          <option>Sandwiches</option>
-          <option>Asian</option>
-          <option>Seafood</option>
-          <option>Steak</option>
-          <option>Street Food</option>
-          <option>Fine Dining</option>
-          <option>Fries</option>
-          <option>Vietnamese</option>
-          <option>Caribbean</option>
-          <option>Restaurant</option>
-          <option>Drinks</option>
-        </select>
+        <input class="form-input" type="text" id="rType" list="rTypeList" placeholder="Kies of typ, bv. Burgers" autocomplete="off">
+        <datalist id="rTypeList"><option value="Sushi / Japanese"><option value="Burgers"><option value="Cafe"><option value="Pastries"><option value="Sandwiches"><option value="Asian"><option value="Seafood"><option value="Steak"><option value="Street Food"><option value="Fine Dining"><option value="Fries"><option value="Vietnamese"><option value="Caribbean"><option value="Restaurant"><option value="Drinks"></datalist>
       </div>
     </div>
     <div class="form-row">
@@ -387,6 +354,10 @@
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="hDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Type</label>
+        <input class="form-input" type="text" id="hType" placeholder="bv. Boutique hotel" style="margin-top:6px;">
+      </div>
     </div>
     <div style="margin-top:1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Star Rating *</label>
@@ -491,6 +462,10 @@
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="dDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Type</label>
+        <input class="form-input" type="text" id="dType" placeholder="bv. Cocktail bar" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Latitude (from Google Maps)</label>
@@ -600,6 +575,10 @@
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Visit Date</label>
         <input class="form-input" type="text" id="sDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+      </div>
+      <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Type</label>
+        <input class="form-input" type="text" id="sType" placeholder="bv. Concept store" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
@@ -721,6 +700,10 @@
         <input class="form-input" type="text" id="cDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Type</label>
+        <input class="form-input" type="text" id="cType" placeholder="bv. Museum" style="margin-top:6px;">
+      </div>
+      <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Latitude (from Google Maps)</label>
         <input class="form-input" type="text" id="cLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
       </div>
@@ -834,6 +817,10 @@
         <input class="form-input" type="text" id="hlDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Type</label>
+        <input class="form-input" type="text" id="hlType" placeholder="bv. Gym" style="margin-top:6px;">
+      </div>
+      <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Latitude (from Google Maps)</label>
         <input class="form-input" type="text" id="hlLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
       </div>
@@ -926,8 +913,10 @@
     </div>
   </div>
 
-  <!-- SOCIAL MEDIA SETTINGS -->
-  <div style="background:#F3E8FB;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
+  <!-- SOCIAL MEDIA SETTINGS: ingeklapt, alleen nodig bij het koppelen van een account -->
+  <details id="socialSettings" class="social-fold">
+  <summary>⚙️ Social accounts koppelen (Instagram, TikTok, Threads)</summary>
+  <div style="background:#F3E8FB;border-radius:16px;padding:2rem;margin-top:1rem;margin-bottom:2rem;">
     <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:0.5rem;color:#5C2A8A;">📲 Social Settings</h2>
     <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Connect your accounts with one click. Only works once your Meta/TikTok App has been approved (Part A of the guide).</p>
 
@@ -1004,18 +993,11 @@
       </div>
     </details>
   </div>
+  </details>
 
   <div style="margin-top:2rem;" id="publishedSection">
     <div class="published-list">
       <h3>📋 Published Reviews (from admin)</h3>
-      <div style="margin-bottom:1rem;">
-        <div style="margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <button onclick="setupGitHubToken()" style="background:#1A1208;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">⚙️ Set GitHub Token</button>
-          <span id="tokenStatus" style="font-size:12px;color:var(--muted);"></span>
-        </div>
-        <button onclick="generateAllPages()" id="generateAllBtn" style="background:#2D5A3D;color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">🌐 Generate pages for all reviews</button>
-        <div id="generateProgress" style="display:none;margin-top:0.75rem;font-size:13px;color:var(--muted);"></div>
-      </div>
       <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
     </div>
   </div>
@@ -1171,7 +1153,7 @@
   const EDIT_CONFIG = {
     reviews: {
       prefix: 'r', sectionId: 'eatSection',
-      fields: { rName: 'name', rPrice: 'price', rDate: 'date', rKitchen: 'kitchenCloses', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
+      fields: { rName: 'name', rType: 'type', rPrice: 'price', rDate: 'date', rKitchen: 'kitchenCloses', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
       emojiField: 'rEmoji', scheduleField: 'rSchedule',
       publishBtnId: 'publishBtn', publishLabel: '🚀 Publish Review',
       setRating: 'setAdminRating', hasPhotoWidget: true,
@@ -1179,21 +1161,21 @@
     },
     hotelreviews: {
       prefix: 'h', sectionId: 'hotelSection',
-      fields: { hName: 'name', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join', hPartnerName: 'partnerName_raw' },
+      fields: { hName: 'name', hType: 'type', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join', hPartnerName: 'partnerName_raw' },
       emojiField: 'hEmoji', scheduleField: 'hSchedule',
       publishBtnId: 'hPublishBtn', publishLabel: '🏨 Publish Hotel Review',
       setRating: 'setHotelRating', hasPhotoWidget: true
     },
     drinkspots: {
       prefix: 'd', sectionId: 'drinkSection',
-      fields: { dName: 'name', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng', dPartnerName: 'partnerName_raw' },
+      fields: { dName: 'name', dType: 'type', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng', dPartnerName: 'partnerName_raw' },
       emojiField: 'dEmoji', scheduleField: 'dSchedule',
       publishBtnId: 'dPublishBtn', publishLabel: '🍸 Publish Drink Spot',
       setRating: 'setDrinkRating', hasPhotoWidget: true
     },
     shopspots: {
       prefix: 's', sectionId: 'shopSection',
-      fields: { sName: 'name', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join', sPartnerName: 'partnerName_raw' },
+      fields: { sName: 'name', sType: 'type', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join', sPartnerName: 'partnerName_raw' },
       emojiField: 'sEmoji', scheduleField: 'sSchedule',
       publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publish Shop Spot',
       setRating: 'setShopRating', hasPhotoWidget: true,
@@ -1201,19 +1183,26 @@
     },
     culturespots: {
       prefix: 'c', sectionId: 'cultureSection',
-      fields: { cName: 'name', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng', cPartnerName: 'partnerName_raw' },
+      fields: { cName: 'name', cType: 'type', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng', cPartnerName: 'partnerName_raw' },
       emojiField: 'cEmoji', scheduleField: 'cSchedule',
       publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publish Culture Spot',
       setRating: 'setCultureRating', hasPhotoWidget: true
     },
     healthspots: {
       prefix: 'hl', sectionId: 'healthSection',
-      fields: { hlName: 'name', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng', hlPartnerName: 'partnerName_raw' },
+      fields: { hlName: 'name', hlType: 'type', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng', hlPartnerName: 'partnerName_raw' },
       emojiField: 'hlEmoji', scheduleField: 'hlSchedule',
       publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publish Health Spot',
       setRating: 'setHealthRating', hasPhotoWidget: true
     }
   };
+
+  // The type of a place, only when it is filled in, so an empty field never wipes a type the app set.
+  function typeOf(px) {
+    const el = document.getElementById(px + 'Type');
+    const v = el ? el.value.trim() : '';
+    return v ? { type: v } : {};
+  }
 
   function isoFromMaybeTimestamp(val) {
     if (!val) return '';
@@ -1677,33 +1666,9 @@
     btn.textContent = '🚀 Publish Review';
   };
 
-  // ── GITHUB TOKEN SETUP (was missing, button called this but it didn't exist) ──
-  window.setupGitHubToken = function() {
-    const existing = localStorage.getItem('jf_github_token');
-    const token = window.prompt(
-      existing
-        ? 'A GitHub token is already set. Enter a new token to change it, or leave blank to cancel:'
-        : 'Enter your GitHub Personal Access Token (with "repo" permissions):',
-      ''
-    );
-    if (token) {
-      localStorage.setItem('jf_github_token', token.trim());
-      document.getElementById('tokenStatus').textContent = '✅ Token set';
-      showToast('GitHub token saved!');
-    } else if (token === '') {
-      // user submitted empty on purpose, do nothing
-    }
-    updateTokenStatus();
-  };
-
-  function updateTokenStatus() {
-    const el = document.getElementById('tokenStatus');
-    const t = localStorage.getItem('jf_github_token');
-    el.textContent = t ? '✅ Token set' : '⚠️ No token set yet';
-  }
-  document.addEventListener('DOMContentLoaded', updateTokenStatus);
-  updateTokenStatus();
-  // ─────────────────────────────────────────────────────────────────────────
+  // The old GitHub page maker is gone: GitHub's own Action makes the pages every
+  // 3 hours. A GitHub key kept in the browser was a risk, so clear any old one.
+  try { localStorage.removeItem('jf_github_token'); } catch (e) {}
 
   // ── SOCIAL MEDIA AUTO-POST ───────────────────────────────────────────────
   // ── ONE-CLICK CONNECT (Instagram / TikTok) ───────────────────────────────
@@ -1952,153 +1917,6 @@
   setInterval(refreshAllCategoryLists, 60000);
   // ─────────────────────────────────────────────────────────────────────────
 
-  // GitHub Page Generator
-  async function createGitHubPage(r) {
-    const GITHUB_TOKEN = localStorage.getItem('jf_github_token');
-    if (!GITHUB_TOKEN) throw new Error('No GitHub token set. Click "⚙️ Set GitHub Token".');
-    const REPO = 'jongfoodie/jongfoodie.com';
-    const BRANCH = 'main';
-
-    const slug = r.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const citySlug = r.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const filename = 'reviews/' + slug + '-' + citySlug + '.html';
-    const starsHtml = sfStars(r.rating);
-    const tagsHtml = (r.tags || []).map(function(t) { return '<span class=\"tag\">' + t + '</span>'; }).join('');
-    const photoHtml = r.photoUrl ? '<img src=\"' + r.photoUrl + '\" style=\"width:100%;max-height:500px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;\">' : '';
-    const reviewShort = (r.review || '').substring(0, 155).replace(/"/g, '');
-    const nameSafe = (r.name || '').replace(/"/g, '');
-
-    const lines = [
-      '<!DOCTYPE html>',
-      '<html lang="en"><head>',
-      '<meta charset="UTF-8">',
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '<title>' + nameSafe + ' Review: Strong Foodie</title>',
-      '<meta name="description" content="' + reviewShort + '">',
-      '<meta property="og:title" content="' + nameSafe + ': Strong Foodie">',
-      '<meta property="og:image" content="' + (r.photoUrl || 'https://strongfoodie.com/icon-512.png') + '">',
-      '<meta property="og:url" content="https://strongfoodie.com/' + filename + '">',
-      '<link rel="canonical" href="https://strongfoodie.com/' + filename + '">',
-      '<scr'+'ipt async src="https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH"></scr'+'ipt>',
-      '<scr'+'ipt>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-PEEXFGGPNH");</scr'+'ipt>',
-      '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">',
-      '<style>',
-      '*{box-sizing:border-box;margin:0;padding:0;}',
-      'body{font-family:DM Sans,sans-serif;background:#FAF7F2;color:#1A1208;font-size:15px;line-height:1.7;}',
-      'nav{position:sticky;top:0;z-index:100;background:#FFFDF9;border-bottom:1px solid rgba(26,18,8,0.1);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}',
-      '.logo{font-family:Playfair Display,serif;font-size:22px;font-weight:700;color:#1A1208;text-decoration:none;}',
-      '.logo span{color:#D4521A;}',
-      '.wrap{max-width:760px;margin:0 auto;padding:3rem 2rem 5rem;}',
-      '.back{display:inline-flex;align-items:center;gap:6px;color:#8A7A66;text-decoration:none;font-size:13px;margin-bottom:2rem;}',
-      '.stars{color:#C8901A;font-size:22px;}',
-      'h1{font-family:Playfair Display,serif;font-size:2.5rem;margin-bottom:0.5rem;}',
-      '.meta{color:#8A7A66;font-size:14px;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}',
-      '.review-text{font-size:16px;line-height:1.8;color:#3D2F1A;margin-bottom:2rem;}',
-      '.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;}',
-      '.tag{background:#F0EBE3;color:#3D2F1A;font-size:12px;padding:4px 12px;border-radius:20px;}',
-      '.hours{background:#FFFDF9;border:1px solid rgba(26,18,8,0.1);border-radius:12px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:14px;color:#3D2F1A;}',
-      '.btn{display:inline-block;background:#D4521A;color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:500;}',
-      'footer{background:#1A1208;color:#fff;padding:2rem;text-align:center;}',
-      '</style></head><body>',
-      '<nav><a class="logo" href="/index.html">Strong <span>Foodie</span></a><a href="/reviews.html" style="font-size:13px;color:#8A7A66;text-decoration:none;">All Reviews</a></nav>',
-      '<div class="wrap">',
-      '<a href="/reviews.html" class="back">← All Reviews</a>',
-      photoHtml,
-      '<div style="margin-bottom:0.75rem"><span class="stars">' + starsHtml + '</span> <strong>' + r.rating + '</strong></div>',
-      '<h1>' + (r.emoji || '') + ' ' + (r.name || '') + '</h1>',
-      '<div class="meta"><span>📍 ' + (r.city || '') + '</span><span>🍽️ ' + (r.type || '') + '</span>' + (r.price ? '<span>💰 ' + r.price + '</span>' : '') + (r.date ? '<span>📅 ' + r.date + '</span>' : '') + '</div>',
-      '<p class="review-text">' + (r.review || '') + '</p>',
-      '<div class="tags">' + tagsHtml + '</div>',
-      r.hours ? '<div class="hours">🕐 ' + r.hours + '</div>' : '',
-      '<a href="/reviews.html" class="btn">← Meer reviews</a>',
-      '</div>',
-      '<footer><p style="font-size:13px;color:rgba(255,255,255,0.5)">© 2026 Merdan Koc, <a href="/index.html" style="color:#D4521A;text-decoration:none">Strong Foodie</a></p></footer>',
-      '</body></html>'
-    ];
-
-    const pageHtml = lines.join('\n');
-    const encoded = btoa(unescape(encodeURIComponent(pageHtml)));
-
-    // Check if file exists to get SHA
-    let sha = undefined;
-    try {
-      const check = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
-        headers: { Authorization: 'token ' + GITHUB_TOKEN, Accept: 'application/vnd.github.v3+json' }
-      });
-      if (check.ok) { const d = await check.json(); sha = d.sha; }
-    } catch(e) {}
-
-    const body = { message: 'Add review: ' + r.name, content: encoded, branch: BRANCH };
-    if (sha) body.sha = sha;
-
-    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
-      method: 'PUT',
-      headers: { Authorization: 'token ' + GITHUB_TOKEN, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'GitHub API error');
-    }
-    return filename;
-  }
-
-  window.generateAllPages = async function() {
-    const btn = document.getElementById('generateAllBtn');
-    const progress = document.getElementById('generateProgress');
-    btn.disabled = true;
-    btn.textContent = 'Working...';
-    progress.style.display = 'block';
-
-    try {
-      const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-      const total = snap.docs.length;
-      let done = 0;
-      let failed = 0;
-
-      progress.textContent = `0 / ${total} paginas aangemaakt...`;
-
-      for (const docSnap of snap.docs) {
-        const r = docSnap.data();
-        try {
-          await createGitHubPage({
-            name: r.name || '',
-            city: r.city || '',
-            type: r.type || '',
-            price: r.price || '',
-            date: r.date || '',
-            hours: r.hours || '',
-            review: r.review || '',
-            tags: r.tags || [],
-            emoji: r.emoji || '🍽️',
-            rating: r.rating || 5,
-            photoUrl: r.photoUrl || ''
-          });
-          done++;
-          progress.textContent = `✅ ${done} / ${total} paginas aangemaakt...`;
-          // Small delay to avoid GitHub rate limiting
-          await new Promise(resolve => setTimeout(resolve, 500));
-        } catch(e) {
-          failed++;
-          console.error('Failed for', r.name, e);
-          progress.textContent = `⚠️ ${done} / ${total} klaar, ${failed} mislukt... (${r.name})`;
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-      }
-
-      progress.textContent = `🎉 Klaar! ${done} paginas live op strongfoodie.com/reviews/`;
-      showToast(`${done} paginas aangemaakt! 🎉`);
-    } catch(e) {
-      progress.textContent = '❌ Fout: ' + e.message;
-      showToast('Fout: ' + e.message);
-    }
-
-    btn.disabled = false;
-    btn.textContent = '🌐 Maak paginas voor alle reviews';
-  }
-
   async function loadPublished() {
     const list = document.getElementById('publishedList');
     try {
@@ -2188,6 +2006,7 @@
       const hClosedStatus = document.getElementById('hClosedStatus').value;
       const hClosedNote = document.getElementById('hClosedNote').value.trim();
       const result = await saveDoc('hotelreviews', 'h', {
+        ...typeOf('h'),
         sponsored: hSponsored,
         partnerName: hSponsored ? hPartnerName : '',
         closedStatus: hClosedStatus,
@@ -2215,6 +2034,7 @@
       }
 
       document.getElementById('hName').value = '';
+      document.getElementById('hType').value = '';
       document.getElementById('hCity').value = '';
       document.getElementById('hPrice').value = '';
       document.getElementById('hDate').value = '';
@@ -2279,6 +2099,7 @@
       const dClosedStatus = document.getElementById('dClosedStatus').value;
       const dClosedNote = document.getElementById('dClosedNote').value.trim();
       const result = await saveDoc('drinkspots', 'd', {
+        ...typeOf('d'),
         sponsored: dSponsored,
         partnerName: dSponsored ? dPartnerName : '',
         closedStatus: dClosedStatus,
@@ -2307,7 +2128,7 @@
         shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #drink #${cityTag(city)}`, dPhotoUrl || null);
       }
 
-      ['dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['dType','dName','dCity','dPrice','dDate','dLat','dLng','dReview','dTags','dSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('dSponsored').checked = false;
       document.getElementById('dPartnerName').value = '';
       document.getElementById('dPartnerNameWrap').style.display = 'none';
@@ -2347,6 +2168,7 @@
       const sClosedStatus = document.getElementById('sClosedStatus').value;
       const sClosedNote = document.getElementById('sClosedNote').value.trim();
       const result = await saveDoc('shopspots', 's', {
+        ...typeOf('s'),
         sponsored: sSponsored,
         partnerName: sSponsored ? sPartnerName : '',
         closedStatus: sClosedStatus,
@@ -2375,7 +2197,7 @@
         shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #shop #${cityTag(city)}`, sPhotoUrl || null);
       }
 
-      ['sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['sType','sName','sPrice','sDate','sReview','sTags','sSchedule'].forEach(id => document.getElementById(id).value = '');
       resetLocations('sLocations');
       document.getElementById('sSponsored').checked = false;
       document.getElementById('sPartnerName').value = '';
@@ -2415,6 +2237,7 @@
       const cClosedStatus = document.getElementById('cClosedStatus').value;
       const cClosedNote = document.getElementById('cClosedNote').value.trim();
       const result = await saveDoc('culturespots', 'c', {
+        ...typeOf('c'),
         sponsored: cSponsored,
         partnerName: cSponsored ? cPartnerName : '',
         closedStatus: cClosedStatus,
@@ -2443,7 +2266,7 @@
         shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #culture #${cityTag(city)}`, cPhotoUrl || null);
       }
 
-      ['cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['cType','cName','cCity','cPrice','cDate','cLat','cLng','cReview','cTags','cSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('cSponsored').checked = false;
       document.getElementById('cPartnerName').value = '';
       document.getElementById('cPartnerNameWrap').style.display = 'none';
@@ -2482,6 +2305,7 @@
       const hlClosedStatus = document.getElementById('hlClosedStatus').value;
       const hlClosedNote = document.getElementById('hlClosedNote').value.trim();
       const result = await saveDoc('healthspots', 'hl', {
+        ...typeOf('hl'),
         sponsored: hlSponsored,
         partnerName: hlSponsored ? hlPartnerName : '',
         closedStatus: hlClosedStatus,
@@ -2510,7 +2334,7 @@
         shareToThreads(`${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #health #${cityTag(city)}`, hlPhotoUrl || null);
       }
 
-      ['hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');
+      ['hlType','hlName','hlCity','hlPrice','hlDate','hlLat','hlLng','hlReview','hlTags','hlSchedule'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('hlSponsored').checked = false;
       document.getElementById('hlPartnerName').value = '';
       document.getElementById('hlPartnerNameWrap').style.display = 'none';
@@ -2524,88 +2348,74 @@
   };
   // ─────────────────────────────────────────────────────────────────────────
 
-  // ── NEWSLETTER BANNER ────────────────────────────────────────────────────
-  var lastPublishedReview = null;
-
-  function showNewsletterBanner(reviewData) {
-    lastPublishedReview = reviewData;
-    const preview = document.getElementById('newsletterPreview');
-    preview.innerHTML = `
-      <strong>${reviewData.emoji || '🍽️'} ${reviewData.name}</strong><br>
-      📍 ${reviewData.city || ''} · ${reviewData.type || ''} · ${reviewData.price || ''}<br>
-      ${reviewData.rating ? sfStarsText(reviewData.rating) + ' ' : ''}${reviewData.review ? '"' + reviewData.review.substring(0,120) + (reviewData.review.length > 120 ? '…' : '') + '"' : ''}
-    `;
-    document.getElementById('newsletterBanner').style.display = 'block';
-    document.getElementById('newsletterBanner').scrollIntoView({behavior:'smooth'});
-  }
-
-  function dismissNewsletter() {
-    document.getElementById('newsletterBanner').style.display = 'none';
-  }
-
-  function openMailchimp() {
-    if (!lastPublishedReview) return;
-    const r = lastPublishedReview;
-    const text = "SUBJECT: New review: " + r.name + " " + (r.emoji || "") + "\n\n" +
-      "Hi!\n\n" +
-      "There's a new Strong Foodie review online!\n\n" +
-      (r.emoji || "🍽️") + " " + r.name + "\n" +
-      "📍 " + (r.city || "") + "\n" +
-      "⭐ " + sfStarsText(r.rating || 5) + "\n" +
-      (r.price ? "💰 " + r.price + "\n" : "") +
-      "\n" + (r.review || "") + "\n\n" +
-      "👉 https://strongfoodie.com/reviews.html\n\n" +
-      "Merdan, Strong Foodie";
-    navigator.clipboard.writeText(text).then(() => {
-      showToast("✅ Text copied! Open Mailchimp and paste the text.");
-    }).catch(() => {
-      window.prompt("Copy this text:", text);
-    });
-    const a = document.createElement("a");
-    a.href = "https://us21.admin.mailchimp.com/campaigns/#";
-    a.target = "_blank";
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    document.getElementById("newsletterBanner").style.display = "none";
-  }
-  // ─────────────────────────────────────────────────────────────────────────
-
-  // ── LIVE COUNTER ─────────────────────────────────────────────────────────
+  // ── TE DOEN ──────────────────────────────────────────────────────────
+  // What is open, each with a link to where you fix it. Places without a price
+  // or photo open a list with an Edit button. The counts of reports, claims and
+  // corrections also go to the admin menu (js/sf-admin-nav.js) as badges.
+  const TODO_COLLS = [['reviews', '🍽️'], ['drinkspots', '🍸'], ['hotelreviews', '🏨'], ['shopspots', '🛍️'], ['culturespots', '🎭'], ['healthspots', '💪']];
+  const todoEsc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const toDateX = v => !v ? null : v.toDate ? v.toDate() : new Date(v);
+  const isOpenReport = r => !['done', 'resolved', 'closed', 'handled'].includes(String(r.status || '').toLowerCase());
   window.loadLiveStats = async function() {
+    const grid = document.getElementById('todoGrid'), sub = document.getElementById('todoSub');
+    if (!grid) return;
     try {
-      const [foodSnap, hotelSnap, usersSnap, picksSnap, drinkSnap, shopSnap, cultureSnap, healthSnap] = await Promise.all([
-        getDocs(collection(db, 'reviews')),
-        getDocs(collection(db, 'hotelreviews')),
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'picks')),
-        getDocs(collection(db, 'drinkspots')),
-        getDocs(collection(db, 'shopspots')),
-        getDocs(collection(db, 'culturespots')),
-        getDocs(collection(db, 'healthspots'))
+      const { visitDateOf } = await import('./js/sf-core.js?v=4');
+      const safe = p => p.catch(e => { console.log('Te doen, niet geladen:', e.code || e); return null; });
+      const [reports, claims, edits, promos, ...placeSnaps] = await Promise.all([
+        safe(getDocs(collection(db, 'reports'))), safe(getDocs(collection(db, 'claims'))),
+        safe(getDocs(collection(db, 'placeEdits'))), safe(getDocs(collection(db, 'promos'))),
+        ...TODO_COLLS.map(([c]) => safe(getDocs(collection(db, c))))
       ]);
-      document.getElementById('cntFood').textContent  = foodSnap.size;
-      document.getElementById('cntHotel').textContent = hotelSnap.size;
-      document.getElementById('cntUsers').textContent = usersSnap.size;
-      document.getElementById('cntPicks').textContent = picksSnap.size;
-      document.getElementById('cntDrink').textContent = drinkSnap.size;
-      document.getElementById('cntShop').textContent = shopSnap.size;
-      document.getElementById('cntCulture').textContent = cultureSnap.size;
-      document.getElementById('cntHealth').textContent = healthSnap.size;
-      const now = new Date();
-      document.getElementById('lastRefresh').textContent =
-        'Last updated: ' + now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    } catch(e) {
-      document.getElementById('lastRefresh').textContent = 'Could not load, check Firebase connection';
+      const rows = snap => snap ? snap.docs.map(d => ({ id: d.id, ...d.data() })) : null;
+      const nReports = reports ? rows(reports).filter(isOpenReport).length : null;
+      const nClaims = claims ? rows(claims).filter(c => c.status === 'pending').length : null;
+      const nEdits = edits ? rows(edits).filter(e => (e.status || 'pending') === 'pending').length : null;
+      const now = new Date(), week = new Date(now.getTime() + 7 * 864e5);
+      const nAds = promos ? rows(promos).filter(a => { const e = toDateX(a.end); return e && e >= now && e <= week; }).length : null;
+      const places = [];
+      placeSnaps.forEach((snap, i) => (rows(snap) || []).forEach(x => {
+        if (x.closedStatus === 'temp' || x.closedStatus === 'perm') return;
+        places.push({ coll: TODO_COLLS[i][0], emoji: x.emoji || TODO_COLLS[i][1], ...x });
+      }));
+      const noPhoto = places.filter(x => !(x.photoUrl || (x.photos && x.photos.length)));
+      const noPrice = places.filter(x => !String(x.price || '').trim());
+      const noDate = places.filter(x => !(x.date && visitDateOf(x.date)));
+      const oddType = places.filter(x => /^[\s,;/.\-]|[,;/.\-]\s*$/.test(String(x.type || '')));
+      try { sessionStorage.setItem('sf_admin_counts', JSON.stringify({ reports: nReports || 0, claims: nClaims || 0, edits: nEdits || 0 })); } catch (e) {}
+      if (window.sfAdminNavBadges) window.sfAdminNavBadges();
+
+      const byName = (a, b) => String(a.name).localeCompare(String(b.name));
+      const listOf = (items, extra) => `<details class="todo-list"><summary>Laat zien welke</summary><ul>${items.slice().sort(byName).map(x =>
+        `<li><span>${todoEsc(x.emoji)} ${todoEsc(x.name)}${extra ? ` <small>${todoEsc(extra(x))}</small>` : ''}</span><button type="button" onclick="editItem('${x.coll}','${x.id}')">Bewerk</button></li>`).join('')}</ul></details>`;
+      const card = (n, text, action, hot) => n === null
+        ? `<div class="todo-card"><div class="todo-n">?</div><div class="todo-t">${text}</div><div class="todo-go muted">Kon niet laden</div></div>`
+        : n === 0
+          ? `<div class="todo-card ok"><div class="todo-n">0</div><div class="todo-t">${text}</div><div class="todo-go">Niets te doen</div></div>`
+          : `<div class="todo-card${hot ? ' hot' : ''}"><div class="todo-n">${n}</div><div class="todo-t">${text}</div>${action}</div>`;
+      const link = (href, t) => `<a class="todo-go" href="${href}">${t} →</a>`;
+      grid.innerHTML = [
+        card(nReports, 'Meldingen van leden', link('admin-reports.html', 'Bekijk meldingen'), true),
+        card(nClaims, 'Eigenaren die een plek claimen', link('admin-claims.html', 'Bekijk claims'), true),
+        card(nEdits, 'Correcties van leden', link('admin-edits.html', 'Bekijk correcties')),
+        card(nAds, 'Advertenties die deze week aflopen', link('admin-ads.html', 'Bekijk advertenties')),
+        card(noDate.length, 'Plekken zonder bezoekdatum. De maand staat in de groene regel op de plekpagina.', link('admin-dates.html', 'Vul data in')),
+        card(noPrice.length, 'Plekken zonder prijs', listOf(noPrice)),
+        card(noPhoto.length, 'Plekken zonder foto', listOf(noPhoto)),
+        card(oddType.length, 'Plekken met een raar type, zoals “Shop,”', listOf(oddType, x => '“' + x.type + '”')),
+      ].join('');
+      sub.textContent = `${places.length} open plekken · bijgewerkt om ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+    } catch (e) {
+      console.log('Te doen niet geladen:', e);
+      sub.textContent = 'Kon niet laden. Controleer de verbinding en klik op Vernieuwen.';
     }
   };
-  // Auto-refresh every 30 seconds when admin panel is visible
+  // Every 5 minutes while the admin panel is open (it was every 30 seconds).
   setInterval(() => {
-    if (document.getElementById('adminPanel').style.display !== 'none') {
+    if (document.getElementById('adminPanel').style.display !== 'none' && !document.hidden) {
       window.loadLiveStats();
     }
-  }, 30000);
+  }, 300000);
   // ─────────────────────────────────────────────────────────────────────────
 
 </script>
@@ -2617,5 +2427,6 @@
   }
 </script>
 <script type="module" src="js/sf-halfstars.js?v=2"></script>
+<script src="js/sf-admin-nav.js?v=1" defer></script>
 </body>
 </html>
