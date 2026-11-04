@@ -393,7 +393,7 @@
             ${members ? `<span>${plural(members, 'member spot', 'member spots')}</span>` : ''}
             <span>${counts.map(([k, n]) => `${CATS[k].emoji} ${n}`).join('&nbsp;&nbsp;')}</span>
           </p>
-          ${reviewed ? '<p class="d-trust"><span>✓ Every place visited</span> · <span>No paid reviews</span> · <a href="about.html">How I review</a></p>' : ''}
+          ${reviewed ? '<p class="d-trust"><span>✓ Every place visited</span> · <span>No paid reviews</span> · <a href="about.html#how-i-review">How I review</a></p>' : ''}
           <div class="d-actions">
             <a class="btn btn-light" href="${esc(location.pathname + location.search)}#places">See all places</a>
             <button class="btn btn-light" id="shareBtn" type="button">Share ↗</button>
