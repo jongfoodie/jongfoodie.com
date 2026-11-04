@@ -11,7 +11,8 @@
   var GROUPS = [
     ['Start', [['admin.html#todo', '✅', 'Te doen']]],
     ['Plekken', [
-      ['admin.html#eatSection', '➕', 'Plek toevoegen'],
+      ['admin.html#allPlaces', '📋', 'Alle plekken'],
+      ['admin.html#addPlace', '➕', 'Plek toevoegen'],
       ['admin-dates.html', '📅', 'Bezoekdata'],
       ['admin-duplicates.html', '🔁', 'Dubbele plekken'],
       ['admin-edits.html', '✏️', 'Correcties', 'edits']]],

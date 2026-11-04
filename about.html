@@ -95,6 +95,18 @@
   .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
 
   .mission-block { background: var(--ink); color: #fff; border-radius: 20px; padding: 3rem; margin-bottom: 4rem; }
+  .how-block { background: var(--warm-white, #FFFDF9); border: 1px solid var(--border, rgba(26,18,8,0.1)); border-radius: 20px; padding: 2.5rem 3rem; margin-bottom: 4rem; scroll-margin-top: 90px; }
+  #how-i-review { scroll-margin-top: 90px; }
+  .how-block h2 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 1rem; }
+  .how-block h2 em { font-style: italic; color: var(--accent, #D4521A); }
+  .how-block h3 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted, #8A7A66); font-weight: 600; margin: 2rem 0 0.75rem; }
+  .how-block p { line-height: 1.7; max-width: 62ch; }
+  .how-block dl { display: grid; gap: 0; margin: 0 0 1rem; border-top: 1px solid var(--border, rgba(26,18,8,0.1)); }
+  .how-block dl > div { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--border, rgba(26,18,8,0.1)); align-items: baseline; }
+  .how-block dt { font-weight: 600; font-size: 14px; white-space: nowrap; }
+  .how-block dd { margin: 0; line-height: 1.6; font-size: 15px; }
+  .how-block .st { color: #C9962B; letter-spacing: 1px; margin-right: 4px; }
+  @media (max-width: 600px) { .how-block { padding: 1.75rem 1.25rem; } .how-block dl > div { grid-template-columns: 1fr; gap: 0.2rem; } }
   .mission-block h2 { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 1rem; }
   .mission-block h2 em { font-style: italic; color: #F5C896; }
   .mission-block p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 15px; }
@@ -264,6 +276,31 @@
     <h2>Honest food, <em>honest reviews</em></h2>
     <p>The food world is full of sponsored content and fake reviews. Restaurants pay for good scores, influencers get free meals in exchange for positive posts. That's not how I work.</p>
     <p style="margin-top:1rem;">I always pay for my own food. I visit restaurants anonymously. And I tell you exactly what I think, even when it disappoints. Because you deserve honest information before spending your evening (and money) somewhere.</p>
+  </div>
+
+  <p class="section-label" id="how-i-review">How I review</p>
+  <div class="how-block">
+    <h2>How I <em>review</em></h2>
+    <p>Every place on Strong Foodie I visited myself. I pay my own bill, take my own photos and write the review after the visit. The month I visited is on every place page. After 18 months the page says it is an older review, because places change.</p>
+
+    <h3>What the scores mean</h3>
+    <dl class="scale">
+      <div><dt><span class="st">★★★★★</span> 5</dt><dd>Worth a trip on its own. Among the best I've had.</dd></div>
+      <div><dt><span class="st">★★★★☆</span> 4</dt><dd>Very good. I'd go back and send friends.</dd></div>
+      <div><dt><span class="st">★★★☆☆</span> 3</dt><dd>Good, with a catch. Fine if you're nearby.</dd></div>
+      <div><dt><span class="st">★★☆☆☆</span> 2</dt><dd>Disappointing. Only if there's nothing better around.</dd></div>
+      <div><dt><span class="st">★☆☆☆☆</span> 1</dt><dd>Skip it.</dd></div>
+    </dl>
+    <p>Half stars sit in between. A 4.5 is almost a 5, with one small thing missing.</p>
+
+    <h3>Labels you see on a place</h3>
+    <dl class="labels">
+      <div><dt>AD · Partner</dt><dd>The place paid to be shown more, or we work together. The label is always on the card itself. The review and the score stay mine.</dd></div>
+      <div><dt>Partner link</dt><dd>Some Reserve or Book buttons are partner links, marked under the button. Strong Foodie may earn a small fee. It never changes the score.</dd></div>
+      <div><dt>Member spot</dt><dd>Added by a member of Strong Foodie, not reviewed by me.</dd></div>
+      <div><dt>Claimed by the owner</dt><dd>The owner keeps the opening hours up to date. Owners can't change the review or the score.</dd></div>
+      <div><dt>Closed</dt><dd>Temporarily or permanently closed. The review stays, so you know what it was.</dd></div>
+    </dl>
   </div>
 
   <p class="section-label">Values</p>

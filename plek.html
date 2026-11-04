@@ -563,7 +563,7 @@
           ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
-          ${!p.member && p.review ? `<p class="trust-top"><span>✓ Visited by Strong Foodie</span>${p.date ? ' · <span>' + esc(p.date) + '</span>' : ''} · <span>No paid reviews</span> · <a href="about.html">How I review</a></p>` : ''}
+          ${!p.member && p.review ? `<p class="trust-top"><span>✓ Visited by Strong Foodie</span>${p.date ? ' · <span>' + esc(p.date) + '</span>' : ''} · <span>No paid reviews</span> · <a href="about.html#how-i-review">How I review</a></p>` : ''}
           <div class="friends-been" id="friendsBeen" hidden></div>
           <div class="actions">
             ${bookingButtonHtml(p.book)}

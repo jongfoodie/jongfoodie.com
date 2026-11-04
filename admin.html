@@ -49,6 +49,40 @@
   .todo-list li span { min-width: 0; line-height: 1.35; }
   .todo-list li small { color: var(--muted); }
   .todo-list li button { flex-shrink: 0; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 3px 10px; font: 500 12px 'DM Sans', sans-serif; color: var(--accent); cursor: pointer; }
+  /* Alle plekken */
+  .ap-wrap, .add-wrap { margin-bottom: 2.5rem; scroll-margin-top: 70px; }
+  #todo { scroll-margin-top: 70px; }
+  .ap-search { width: 100%; border: 1px solid var(--border); border-radius: 22px; padding: 10px 16px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); margin-bottom: 10px; }
+  .ap-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .ap-chip { border: 1px solid var(--border); background: #fff; color: var(--ink); border-radius: 18px; padding: 5px 12px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; }
+  .ap-chip span { color: var(--muted); font-weight: 400; margin-left: 2px; }
+  .ap-chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .ap-chip.on span { color: rgba(255,255,255,0.65); }
+  .ap-list { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .ap-list > .todo-sub { padding: 14px 16px; }
+  .ap-row { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .ap-row:last-child { border-bottom: none; }
+  .ap-main { min-width: 0; }
+  .admin-panel .ap-name { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+  .admin-panel .ap-meta { margin: 2px 0 0; font-size: 12.5px; }
+  .admin-panel .ap-miss { margin: 4px 0 0; font-size: 12px; }
+  .ap-miss span { display: inline-block; background: #FBEDE4; color: #9A3A10; border-radius: 8px; padding: 1px 7px; margin: 0 4px 2px 0; }
+  .ap-stars { color: #C9962B; }
+  .ap-pill { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 8px; padding: 1px 7px; margin-left: 4px; vertical-align: 1px; }
+  .ap-pill.sched { background: #FBF3E0; color: #8A6A0A; }
+  .ap-pill.closed { background: #EEE; color: #555; }
+  .ap-pill.ad { background: var(--ink); color: #fff; }
+  .ap-acts { display: flex; gap: 6px; flex-shrink: 0; }
+  .ap-btn { border: 1px solid var(--border); background: #fff; border-radius: 14px; padding: 4px 10px; font: 500 12.5px 'DM Sans', sans-serif; color: var(--ink); text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .ap-btn.main { color: var(--accent); }
+  .ap-btn.del { color: var(--muted); }
+  .ap-more { margin-top: 10px; }
+  .add-sub { margin-bottom: 0.9rem !important; }
+  .cat-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; position: sticky; top: 56px; z-index: 5; background: var(--cream); padding: 8px 0; }
+  .cat-tabs button { border: 1px solid var(--border); background: #fff; color: var(--ink); border-radius: 18px; padding: 7px 14px; font: 500 14px 'DM Sans', sans-serif; cursor: pointer; }
+  .cat-tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #hotelSection, #drinkSection, #shopSection, #cultureSection, #healthSection { margin-top: 0 !important; }
+  @media (max-width: 600px) { .ap-row { flex-direction: column; align-items: stretch; } .ap-acts { justify-content: flex-start; } }
   .social-fold { margin-top: 2rem; }
   .social-fold > summary { cursor: pointer; font-size: 14px; font-weight: 500; color: #5C2A8A; padding: 0.75rem 1rem; background: #F3E8FB; border-radius: 12px; list-style: none; }
   .form-card { background: #fff; border-radius: 16px; padding: 2rem; border: 1px solid var(--border); margin-bottom: 2rem; }
@@ -166,28 +200,28 @@
   <a href="admin-duplicates.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">🔁 Duplicates</a>
   <a href="admin-export.html" class="back-link" style="color:rgba(255,255,255,0.85);margin-right:16px;">⬇️ Export</a>
   <a href="index.html" class="back-link" style="color:rgba(255,255,255,0.6);">← Back to site</a>
-  <button id="signOutBtn" onclick="adminSignOut()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:12px;">Sign out</button>
+  <button id="signOutBtn" onclick="adminSignOut()" style="display:none;background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:12px;">Uitloggen</button>
 </div>
 
 <!-- LOGIN -->
 <div id="loginBox" class="login-box" style="display:none;">
-  <h2 id="loginTitle">Admin Access</h2>
-  <p id="loginText">This page is only for Strong Foodie. Sign in with your admin account to continue.</p>
+  <h2 id="loginTitle">Admin</h2>
+  <p id="loginText">Deze pagina is alleen voor Strong Foodie. Log in met je admin-account.</p>
   <div class="form-group">
-    <label class="form-label">Email</label>
+    <label class="form-label">E-mail</label>
     <input class="form-input" type="email" id="adminEmail" autocomplete="username" placeholder="you@example.com" onkeydown="if(event.key==='Enter')adminSignIn()">
   </div>
   <div class="form-group">
-    <label class="form-label">Password</label>
-    <input class="form-input" type="password" id="adminPassword" autocomplete="current-password" placeholder="Enter your password..." onkeydown="if(event.key==='Enter')adminSignIn()">
+    <label class="form-label">Wachtwoord</label>
+    <input class="form-input" type="password" id="adminPassword" autocomplete="current-password" placeholder="Je wachtwoord…" onkeydown="if(event.key==='Enter')adminSignIn()">
   </div>
-  <button class="btn-publish" id="adminSignInBtn" onclick="adminSignIn()">Sign in</button>
+  <button class="btn-publish" id="adminSignInBtn" onclick="adminSignIn()">Inloggen</button>
 </div>
 
 <!-- CHECKING SESSION -->
 <div id="authChecking" class="login-box">
-  <h2>Admin Access</h2>
-  <p>Checking your session...</p>
+  <h2>Admin</h2>
+  <p>Even controleren of je bent ingelogd…</p>
 </div>
 
 <!-- ADMIN PANEL -->
@@ -204,61 +238,85 @@
     <div class="todo-grid" id="todoGrid"><p class="todo-sub">Laden…</p></div>
   </section>
 
-  <h2 id="eatSection">Add New Review</h2>
-  <p>Fill in the details below and click Publish. The review will appear on the Reviews page instantly.</p>
+  <!-- ALLE PLEKKEN: alle 6 categorieën in één lijst, met zoeken en filters -->
+  <section id="allPlaces" class="ap-wrap">
+    <div class="todo-head">
+      <div><h2 class="todo-title">Alle plekken</h2><p class="todo-sub" id="apSub">Laden…</p></div>
+    </div>
+    <input id="apSearch" class="ap-search" type="search" placeholder="Zoek op naam of plaats…" autocomplete="off" aria-label="Zoek een plek">
+    <div class="ap-chips" id="apChips" role="toolbar" aria-label="Filter"></div>
+    <div class="ap-list" id="apList"><p class="todo-sub">Laden…</p></div>
+    <button id="apMore" class="todo-refresh ap-more" type="button" hidden>Meer laten zien</button>
+  </section>
+
+  <!-- PLEK TOEVOEGEN OF BEWERKEN: één categorie tegelijk, met tabbladen -->
+  <section id="addPlace" class="add-wrap">
+    <h2 class="todo-title">Plek toevoegen</h2>
+    <p class="todo-sub add-sub">Kies de categorie. Bewerk je een plek uit de lijst hierboven, dan opent de juiste vanzelf.</p>
+    <div class="cat-tabs" role="tablist" aria-label="Categorie">
+      <button type="button" role="tab" data-cat="reviews">🍽️ Eat</button>
+      <button type="button" role="tab" data-cat="drinkspots">🍸 Drink</button>
+      <button type="button" role="tab" data-cat="hotelreviews">🏨 Stay</button>
+      <button type="button" role="tab" data-cat="shopspots">🛍️ Shop</button>
+      <button type="button" role="tab" data-cat="culturespots">🎭 Culture</button>
+      <button type="button" role="tab" data-cat="healthspots">💪 Health</button>
+    </div>
+  <div id="eatPane">
+  <h2 id="eatSection">🍽️ Eat-plek toevoegen</h2>
+  <p>Vul de gegevens in en klik op Publiceren. De review staat dan meteen op de website en in de app.</p>
 
   <div class="form-card">
-    <h3>📍 Restaurant Details</h3>
+    <h3>📍 Gegevens</h3>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Restaurant Name *</label>
-        <input class="form-input" type="text" id="rName" placeholder="e.g. Izakaya Amsterdam">
+        <label class="form-label">Naam *</label>
+        <input class="form-input" type="text" id="rName" placeholder="bv. Izakaya Amsterdam">
       </div>
       <div class="form-group">
-        <label class="form-label">Food Type *</label>
+        <label class="form-label">Type *</label>
         <input class="form-input" type="text" id="rType" list="rTypeList" placeholder="Kies of typ, bv. Burgers" autocomplete="off">
         <datalist id="rTypeList"><option value="Sushi / Japanese"><option value="Burgers"><option value="Cafe"><option value="Pastries"><option value="Sandwiches"><option value="Asian"><option value="Seafood"><option value="Steak"><option value="Street Food"><option value="Fine Dining"><option value="Fries"><option value="Vietnamese"><option value="Caribbean"><option value="Restaurant"><option value="Drinks"></datalist>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Price (e.g. €15 or Luxury)</label>
-        <input class="form-input" type="text" id="rPrice" placeholder="e.g. €15 or Luxury">
+        <label class="form-label">Prijs (bv. €15 of Luxury)</label>
+        <input class="form-input" type="text" id="rPrice" placeholder="bv. €15 or Luxury">
       </div>
       <div class="form-group">
-        <label class="form-label">Visit Date</label>
-        <input class="form-input" type="text" id="rDate" placeholder="e.g. Jan 2025">
+        <label class="form-label">Bezoekdatum</label>
+        <input class="form-input" type="text" id="rDate" placeholder="bv. Jan 2025">
       </div>
     </div>
     <div class="form-group" style="margin-top:0.5rem;">
-      <label class="form-label">Location(s): City + Coordinates + Opening Hours *</label>
+      <label class="form-label">Locatie(s): stad, coördinaten en openingstijden *</label>
       <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze zaak meerdere vestigingen/locaties? Voeg dan meerdere rijen toe, elke locatie heeft eigen openingstijden.</p>
       <div id="rLocations">
         <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
-          <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
-          <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
-          <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
-          <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00">
+          <input class="form-input loc-city" type="text" placeholder="Stad, bv. Amsterdam">
+          <input class="form-input loc-lat" type="text" placeholder="Lat, bv. 52.3646">
+          <input class="form-input loc-lng" type="text" placeholder="Lng, bv. 4.8723">
+          <input class="form-input loc-hours" type="text" placeholder="Tijden, bv. Daily 10:00–17:00">
           <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
         </div>
       </div>
-      <button type="button" onclick="addLocationRow('rLocations')" style="margin-top:2px;background:none;border:1px dashed #D4521A;color:#D4521A;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Add another location</button>
+      <button type="button" onclick="addLocationRow('rLocations')" style="margin-top:2px;background:none;border:1px dashed #D4521A;color:#D4521A;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Nog een locatie</button>
     </div>
     <div class="form-group" style="margin-top:0.75rem;">
-      <label class="form-label" for="rKitchen">Kitchen closes</label>
-      <input class="form-input" type="text" id="rKitchen" placeholder="e.g. 22:00" style="max-width:180px;">
-      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Only if the kitchen closes before the place does. Shows "Kitchen closes soon" on the website and in the app.</p>
+      <label class="form-label" for="rKitchen">Keuken sluit</label>
+      <input class="form-input" type="text" id="rKitchen" placeholder="bv. 22:00" style="max-width:180px;">
+      <p style="font-size:11px;color:var(--muted);margin:4px 0 0;">Alleen als de keuken eerder sluit dan de zaak. Dan staat er "Kitchen closes soon" op de website en in de app.</p>
     </div>
   </div>
 
   <div class="form-card">
-    <h3>📸 Photos</h3>
+    <h3>📸 Foto's</h3>
     <div class="form-group">
-      <label class="form-label">Restaurant Photos (up to 5)</label>
+      <label class="form-label">Foto's (max 5)</label>
       <div class="photo-upload-area" id="photoUploadArea">
         <input type="file" id="rPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'r')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -271,9 +329,9 @@
   </div>
 
   <div class="form-card">
-    <h3>⭐ Rating & Review</h3>
+    <h3>⭐ Score en review</h3>
     <div class="form-group">
-      <label class="form-label">Star Rating *</label>
+      <label class="form-label">Score *</label>
       <div class="star-select" id="adminStars">
         <span onclick="setAdminRating(1)">★</span>
         <span onclick="setAdminRating(2)">★</span>
@@ -283,25 +341,25 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Review Text *</label>
-      <textarea class="form-input" id="rReview" placeholder="Write your honest review here..." rows="5"></textarea>
+      <label class="form-label">Reviewtekst *</label>
+      <textarea class="form-input" id="rReview" placeholder="Schrijf je eerlijke review…" rows="5"></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Tags (comma separated)</label>
-      <input class="form-input" type="text" id="rTags" placeholder="e.g. Must Try, Best Sushi, Luxury">
+      <label class="form-label">Tags (met komma ertussen)</label>
+      <input class="form-input" type="text" id="rTags" placeholder="bv. Must Try, Best Sushi, Luxury">
     </div>
     <div class="form-group">
-      <label class="form-label">Emoji Icon</label>
-      <input class="form-input" type="text" id="rEmoji" placeholder="e.g. 🍣 🍔 ☕ 🥐 🍜" value="🍽️">
+      <label class="form-label">Emoji</label>
+      <input class="form-input" type="text" id="rEmoji" placeholder="bv. 🍣 🍔 ☕ 🥐 🍜" value="🍽️">
     </div>
   </div>
 
   <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#D4521A;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="rSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-top:0.75rem;background:rgba(212,82,26,0.06);border:1px solid rgba(212,82,26,0.25);border-radius:10px;padding:0.75rem;">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -332,27 +390,28 @@
       <input type="checkbox" id="rShareThreads" style="width:16px;height:16px;">
       <label for="rShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publish Review</button>
+    <button class="btn-publish" onclick="publishReview()" id="publishBtn">🚀 Publiceren</button>
+  </div>
 
   <!-- HOTEL REVIEW SECTION -->
   <div id="hotelSection" style="background:#E8F0F8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A3A5C;">🏨 Add Hotel Review</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A3A5C;">🏨 Hotel toevoegen</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Hotel Name *</label>
-        <input class="form-input" type="text" id="hName" placeholder="e.g. Aman Tokyo" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Naam hotel *</label>
+        <input class="form-input" type="text" id="hName" placeholder="bv. Aman Tokyo" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">City / Country *</label>
-        <input class="form-input" type="text" id="hCity" placeholder="e.g. Tokyo, Japan" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Stad / land *</label>
+        <input class="form-input" type="text" id="hCity" placeholder="bv. Tokyo, Japan" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Price</label>
-        <input class="form-input" type="text" id="hPrice" placeholder="e.g. €200/night or Luxury" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Prijs</label>
+        <input class="form-input" type="text" id="hPrice" placeholder="bv. €200/night or Luxury" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Visit Date</label>
-        <input class="form-input" type="text" id="hDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Bezoekdatum</label>
+        <input class="form-input" type="text" id="hDate" placeholder="bv. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Type</label>
@@ -360,7 +419,7 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Star Rating *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Score *</label>
       <div id="hotelStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
         <span onclick="setHotelRating(1)">★</span>
         <span onclick="setHotelRating(2)">★</span>
@@ -370,32 +429,32 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Review Text *</label>
-      <textarea class="form-input" id="hReview" rows="4" placeholder="Write your hotel review..." style="margin-top:6px;"></textarea>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Reviewtekst *</label>
+      <textarea class="form-input" id="hReview" rows="4" placeholder="Schrijf je hotelreview…" style="margin-top:6px;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Tags (comma separated)</label>
-        <input class="form-input" type="text" id="hTags" placeholder="e.g. Must Visit, Rooftop, Luxury" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Tags (met komma ertussen)</label>
+        <input class="form-input" type="text" id="hTags" placeholder="bv. Must Visit, Rooftop, Luxury" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Emoji Icon</label>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Emoji</label>
         <input class="form-input" type="text" id="hEmoji" placeholder="🏨" value="🏨" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="hSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Photos (up to 5)</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;">Foto's (max 5)</label>
       <div class="photo-upload-area" id="hPhotoUploadArea" style="margin-top:6px;">
         <input type="file" id="hPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'h')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -434,50 +493,50 @@
       <input type="checkbox" id="hShareThreads" style="width:16px;height:16px;">
       <label for="hShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button id="hPublishBtn" onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publish Hotel Review</button>
+    <button id="hPublishBtn" onclick="publishHotelReview()" style="margin-top:1.5rem;width:100%;background:#1A3A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🏨 Publiceren</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A3A5C;font-weight:600;margin-bottom:0.5rem;">📋 Hotel Reviews: Recent & Scheduled</p>
       <div id="hotelPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
-        <p style="font-size:12px;color:var(--muted);">Loading...</p>
+        <p style="font-size:12px;color:var(--muted);">Laden…</p>
       </div>
     </div>
   </div>
 
   <!-- DRINK SECTION -->
   <div id="drinkSection" style="background:#F3E8F0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#6B2A5C;">🍸 Add Drink Spot</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#6B2A5C;">🍸 Drink-plek toevoegen</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Name *</label>
-        <input class="form-input" type="text" id="dName" placeholder="e.g. Bar Botanique" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Naam *</label>
+        <input class="form-input" type="text" id="dName" placeholder="bv. Bar Botanique" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">City / Location *</label>
-        <input class="form-input" type="text" id="dCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Stad / plek *</label>
+        <input class="form-input" type="text" id="dCity" placeholder="bv. Amsterdam" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Price</label>
-        <input class="form-input" type="text" id="dPrice" placeholder="e.g. €12 or Luxury" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Prijs</label>
+        <input class="form-input" type="text" id="dPrice" placeholder="bv. €12 or Luxury" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Visit Date</label>
-        <input class="form-input" type="text" id="dDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Bezoekdatum</label>
+        <input class="form-input" type="text" id="dDate" placeholder="bv. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Type</label>
         <input class="form-input" type="text" id="dType" placeholder="bv. Cocktail bar" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Latitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="dLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Breedtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="dLat" placeholder="bv. 52.3646" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Longitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="dLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Lengtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="dLng" placeholder="bv. 4.8723" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Star Rating *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Score *</label>
       <div id="drinkStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
         <span onclick="setDrinkRating(1)">★</span>
         <span onclick="setDrinkRating(2)">★</span>
@@ -487,32 +546,32 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Review Text *</label>
-      <textarea class="form-input" id="dReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Reviewtekst *</label>
+      <textarea class="form-input" id="dReview" rows="4" placeholder="Schrijf je review…" style="margin-top:6px;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Tags (comma separated)</label>
-        <input class="form-input" type="text" id="dTags" placeholder="e.g. Cocktails, Rooftop, Must Try" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Tags (met komma ertussen)</label>
+        <input class="form-input" type="text" id="dTags" placeholder="bv. Cocktails, Rooftop, Must Try" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Emoji Icon</label>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Emoji</label>
         <input class="form-input" type="text" id="dEmoji" placeholder="🍸" value="🍸" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="dSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Photos (up to 5)</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;">Foto's (max 5)</label>
       <div class="photo-upload-area" id="dPhotoUploadArea" style="margin-top:6px;">
         <input type="file" id="dPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'd')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -551,30 +610,30 @@
       <input type="checkbox" id="dShareThreads" style="width:16px;height:16px;">
       <label for="dShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button id="dPublishBtn" onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publish Drink Spot</button>
+    <button id="dPublishBtn" onclick="publishDrinkSpot()" style="margin-top:1.5rem;width:100%;background:#6B2A5C;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🍸 Publiceren</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#6B2A5C;font-weight:600;margin-bottom:0.5rem;">📋 Drink Spots: Recent & Scheduled</p>
       <div id="drinkPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
-        <p style="font-size:12px;color:var(--muted);">Loading...</p>
+        <p style="font-size:12px;color:var(--muted);">Laden…</p>
       </div>
     </div>
   </div>
 
   <!-- SHOP SECTION -->
   <div id="shopSection" style="background:#F8E8E8;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#A32323;">🛍️ Add Shop Spot</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#A32323;">🛍️ Winkel toevoegen</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Name *</label>
-        <input class="form-input" type="text" id="sName" placeholder="e.g. De Kaaskamer" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Naam *</label>
+        <input class="form-input" type="text" id="sName" placeholder="bv. De Kaaskamer" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Price</label>
-        <input class="form-input" type="text" id="sPrice" placeholder="e.g. €€ or Luxury" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Prijs</label>
+        <input class="form-input" type="text" id="sPrice" placeholder="bv. €€ or Luxury" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Visit Date</label>
-        <input class="form-input" type="text" id="sDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Bezoekdatum</label>
+        <input class="form-input" type="text" id="sDate" placeholder="bv. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Type</label>
@@ -582,21 +641,21 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Location(s): City + Coordinates *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Locatie(s): stad en coördinaten *</label>
       <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">Heeft deze winkel meerdere vestigingen/locaties? Voeg dan meerdere rijen toe.</p>
       <div id="sLocations">
         <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
-          <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam">
-          <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646">
-          <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723">
-          <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00">
+          <input class="form-input loc-city" type="text" placeholder="Stad, bv. Amsterdam">
+          <input class="form-input loc-lat" type="text" placeholder="Lat, bv. 52.3646">
+          <input class="form-input loc-lng" type="text" placeholder="Lng, bv. 4.8723">
+          <input class="form-input loc-hours" type="text" placeholder="Tijden, bv. Daily 10:00–17:00">
           <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="display:none;background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
         </div>
       </div>
-      <button type="button" onclick="addLocationRow('sLocations')" style="margin-top:2px;background:none;border:1px dashed #A32323;color:#A32323;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Add another location</button>
+      <button type="button" onclick="addLocationRow('sLocations')" style="margin-top:2px;background:none;border:1px dashed #A32323;color:#A32323;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:600;">+ Nog een locatie</button>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Star Rating *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Score *</label>
       <div id="shopStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
         <span onclick="setShopRating(1)">★</span>
         <span onclick="setShopRating(2)">★</span>
@@ -606,32 +665,32 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Review Text *</label>
-      <textarea class="form-input" id="sReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Reviewtekst *</label>
+      <textarea class="form-input" id="sReview" rows="4" placeholder="Schrijf je review…" style="margin-top:6px;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Tags (comma separated)</label>
-        <input class="form-input" type="text" id="sTags" placeholder="e.g. Concept Store, Gifts" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Tags (met komma ertussen)</label>
+        <input class="form-input" type="text" id="sTags" placeholder="bv. Concept Store, Gifts" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Emoji Icon</label>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Emoji</label>
         <input class="form-input" type="text" id="sEmoji" placeholder="🛍️" value="🛍️" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="sSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Photos (up to 5)</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;">Foto's (max 5)</label>
       <div class="photo-upload-area" id="sPhotoUploadArea" style="margin-top:6px;">
         <input type="file" id="sPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 's')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -670,50 +729,50 @@
       <input type="checkbox" id="sShareThreads" style="width:16px;height:16px;">
       <label for="sShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button id="sPublishBtn" onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publish Shop Spot</button>
+    <button id="sPublishBtn" onclick="publishShopSpot()" style="margin-top:1.5rem;width:100%;background:#A32323;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🛍️ Publiceren</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A32323;font-weight:600;margin-bottom:0.5rem;">📋 Shop Spots: Recent & Scheduled</p>
       <div id="shopPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
-        <p style="font-size:12px;color:var(--muted);">Loading...</p>
+        <p style="font-size:12px;color:var(--muted);">Laden…</p>
       </div>
     </div>
   </div>
 
   <!-- CULTURE SECTION -->
   <div id="cultureSection" style="background:#FBF3E0;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#8A6A0A;">🎭 Add Culture Spot</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#8A6A0A;">🎭 Cultuur-plek toevoegen</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Name *</label>
-        <input class="form-input" type="text" id="cName" placeholder="e.g. Stedelijk Museum" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Naam *</label>
+        <input class="form-input" type="text" id="cName" placeholder="bv. Stedelijk Museum" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">City / Location *</label>
-        <input class="form-input" type="text" id="cCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Stad / plek *</label>
+        <input class="form-input" type="text" id="cCity" placeholder="bv. Amsterdam" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Price</label>
-        <input class="form-input" type="text" id="cPrice" placeholder="e.g. €20 or Free" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Prijs</label>
+        <input class="form-input" type="text" id="cPrice" placeholder="bv. €20 or Free" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Visit Date</label>
-        <input class="form-input" type="text" id="cDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Bezoekdatum</label>
+        <input class="form-input" type="text" id="cDate" placeholder="bv. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Type</label>
         <input class="form-input" type="text" id="cType" placeholder="bv. Museum" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Latitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="cLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Breedtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="cLat" placeholder="bv. 52.3646" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Longitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="cLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Lengtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="cLng" placeholder="bv. 4.8723" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Star Rating *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Score *</label>
       <div id="cultureStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
         <span onclick="setCultureRating(1)">★</span>
         <span onclick="setCultureRating(2)">★</span>
@@ -723,32 +782,32 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Review Text *</label>
-      <textarea class="form-input" id="cReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Reviewtekst *</label>
+      <textarea class="form-input" id="cReview" rows="4" placeholder="Schrijf je review…" style="margin-top:6px;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Tags (comma separated)</label>
-        <input class="form-input" type="text" id="cTags" placeholder="e.g. Museum, Must Visit" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Tags (met komma ertussen)</label>
+        <input class="form-input" type="text" id="cTags" placeholder="bv. Museum, Must Visit" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Emoji Icon</label>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Emoji</label>
         <input class="form-input" type="text" id="cEmoji" placeholder="🎭" value="🎭" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="cSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Photos (up to 5)</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;">Foto's (max 5)</label>
       <div class="photo-upload-area" id="cPhotoUploadArea" style="margin-top:6px;">
         <input type="file" id="cPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'c')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -787,50 +846,50 @@
       <input type="checkbox" id="cShareThreads" style="width:16px;height:16px;">
       <label for="cShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button id="cPublishBtn" onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publish Culture Spot</button>
+    <button id="cPublishBtn" onclick="publishCultureSpot()" style="margin-top:1.5rem;width:100%;background:#8A6A0A;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🎭 Publiceren</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A0A;font-weight:600;margin-bottom:0.5rem;">📋 Culture Spots: Recent & Scheduled</p>
       <div id="culturePublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
-        <p style="font-size:12px;color:var(--muted);">Loading...</p>
+        <p style="font-size:12px;color:var(--muted);">Laden…</p>
       </div>
     </div>
   </div>
 
   <!-- HEALTH SECTION -->
   <div id="healthSection" style="background:#E8F5EC;border-radius:16px;padding:2rem;margin-top:2rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A5C2E;">💪 Add Health Spot</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:1.5rem;color:#1A5C2E;">💪 Sport-plek toevoegen</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Name *</label>
-        <input class="form-input" type="text" id="hlName" placeholder="e.g. Basefit Zuidas" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Naam *</label>
+        <input class="form-input" type="text" id="hlName" placeholder="bv. Basefit Zuidas" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">City / Location *</label>
-        <input class="form-input" type="text" id="hlCity" placeholder="e.g. Amsterdam" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Stad / plek *</label>
+        <input class="form-input" type="text" id="hlCity" placeholder="bv. Amsterdam" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Price</label>
-        <input class="form-input" type="text" id="hlPrice" placeholder="e.g. €30/month" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Prijs</label>
+        <input class="form-input" type="text" id="hlPrice" placeholder="bv. €30/month" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Visit Date</label>
-        <input class="form-input" type="text" id="hlDate" placeholder="e.g. Jan 2025" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Bezoekdatum</label>
+        <input class="form-input" type="text" id="hlDate" placeholder="bv. Jan 2025" style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Type</label>
         <input class="form-input" type="text" id="hlType" placeholder="bv. Gym" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Latitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="hlLat" placeholder="e.g. 52.3646" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Breedtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="hlLat" placeholder="bv. 52.3646" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Longitude (from Google Maps)</label>
-        <input class="form-input" type="text" id="hlLng" placeholder="e.g. 4.8723" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Lengtegraad (uit Google Maps)</label>
+        <input class="form-input" type="text" id="hlLng" placeholder="bv. 4.8723" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Star Rating *</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Score *</label>
       <div id="healthStarRating" style="font-size:32px;color:#ddd;cursor:pointer;margin-top:6px;">
         <span onclick="setHealthRating(1)">★</span>
         <span onclick="setHealthRating(2)">★</span>
@@ -840,32 +899,32 @@
       </div>
     </div>
     <div style="margin-top:1rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Review Text *</label>
-      <textarea class="form-input" id="hlReview" rows="4" placeholder="Write your review..." style="margin-top:6px;"></textarea>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Reviewtekst *</label>
+      <textarea class="form-input" id="hlReview" rows="4" placeholder="Schrijf je review…" style="margin-top:6px;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Tags (comma separated)</label>
-        <input class="form-input" type="text" id="hlTags" placeholder="e.g. Gym, Spa, Wellness" style="margin-top:6px;">
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Tags (met komma ertussen)</label>
+        <input class="form-input" type="text" id="hlTags" placeholder="bv. Gym, Spa, Wellness" style="margin-top:6px;">
       </div>
       <div>
-        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Emoji Icon</label>
+        <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Emoji</label>
         <input class="form-input" type="text" id="hlEmoji" placeholder="💪" value="💪" style="margin-top:6px;">
       </div>
     </div>
     <div style="margin-top:1rem;background:rgba(0,0,0,0.03);border-radius:10px;padding:0.9rem 1rem;">
       <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;display:flex;align-items:center;gap:6px;">
-        📅 Schedule for later (optional)
+        📅 Later publiceren (optioneel)
       </label>
       <input class="form-input" type="datetime-local" id="hlSchedule" style="margin-top:6px;">
-      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Leave empty to publish immediately. If set, it goes live automatically at this date/time.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px;">Laat leeg om meteen te publiceren. Vul je een datum in, dan gaat de plek op dat moment vanzelf live.</p>
     </div>
     <div style="margin-bottom:0.75rem;">
-      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Photos (up to 5)</label>
+      <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;">Foto's (max 5)</label>
       <div class="photo-upload-area" id="hlPhotoUploadArea" style="margin-top:6px;">
         <input type="file" id="hlPhoto" accept="image/*" multiple onchange="handlePhotoSelect(this, 'hl')">
         <div class="upload-icon">📷</div>
-        <strong>Click to upload photos</strong>
+        <strong>Klik om foto's te uploaden</strong>
         <p>JPG, PNG of WebP · max 10MB per foto · max 5 foto's</p>
         <p style="margin-top:4px;">Alleen eigen foto's, of foto's met toestemming of een vrije licentie.</p>
       </div>
@@ -904,20 +963,22 @@
       <input type="checkbox" id="hlShareThreads" style="width:16px;height:16px;">
       <label for="hlShareThreads" style="font-size:12px;color:var(--muted);">🧵 Ook automatisch delen naar Threads na publiceren</label>
     </div>
-    <button id="hlPublishBtn" onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publish Health Spot</button>
+    <button id="hlPublishBtn" onclick="publishHealthSpot()" style="margin-top:1.5rem;width:100%;background:#1A5C2E;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">💪 Publiceren</button>
     <div style="margin-top:1.25rem;">
       <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#1A5C2E;font-weight:600;margin-bottom:0.5rem;">📋 Health Spots: Recent & Scheduled</p>
       <div id="healthPublishedList" style="display:flex;flex-direction:column;gap:0.5rem;">
-        <p style="font-size:12px;color:var(--muted);">Loading...</p>
+        <p style="font-size:12px;color:var(--muted);">Laden…</p>
       </div>
     </div>
   </div>
+
+  </section>
 
   <!-- SOCIAL MEDIA SETTINGS: ingeklapt, alleen nodig bij het koppelen van een account -->
   <details id="socialSettings" class="social-fold">
   <summary>⚙️ Social accounts koppelen (Instagram, TikTok, Threads)</summary>
   <div style="background:#F3E8FB;border-radius:16px;padding:2rem;margin-top:1rem;margin-bottom:2rem;">
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:0.5rem;color:#5C2A8A;">📲 Social Settings</h2>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:0.5rem;color:#5C2A8A;">📲 Social accounts</h2>
     <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem;">Connect your accounts with one click. Only works once your Meta/TikTok App has been approved (Part A of the guide).</p>
 
     <div style="margin-bottom:1.25rem;">
@@ -931,18 +992,18 @@
 
       <div style="margin-bottom:0.75rem;">
         <label style="font-size:11px;color:var(--muted);">Instagram App ID (from App Dashboard → Instagram API → API setup with Instagram login)</label>
-        <input class="form-input" type="text" id="igAppId" placeholder="e.g. 1580184236779823" style="margin-top:4px;">
+        <input class="form-input" type="text" id="igAppId" placeholder="bv. 1580184236779823" style="margin-top:4px;">
       </div>
       <button onclick="connectInstagram()" style="width:100%;background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.25rem;">📸 Connect Instagram</button>
 
       <div style="margin-bottom:0.75rem;">
         <label style="font-size:11px;color:var(--muted);">Facebook App ID (public, from your Meta Developer app, used for Threads and Facebook Page management)</label>
-        <input class="form-input" type="text" id="fbAppId" placeholder="e.g. 1234567890123456" style="margin-top:4px;">
+        <input class="form-input" type="text" id="fbAppId" placeholder="bv. 1234567890123456" style="margin-top:4px;">
       </div>
 
       <div style="margin-bottom:0.75rem;">
         <label style="font-size:11px;color:var(--muted);">TikTok Client Key (public, from your TikTok Developer app)</label>
-        <input class="form-input" type="text" id="ttClientKey" placeholder="e.g. aw1a2b3c4d5e6f" style="margin-top:4px;">
+        <input class="form-input" type="text" id="ttClientKey" placeholder="bv. aw1a2b3c4d5e6f" style="margin-top:4px;">
       </div>
       <button onclick="connectTikTok()" style="width:100%;background:#000;color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:1.25rem;">🎵 Connect TikTok</button>
 
@@ -958,7 +1019,7 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Instagram Business Account ID</label>
-        <input class="form-input" type="text" id="igBusinessAccountId" placeholder="e.g. 178414..." style="margin-top:6px;">
+        <input class="form-input" type="text" id="igBusinessAccountId" placeholder="bv. 178414..." style="margin-top:6px;">
       </div>
       <div>
         <label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#5C2A8A;font-weight:600;">Instagram Access Token</label>
@@ -998,7 +1059,7 @@
   <div style="margin-top:2rem;" id="publishedSection">
     <div class="published-list">
       <h3>📋 Published Reviews (from admin)</h3>
-      <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Loading...</p></div>
+      <div id="publishedList"><p style="font-size:13px;color:var(--muted);">Laden…</p></div>
     </div>
   </div>
 </div>
@@ -1155,7 +1216,7 @@
       prefix: 'r', sectionId: 'eatSection',
       fields: { rName: 'name', rType: 'type', rPrice: 'price', rDate: 'date', rKitchen: 'kitchenCloses', rReview: 'review', rTags: 'tags_join', rPartnerName: 'partnerName_raw' },
       emojiField: 'rEmoji', scheduleField: 'rSchedule',
-      publishBtnId: 'publishBtn', publishLabel: '🚀 Publish Review',
+      publishBtnId: 'publishBtn', publishLabel: '🚀 Publiceren',
       setRating: 'setAdminRating', hasPhotoWidget: true,
       multiLocation: true, locationsContainer: 'rLocations'
     },
@@ -1163,21 +1224,21 @@
       prefix: 'h', sectionId: 'hotelSection',
       fields: { hName: 'name', hType: 'type', hCity: 'city', hPrice: 'price', hDate: 'date', hReview: 'review', hTags: 'tags_join', hPartnerName: 'partnerName_raw' },
       emojiField: 'hEmoji', scheduleField: 'hSchedule',
-      publishBtnId: 'hPublishBtn', publishLabel: '🏨 Publish Hotel Review',
+      publishBtnId: 'hPublishBtn', publishLabel: '🏨 Publiceren',
       setRating: 'setHotelRating', hasPhotoWidget: true
     },
     drinkspots: {
       prefix: 'd', sectionId: 'drinkSection',
       fields: { dName: 'name', dType: 'type', dCity: 'city', dPrice: 'price', dDate: 'date', dReview: 'review', dTags: 'tags_join', dLat: 'lat', dLng: 'lng', dPartnerName: 'partnerName_raw' },
       emojiField: 'dEmoji', scheduleField: 'dSchedule',
-      publishBtnId: 'dPublishBtn', publishLabel: '🍸 Publish Drink Spot',
+      publishBtnId: 'dPublishBtn', publishLabel: '🍸 Publiceren',
       setRating: 'setDrinkRating', hasPhotoWidget: true
     },
     shopspots: {
       prefix: 's', sectionId: 'shopSection',
       fields: { sName: 'name', sType: 'type', sPrice: 'price', sDate: 'date', sReview: 'review', sTags: 'tags_join', sPartnerName: 'partnerName_raw' },
       emojiField: 'sEmoji', scheduleField: 'sSchedule',
-      publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publish Shop Spot',
+      publishBtnId: 'sPublishBtn', publishLabel: '🛍️ Publiceren',
       setRating: 'setShopRating', hasPhotoWidget: true,
       multiLocation: true, locationsContainer: 'sLocations'
     },
@@ -1185,14 +1246,14 @@
       prefix: 'c', sectionId: 'cultureSection',
       fields: { cName: 'name', cType: 'type', cCity: 'city', cPrice: 'price', cDate: 'date', cReview: 'review', cTags: 'tags_join', cLat: 'lat', cLng: 'lng', cPartnerName: 'partnerName_raw' },
       emojiField: 'cEmoji', scheduleField: 'cSchedule',
-      publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publish Culture Spot',
+      publishBtnId: 'cPublishBtn', publishLabel: '🎭 Publiceren',
       setRating: 'setCultureRating', hasPhotoWidget: true
     },
     healthspots: {
       prefix: 'hl', sectionId: 'healthSection',
       fields: { hlName: 'name', hlType: 'type', hlCity: 'city', hlPrice: 'price', hlDate: 'date', hlReview: 'review', hlTags: 'tags_join', hlLat: 'lat', hlLng: 'lng', hlPartnerName: 'partnerName_raw' },
       emojiField: 'hlEmoji', scheduleField: 'hlSchedule',
-      publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publish Health Spot',
+      publishBtnId: 'hlPublishBtn', publishLabel: '💪 Publiceren',
       setRating: 'setHealthRating', hasPhotoWidget: true
     }
   };
@@ -1268,14 +1329,19 @@
       }
 
       // Locations (multi-location categories: Eat, Shop) vs single city (rest)
-      if (cfg.multiLocation && r.locations && r.locations.length) {
+      // A place without a locations list (made in the app, or older) gets one row
+      // from its own city and coordinates, so it can be saved without retyping.
+      // The rows are always replaced, so nothing stays behind from the previous edit.
+      if (cfg.multiLocation) {
+        const locs = r.locations && r.locations.length ? r.locations
+          : [{ city: r.city || '', lat: r.lat != null ? r.lat : '', lng: r.lng != null ? r.lng : '', hours: typeof r.hours === 'string' ? r.hours : '' }];
         const container = document.getElementById(cfg.locationsContainer);
-        container.innerHTML = r.locations.map((loc, i) => `
+        container.innerHTML = locs.map((loc, i) => `
           <div class="location-row" style="display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;">
-            <input class="form-input loc-city" type="text" placeholder="City e.g. Amsterdam" value="${loc.city || ''}">
-            <input class="form-input loc-lat" type="text" placeholder="Lat e.g. 52.3646" value="${loc.lat != null ? loc.lat : ''}">
-            <input class="form-input loc-lng" type="text" placeholder="Lng e.g. 4.8723" value="${loc.lng != null ? loc.lng : ''}">
-            <input class="form-input loc-hours" type="text" placeholder="Hours e.g. Daily 10:00–17:00" value="${loc.hours || ''}">
+            <input class="form-input loc-city" type="text" placeholder="Stad, bv. Amsterdam" value="${todoEsc(loc.city || '')}">
+            <input class="form-input loc-lat" type="text" placeholder="Lat, bv. 52.3646" value="${loc.lat != null ? loc.lat : ''}">
+            <input class="form-input loc-lng" type="text" placeholder="Lng, bv. 4.8723" value="${loc.lng != null ? loc.lng : ''}">
+            <input class="form-input loc-hours" type="text" placeholder="Tijden, bv. Daily 10:00–17:00" value="${todoEsc(typeof loc.hours === 'string' ? loc.hours : '')}">
             <button type="button" class="btn-remove-location" onclick="removeLocationRow(this)" style="${i === 0 ? 'display:none;' : ''}background:none;border:none;color:#c33;font-size:18px;cursor:pointer;">✕</button>
           </div>`).join('');
       }
@@ -1291,7 +1357,7 @@
       // Switch button into "update" mode
       window.editingId[cfg.prefix] = { coll, id };
       const btn = document.getElementById(cfg.publishBtnId);
-      if (btn) btn.textContent = '💾 Update (opslaan in ' + coll + ')';
+      if (btn) btn.textContent = '💾 Opslaan (in ' + coll + ')';
 
       showEditCancelBar(cfg);
 
@@ -1382,8 +1448,8 @@
   // The panel is hidden, not cleared, so a half-filled form is still there after unlocking.
   function showLocked(user) {
     if (stopWatch) { stopWatch(); stopWatch = null; }
-    document.getElementById('loginTitle').textContent = 'Enter your password';
-    document.getElementById('loginText').textContent = 'The admin locks after an hour without use, so nobody else can open it on this device.';
+    document.getElementById('loginTitle').textContent = 'Vul je wachtwoord in';
+    document.getElementById('loginText').textContent = 'De admin gaat op slot na een uur zonder gebruik, zodat niemand anders hem op dit apparaat kan openen.';
     const em = document.getElementById('adminEmail');
     if (user.email && !em.value) em.value = user.email;
     document.getElementById('adminPassword').value = '';
@@ -1404,7 +1470,6 @@
     if (!panelLoaded) {
       panelLoaded = true;
       window.loadLiveStats();
-      loadPublished();
       showOpenReports();
     }
   }
@@ -1431,7 +1496,7 @@
       // safe as the claim.
       const hasClaim = token.claims && token.claims.admin === true;
       if (!(hasClaim || user.uid === BRAND_UID)) {
-        showToast('This account is not an admin.');
+        showToast('Dit account is geen admin.');
         await signOut(auth);
         showLogin();
         return;
@@ -1447,7 +1512,7 @@
       stopWatch = watchAdminLock(user.uid, () => { stopWatch = null; showLocked(user); });
     } catch (err) {
       console.error('Could not verify admin claim:', err);
-      showToast('Could not verify your account. Try again.');
+      showToast('Kon je account niet controleren. Probeer het opnieuw.');
       await signOut(auth);
       showLogin();
     }
@@ -1459,12 +1524,12 @@
     const btn = document.getElementById('adminSignInBtn');
 
     if (!email || !pw) {
-      showToast('Enter your email and password.');
+      showToast('Vul je e-mail en wachtwoord in.');
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = 'Signing in...';
+    btn.textContent = 'Inloggen…';
     signingIn = true;
 
     try {
@@ -1478,7 +1543,7 @@
     } finally {
       signingIn = false;
       btn.disabled = false;
-      btn.textContent = 'Sign in';
+      btn.textContent = 'Inloggen';
     }
   };
 
@@ -1599,7 +1664,7 @@
     const hours = locations[0].hours || '';
 
     btn.disabled = true;
-    btn.textContent = 'Publishing...';
+    btn.textContent = 'Publiceren…';
 
     const rScheduleVal = document.getElementById('rSchedule').value;
     const rPublishAt = rScheduleVal ? new Date(rScheduleVal) : new Date();
@@ -1616,7 +1681,7 @@
         partnerName: rSponsored ? rPartnerName : '',
         closedStatus: rClosedStatus,
         closedNote: rClosedStatus !== 'open' ? rClosedNote : '',
-        name, city, type, price, date, hours, kitchenCloses, review, emoji,
+        name, city, type, price, date, ...(hours ? { hours } : {}), kitchenCloses, review, emoji,
         lat, lng,
         locations,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
@@ -1628,7 +1693,7 @@
         author: 'Strong Foodie'
       });
 
-      showToast('Review saved! 🍽️');
+      showToast('Opgeslagen! 🍽️');
 
       // Auto-share to Instagram if checked (only possible with a public photoUrl)
       if (document.getElementById('rShareInstagram').checked) {
@@ -1636,7 +1701,7 @@
           const caption = `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #${cityTag(city)}`;
           shareToInstagram(photoUrl, caption);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram without a photo.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('rShareThreads').checked) {
@@ -1659,11 +1724,11 @@
 
       loadPublished();
     } catch(e) {
-      showToast('Error: ' + e.message);
+      showToast('Fout: ' + e.message);
     }
 
     btn.disabled = false;
-    btn.textContent = '🚀 Publish Review';
+    btn.textContent = '🚀 Publiceren';
   };
 
   // The old GitHub page maker is gone: GitHub's own Action makes the pages every
@@ -1791,7 +1856,7 @@
       });
       status.textContent = '✅ Saved. Note: keep your admin key safe yourself, it is not stored in Firestore.';
       status.style.color = '#1A5C2E';
-      showToast('Social details saved!');
+      showToast('Social-gegevens opgeslagen.');
     } catch(e) {
       status.textContent = '❌ Opslaan mislukt: ' + e.message;
       status.style.color = '#A32323';
@@ -1905,19 +1970,20 @@
   window.deleteCategoryItem = async function(coll, containerId, id) {
     if (!confirm('Delete this item?')) return;
     await deleteDoc(doc(db, coll, id));
-    showToast('Deleted!');
+    showToast('Verwijderd.');
     loadCategoryPublished(coll, containerId);
   };
 
+  // The old lists under each form are replaced by "Alle plekken". After a save
+  // or delete, "Te doen" and "Alle plekken" load again.
   function refreshAllCategoryLists() {
-    CATEGORY_LIST_CONFIG.forEach(c => loadCategoryPublished(c.coll, c.containerId, c.emoji));
+    if (window.loadLiveStats) window.loadLiveStats();
   }
-  refreshAllCategoryLists();
-  // Refresh these lists periodically so scheduled items flip to "Live" without a manual reload
-  setInterval(refreshAllCategoryLists, 60000);
   // ─────────────────────────────────────────────────────────────────────────
 
   async function loadPublished() {
+    // Replaced by "Alle plekken" (see sfRenderAllPlaces); only refreshes that list now.
+    if (window.loadLiveStats) { window.loadLiveStats(); return; }
     const list = document.getElementById('publishedList');
     try {
       const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
@@ -1963,7 +2029,7 @@
   window.deleteReview = async function(id) {
     if (!confirm('Delete this review?')) return;
     await deleteDoc(doc(db, 'reviews', id));
-    showToast('Review deleted!');
+    showToast('Review verwijderd.');
     loadPublished();
   };
 
@@ -2020,13 +2086,13 @@
         status: hScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast(result.updated ? 'Hotel review updated! 🏨' : 'Hotel review published! 🏨');
+      showToast(result.updated ? 'Opgeslagen! 🏨' : 'Gepubliceerd! 🏨');
 
       if (document.getElementById('hShareInstagram').checked) {
         if (hPhotoUrl) {
           shareToInstagram(hPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #stay #${cityTag(city)}`);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('hShareThreads').checked) {
@@ -2050,7 +2116,7 @@
       hotelRating = 0;
       document.querySelectorAll('#hotelStarRating span').forEach(s => s.style.color = '#ddd');
       refreshAllCategoryLists();
-    } catch(e) { showToast('Error: ' + e.message); }
+    } catch(e) { showToast('Fout: ' + e.message); }
   };
 
   // ── DRINK / SHOP / CULTURE / HEALTH ──────────────────────────────────────
@@ -2115,13 +2181,13 @@
         status: dScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast(result.updated ? 'Drink spot updated! 🍸' : 'Drink spot published! 🍸');
+      showToast(result.updated ? 'Opgeslagen! 🍸' : 'Gepubliceerd! 🍸');
 
       if (document.getElementById('dShareInstagram').checked) {
         if (dPhotoUrl) {
           shareToInstagram(dPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #drink #${cityTag(city)}`);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('dShareThreads').checked) {
@@ -2138,7 +2204,7 @@
       drinkRating = 0;
       document.querySelectorAll('#drinkStarRating span').forEach(s => s.style.color = '#ddd');
       refreshAllCategoryLists();
-    } catch(e) { showToast('Error: ' + e.message); }
+    } catch(e) { showToast('Fout: ' + e.message); }
   };
 
   window.publishShopSpot = async function() {
@@ -2184,13 +2250,13 @@
         status: sScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast(result.updated ? 'Shop spot updated! 🛍️' : 'Shop spot published! 🛍️');
+      showToast(result.updated ? 'Opgeslagen! 🛍️' : 'Gepubliceerd! 🛍️');
 
       if (document.getElementById('sShareInstagram').checked) {
         if (sPhotoUrl) {
           shareToInstagram(sPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #shop #${cityTag(city)}`);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('sShareThreads').checked) {
@@ -2208,7 +2274,7 @@
       shopRating = 0;
       document.querySelectorAll('#shopStarRating span').forEach(s => s.style.color = '#ddd');
       refreshAllCategoryLists();
-    } catch(e) { showToast('Error: ' + e.message); }
+    } catch(e) { showToast('Fout: ' + e.message); }
   };
 
   window.publishCultureSpot = async function() {
@@ -2253,13 +2319,13 @@
         status: cScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast(result.updated ? 'Culture spot updated! 🎭' : 'Culture spot published! 🎭');
+      showToast(result.updated ? 'Opgeslagen! 🎭' : 'Gepubliceerd! 🎭');
 
       if (document.getElementById('cShareInstagram').checked) {
         if (cPhotoUrl) {
           shareToInstagram(cPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #culture #${cityTag(city)}`);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('cShareThreads').checked) {
@@ -2276,7 +2342,7 @@
       cultureRating = 0;
       document.querySelectorAll('#cultureStarRating span').forEach(s => s.style.color = '#ddd');
       refreshAllCategoryLists();
-    } catch(e) { showToast('Error: ' + e.message); }
+    } catch(e) { showToast('Fout: ' + e.message); }
   };
 
   window.publishHealthSpot = async function() {
@@ -2321,13 +2387,13 @@
         status: hlScheduleVal ? 'scheduled' : 'published',
         author: 'Strong Foodie'
       });
-      showToast(result.updated ? 'Health spot updated! 💪' : 'Health spot published! 💪');
+      showToast(result.updated ? 'Opgeslagen! 💪' : 'Gepubliceerd! 💪');
 
       if (document.getElementById('hlShareInstagram').checked) {
         if (hlPhotoUrl) {
           shareToInstagram(hlPhotoUrl, `${emoji} ${name}\n📍 ${city}\n\n${review}\n\n#strongfoodie #health #${cityTag(city)}`);
         } else {
-          showToast('No photo uploaded, cannot share to Instagram.');
+          showToast('Geen foto, dus niet gedeeld op Instagram.');
         }
       }
       if (document.getElementById('hlShareThreads').checked) {
@@ -2344,7 +2410,7 @@
       healthRating = 0;
       document.querySelectorAll('#healthStarRating span').forEach(s => s.style.color = '#ddd');
       refreshAllCategoryLists();
-    } catch(e) { showToast('Error: ' + e.message); }
+    } catch(e) { showToast('Fout: ' + e.message); }
   };
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -2373,11 +2439,13 @@
       const nEdits = edits ? rows(edits).filter(e => (e.status || 'pending') === 'pending').length : null;
       const now = new Date(), week = new Date(now.getTime() + 7 * 864e5);
       const nAds = promos ? rows(promos).filter(a => { const e = toDateX(a.end); return e && e >= now && e <= week; }).length : null;
-      const places = [];
+      const allPlaces = [];
       placeSnaps.forEach((snap, i) => (rows(snap) || []).forEach(x => {
-        if (x.closedStatus === 'temp' || x.closedStatus === 'perm') return;
-        places.push({ coll: TODO_COLLS[i][0], emoji: x.emoji || TODO_COLLS[i][1], ...x });
+        allPlaces.push({ coll: TODO_COLLS[i][0], emoji: x.emoji || TODO_COLLS[i][1], ...x });
       }));
+      const places = allPlaces.filter(x => x.closedStatus !== 'temp' && x.closedStatus !== 'perm');
+      window.sfAllPlaces = { list: allPlaces, visitDateOf };
+      if (window.sfRenderAllPlaces) window.sfRenderAllPlaces();
       const noPhoto = places.filter(x => !(x.photoUrl || (x.photos && x.photos.length)));
       const noPrice = places.filter(x => !String(x.price || '').trim());
       const noDate = places.filter(x => !(x.date && visitDateOf(x.date)));
@@ -2410,6 +2478,98 @@
       sub.textContent = 'Kon niet laden. Controleer de verbinding en klik op Vernieuwen.';
     }
   };
+  // ── PLEK TOEVOEGEN: één categorie tegelijk ──────────────────────────
+  const PANES = { reviews: 'eatPane', drinkspots: 'drinkSection', hotelreviews: 'hotelSection', shopspots: 'shopSection', culturespots: 'cultureSection', healthspots: 'healthSection' };
+  const CAT_NL = { reviews: 'Eat', drinkspots: 'Drink', hotelreviews: 'Stay', shopspots: 'Shop', culturespots: 'Culture', healthspots: 'Health' };
+  function showCat(coll) {
+    if (!PANES[coll]) return;
+    Object.entries(PANES).forEach(([c, id]) => { const el = document.getElementById(id); if (el) el.hidden = c !== coll; });
+    document.querySelectorAll('.cat-tabs [data-cat]').forEach(b => { const on = b.dataset.cat === coll; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); });
+    try { sessionStorage.setItem('sf_admin_cat', coll); } catch (e) {}
+  }
+  document.querySelectorAll('.cat-tabs [data-cat]').forEach(b => b.addEventListener('click', () => showCat(b.dataset.cat)));
+  let startCat = 'reviews';
+  try { startCat = sessionStorage.getItem('sf_admin_cat') || 'reviews'; } catch (e) {}
+  showCat(startCat);
+  // Editing opens the right tab first, so the form is visible.
+  const editItemInner = window.editItem;
+  window.editItem = function (coll, id) { showCat(coll); return editItemInner(coll, id); };
+  // The old lists under each form and the old Eat list are not needed any more.
+  ['hotelPublishedList', 'drinkPublishedList', 'shopPublishedList', 'culturePublishedList', 'healthPublishedList'].forEach(id => { const el = document.getElementById(id); if (el && el.parentElement) el.parentElement.hidden = true; });
+  { const old = document.getElementById('publishedSection'); if (old) old.hidden = true; }
+
+  // ── ALLE PLEKKEN ─────────────────────────────────────────────────────
+  const AP_PAGE = 30;
+  const ap = { q: '', filter: 'all', shown: AP_PAGE };
+  const AP_FILTERS = [['all', 'Alle'], ['reviews', '🍽️ Eat'], ['drinkspots', '🍸 Drink'], ['hotelreviews', '🏨 Stay'], ['shopspots', '🛍️ Shop'], ['culturespots', '🎭 Culture'], ['healthspots', '💪 Health'], ['missing', 'Mist iets'], ['closed', 'Gesloten'], ['scheduled', 'Gepland']];
+  const apFold = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const oddTypeOf = t => /^[\s,;/.\-]|[,;/.\-]\s*$/.test(String(t || ''));
+  function missingOf(x, visitDateOf) {
+    const m = [];
+    if (!(x.photoUrl || (x.photos && x.photos.length))) m.push('foto');
+    if (!String(x.price || '').trim()) m.push('prijs');
+    if (!(x.date && visitDateOf(x.date))) m.push('bezoekdatum');
+    if (!String(x.type || '').trim() || oddTypeOf(x.type)) m.push(x.type ? 'type “' + x.type + '”' : 'type');
+    return m;
+  }
+  const isClosed = x => x.closedStatus === 'temp' || x.closedStatus === 'perm';
+  const isScheduled = x => { const d = toDateX(x.publishAt); return d && d > new Date(); };
+  window.sfRenderAllPlaces = function () {
+    const data = window.sfAllPlaces;
+    const listEl = document.getElementById('apList');
+    if (!data || !listEl) return;
+    const { list, visitDateOf } = data;
+    const count = f => f === 'all' ? list.length : f === 'missing' ? list.filter(x => missingOf(x, visitDateOf).length).length : f === 'closed' ? list.filter(isClosed).length : f === 'scheduled' ? list.filter(isScheduled).length : list.filter(x => x.coll === f).length;
+    document.getElementById('apChips').innerHTML = AP_FILTERS.map(([f, label]) => `<button type="button" class="ap-chip${ap.filter === f ? ' on' : ''}" data-f="${f}" aria-pressed="${ap.filter === f}">${label} <span>${count(f)}</span></button>`).join('');
+    const q = apFold(ap.q).trim();
+    let items = list.filter(x =>
+      (ap.filter === 'all' || x.coll === ap.filter
+        || (ap.filter === 'missing' && missingOf(x, visitDateOf).length)
+        || (ap.filter === 'closed' && isClosed(x))
+        || (ap.filter === 'scheduled' && isScheduled(x)))
+      && (!q || apFold(x.name + ' ' + (x.city || '') + ' ' + (x.type || '')).includes(q)));
+    items.sort((a, b) => (toDateX(b.createdAt) || 0) - (toDateX(a.createdAt) || 0));
+    document.getElementById('apSub').textContent = `${list.length} plekken in totaal${q || ap.filter !== 'all' ? ` · ${items.length} gevonden` : ''}`;
+    const shown = items.slice(0, ap.shown);
+    listEl.innerHTML = shown.length ? shown.map(x => {
+      const miss = missingOf(x, visitDateOf);
+      const pills = [
+        isScheduled(x) ? `<span class="ap-pill sched">Gepland ${toDateX(x.publishAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}</span>` : '',
+        x.closedStatus === 'perm' ? '<span class="ap-pill closed">Definitief dicht</span>' : x.closedStatus === 'temp' ? '<span class="ap-pill closed">Tijdelijk dicht</span>' : '',
+        x.sponsored ? '<span class="ap-pill ad">AD</span>' : '',
+      ].join('');
+      return `<div class="ap-row">
+        <div class="ap-main">
+          <p class="ap-name">${todoEsc(x.emoji)} ${todoEsc(x.name)} ${pills}</p>
+          <p class="ap-meta">${CAT_NL[x.coll]} · ${todoEsc(x.city || 'geen plaats')}${x.rating ? ' · <span class="ap-stars">' + sfStars(x.rating) + '</span>' : ''}${x.type && !oddTypeOf(x.type) ? ' · ' + todoEsc(x.type) : ''}</p>
+          ${miss.length ? `<p class="ap-miss">Mist: ${miss.map(m => `<span>${todoEsc(m)}</span>`).join('')}</p>` : ''}
+        </div>
+        <div class="ap-acts">
+          <button type="button" class="ap-btn main" data-edit="${x.coll}|${x.id}">Bewerk</button>
+          <a class="ap-btn" href="plek.html?c=${x.coll}&id=${encodeURIComponent(x.id)}" target="_blank" rel="noopener">Bekijk ↗</a>
+          <button type="button" class="ap-btn del" data-del="${x.coll}|${x.id}">Verwijder</button>
+        </div>
+      </div>`;
+    }).join('') : '<p class="todo-sub">Geen plekken gevonden. Probeer een ander woord of filter.</p>';
+    const more = document.getElementById('apMore');
+    more.hidden = items.length <= ap.shown;
+    more.textContent = `Meer laten zien (${items.length - ap.shown})`;
+  };
+  document.getElementById('apChips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; ap.filter = b.dataset.f; ap.shown = AP_PAGE; window.sfRenderAllPlaces(); });
+  document.getElementById('apSearch').addEventListener('input', e => { ap.q = e.target.value; ap.shown = AP_PAGE; window.sfRenderAllPlaces(); });
+  document.getElementById('apMore').addEventListener('click', () => { ap.shown += AP_PAGE; window.sfRenderAllPlaces(); });
+  document.getElementById('apList').addEventListener('click', async e => {
+    const ed = e.target.closest('[data-edit]');
+    if (ed) { const [c, id] = ed.dataset.edit.split('|'); window.editItem(c, id); return; }
+    const del = e.target.closest('[data-del]');
+    if (!del) return;
+    const [c, id] = del.dataset.del.split('|');
+    const x = (window.sfAllPlaces.list || []).find(p => p.coll === c && p.id === id);
+    if (!confirm(`"${x ? x.name : 'Deze plek'}" verwijderen? Dit kun je niet ongedaan maken. Wil je hem alleen van de site halen, zet hem dan op gesloten.`)) return;
+    try { await deleteDoc(doc(db, c, id)); showToast('Verwijderd.'); window.loadLiveStats(); }
+    catch (err) { showToast('Verwijderen mislukt: ' + (err.code || err.message)); }
+  });
+
   // Every 5 minutes while the admin panel is open (it was every 30 seconds).
   setInterval(() => {
     if (document.getElementById('adminPanel').style.display !== 'none' && !document.hidden) {
@@ -2427,6 +2587,6 @@
   }
 </script>
 <script type="module" src="js/sf-halfstars.js?v=2"></script>
-<script src="js/sf-admin-nav.js?v=1" defer></script>
+<script src="js/sf-admin-nav.js?v=2" defer></script>
 </body>
 </html>
