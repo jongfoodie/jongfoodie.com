@@ -37,8 +37,14 @@ export function pickTopPicks({ catalog, featured = null, pinnedKeys = [], byKey 
   return picks;
 }
 
-// The place in the big card on the homepage: the one chosen in admin-home.html, else the newest.
+// The place in the big card on the homepage: the one chosen in admin-home.html, else the
+// newest that makes a good first click: food, drinks or a stay, with a written review and a
+// photo (not a shop without text). No such place: the newest that is open, as before.
+export const featurable = p => !p.closed && ['eat', 'drink', 'stay'].includes(p.cat)
+  && String(p.review || '').trim().length >= 40 && p.photos && p.photos.length > 0;
 export function pickFeatured({ catalog, featuredKey = '', byKey = new Map() }) {
   const chosen = featuredKey ? byKey.get(featuredKey) : null;
-  return chosen && !chosen.closed ? chosen : catalog.filter(x => !x.closed).sort((a, b) => (b.created || 0) - (a.created || 0))[0] || null;
+  if (chosen && !chosen.closed) return chosen;
+  const newest = list => list.slice().sort((a, b) => (b.created || 0) - (a.created || 0))[0] || null;
+  return newest(catalog.filter(featurable)) || newest(catalog.filter(x => !x.closed));
 }

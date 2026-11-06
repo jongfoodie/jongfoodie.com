@@ -606,9 +606,12 @@ window.LEGACY_SPOTS = [
 
   function buildList(shown) {
     const list = document.getElementById('spotsList');
+    // Strong Foodie's own places first, the same number as on the homepage.
     const members = shown.filter(p => p.source === 'member' && kindOf(p) !== 'you').length;
+    const mine = shown.filter(p => kindOf(p) === 'you').length;
+    const own = shown.length - members - mine;
     document.getElementById('spotsCount').textContent =
-      `${shown.length} places` + (members ? ` · ${members} added by members` : '');
+      `${own} places by Strong Foodie` + (members ? ` · ${members} added by members` : '') + (mine ? ` · ${mine} of yours` : '');
     list.innerHTML = '';
     const sorted = [...shown].sort((a, b) => (b.isNew - a.isNew) || (b.source === 'member') - (a.source === 'member') || a.name.localeCompare(b.name));
     sorted.forEach(p => {

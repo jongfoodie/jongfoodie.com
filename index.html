@@ -1519,7 +1519,7 @@
   import { loadOpenings, openingsWithPlaces, openingCard } from "./js/sf-openings.js?v=1";
   import { loadBattles, liveBattles } from "./js/sf-battles.js?v=1";
   import { placeKey } from "./js/sf-places.js?v=7";
-  import { pickTopPicks } from "./js/sf-toppicks.js?v=1";
+  import { pickTopPicks, pickFeatured } from "./js/sf-toppicks.js?v=2";
   import { loadFlags } from "./js/sf-moderation.js?v=1";
   import { loadPartners, bookingComLink, bookingSearchUrl, readGygSetting, gygLink, gygSearchUrl, toursQuery, readOpentableSetting, opentableLink, opentableSearchUrl, PARTNER_NOTE } from "./js/sf-booking.js?v=4";
 
@@ -1728,10 +1728,10 @@
   }
 
   // ── Featured: the review Strong Foodie picked (admin-home.html), or else the newest
+  // written review of food, drinks or a stay (js/sf-toppicks.js, the same as the app).
   function renderFeatured(home = {}, byKey = new Map()) {
     const card = document.getElementById('featuredCard');
-    const chosen = home.featuredKey ? byKey.get(home.featuredKey) : null;
-    const p = chosen && !chosen.closed ? chosen : CATALOG.filter(x => !x.closed).sort((a, b) => (b.created || 0) - (a.created || 0))[0];
+    const p = pickFeatured({ catalog: CATALOG, featuredKey: home.featuredKey || '', byKey });
     if (!card) return p;
     if (!p) { card.style.display = 'none'; return null; }
     if (!changed('featured', sigOf(p) + p.review.slice(0, 160) + p.tags.slice(0, 3).join())) return p;

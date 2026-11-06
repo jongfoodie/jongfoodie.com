@@ -108,7 +108,8 @@ export function normalise(coll, id, r, member) {
     coll, id, cat, member,
     name: r.name || 'Unnamed place',
     ...locate(r.city || r.address, r.country || r.countryLabel),
-    type: member ? '' : (r.type || ''),
+    // A loose comma or slash at the end ("Shop,") is a typo, not part of the type.
+    type: member ? '' : String(r.type || '').replace(/[\s,;/|]+$/, '').trim(),
     tip: member ? (r.type || '') : '',
     review: r.review || '',
     rating: typeof r.rating === 'number' && r.rating > 0 ? r.rating : null,
@@ -253,6 +254,10 @@ export function normaliseDish(id, d, place) {
 }
 export const dishUrl = x => placeUrl(x.place);
 
+// A place whose type starts with Cafe or Coffee ("Cafe / Brunch") is a café: it is in
+// Best Cafés, not in Best Restaurants (feedback 6 Nov: coffee stops in a restaurant list).
+export const isCafe = p => /^(caf[eé]|coffee|koffie)\b/i.test(String(p.type || '').trim());
+
 export function buildLists(all, { min = 3, dishes = [] } = {}) {
   const rated = all.filter(p => !p.member && p.rating && !p.closed);
   const lists = [];
@@ -263,7 +268,7 @@ export function buildLists(all, { min = 3, dishes = [] } = {}) {
   const placeWords = new Set(all.flatMap(p => [p.town, p.destination, p.country]).filter(Boolean).map(tagKey));
   for (const d of destinations(rated)) {
     for (const cat of Object.keys(LIST_CATS)) {
-      add(`${LIST_CATS[cat].slug}-${d.slug}`, { kind: 'cat', cat, dest: d.name, destSlug: d.slug, country: d.country, title: `Best ${LIST_CATS[cat].title} in ${d.name}` }, d.places.filter(p => p.cat === cat));
+      add(`${LIST_CATS[cat].slug}-${d.slug}`, { kind: 'cat', cat, dest: d.name, destSlug: d.slug, country: d.country, title: `Best ${LIST_CATS[cat].title} in ${d.name}` }, d.places.filter(p => p.cat === cat && !(cat === 'eat' && isCafe(p))));
     }
     const tags = new Map();
     d.places.forEach(p => p.tags.forEach(t => {
