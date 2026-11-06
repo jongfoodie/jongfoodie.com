@@ -372,6 +372,12 @@ export function visitDateOf(text) {
   const d = s.match(/\b(\d{1,2})\b(?!\d)/);
   return new Date(+y[0], idx, d && +d[1] <= 31 ? +d[1] : 1);
 }
+// "Sep 2026" for the visit date, or '' when it can't be read. The app shows it the same way.
+const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export function visitLabel(text) {
+  const d = visitDateOf(text);
+  return d && !isNaN(d) ? MONTH_SHORT[d.getMonth()] + ' ' + d.getFullYear() : '';
+}
 export function isOldVisit(text, now = new Date()) {
   const d = visitDateOf(text);
   if (!d || isNaN(d)) return false;

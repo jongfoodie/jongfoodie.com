@@ -21,6 +21,7 @@
       ['guide-edit.html', '📖', 'Gidsen'],
       ['dish-edit.html', '🍴', 'Gerechten'],
       ['admin-home.html', '🏠', 'Homepage'],
+      ['admin-cities.html', '🏙️', 'Stadsfoto’s'],
       ['admin-battles.html', '⚔️', 'Battles'],
       ['admin-openings.html', '🆕', 'Nieuwe openingen']]],
     ['Leden', [

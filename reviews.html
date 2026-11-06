@@ -417,6 +417,7 @@
   import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
   import { initPhotos } from "./js/sf-photo-fix.js?v=1";
+  import { visitLabel } from "./js/sf-core.js?v=5";
   import { openState, kitchenState } from "./js/sf-hours.js?v=2";
 
   const firebaseConfig = {
@@ -603,7 +604,7 @@
               <span>📍 ${r.city || ''}</span>
               <span>${r.type || ''}</span>
               ${r.price ? `<span>💰 ${r.price}</span>` : ''}
-              ${r.date ? `<span>📅 Visited ${r.date}</span>` : ''}
+              ${visitLabel(r.date) ? `<span>📅 Visited ${visitLabel(r.date)}</span>` : ''}
             </div>
             ${closedNoteHtml}
             <p class="review-excerpt">${r.review || ''}</p>

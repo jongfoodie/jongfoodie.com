@@ -250,6 +250,7 @@
   import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
   import { initPhotos } from "./js/sf-photo-fix.js?v=1";
+  import { visitLabel } from "./js/sf-core.js?v=5";
   import { openState } from "./js/sf-hours.js?v=1";
 
   const firebaseConfig = {
@@ -398,7 +399,7 @@
           <div class="spot-meta">
             <span>📍 ${s.city || ''}</span>
             ${s.price ? '<span>💰 ' + s.price + '</span>' : ''}
-            ${s.date ? '<span>📅 Visited ' + s.date + '</span>' : ''}
+            ${visitLabel(s.date) ? '<span>📅 Visited ' + visitLabel(s.date) + '</span>' : ''}
           </div>
           ${closedNoteHtml}
           <p class="spot-desc">${s.review || ''}</p>

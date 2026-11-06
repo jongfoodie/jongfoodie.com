@@ -17,6 +17,8 @@ Disallow: /admin-claims.html
 Disallow: /admin-duplicates.html
 Disallow: /admin-export.html
 Disallow: /admin-report.html
+Disallow: /admin-dates.html
+Disallow: /admin-cities.html
 Disallow: /admin.html
 
 Sitemap: https://strongfoodie.com/sitemap.xml

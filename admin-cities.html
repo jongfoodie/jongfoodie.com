@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Stadsfoto's | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  h1.page { font-family: 'Playfair Display', serif; font-size: 1.9rem; margin-bottom: 0.4rem; }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.1rem; max-width: 720px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; margin-bottom: 1rem; }
+  .bar .count { font-size: 14px; color: var(--ink-soft); }
+  .bar .count b { color: var(--green); }
+  .bar input[type=search] { flex: 1 1 220px; max-width: 320px; border: 1px solid var(--border); border-radius: 22px; padding: 9px 14px; font: 14px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .bar input:focus, .add input:focus, .url input:focus { border-color: var(--accent); }
+  .tog { display: flex; align-items: center; gap: 0.45rem; border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 14px; background: #fff; }
+  .tog input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .add { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 0.8rem 1rem; margin-bottom: 1.2rem; font-size: 14px; color: var(--ink-soft); }
+  .add input { flex: 1 1 200px; max-width: 280px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font: 14px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+  .city { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 0.7rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .city.has { border-color: rgba(45,90,61,0.35); }
+  /* The same look as the city card in the app: photo, dark gradient at the bottom, name and count. */
+  .card { position: relative; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #3D2F1A, #1A1208); }
+  .card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .card::after { content: ''; position: absolute; inset: 40% 0 0 0; background: linear-gradient(transparent, rgba(26,18,8,0.8)); }
+  .card .lab { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 1; color: #fff; }
+  .card .lab b { display: block; font: 700 18px 'Playfair Display', serif; line-height: 1.2; }
+  .card .lab span { font-size: 12.5px; opacity: 0.85; }
+  .card .tag { position: absolute; top: 8px; left: 8px; z-index: 1; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: rgba(255,253,249,0.92); color: var(--ink-soft); }
+  .card .tag.ok { background: var(--green-light); color: var(--green); }
+  .meta { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .meta code { font-size: 12px; background: #F3EEE6; padding: 1px 5px; border-radius: 4px; color: var(--ink-soft); }
+  .tools { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .btn { font: 600 13px 'DM Sans', sans-serif; padding: 7px 13px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .pick { display: none; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 0.6rem; }
+  .pick.open { display: flex; }
+  .pick label.rights { display: flex; gap: 0.45rem; align-items: flex-start; font-size: 13px; color: var(--ink-soft); line-height: 1.4; cursor: pointer; }
+  .pick label.rights input { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 1px; flex-shrink: 0; }
+  .url { display: flex; gap: 0.4rem; }
+  .url input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; font: 13px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .or { font-size: 12px; color: var(--muted); text-align: center; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); grid-column: 1 / -1; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 1000; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .bar input[type=search] { max-width: none; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    .card .lab b { font-size: 15px; }
+  }
+  @media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>STADSFOTO'S</span></h1><nav><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Account controleren…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  // Stadsfoto's: per stad een eigen foto voor de stadkaarten in de app (batch 74, vanaf versie 2.0).
+  // Opslag: Firestore site/cities, veld covers = { "<stadsleutel>": "<url of fsimg://id>" }.
+  // De stadsleutel is slugOf(naam), dezelfde regel als de /stad/-pagina's en de app:
+  // "Los Angeles" wordt "los-angeles", "São Paulo" wordt "sao-paulo".
+  // Een geüploade foto wordt een document in images (zoals add.html en de app doen).
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, setDoc, deleteField, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { esc, loadPlaces, photoTools, slugOf } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const { resolvePhoto } = photoTools(db);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  // key -> { key, name, sf, members, partOf }
+  let cities = new Map(), covers = {}, onlyMissing = false, search = '', user = null;
+  const pending = new Map(); // key -> data URL of a picked photo, not saved yet
+
+  onAuthStateChanged(auth, async u => {
+    user = u;
+    if (!u) { root.innerHTML = `<div class="msg"><h2>Eerst inloggen</h2><p>Deze pagina is alleen voor Strong Foodie. <a href="${nextLink()}">Log in op de adminpagina</a>, dan kom je hier vanzelf terug.</p></div>`; return; }
+    let admin = u.uid === BRAND_UID;
+    try { const t = await u.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Alleen voor Strong Foodie</h2><p>Met dit account kun je geen stadsfoto's kiezen.</p></div>`; return; }
+    if (!(await requireUnlock(auth, u))) return;
+    root.innerHTML = '<p class="msg">Laden…</p>';
+    try {
+      const [{ all }, snap] = await Promise.all([loadPlaces(db), getDoc(doc(db, 'site', 'cities')).catch(() => null)]);
+      const data = snap && snap.exists() ? snap.data() : {};
+      covers = data && data.covers && typeof data.covers === 'object' ? { ...data.covers } : {};
+      collect(all);
+      draw();
+    } catch (e) {
+      console.log('Stadsfoto\'s laden mislukt:', e);
+      root.innerHTML = '<div class="msg"><h2>Kon de steden niet laden</h2><p>Ververs de pagina. Lukt het niet, log dan uit en weer in op de adminpagina.</p></div>';
+    }
+  });
+
+  // Every destination and every town on Strong Foodie and in member places,
+  // so both "Los Angeles" and "West Hollywood" can get a photo.
+  function collect(all) {
+    cities = new Map();
+    const add = (name, p, partOf) => {
+      const key = slugOf(name);
+      if (!key) return;
+      if (!cities.has(key)) cities.set(key, { key, name, sf: 0, members: 0, partOf: '' });
+      const c = cities.get(key);
+      if (p) { if (p.member) c.members++; else c.sf++; }
+      if (partOf && !c.partOf && slugOf(partOf) !== key) c.partOf = partOf;
+    };
+    all.forEach(p => {
+      if (p.destination) add(p.destination, p);
+      if (p.town && slugOf(p.town) !== slugOf(p.destination)) add(p.town, p, p.destination);
+    });
+    // A photo for a city that is no longer in the places stays visible, so it can be removed.
+    Object.keys(covers).forEach(key => { if (!cities.has(key)) cities.set(key, { key, name: key.replace(/-/g, ' ').replace(/\b\w/g, m => m.toUpperCase()), sf: 0, members: 0, partOf: '', extra: true }); });
+  }
+
+  const sorted = () => [...cities.values()].sort((a, b) => (b.sf - a.sf) || (b.members - a.members) || a.name.localeCompare(b.name));
+  const plekken = n => n === 1 ? '1 plek' : `${n} plekken`;
+
+  function draw() {
+    const list = sorted();
+    const withPhoto = list.filter(c => covers[c.key]).length;
+    root.innerHTML = `
+      <h1 class="page">Stadsfoto's</h1>
+      <p class="lead">Kies per stad een eigen foto. Vanaf app-versie 2.0 toont de app die op de stadkaarten van profielen en op de pagina van Strong Foodie. Een stad zonder foto houdt in de app de foto van een plek, zoals nu. Gebruik alleen foto's die je zelf hebt gemaakt of die je mag gebruiken.</p>
+      <div class="bar">
+        <span class="count"><b>${withPhoto}</b> van ${list.length} steden hebben een foto</span>
+        <input type="search" id="q" placeholder="Zoek een stad" value="${esc(search)}" aria-label="Zoek een stad">
+        <label class="tog"><input type="checkbox" id="onlyMissing" ${onlyMissing ? 'checked' : ''}> Alleen steden zonder foto</label>
+      </div>
+      <div class="add">Staat een stad er niet bij?
+        <input type="text" id="newCity" placeholder="bv. Haarlem" aria-label="Naam van de stad">
+        <button class="btn" type="button" id="addCity">Toevoegen</button>
+      </div>
+      <div class="grid" id="grid"></div>`;
+    document.getElementById('q').addEventListener('input', e => { search = e.target.value; drawGrid(); });
+    document.getElementById('onlyMissing').addEventListener('change', e => { onlyMissing = e.target.checked; drawGrid(); });
+    const addCity = () => {
+      const input = document.getElementById('newCity');
+      const name = input.value.trim(), key = slugOf(name);
+      if (!key) { toast('Typ eerst de naam van een stad.', true); return; }
+      if (!cities.has(key)) cities.set(key, { key, name, sf: 0, members: 0, partOf: '', extra: true });
+      input.value = ''; search = name; onlyMissing = false;
+      draw();
+      openPick(key);
+    };
+    document.getElementById('addCity').addEventListener('click', addCity);
+    document.getElementById('newCity').addEventListener('keydown', e => { if (e.key === 'Enter') addCity(); });
+    drawGrid();
+  }
+
+  function drawGrid() {
+    const q = slugOf(search);
+    const shown = sorted().filter(c => (!onlyMissing || !covers[c.key]) && (!q || c.key.includes(q) || slugOf(c.partOf).includes(q)));
+    const grid = document.getElementById('grid');
+    grid.innerHTML = shown.length ? shown.map(tile).join('') : `<p class="empty">${onlyMissing && !q ? 'Elke stad heeft een foto. 🎉' : 'Geen stad gevonden.'}</p>`;
+    shown.forEach(c => paint(c.key));
+    grid.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openPick(b.dataset.open)));
+    grid.querySelectorAll('[data-file]').forEach(inp => inp.addEventListener('change', () => picked(inp)));
+    grid.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => save(b.dataset.save)));
+    grid.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => { pending.delete(b.dataset.cancel); drawGrid(); }));
+    grid.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => remove(b)));
+  }
+
+  function tile(c) {
+    const has = !!covers[c.key];
+    const count = [c.sf ? plekken(c.sf) + ' van Strong Foodie' : '', c.members ? plekken(c.members) + ' van leden' : ''].filter(Boolean).join(' · ') || 'Nog geen plekken';
+    const k = esc(c.key);
+    return `<div class="city${has ? ' has' : ''}" data-city="${k}">
+      <div class="card" id="card-${k}">
+        <span class="tag${has ? ' ok' : ''}">${pending.has(c.key) ? 'Voorbeeld' : has ? 'Eigen foto' : 'Geen foto'}</span>
+        <div class="lab"><b>${esc(c.name)}</b><span>${c.sf ? plekken(c.sf) : plekken(c.members)}</span></div>
+      </div>
+      <div class="meta">${esc(count)}${c.partOf ? `<br>Deel van ${esc(c.partOf)}` : ''}<br>Sleutel: <code>${k}</code></div>
+      <div class="tools">
+        <button class="btn${has ? '' : ' btn-main'}" type="button" data-open="${k}">${has ? 'Andere foto' : 'Foto kiezen'}</button>
+        ${has ? `<button class="btn btn-danger" type="button" data-remove="${k}">Verwijderen</button>` : ''}
+      </div>
+      <div class="pick${pending.has(c.key) ? ' open' : ''}" id="pick-${k}">
+        <input type="file" accept="image/*" data-file="${k}" aria-label="Foto voor ${esc(c.name)}">
+        <div class="or">of</div>
+        <div class="url"><input type="url" id="url-${k}" placeholder="Plak een link naar een foto (https://…)" aria-label="Link naar een foto voor ${esc(c.name)}"></div>
+        <label class="rights"><input type="checkbox" id="rights-${k}"> Deze foto heb ik zelf gemaakt, of ik mag hem gebruiken.</label>
+        <div class="tools">
+          <button class="btn btn-main" type="button" data-save="${k}">Opslaan</button>
+          <button class="btn" type="button" data-cancel="${k}">Annuleren</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Shows the picked photo, or else the saved one, on the card.
+  async function paint(key) {
+    const card = document.getElementById('card-' + key);
+    if (!card) return;
+    const src = pending.get(key) || (covers[key] ? await resolvePhoto(covers[key]) : '');
+    card.querySelector('img')?.remove();
+    if (!src) return;
+    const img = document.createElement('img');
+    img.alt = ''; img.src = src;
+    img.onerror = () => img.remove();
+    card.prepend(img);
+  }
+
+  function openPick(key) {
+    const box = document.getElementById('pick-' + key);
+    if (!box) return;
+    box.classList.add('open');
+    box.closest('.city').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  async function picked(inp) {
+    const key = inp.dataset.file, file = inp.files && inp.files[0];
+    if (!file) return;
+    try {
+      pending.set(key, await shrinkPhoto(file));
+      document.getElementById('url-' + key).value = '';
+      document.getElementById('rights-' + key).checked = false;
+      const tag = document.querySelector(`#card-${CSS.escape(key)} .tag`);
+      if (tag) { tag.textContent = 'Voorbeeld'; tag.classList.remove('ok'); }
+      paint(key);
+    } catch (e) {
+      toast(e && e.message === 'too big' ? 'Deze foto is te groot. Kies een kleinere.' : 'Deze foto kan niet worden gelezen. Kies een JPG of PNG.', true);
+    }
+  }
+
+  // The same as add.html: a Firestore document holds at most 1 MB, so keep the photo well under that.
+  function shrinkPhoto(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let w = img.naturalWidth, h = img.naturalHeight;
+        const max = 1600;
+        if (w > max || h > max) { const f = max / Math.max(w, h); w = Math.round(w * f); h = Math.round(h * f); }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        let q = 0.82, data = c.toDataURL('image/jpeg', q);
+        while (data.length > 700000 && q > 0.4) { q -= 0.08; data = c.toDataURL('image/jpeg', q); }
+        if (data.length > 900000) { reject(new Error('too big')); return; }
+        resolve(data);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable')); };
+      img.src = url;
+    });
+  }
+
+  async function save(key) {
+    const data = pending.get(key);
+    const link = (document.getElementById('url-' + key).value || '').trim();
+    if (!data && !link) { toast('Kies eerst een foto of plak een link.', true); return; }
+    if (!data && !/^https:\/\/\S+$/i.test(link)) { toast('Een link moet beginnen met https://', true); return; }
+    if (!document.getElementById('rights-' + key).checked) { toast('Vink het vakje aan. Gebruik alleen foto\'s die je zelf hebt gemaakt of mag gebruiken.', true); return; }
+    const btn = document.querySelector(`[data-save="${CSS.escape(key)}"]`);
+    btn.disabled = true; btn.textContent = 'Opslaan…';
+    try {
+      let value = link;
+      if (data) {
+        const img = await addDoc(collection(db, 'images'), {
+          ownerId: user.uid, contentType: 'image/jpeg', data: data.split(',')[1], source: 'web-admin', kind: 'city-cover', city: key, createdAt: serverTimestamp(),
+        });
+        value = 'fsimg://' + img.id;
+      }
+      await setDoc(doc(db, 'site', 'cities'), { covers: { [key]: value }, updatedAt: serverTimestamp() }, { merge: true });
+      covers[key] = value;
+      pending.delete(key);
+      toast(`Opgeslagen: foto voor ${cities.get(key)?.name || key}`);
+      draw();
+    } catch (e) {
+      console.log('Stadsfoto opslaan mislukt:', e);
+      btn.disabled = false; btn.textContent = 'Opslaan';
+      toast(e && e.code === 'permission-denied' ? 'Niet toegestaan. Log opnieuw in op de adminpagina.' : 'Opslaan mislukt. Probeer het opnieuw.', true);
+    }
+  }
+
+  // First click arms the button, the second removes the photo (no browser pop-up).
+  async function remove(btn) {
+    const key = btn.dataset.remove;
+    if (!btn.hasAttribute('data-armed')) {
+      btn.setAttribute('data-armed', ''); btn.textContent = 'Zeker weten?';
+      setTimeout(() => { if (btn.isConnected) { btn.removeAttribute('data-armed'); btn.textContent = 'Verwijderen'; } }, 4000);
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Verwijderen…';
+    try {
+      await setDoc(doc(db, 'site', 'cities'), { covers: { [key]: deleteField() }, updatedAt: serverTimestamp() }, { merge: true });
+      delete covers[key];
+      toast('Foto verwijderd. De app toont weer de foto van een plek.');
+      draw();
+    } catch (e) {
+      console.log('Stadsfoto verwijderen mislukt:', e);
+      btn.disabled = false; btn.removeAttribute('data-armed'); btn.textContent = 'Verwijderen';
+      toast(e && e.code === 'permission-denied' ? 'Niet toegestaan. Log opnieuw in op de adminpagina.' : 'Verwijderen mislukt. Probeer het opnieuw.', true);
+    }
+  }
+</script>
+<script src="js/sf-admin-nav.js?v=2" defer></script>
+</body>
+</html>
