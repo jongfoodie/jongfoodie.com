@@ -10,7 +10,7 @@
 
 
 import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits, normaliseDish, placeKey } from "./sf-core.js?v=3";
+import { CATS, esc, starStr, placeUrl, isPublished, normalise, thumbOf, applyListEdits, normaliseDish, placeKey } from "./sf-core.js?v=5";
 import { loadFlags, isBlocked } from "./sf-moderation.js?v=1";
 export * from "./sf-core.js?v=3";
 
@@ -87,24 +87,41 @@ export function photoTools(db) {
     if (/^[A-Za-z0-9+/=\s]{200,}$/.test(url)) return Promise.resolve('data:image/jpeg;base64,' + url.replace(/\s/g, ''));
     return Promise.resolve(url);
   }
-  // Cards get the small copy from images/thumbs/; an image marked data-full
-  // (a large cover) gets the original. No small copy yet: the original.
+  // Cards get the small copy (images/thumbs/ or og/thumbs/, see thumbOf and
+  // smallPhotos); an image marked data-full (a large cover) gets the original.
+  // No small copy yet, or it fails to load: the original.
   function hydratePhotos(root) {
     root.querySelectorAll('img[data-photo]').forEach(img => {
       const src = img.getAttribute('data-photo');
       img.removeAttribute('data-photo');
-      const small = img.hasAttribute('data-full') ? '' : thumbOf(src);
-      if (small) {
+      const original = () => {
+        img.onerror = () => img.remove();
+        resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else img.remove(); });
+      };
+      const useSmall = small => {
         img.onerror = () => { img.onerror = () => img.remove(); resolvePhoto(src).then(url => { if (url) img.src = url; else img.remove(); }); };
         img.src = small; img.hidden = false;
-        return;
-      }
-      img.onerror = () => img.remove();
-      resolvePhoto(src).then(url => { if (url) { img.src = url; img.hidden = false; } else img.remove(); });
+      };
+      if (img.hasAttribute('data-full')) return original();
+      const small = thumbOf(src);
+      if (small) return useSmall(small);
+      const id = storedId(src);
+      if (id) return smallPhotos().then(set => set.has(id) ? useSmall('/og/thumbs/' + id + '.jpg') : original());
+      original();
     });
   }
   return { resolvePhoto, hydratePhotos };
 }
+
+// Photos from the app ("fsimg://<id>") that have a small copy in og/thumbs/.
+// tools/build-pages.mjs writes the list (og/thumbs/index.json) on every run.
+// Read once per page; no list (yet): an empty set, so cards load the original.
+let smallSet = null;
+export function smallPhotos() {
+  if (!smallSet) smallSet = fetch('/og/thumbs/index.json').then(r => (r.ok ? r.json() : [])).then(a => new Set(Array.isArray(a) ? a : [])).catch(() => new Set());
+  return smallSet;
+}
+export const storedId = url => { const m = /^fsimg:\/\/([A-Za-z0-9_-]+)$/.exec(String(url || '')); return m ? m[1] : ''; };
 
 // ── Card (styles: .mini-card, .mini-img, .pill… in the page)
 export function miniCard(p) {

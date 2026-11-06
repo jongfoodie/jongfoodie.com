@@ -10,9 +10,12 @@
 // so it needs no password or key. Everything it writes is made again on
 // every run: p/, stad/, best/, guide/, og/ and sitemap.xml.
 
-import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, rm, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
+import os from 'node:os';
 import {
   CATS, SITE, slugOf, placeUrl, destinationUrl, guideUrl, normalise, isPublished,
   destinations, applyListEdits, buildLists, placeKey, normaliseDish, byQuality, LIST_CATS, toDate, starStr,
@@ -158,6 +161,87 @@ async function ogImage(url, fallbackName) {
   } catch (e) { console.log('Photo skipped:', fallbackName, e.message); }
   ogCache.set(url, out);
   return out;
+}
+
+// ── Small copies for cards ────────────────────────────────────────────────
+// A card shows a photo about 170 to 360 px wide, but an app photo in og/ is
+// up to 1200 x 1600 (500 KB or more). Every run makes a small copy of each
+// photo in og/ (og/thumbs/<name>.jpg, at most 640 x 800) and of each photo in
+// images/ that has none yet (images/thumbs/). og/thumbs/index.json lists the
+// names, so the site knows which app photos ("fsimg://<id>") have one.
+// js/sf-core.js thumbOf() and js/sf-places.js smallPhotos() use them.
+// It needs sharp (an image tool). On GitHub this script installs it once per
+// run in a temporary folder, outside the repo, so nothing extra is committed.
+// Elsewhere set SF_TOOLS to a folder with sharp in node_modules. Without sharp
+// no small copies are made, and the site shows the original photos, as before.
+function loadSharp() {
+  let dir = process.env.SF_TOOLS;
+  if (!dir && process.env.GITHUB_ACTIONS === 'true') {
+    dir = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'sf-tools');
+    try {
+      execFileSync('npm', ['install', '--prefix', dir, '--no-save', '--no-audit', '--no-fund', '--loglevel=error', 'sharp@0.33.5'], { stdio: 'inherit', timeout: 180000 });
+    } catch (e) { console.log('Small photos skipped (sharp could not be installed):', e.message); return null; }
+  }
+  if (!dir) { console.log('Small photos skipped: no sharp here (set SF_TOOLS).'); return null; }
+  try { return createRequire(path.join(dir, 'tools.js'))('sharp'); }
+  catch (e) { console.log('Small photos skipped (sharp not available):', e.message); return null; }
+}
+const exists = f => stat(f).then(() => true, () => false);
+async function makeSmallPhotos() {
+  const sharp = loadSharp();
+  if (!sharp) return;
+  let made = 0, kept = 0, skipped = 0;
+  const small = (from, to) => sharp(from).rotate()
+    .resize({ width: 640, height: 800, fit: 'inside', withoutEnlargement: true })
+    .flatten({ background: '#FAF7F2' })
+    .jpeg({ quality: 72, mozjpeg: true })
+    .toFile(to);
+  // og/ is made again on every run, so its small copies are too.
+  const names = [];
+  const ogDir = path.join(ROOT, 'og'), ogOut = path.join(ogDir, 'thumbs');
+  await mkdir(ogOut, { recursive: true });
+  for (const f of await readdir(ogDir, { withFileTypes: true })) {
+    const m = f.isFile() && /^([A-Za-z0-9_-]+)\.(jpe?g|png|webp)$/i.exec(f.name);
+    if (!m) continue;
+    try { await small(path.join(ogDir, f.name), path.join(ogOut, m[1] + '.jpg')); names.push(m[1]); made++; }
+    catch (e) { skipped++; console.log('Small photo skipped:', 'og/' + f.name, e.message); }
+  }
+  await writeFile(path.join(ogOut, 'index.json'), JSON.stringify(names.sort()) + '\n');
+  // images/ is uploaded by hand: only photos without a small copy yet.
+  const imgDir = path.join(ROOT, 'images'), imgOut = path.join(imgDir, 'thumbs');
+  await mkdir(imgOut, { recursive: true });
+  for (const f of await readdir(imgDir, { withFileTypes: true })) {
+    if (!f.isFile() || !/\.jpe?g$/i.test(f.name)) continue;
+    const to = path.join(imgOut, f.name);
+    if (await exists(to)) { kept++; continue; }
+    try { await small(path.join(imgDir, f.name), to); made++; }
+    catch (e) { skipped++; console.log('Small photo skipped:', 'images/' + f.name, e.message); }
+  }
+  console.log(`Small photos: ${made} made, ${kept} already there, ${skipped} skipped.`);
+}
+
+// ── Text for Google ───────────────────────────────────────────────────────
+// Google shows about 150 characters under the title. A short review ("Best gym
+// on Aruba") gets the kind of place, where it is and one fixed line, so the
+// text is long enough and says what the page is about.
+const kindOf = p => {
+  // A member's spot keeps its kind ("Fine dining restaurant") in tip.
+  const raw = p.type || (p.member ? p.tip : '');
+  const t = String(raw || '').split(/[\/,|]/).map(s => s.trim()).filter(Boolean)[0] || '';
+  if (t && t.length <= 30) return t.charAt(0).toUpperCase() + t.slice(1);
+  return `${CATS[p.cat].label} spot`;
+};
+function placeDescription(p, lead) {
+  const own = String(p.review || p.tip || '').replace(/\s+/g, ' ').trim();
+  const kind = kindOf(p);
+  const where = p.where || p.town || p.destination || '';
+  const placeLine = `${kind}${where ? ' in ' + where : ''}.`;
+  const close = p.member ? 'More places nearby on Strong Foodie.' : 'Visited by Strong Foodie, no paid reviews.';
+  // No text, or the text is only the kind of place: say it once, with where it is.
+  if (!own || own.replace(/[.!]$/, '').toLowerCase() === kind.toLowerCase()) return oneLine(`${lead}${placeLine} ${close}`);
+  const text = lead + own;
+  if (text.length >= 110) return oneLine(text);
+  return oneLine(`${text}${/[.!?…]$/.test(own) ? '' : '.'} ${placeLine} ${close}`);
 }
 
 // ── Pages from the site's own templates ───────────────────────────────────
@@ -403,9 +487,8 @@ async function main() {
     const rev = reviewed ? `: review ${score(p.rating)}/5` : '';
     const title = fitTitle(where ? `${p.name}, ${where}${rev}` : '', `${p.name}${rev}`);
     const lead = p.rating ? `Rated ${score(p.rating)}/5 by Strong Foodie. ` : (p.member ? `Spot added by ${p.author}, a Strong Foodie member. ` : '');
-    const body = p.review || p.tip || `${CATS[p.cat].label} spot${p.where ? ' in ' + p.where : ''}.`;
     const image = await ogImage(p.photos[0], `${p.coll}-${p.id}`);
-    await writePage(url, makePage(plek, { title, description: oneLine(lead + body), canonical: SITE + url, image, type: 'article', params: { c: p.coll, id: p.id },
+    await writePage(url, makePage(plek, { title, description: placeDescription(p, lead), canonical: SITE + url, image, type: 'article', params: { c: p.coll, id: p.id },
       ld: placeLd(p, raw, SITE + url, image), pre: placePre(p, raw, image), slot: SLOTS.plek }));
     changedOf.set(p, toDate(raw.updatedAt) || p.created);
     sitemap.push({ loc: SITE + url, lastmod: day(changedOf.get(p)), priority: p.member ? '0.5' : '0.7' });
@@ -563,6 +646,8 @@ async function main() {
   const urls = fixed.concat(sitemap);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url>\n    <loc>${text(u.loc)}</loc>\n    ${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>\n    ` : ''}<priority>${u.priority}</priority>\n  </url>`).join('\n')}\n</urlset>\n`;
   await writeFile(path.join(ROOT, 'sitemap.xml'), xml);
+
+  await makeSmallPhotos();
 
   console.log(`Pages: ${entries.length} places, ${dests.length} destinations, ${lists.length} lists, ${guides.length} guides, ${memberListPages} member lists. Sitemap: ${urls.length} addresses.`);
 }

@@ -153,10 +153,15 @@ export const byQuality = (a, b) => (b.rating || 0) - (a.rating || 0)
   || (a.member - b.member)
   || (b.created || 0) - (a.created || 0);
 
-// Small copy of a photo from the site's own images folder, for cards.
+// Small copy of a photo for cards. images/x.jpg has images/thumbs/x.jpg; a photo
+// from the app in og/ (og/<id>.jpg, .png or .webp) has og/thumbs/<id>.jpg.
+// tools/build-pages.mjs makes them (at most 640 x 800). No small copy: ''.
 export function thumbOf(url) {
-  const m = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?images\/([^\/?#]+\.jpe?g)$/i.exec(String(url || ''));
-  return m ? (m[1] || '') + 'images/thumbs/' + m[2] : '';
+  const u = String(url || '');
+  const m = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?images\/([^\/?#]+\.jpe?g)$/i.exec(u);
+  if (m) return (m[1] || '') + 'images/thumbs/' + m[2];
+  const o = /^((?:https?:)?\/\/(?:www\.)?strongfoodie\.com\/|\/)?og\/([A-Za-z0-9_-]+)\.(?:jpe?g|png|webp)$/i.exec(u);
+  return o ? (o[1] || '') + 'og/thumbs/' + o[2] + '.jpg' : '';
 }
 
 // ── Best-of lists ───────────────────────────────────────────────────────

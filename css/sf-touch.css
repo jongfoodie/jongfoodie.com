@@ -1,0 +1,17 @@
+/* sf-touch.css: easier tapping on a phone (6 Nov 2026).
+   Apple and Google ask for buttons of about 44 to 48 px. Chips and filter
+   buttons get at least 36 px with space between them; small text buttons and
+   links in lists and the footer get extra room above and below. Desktop is
+   unchanged. Loaded on every public page, after the page's own styles. */
+@media (max-width: 700px) {
+  .tag-pill, .filter-pill, .dest-chip, button.chip, a.chip {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .near-link, .fix-btn { padding-top: 9px; padding-bottom: 9px; }
+  .featured-link, .place-more, .mp-foot a, .mp-label a { display: inline-block; padding-top: 8px; padding-bottom: 8px; }
+  .sfx-col a { display: inline-block; padding-top: 6px; padding-bottom: 6px; }
+  footer a, footer button { padding-top: 5px; padding-bottom: 5px; }
+}

@@ -10,7 +10,7 @@
 //   import { initPhotos } from "./js/sf-photo-fix.js?v=1";
 //   initPhotos(db);
 
-import { photoTools } from "./sf-places.js?v=7";
+import { photoTools, smallPhotos, storedId } from "./sf-places.js?v=8";
 
 // A 1×1 transparent gif, so the <img> doesn't fail before the real photo arrives.
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -28,12 +28,21 @@ export function initPhotos(db) {
 window.sfSrc = url => stored(url) ? `src="${BLANK}" data-sfphoto="${attr(url)}"` : `src="${attr(url)}"`;
 
 // Load the stored photos in a list that was just rendered.
+// A card first gets the small copy from og/thumbs/ when there is one (see
+// smallPhotos in sf-places.js), so a list doesn't download every full photo.
 window.sfHydrate = root => {
   if (!root) return;
   root.querySelectorAll('img[data-sfphoto]').forEach(img => {
     const url = img.getAttribute('data-sfphoto');
     img.removeAttribute('data-sfphoto');
-    resolve(url).then(src => { if (src) img.src = src; else img.remove(); });
+    const original = () => resolve(url).then(src => { if (src) img.src = src; else img.remove(); });
+    const id = storedId(url);
+    if (!id) return original();
+    smallPhotos().then(set => {
+      if (!set.has(id)) return original();
+      img.onerror = () => { img.onerror = null; original(); };
+      img.src = '/og/thumbs/' + id + '.jpg';
+    });
   });
 };
 
