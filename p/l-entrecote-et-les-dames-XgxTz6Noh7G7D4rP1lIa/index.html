@@ -304,7 +304,7 @@
   import { loadDeals } from "./js/sf-deals.js?v=1";
   import { PRO_ON } from "./js/sf-flags.js?v=1";
   import { hoursOf, openState, kitchenState } from "./js/sf-hours.js?v=2";
-  import { isOldVisit } from "./js/sf-core.js?v=4";
+  import { isOldVisit, visitLabel } from "./js/sf-core.js?v=5";
   import { checkBadges } from "./js/sf-badges.js?v=3";
   import { openPlanMeetup } from "./js/sf-plan.js?v=1";
   import { openCorrection } from "./js/sf-corrections.js?v=1";
@@ -528,7 +528,7 @@
       p.price && ['💰', 'Price', esc(p.price)],
       p.type && ['🏷️', 'Type', esc(p.type)],
       p.phone && ['📞', 'Phone', `<a href="tel:${esc(p.phone.replace(/\s/g, ''))}">${esc(p.phone)}</a>`],
-      p.date && ['📅', 'Visited', esc(p.date)],
+      visitLabel(p.date) && ['📅', 'Visited', visitLabel(p.date)],
     ].filter(Boolean);
 
     const sfScore = !p.member && p.rating
@@ -558,7 +558,7 @@
           ${p.opening ? `<p class="open-note">${esc(openingLabel(p.opening))}${p.opening.note ? ' · ' + esc(String(p.opening.note).slice(0, 80)) : ''}</p>` : ''}
           ${closed}
           <div class="scores">${sfScore}<div class="score" id="memberScore" hidden></div></div>
-          ${!p.member && p.review ? `<p class="trust-top"><span>✓ Visited by Strong Foodie</span>${p.date ? ' · <span>' + esc(p.date) + '</span>' : ''} · <span>No paid reviews</span> · <a href="about.html#how-i-review">How I review</a></p>` : ''}
+          ${!p.member && p.review ? `<p class="trust-top"><span>✓ Visited by Strong Foodie</span>${visitLabel(p.date) ? ' · <span>' + visitLabel(p.date) + '</span>' : ''} · <span>No paid reviews</span> · <a href="about.html#how-i-review">How I review</a></p>` : ''}
           <div class="friends-been" id="friendsBeen" hidden></div>
           <div class="actions">
             ${bookingButtonHtml(p.book)}
