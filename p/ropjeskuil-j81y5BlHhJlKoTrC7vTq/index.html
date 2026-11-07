@@ -244,6 +244,8 @@
   .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
 </style>
 <link rel="stylesheet" href="/css/sf-touch.css?v=1">
+<!-- iPhone in Safari: a bar at the top to open or get the app (Smart App Banner). -->
+<meta name="apple-itunes-app" content="app-id=6799647380, app-argument=https://strongfoodie.com/p/ropjeskuil-j81y5BlHhJlKoTrC7vTq/">
 <meta property="og:url" content="https://strongfoodie.com/p/ropjeskuil-j81y5BlHhJlKoTrC7vTq/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://strongfoodie.com/p/ropjeskuil-j81y5BlHhJlKoTrC7vTq/">
@@ -291,7 +293,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
+  import { socialHtml, wireSocial } from "./js/sf-social.js?v=3";
   import { locate, destinationUrl, placeUrl, SITE } from "./js/sf-places.js?v=7";
   import { highlightsRow } from "./js/sf-highlights.js?v=9";
   import { countView } from "./js/sf-views.js?v=2";
