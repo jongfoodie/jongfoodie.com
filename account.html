@@ -182,6 +182,8 @@
   .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
 </style>
 <link rel="stylesheet" href="/css/sf-touch.css?v=1">
+<!-- iPhone in Safari: a bar at the top to open or get the app (Smart App Banner). -->
+<meta name="apple-itunes-app" content="app-id=6799647380, app-argument=https://strongfoodie.com/account.html">
 </head>
 <body>
 <div class="mobile-nav" id="mobileNav">
@@ -223,7 +225,7 @@
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithCredential, reauthenticateWithPopup, EmailAuthProvider, GoogleAuthProvider, OAuthProvider, revokeAccessToken } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { placeFinder } from "./js/sf-find.js?v=4";
-  import { socialHtml, wireSocial } from "./js/sf-social.js?v=2";
+  import { socialHtml, wireSocial } from "./js/sf-social.js?v=3";
   import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=6";
   import { markBeen, loadBeen } from "./js/sf-been.js?v=1";
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";

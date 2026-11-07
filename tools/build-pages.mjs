@@ -297,6 +297,8 @@ function makePage(template, { title, description, canonical, image, type = 'webs
   // The template works out its canonical address in the browser; here it is fixed.
   html = html.replace(/<script>\s*\/\/ The canonical address is set here[\s\S]*?<\/script>\s*/, '');
   html = html.replace(/<link rel="canonical" href="[^"]*">\s*/g, '');
+  // The app bar in Safari (Smart App Banner) passes this page's own address to the app.
+  html = html.replace(/(<meta name="apple-itunes-app" content="app-id=\d+)(?:, app-argument=[^"]*)?"/, (m, a) => `${a}, app-argument=${attr(canonical)}"`);
   html = html.replace('</head>', () => `<link rel="canonical" href="${attr(canonical)}">\n<script>window.SF_PARAMS = ${JSON.stringify(params).replace(/</g, '\\u003c')};</script>\n</head>`);
   // Structured data in the page itself, so search engines read it without
   // running JavaScript. The template's script then adds no second copy.

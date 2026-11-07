@@ -23,6 +23,8 @@ const CSS = `
   .sf-social-err { font-size: 13px; color: #B3261E; line-height: 1.45; margin: 0; }
   .sf-or { display: flex; align-items: center; gap: 0.75rem; color: #8A7A66; font-size: 12px; margin-top: 0.35rem; }
   .sf-or::before, .sf-or::after { content: ''; flex: 1; height: 1px; background: rgba(26,18,8,0.1); }
+  .sf-iab { margin: 0; padding: 12px 14px; border-radius: 12px; background: #FBEDE4; color: #3D2F1A; font-size: 13.5px; line-height: 1.5; }
+  .sf-iab b { color: #1A1208; }
 `;
 let styled = false;
 function addStyle() {
@@ -35,11 +37,28 @@ function addStyle() {
 
 const active = () => PROVIDERS.filter(p => p.on);
 
+// Instagram, TikTok, Facebook, Snapchat and some other apps open links in their own
+// browser. Google blocks logging in there ("disallowed_useragent"), and the login
+// window often doesn't open at all. In that browser the buttons make way for a tip
+// to open the page in Safari or Chrome; logging in with email still works there.
+// (A Reddit reader ran into this on 7 Nov: visitors from X saw an error and left.)
+export function inAppBrowser(ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '') {
+  return /Instagram|FBAN|FBAV|FB_IAB|FBIOS|TikTok|musical_ly|Bytedance|Snapchat|LinkedInApp|Pinterest|Line\/|KAKAOTALK|; wv\).*Twitter|Twitter.*; wv\)/i.test(ua);
+}
+
 // The buttons, an error line and an "or with email" divider. Empty when no provider is on.
 export function socialHtml() {
   const list = active();
   if (!list.length) return '';
   addStyle();
+  if (inAppBrowser()) {
+    const names = list.map(p => p.name).join(' or ');
+    return `<div class="sf-social">
+    <p class="sf-iab">Logging in with ${names} doesn't work inside this app. Tap <b>•••</b> at the top and choose <b>Open in browser</b>, or copy the link and open it in Safari or Chrome. Logging in with your email below works here too.</p>
+    <button type="button" class="sf-social-btn" data-copy-link>Copy link</button>
+    <div class="sf-or"><span>or with email</span></div>
+  </div>`;
+  }
   return `<div class="sf-social">
     ${list.map(p => `<button type="button" class="sf-social-btn ${p.id}" data-social="${p.id}">${p.icon ? `<img src="${p.icon}" alt="" onerror="this.remove()">` : ''}<span>Continue with ${p.name}</span></button>`).join('')}
     <p class="sf-social-err" role="alert" hidden></p>
@@ -77,6 +96,11 @@ export function socialMessage(err, id) {
 // Wires the buttons inside `root`. After a login Firebase fires onAuthStateChanged
 // as usual, so each page carries on the same way as after an email login.
 export function wireSocial(root, auth) {
+  root.querySelectorAll('[data-copy-link]').forEach(b => b.addEventListener('click', async () => {
+    const url = location.href;
+    try { await navigator.clipboard.writeText(url); b.textContent = 'Link copied. Paste it in Safari or Chrome.'; }
+    catch (e) { b.textContent = url; }
+  }));
   root.querySelectorAll('[data-social]').forEach(b => b.addEventListener('click', async () => {
     const box = b.closest('.sf-social');
     const errEl = box && box.querySelector('.sf-social-err');
