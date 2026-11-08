@@ -1060,6 +1060,24 @@
     .dest-chips::-webkit-scrollbar { display: none; }
     .dest-chip { flex-shrink: 0; }
   }
+
+  /* Two doors under the hero: food lovers and restaurants */
+  .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.5rem 0 2.25rem; }
+  .door { background: var(--warm-white, #FFFDF9); border: 1px solid rgba(26,18,8,0.1); border-radius: 18px; padding: 1.3rem 1.3rem 1.2rem; display: flex; flex-direction: column; gap: 0.45rem; }
+  .door-dark { background: #1A1208; border-color: #1A1208; color: #fff; }
+  .door-kicker { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; color: var(--accent, #D4521A); }
+  .door-dark .door-kicker { color: #F5C896; }
+  .door-title { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.2; color: #1A1208; }
+  .door-title em { color: var(--accent, #D4521A); }
+  .door-dark .door-title { color: #fff; }
+  .door-dark .door-title em { color: #F0A070; }
+  .door-text { font-size: 13.5px; line-height: 1.55; color: #3D2F1A; }
+  .door-dark .door-text { color: rgba(255,255,255,0.72); }
+  .door-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: auto; padding-top: 0.4rem; }
+  .door-btn { background: var(--accent, #D4521A); color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 22px; min-height: 36px; display: inline-flex; align-items: center; }
+  .door-btn:hover { background: #b8401a; }
+  .door-link { color: var(--accent, #D4521A); text-decoration: none; font-size: 13px; font-weight: 600; }
+  @media (max-width: 700px) { .doors { grid-template-columns: 1fr; gap: 0.75rem; } .door { padding: 1.05rem 1.1rem; } .door-title { font-size: 19px; } }
 </style>
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
@@ -1124,12 +1142,15 @@
   <a href="stad.html">🌍 Destinations</a>
   <a href="map.html">🗺️ Map</a>
   <a href="guides.html">📖 Guides</a>
+  <a href="meetups.html">🗓️ Meetups</a>
   <p class="mnav-h">Categories</p>
   <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
   <p class="mnav-h">Community</p>
   <a href="community.html">👥 Community</a>
   <a href="battle.html">⚔️ Battle</a>
   <a href="videos.html">🎬 Videos</a>
+  <p class="mnav-h">Strong Foodie</p>
+  <a href="for-restaurants.html">🍴 For restaurants</a>
   <a href="about.html">👤 About</a>
 </div>
 
@@ -1146,12 +1167,10 @@
     <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
   </a>
   <ul class="nav-links">
-    <li><a href="reviews.html">Eat</a></li>
-    <li><a href="drink.html">Drink</a></li>
-    <li><a href="hotel.html">Stay</a></li>
-    <li class="nav-more"><details><summary>More</summary><div class="nav-more-menu"><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><a href="guides.html">📖 Guides</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li class="nav-more"><details><summary>Explore</summary><div class="nav-more-menu" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(7,auto);grid-auto-flow:column;column-gap:4px;min-width:340px;left:0;transform:none;"><p style="margin:6px 12px 2px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A7A66;font-weight:600;">Places</p><a href="reviews.html">🍽️ Eat</a><a href="drink.html">🍸 Drink</a><a href="hotel.html">🏨 Stay</a><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><p style="margin:6px 12px 2px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A7A66;font-weight:600;">Discover</p><a href="stad.html">🌍 Destinations</a><a href="guides.html">📖 Guides</a><a href="meetups.html">🗓️ Meetups</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
     <li><a href="best.html">Best of</a></li>
     <li><a href="map.html">Map</a></li>
+    <li><a href="for-restaurants.html">For restaurants</a></li>
   </ul>
   <div class="nav-actions">
     <a class="btn-fill nav-app" href="https://apps.apple.com/app/id6799647380" target="_blank" rel="noopener" title="Get the Strong Foodie app on the App Store">📱 <span class="nav-app-long">Get the app</span><span class="nav-app-short">App</span></a>
@@ -1160,7 +1179,6 @@
 
 <!-- HERO -->
 <section class="hero">
-  <p class="hero-eyebrow">Real eats. Honest reviews.</p>
   <h1>Every place visited.<br><em>No paid reviews.</em></h1>
   <p class="hero-sub">Going somewhere new? The short list of places worth it, from someone who actually went.</p>
   <div class="hero-search-wrap">
@@ -1207,20 +1225,31 @@
 <!-- MAIN -->
 <div class="site-wrapper">
   <main>
-    <!-- HIGHLIGHTS: photos and videos members post in the app (js/sf-highlights.js) -->
-    <div id="hlHome" hidden></div>
-
-    <!-- FEATURED -->
-    <p class="section-label">Featured Review</p>
-    <div class="featured-card" id="featuredCard">
-      <div class="featured-img bg-cafe" style="font-size:72px;">🍽️</div>
-      <div class="featured-body">
-        <div>
-          <h2 class="card-title">Loading the newest review…</h2>
-          <p class="card-excerpt">One moment.</p>
-        </div>
+    <!-- TWO DOORS: who is this for (idea from zendiq.ai "For traders / For agents" and Rewired, ch. 16 and 35) -->
+    <div class="doors">
+      <div class="door">
+        <p class="door-kicker">For food lovers</p>
+        <p class="door-title">The short list, <em>in your pocket.</em></p>
+        <p class="door-text">Save places, see what's open now and plan a meetup. Free on iPhone.</p>
+        <div class="door-actions"><a class="door-btn" href="https://apps.apple.com/app/id6799647380" target="_blank" rel="noopener">📱 Get the app</a><a class="door-link" href="best.html">Best of lists →</a></div>
+      </div>
+      <div class="door door-dark">
+        <p class="door-kicker">For restaurants</p>
+        <p class="door-title">Reviewed? <em>Show it.</em></p>
+        <p class="door-text">Get your badge and QR sticker, claim your place and reply to reviews. A score is never for sale.</p>
+        <div class="door-actions"><a class="door-btn" href="for-restaurants.html">For restaurants →</a></div>
       </div>
     </div>
+
+
+
+
+
+
+    <!-- TOP PICKS: a new selection of top-rated places every month -->
+    <p class="section-label" id="topLabel">Top picks this month</p>
+    <p class="section-sub">Four of our highest-rated places. A new selection every month.</p>
+    <div class="top-grid" id="topGrid"></div>
 
     <!-- ADS: paid placements, always labelled (admin-ads.html, js/sf-promos.js) -->
     <div id="adBlock" hidden>
@@ -1228,21 +1257,6 @@
       <p class="section-sub">Paid placements, marked Ad. Our reviews and scores are never for sale.</p>
       <div class="cards-grid" id="adGrid"></div>
     </div>
-
-    <!-- BATTLE: two places, members vote (battle.html, js/sf-battles.js) -->
-    <div id="battleBlock" hidden></div>
-
-    <!-- JUST OPENED: places Strong Foodie marked as new (admin-openings.html, js/sf-openings.js) -->
-    <div id="openBlock" hidden>
-      <p class="section-label">Just opened</p>
-      <p class="section-sub">New places we've marked as just opened.</p>
-      <div class="cards-grid" id="openGrid"></div>
-    </div>
-
-    <!-- TOP PICKS: a new selection of top-rated places every month -->
-    <p class="section-label" id="topLabel">Top picks this month</p>
-    <p class="section-sub">Four of our highest-rated places. A new selection every month.</p>
-    <div class="top-grid" id="topGrid"></div>
 
     <!-- DESTINATIONS -->
     <p class="section-label" id="destinations">Explore by destination</p>
@@ -1260,6 +1274,31 @@
     <div class="load-more">
       <button class="btn-outline" id="loadMoreBtn" onclick="loadMoreReviews()">Load more</button>
     </div>
+
+    <!-- FEATURED -->
+    <p class="section-label">Featured Review</p>
+    <div class="featured-card" id="featuredCard">
+      <div class="featured-img bg-cafe" style="font-size:72px;">🍽️</div>
+      <div class="featured-body">
+        <div>
+          <h2 class="card-title">Loading the newest review…</h2>
+          <p class="card-excerpt">One moment.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUST OPENED: places Strong Foodie marked as new (admin-openings.html, js/sf-openings.js) -->
+    <div id="openBlock" hidden>
+      <p class="section-label">Just opened</p>
+      <p class="section-sub">New places we've marked as just opened.</p>
+      <div class="cards-grid" id="openGrid"></div>
+    </div>
+
+    <!-- BATTLE: two places, members vote (battle.html, js/sf-battles.js) -->
+    <div id="battleBlock" hidden></div>
+
+    <!-- HIGHLIGHTS: photos and videos members post in the app (js/sf-highlights.js) -->
+    <div id="hlHome" hidden></div>
 
     <!-- MEETUPS BANNER (was the "Strong Hotel is here!" banner) -->
     <div class="meet-banner">
@@ -2081,6 +2120,7 @@
           <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
           <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
           <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="for-restaurants.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">For restaurants</a>
           <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
         </div>
       </div>
