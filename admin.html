@@ -1078,7 +1078,7 @@
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=6";
-  import { setupAutofill, autofillExtras, clearAutofill, cityTag } from "./js/sf-autofill.js?v=2";
+  import { setupAutofill, autofillExtras, clearAutofill, cityTag, fillFromWish } from "./js/sf-autofill.js?v=3";
 
 
   const firebaseConfig = {
@@ -1473,6 +1473,7 @@
       panelLoaded = true;
       window.loadLiveStats();
       showOpenReports();
+      if (window.openWishFromUrl) window.openWishFromUrl();
     }
   }
 
@@ -2493,6 +2494,25 @@
   let startCat = 'reviews';
   try { startCat = sessionStorage.getItem('sf_admin_cat') || 'reviews'; } catch (e) {}
   showCat(startCat);
+  // From "Wil ik heen" (admin-wishlist.html): admin.html?wish=<id> opens the form of the
+  // right category, filled in from the saved place (js/sf-autofill.js, fillFromWish).
+  const WISH_COLL = { eat: 'reviews', drink: 'drinkspots', stay: 'hotelreviews', shop: 'shopspots', culture: 'culturespots', health: 'healthspots' };
+  const WISH_PREFIX = { reviews: 'r', drinkspots: 'd', hotelreviews: 'h', shopspots: 's', culturespots: 'c', healthspots: 'hl' };
+  window.openWishFromUrl = async function () {
+    const id = new URLSearchParams(location.search).get('wish');
+    const u = auth.currentUser;
+    if (!id || !u) return;
+    try {
+      const s = await getDoc(doc(db, 'profiles', u.uid, 'wishlistItems', id));
+      if (!s.exists()) return;
+      const w = s.data();
+      const coll = WISH_COLL[w.category] || 'reviews';
+      showCat(coll);
+      const add = document.getElementById('addPlace');
+      if (add) add.scrollIntoView({ block: 'start' });
+      fillFromWish(WISH_PREFIX[coll], { name: w.name || w.placeName || '', city: w.city || '', country: w.country || '', lat: w.lat, lng: w.lng });
+    } catch (e) { console.log('"Wil ik heen" kon niet openen:', e); }
+  };
   // Editing opens the right tab first, so the form is visible.
   const editItemInner = window.editItem;
   window.editItem = function (coll, id) { showCat(coll); return editItemInner(coll, id); };

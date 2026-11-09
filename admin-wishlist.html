@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Wil ik heen | Strong Foodie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.12); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --green: #2D5A3D; --green-light: #E8F2EC; --red: #A32323;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; }
+  .top { background: var(--ink); color: #fff; display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem; min-height: 58px; }
+  .top h1 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+  .top h1 span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.15em; margin-left: 6px; }
+  .top nav { margin-left: auto; }
+  .top nav a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 1.5rem; }
+  .msg { max-width: 460px; margin: 4rem auto; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .msg a { color: var(--accent); }
+  h1.page { font-family: 'Playfair Display', serif; font-size: 1.9rem; margin-bottom: 0.4rem; }
+  .lead { color: var(--ink-soft); line-height: 1.6; margin-bottom: 1.1rem; max-width: 720px; }
+  .warn { background: var(--accent-pale); border: 1px solid rgba(212,82,26,0.3); border-radius: 12px; padding: 0.7rem 0.9rem; font-size: 13.5px; line-height: 1.5; margin-bottom: 1rem; color: var(--ink-soft); }
+  .warn a { color: var(--accent); }
+
+  /* Add a place */
+  .addbox { background: var(--warm-white); border: 1px dashed var(--accent); border-radius: 16px; padding: 1rem 1.1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
+  .lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); font-weight: 700; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .field:focus { border-color: var(--accent); }
+  textarea.field { resize: vertical; min-height: 60px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .sugg { list-style: none; border: 1px solid var(--border); border-radius: 12px; background: #fff; overflow: hidden; box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
+  .sugg li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--border); cursor: pointer; }
+  .sugg li:first-child { border-top: none; }
+  .sugg li.active, .sugg li:hover { background: #FFF1EA; }
+  .sugg .s-emoji { font-size: 18px; line-height: 1.25; flex-shrink: 0; }
+  .sugg .s-text { min-width: 0; }
+  .sugg .s-name { font-weight: 600; overflow-wrap: anywhere; }
+  .sugg .s-meta { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; }
+  .sugg .s-on { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--green); background: var(--green-light); border-radius: 8px; padding: 1px 6px; margin-left: 6px; }
+  .sugg .sugg-note { display: block; cursor: default; font-size: 12px; color: var(--muted); }
+  .picked { font-size: 13px; color: var(--ink-soft); line-height: 1.5; background: var(--green-light); border-radius: 10px; padding: 8px 10px; }
+  .cats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cats label { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: #fff; border-radius: 18px; padding: 6px 12px; font-size: 14px; cursor: pointer; }
+  .cats input { display: none; }
+  .cats label:has(input:checked) { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .btn { font: 600 13px 'DM Sans', sans-serif; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); background: #fff; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; min-height: 36px; }
+  .btn:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-main { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-danger { color: var(--red); border-color: rgba(163,35,35,0.35); }
+  .btn-danger[data-armed] { background: var(--red); color: #fff; }
+  .err { color: var(--red); font-size: 13.5px; }
+  [hidden] { display: none !important; }
+
+  /* The list */
+  .bar { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; margin-bottom: 0.8rem; }
+  .bar .count { font-size: 14px; color: var(--ink-soft); }
+  .bar input[type=search] { flex: 1 1 220px; max-width: 320px; border: 1px solid var(--border); border-radius: 22px; padding: 9px 14px; font: 14px 'DM Sans', sans-serif; background: #fff; color: var(--ink); outline: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.2rem; }
+  .chip { border: 1px solid var(--border); background: #fff; color: var(--ink-soft); padding: 6px 12px; border-radius: 18px; font: 500 13px 'DM Sans', sans-serif; cursor: pointer; }
+  .chip span { color: var(--muted); margin-left: 3px; }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip.on span { color: rgba(255,255,255,0.6); }
+  .city-h { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin: 1.4rem 0 0.6rem; display: flex; align-items: baseline; gap: 0.5rem; }
+  .city-h small { font: 500 13px 'DM Sans', sans-serif; color: var(--muted); }
+  .items { display: flex; flex-direction: column; gap: 0.6rem; }
+  .item { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .item.done { border-color: rgba(45,90,61,0.4); }
+  .item-name { font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+  .item-meta { font-size: 13px; color: var(--muted); line-height: 1.45; overflow-wrap: anywhere; }
+  .item-note { font-size: 14px; color: var(--ink-soft); font-style: italic; line-height: 1.5; overflow-wrap: anywhere; }
+  .pill { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; border-radius: 8px; padding: 2px 7px; margin-left: 6px; vertical-align: 2px; }
+  .pill.ok { color: var(--green); background: var(--green-light); }
+  .pill.saved { color: var(--ink-soft); background: #F1ECE4; }
+  .item .row { margin-top: 0.2rem; }
+  .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); line-height: 1.6; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 50; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  @media (max-width: 700px) {
+    .wrap { padding: 1rem 16px; }
+    .two { grid-template-columns: 1fr; }
+    .bar input[type=search] { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="top"><h1>Strong Foodie <span>WIL IK HEEN</span></h1><nav><a href="admin.html">← Admin</a></nav></div>
+<main class="wrap" id="root"><p class="msg">Account controleren…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  // Wil ik heen: plekken waar Strong Foodie nog heen wil, voor de volgende reviews.
+  // Opslag: de wishlist van het ingelogde admin-account, profiles/{uid}/wishlistItems,
+  // dezelfde lijst als in de app en op de website (kind 'idea' voor een plek die nog niet op
+  // Strong Foodie staat, kind 'place' voor een bewaarde Strong Foodie-plek). Geen nieuwe regels:
+  // de eigenaar mag zijn eigen lijst lezen en schrijven.
+  // Toevoegen: typ een naam of plak een Google Maps-link (js/sf-autofill.js, zoals in de admin).
+  // "Review schrijven" opent admin.html?wish=<id>: het juiste formulier, al ingevuld.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+  import { placeFinder, strongFoodiePlaces, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
+  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
+  import { loadPlaces } from "./js/sf-places.js?v=7";
+  import { requireUnlock, nextLink } from "./js/sf-admin.js?v=6";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const root = document.getElementById('root');
+  const BRAND_UID = 'B9cs5MwpvkUSIoiYh2qMwMnyl4B3';
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
+  const placeLink = (coll, id) => `plek.html?c=${encodeURIComponent(coll)}&id=${encodeURIComponent(id)}`;
+  const mapsLink = w => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(
+    typeof w.lat === 'number' && typeof w.lng === 'number' ? `${w.lat},${w.lng}` : [w.name, w.city, w.country].filter(Boolean).join(', '));
+  const dateNl = ts => { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; };
+  const titleCase = s => String(s || '').replace(/\S+/g, w => w[0].toUpperCase() + w.slice(1));
+
+  function toast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.toggle('error', error); t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => t.classList.remove('show'), error ? 5000 : 2800);
+  }
+
+  let user = null, rows = [], sfAll = [], cityOn = '', search = '';
+
+  onAuthStateChanged(auth, async u => {
+    user = u;
+    if (!u) { root.innerHTML = `<div class="msg"><h2>Eerst inloggen</h2><p>Deze pagina is alleen voor Strong Foodie. <a href="${nextLink()}">Log in op de adminpagina</a>, dan kom je hier vanzelf terug.</p></div>`; return; }
+    let admin = u.uid === BRAND_UID;
+    try { const t = await u.getIdTokenResult(); admin = admin || (t.claims && t.claims.admin === true); } catch (e) {}
+    if (!admin) { root.innerHTML = `<div class="msg"><h2>Alleen voor Strong Foodie</h2><p>Met dit account kun je deze lijst niet zien.</p></div>`; return; }
+    if (!(await requireUnlock(auth, u))) return;
+    renderShell();
+    await load();
+  });
+
+  function renderShell() {
+    root.innerHTML = `
+      <h1 class="page">📌 Wil ik heen</h1>
+      <p class="lead">Plekken waar je nog heen wilt voor een review. Plak een Google Maps-link of typ de naam. Ben je geweest, klik dan op <b>Review schrijven</b>: het formulier in de admin staat dan al ingevuld.</p>
+      <div class="warn" id="sharedWarn" hidden></div>
+      <form class="addbox" id="addForm" novalidate>
+        <label class="lbl" for="wFind">Plek</label>
+        <div>
+          <input class="field" id="wFind" type="text" maxlength="2000" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="wList"
+            placeholder="Naam of Google Maps-link, bijv. Gold's Gym Venice">
+          <ul class="sugg" id="wList" role="listbox" hidden></ul>
+        </div>
+        <p class="picked" id="wPicked" hidden></p>
+        <span class="lbl">Categorie</span>
+        <div class="cats" role="radiogroup" aria-label="Categorie">
+          ${CAT_LIST.map(c => `<label><input type="radio" name="wCat" value="${c.key}"><span>${c.emoji} ${c.label}</span></label>`).join('')}
+        </div>
+        <div class="two">
+          <div><label class="lbl" for="wCity">Stad</label><input class="field" id="wCity" type="text" maxlength="80" placeholder="bijv. Amsterdam"></div>
+          <div><label class="lbl" for="wCountry">Land</label><input class="field" id="wCountry" type="text" maxlength="60" placeholder="bijv. Netherlands"></div>
+        </div>
+        <div><label class="lbl" for="wNote">Waarom wil je erheen? <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);">(mag leeg)</span></label>
+          <textarea class="field" id="wNote" maxlength="300" placeholder="bijv. tip van een lezer, bekend om de smash burger"></textarea></div>
+        <p class="err" id="wError" hidden></p>
+        <div class="row"><button class="btn btn-main" type="submit" id="wSave">📌 Op de lijst</button></div>
+      </form>
+      <div class="bar"><span class="count" id="count">Laden…</span><input type="search" id="q" placeholder="Zoek in je lijst"></div>
+      <div class="chips" id="chips"></div>
+      <div id="list"></div>`;
+    setupAdd();
+    document.getElementById('q').addEventListener('input', e => { search = foldText(e.target.value); draw(); });
+  }
+
+  // ── Toevoegen ───────────────────────────────────────────────────────────
+  let finder = null, pick = null;
+  function setupAdd() {
+    const $ = id => document.getElementById(id);
+    const form = $('addForm'), city = $('wCity'), country = $('wCountry');
+    // A Google Maps link: read it (before the type-ahead, so that never searches the link).
+    let lastLink = '', timer = null, seq = 0;
+    async function fromLink(v) {
+      const mine = ++seq;
+      finder.reset();
+      $('wPicked').textContent = '🔗 Google Maps-link lezen…'; $('wPicked').hidden = false;
+      let r;
+      try { r = await resolveMapsLink(v, { expandLink }); } catch (e) { r = { ok: false, reason: 'unreadable' }; }
+      if (mine !== seq) return;
+      if (!r.ok) {
+        $('wFind').value = '';
+        $('wPicked').textContent = r.reason === 'short'
+          ? 'Deze korte link kan ik nu niet openen. Open hem in je browser, kopieer het lange adres uit de adresbalk en plak dat hier.'
+          : 'Deze link kan ik niet lezen. Open de plek in Google Maps, tik op Delen › Link kopiëren en plak die link hier.';
+        return;
+      }
+      const { g, match, where } = r, src = match || where || {};
+      const name = g.name || match && match.name || '';
+      $('wFind').value = name;
+      const p = { src: 'osm', name, cat: match ? match.cat : null, type: match ? match.type : '', street: src.street || '', town: src.town || '',
+                  country: src.country || '', countryCode: src.countryCode || '', address: src.address || '',
+                  lat: g.lat != null ? g.lat : src.lat, lng: g.lng != null ? g.lng : src.lng };
+      if (p.town) city.value = p.town;
+      if (p.country) country.value = p.country;
+      const radio = p.cat && form.querySelector(`input[name="wCat"][value="${p.cat}"]`);
+      if (radio) radio.checked = true;
+      finder.setPick(p); pick = p;
+    }
+    const onLink = e => {
+      const v = $('wFind').value.trim();
+      if (!isMapsLink(v)) { lastLink = ''; clearTimeout(timer); return; }
+      e.stopImmediatePropagation();
+      clearTimeout(timer);
+      const run = () => { if (v === lastLink) return; lastLink = v; fromLink(v); };
+      if (e.type === 'keydown') { if (e.key === 'Enter') { e.preventDefault(); lastLink = ''; run(); } return; }
+      timer = setTimeout(run, 400);
+    };
+    $('wFind').addEventListener('input', onLink, { capture: true });
+    $('wFind').addEventListener('keydown', onLink, { capture: true });
+    finder = placeFinder({
+      db, catName: 'wCat', idPrefix: 'wS', input: $('wFind'), list: $('wList'), picked: $('wPicked'),
+      emptyText: 'Niets gevonden. Probeer de naam met de plaats, of plak een Google Maps-link.',
+      describe: p => p.src === 'sf'
+        ? `✓ ${esc(p.name)} staat al op Strong Foodie. Je kunt hem toch op de lijst zetten, bijvoorbeeld om terug te gaan.`
+        : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
+      onPick: p => {
+        if (p && p.src === 'osm') { if (p.town) city.value = p.town; if (p.country) country.value = p.country; }
+        if (p && p.src === 'sf') { city.value = p.town || p.where || ''; country.value = p.country || ''; }
+        pick = p;
+        $('wError').hidden = true;
+      },
+    });
+    finder.warmUp();
+    form.addEventListener('submit', e => { e.preventDefault(); save(); });
+  }
+
+  async function save() {
+    const $ = id => document.getElementById(id);
+    const err = t => { $('wError').textContent = t; $('wError').hidden = !t; };
+    const name = $('wFind').value.trim(), note = $('wNote').value.trim(), city = $('wCity').value.trim(), country = $('wCountry').value.trim();
+    const category = (document.querySelector('input[name="wCat"]:checked') || {}).value || '';
+    if (isMapsLink(name)) return err('Wacht even tot de Google Maps-link gelezen is, of typ de naam.');
+    if (name.length < 2) return err('Vul de naam van de plek in.');
+    if (name.length > 120) return err('De naam is te lang (max. 120 tekens).');
+    const p = finder.picked() || pick;
+    if (!category && !(p && p.src === 'sf')) return err('Kies een categorie.');
+    const items = rows.filter(r => r.kind === 'idea' && foldText(r.name) === foldText(name) && foldText(r.city || '') === foldText(city));
+    if (items.length) return err(`${name} staat al op je lijst.`);
+    err('');
+    const btn = $('wSave'); btn.disabled = true; btn.textContent = 'Bewaren…';
+    try {
+      let data;
+      if (p && p.src === 'sf') {
+        data = { kind: 'place', placeCollection: p.coll, placeDocId: p.id, placeName: p.name, placeCategory: p.cat, city: p.where || city, note, source: 'admin', createdAt: serverTimestamp() };
+      } else {
+        data = { kind: 'idea', name, category, city, address: city, note, source: 'admin', createdAt: serverTimestamp() };
+        if (country) data.country = country;
+        if (p && p.src === 'osm') {
+          if (p.address) data.address = p.address;
+          if (p.type) data.placeType = p.type;
+          if (typeof p.lat === 'number' && typeof p.lng === 'number') { data.lat = p.lat; data.lng = p.lng; }
+        }
+      }
+      await addDoc(collection(db, 'profiles', user.uid, 'wishlistItems'), data);
+      toast(`📌 ${name} staat op je lijst`);
+      finder.reset(); pick = null;
+      ['wFind', 'wCity', 'wCountry', 'wNote'].forEach(id => { $(id).value = ''; });
+      document.querySelectorAll('input[name="wCat"]').forEach(r => { r.checked = false; });
+      await load();
+    } catch (e) {
+      console.log('Bewaren mislukt:', e);
+      err(e && e.code === 'permission-denied' ? 'Geen toestemming. Log opnieuw in op de adminpagina.' : 'Bewaren lukte niet. Controleer je verbinding en probeer het opnieuw.');
+    } finally { btn.disabled = false; btn.textContent = '📌 Op de lijst'; }
+  }
+
+  // ── De lijst ────────────────────────────────────────────────────────────
+  async function load() {
+    try {
+      const [snap, prof, places] = await Promise.all([
+        getDocs(collection(db, 'profiles', user.uid, 'wishlistItems')),
+        getDoc(doc(db, 'profiles', user.uid)).catch(() => null),
+        loadPlaces(db).catch(() => ({ all: [] })),
+      ]);
+      sfAll = places.all || [];
+      const sfByKey = new Map(sfAll.map(p => [`${p.coll}/${p.id}`, p]));
+      rows = snap.docs.map(d => {
+        const w = { id: d.id, ...d.data() };
+        if (w.kind === 'place') {
+          const p = sfByKey.get(`${w.placeCollection}/${w.placeDocId}`);
+          return { ...w, name: (p && p.name) || w.placeName || 'Plek', category: (p && p.cat) || w.placeCategory || 'eat', city: (p && p.town) || w.city || '', onSf: p || { coll: w.placeCollection, id: w.placeDocId } , saved: true };
+        }
+        // An idea that is now on Strong Foodie: reviewed since it went on the list.
+        const now = sfAll.find(p => foldText(p.name) === foldText(w.name) && (!w.city || !p.town || foldText(String(w.city)).includes(foldText(p.town)) || foldText(p.town).includes(foldText(String(w.city)))));
+        return { ...w, onSf: now || null, saved: false };
+      }).sort((a, b) => (b.createdAt && b.createdAt.seconds || 0) - (a.createdAt && a.createdAt.seconds || 0));
+      const shared = prof && prof.exists && prof.exists() && prof.data().wishlistShared === true;
+      const warn = document.getElementById('sharedWarn');
+      warn.hidden = !shared;
+      if (shared) warn.innerHTML = '⚠️ Je wishlist is gedeeld: iedereen met de link ziet deze lijst. Wil je hem privé houden, zet delen uit op je <a href="account.html">accountpagina</a>.';
+      draw();
+    } catch (e) {
+      console.log('Lijst laden mislukt:', e);
+      document.getElementById('list').innerHTML = '<div class="empty">Je lijst kon niet laden. Controleer je verbinding en ververs de pagina.</div>';
+    }
+  }
+
+  const cityOf = r => titleCase(String(r.city || '').split(',').pop().trim()) || 'Zonder stad';
+
+  function draw() {
+    const list = document.getElementById('list'), chips = document.getElementById('chips');
+    const open = rows.filter(r => !r.onSf || r.saved);
+    const cities = new Map();
+    for (const r of rows) cities.set(cityOf(r), (cities.get(cityOf(r)) || 0) + 1);
+    const nCities = cities.size;
+    document.getElementById('count').innerHTML = rows.length
+      ? `<b>${rows.length}</b> ${rows.length === 1 ? 'plek' : 'plekken'} in ${nCities} ${nCities === 1 ? 'stad' : 'steden'}`
+      : 'Nog niets op je lijst';
+    const sorted = [...cities.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    if (cityOn && !cities.has(cityOn)) cityOn = '';
+    chips.innerHTML = rows.length ? `<button type="button" class="chip${cityOn ? '' : ' on'}" data-city="">Alle<span>${rows.length}</span></button>`
+      + sorted.map(([c, n]) => `<button type="button" class="chip${cityOn === c ? ' on' : ''}" data-city="${esc(c)}">${esc(c)}<span>${n}</span></button>`).join('') : '';
+    chips.querySelectorAll('[data-city]').forEach(b => b.addEventListener('click', () => { cityOn = b.dataset.city; draw(); }));
+
+    const shown = rows.filter(r => (!cityOn || cityOf(r) === cityOn) && (!search || foldText([r.name, r.city, r.note, r.address].join(' ')).includes(search)));
+    if (!rows.length) { list.innerHTML = '<div class="empty">Plak hierboven een Google Maps-link of typ een naam.<br>Zo hou je bij waar je nog heen wilt.</div>'; return; }
+    if (!shown.length) { list.innerHTML = '<div class="empty">Niets gevonden met dit filter.</div>'; return; }
+    const groups = new Map();
+    for (const r of shown) { const c = cityOf(r); if (!groups.has(c)) groups.set(c, []); groups.get(c).push(r); }
+    list.innerHTML = [...groups.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0])).map(([c, items]) => `
+      <h2 class="city-h">${esc(c)} <small>${items.length}</small></h2>
+      <div class="items">${items.map(item).join('')}</div>`).join('');
+    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => remove(b)));
+  }
+
+  function item(r) {
+    const cat = catInfo(r.category || 'eat');
+    const reviewed = r.onSf && !r.saved;
+    const pill = r.saved ? '<span class="pill saved">Al op Strong Foodie</span>' : reviewed ? '<span class="pill ok">✓ Nu op Strong Foodie</span>' : '';
+    const meta = [r.placeType, r.address && r.address !== r.city ? r.address : r.city, dateNl(r.createdAt) && 'op de lijst sinds ' + dateNl(r.createdAt)].filter(Boolean).join(' · ');
+    const buttons = [
+      `<a class="btn" href="${esc(mapsLink(r))}" target="_blank" rel="noopener">📍 Google Maps</a>`,
+      r.onSf ? `<a class="btn" href="${placeLink(r.onSf.coll, r.onSf.id)}" target="_blank" rel="noopener">Bekijk op Strong Foodie</a>`
+             : `<a class="btn btn-main" href="admin.html?wish=${encodeURIComponent(r.id)}#addPlace">✍️ Review schrijven</a>`,
+      `<button class="btn btn-danger" type="button" data-del="${esc(r.id)}">${reviewed ? 'Gedaan, weghalen' : 'Weghalen'}</button>`,
+    ];
+    return `<div class="item${reviewed ? ' done' : ''}">
+      <p class="item-name">${cat.emoji} ${esc(r.name)}${pill}</p>
+      ${meta ? `<p class="item-meta">${esc(meta)}</p>` : ''}
+      ${r.note ? `<p class="item-note">${esc(r.note)}</p>` : ''}
+      <div class="row">${buttons.join('')}</div>
+    </div>`;
+  }
+
+  async function remove(b) {
+    if (!b.hasAttribute('data-armed')) {
+      b.setAttribute('data-armed', ''); const t = b.textContent; b.textContent = 'Zeker weten? Klik nog eens';
+      setTimeout(() => { if (b.isConnected) { b.removeAttribute('data-armed'); b.textContent = t; } }, 4000);
+      return;
+    }
+    b.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', b.dataset.del));
+      rows = rows.filter(r => r.id !== b.dataset.del);
+      toast('Weggehaald van je lijst');
+      draw();
+    } catch (e) {
+      console.log('Weghalen mislukt:', e);
+      b.disabled = false;
+      toast('Weghalen lukte niet. Probeer het opnieuw.', true);
+    }
+  }
+</script>
+<script src="js/sf-admin-nav.js?v=2" defer></script>
+</body>
+</html>

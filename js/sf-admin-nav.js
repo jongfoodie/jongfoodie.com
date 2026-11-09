@@ -13,6 +13,7 @@
     ['Plekken', [
       ['admin.html#allPlaces', '📋', 'Alle plekken'],
       ['admin.html#addPlace', '➕', 'Plek toevoegen'],
+      ['admin-wishlist.html', '📌', 'Wil ik heen'],
       ['admin-dates.html', '📅', 'Bezoekdata'],
       ['admin-duplicates.html', '🔁', 'Dubbele plekken'],
       ['admin-edits.html', '✏️', 'Correcties', 'edits']]],

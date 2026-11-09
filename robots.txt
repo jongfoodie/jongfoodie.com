@@ -19,6 +19,7 @@ Disallow: /admin-export.html
 Disallow: /admin-report.html
 Disallow: /admin-dates.html
 Disallow: /admin-cities.html
+Disallow: /admin-wishlist.html
 Disallow: /admin.html
 
 Sitemap: https://strongfoodie.com/sitemap.xml

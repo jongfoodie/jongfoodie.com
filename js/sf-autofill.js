@@ -457,6 +457,12 @@ async function fromLink(form, raw, opts) {
   const g = parseMapsUrl(url);
   if (!g) { note(form, 'Deze link kan ik niet lezen. Open de plek in Google Maps, tik op Delen › Link kopiëren en plak die link hier.'); return; }
   note(form, `🔗 Uit de link: ${esc(g.name || 'een plek op de kaart')}. Ik zoek de gegevens op…`);
+  return fromPin(form, g, opts, mine);
+}
+
+// The rest of a link, or a place from "Wil ik heen": g = { name, full, lat, lng }.
+async function fromPin(form, g, opts, mine) {
+  const P = form.prefix, st = state[P];
   const known = g.name ? await strongFoodiePlaces(opts.db).then(all => all.find(x => x.n === foldText(g.name) || sameName(x.name, g.name) && (!x.town || foldText(g.full).includes(foldText(x.town))))).catch(() => null) : null;
   if (mine !== st.seq) return;
   const already = known ? `<br>⚠️ ${esc(known.name)} staat al op Strong Foodie${known.where ? ' (' + esc(known.where) + ')' : ''}. Bewerk hem liever in de lijst hieronder dan hem dubbel toe te voegen.` : '';
@@ -523,6 +529,31 @@ const CSS = `
   .af-box [hidden] { display: none !important; }
 `;
 
+let shared = {};
+
+// From "Wil ik heen" (admin-wishlist.html, via admin.html?wish=…): fill the form of this
+// category from a saved place. With a pin it works like a Google Maps link; without one
+// the name goes into the field and the suggestions open.
+export function fillFromWish(prefix, w) {
+  const form = FORMS.find(f => f.prefix === prefix), st = state[prefix];
+  if (!form || !st || !w || !w.name) return;
+  const input = $(prefix + 'AfFind');
+  if (typeof w.lat === 'number' && typeof w.lng === 'number') {
+    st.finder.reset();
+    st.seq++; st.extras = {}; st.branches = [];
+    const mine = st.seq;
+    more(form, '');
+    input.value = w.name;
+    note(form, `📌 Uit "Wil ik heen": ${esc(w.name)}. Ik zoek de gegevens op…`);
+    const g = { name: w.name, full: [w.name, w.city, w.country].filter(Boolean).join(', '), lat: w.lat, lng: w.lng };
+    fromPin(form, g, shared, mine).catch(e => { console.log('Wil ik heen:', e && e.stack || e); note(form, 'Invullen lukte niet. Typ de naam in het veld hierboven.'); });
+    return;
+  }
+  input.value = [w.name, w.city].filter(Boolean).join(' ');
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+}
+
 // opts.expandLink(url) → the long address of a short Google Maps link (admin.html passes
 // the Cloud Function expandMapsLink). Without it, short links ask for the long address.
 export function setupAutofill(db, opts = {}) {
@@ -549,7 +580,7 @@ export function setupAutofill(db, opts = {}) {
     state[P] = { seq: 0, extras: {}, branches: [] };
     // A Google Maps link: read it instead of searching for the text. Added before the
     // type-ahead and in the capture phase, so the type-ahead never sees the link.
-    const linkOpts = { db, expandLink: opts.expandLink };
+    const linkOpts = shared = { db, expandLink: opts.expandLink };
     let lastLink = '', linkTimer = null;
     const run = v => { if (v === lastLink) return; lastLink = v; fromLink(form, v, linkOpts).catch(e => { console.log('Google Maps link:', e && e.stack || e); note(form, 'Er ging iets mis met deze link. Probeer het nog eens, of typ de naam.'); }); };
     const onLink = e => {
