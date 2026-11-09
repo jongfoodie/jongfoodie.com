@@ -210,7 +210,9 @@
   import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=4";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+  import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
+  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=2";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -256,10 +258,11 @@
       <form id="spotForm" class="acct-card form spot-form" novalidate>
         <label class="field-label" for="sName">Name of the place</label>
         <div>
-          <input class="field" id="sName" type="text" maxlength="120" placeholder="Start typing, e.g. Broodje Popov" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sSugg" required>
+          <input class="field" id="sName" type="text" maxlength="2000" placeholder="Type the name, or paste a Google Maps link" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sSugg" required>
           <ul class="sugg" id="sSugg" role="listbox" aria-label="Suggestions" hidden></ul>
         </div>
         <p class="picked" id="sPicked" hidden></p>
+        <p class="small gm-tip">From Google Maps: open the place, tap Share › Copy link, and paste it above.</p>
 
         <span class="field-label">Category</span>
         <div class="cat-pick" role="radiogroup" aria-label="Category">
@@ -302,6 +305,62 @@
     const $ = id => document.getElementById(id);
     const form = $('spotForm'), city = $('sCity'), country = $('sCountry'), address = $('sAddress');
     let lastPick = null;
+
+    // A Google Maps link in the name field: read the place from it (js/sf-autofill.js).
+    // Added before the type-ahead and in the capture phase, so the type-ahead never sees
+    // the link. Short links from the phone are opened by the Cloud Function expandMapsLink.
+    const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
+    let lastLink = '', linkTimer = null, linkSeq = 0;
+    async function fromMapsLink(v) {
+      const mine = ++linkSeq, picked = $('sPicked');
+      finder.reset();
+      picked.innerHTML = '🔗 Reading the Google Maps link…'; picked.hidden = false;
+      let r;
+      try { r = await resolveMapsLink(v, { expandLink }); } catch (err) { console.log('Google Maps link:', err); r = { ok: false, reason: 'unreadable' }; }
+      if (mine !== linkSeq) return;
+      if (!r.ok) {
+        $('sName').value = '';
+        picked.innerHTML = r.reason === 'short'
+          ? "This short link couldn't be opened. Open it in your browser, copy the long address from the address bar and paste that here. Or type the name."
+          : "This link can't be read. In Google Maps, open the place, tap Share › Copy link and paste it here. Or type the name.";
+        picked.hidden = false;
+        return;
+      }
+      const { g, match, where } = r, src = match || where;
+      const name = g.name || (match && match.name) || '';
+      const town = (src && src.town) || '';
+      const all = await strongFoodiePlaces(db);
+      if (mine !== linkSeq) return;
+      const dup = name && all.find(p => p.n === foldText(name) && (!town || !p.town || foldText(p.town) === foldText(town) || foldText(p.where).includes(foldText(town))));
+      $('sName').value = name;
+      if (dup) { finder.setPick(dup); lastPick = dup; return; }
+      if (src) {
+        const p = { src: 'osm', name, cat: match ? match.cat : null, type: match ? match.type : '', street: src.street || '', town: src.town || '',
+                    country: src.country || '', countryCode: src.countryCode || '', address: src.address || '',
+                    lat: g.lat != null ? g.lat : src.lat, lng: g.lng != null ? g.lng : src.lng };
+        address.value = p.street;
+        if (p.town) city.value = p.town;
+        if (p.country) country.value = p.country;
+        const radio = p.cat && form.querySelector(`input[name="sCat"][value="${p.cat}"]`);
+        if (radio) { radio.checked = true; $('sCatHint').hidden = false; }
+        finder.setPick(p); lastPick = p;
+        if (!radio) picked.innerHTML += '<br>Check the address and choose a category.';
+      } else {
+        picked.innerHTML = `🔗 ${esc(name || 'Place from Google Maps')}. Fill in the city and country, and choose a category.`;
+      }
+      $('sError').hidden = true;
+    }
+    const onLink = e => {
+      const v = $('sName').value.trim();
+      if (!isMapsLink(v)) { lastLink = ''; clearTimeout(linkTimer); return; }
+      e.stopImmediatePropagation();
+      clearTimeout(linkTimer);
+      const run = () => { if (v === lastLink) return; lastLink = v; fromMapsLink(v); };
+      if (e.type === 'keydown') { if (e.key === 'Enter') { e.preventDefault(); lastLink = ''; run(); } return; }
+      linkTimer = setTimeout(run, 400);
+    };
+    $('sName').addEventListener('input', onLink, { capture: true });
+    $('sName').addEventListener('keydown', onLink, { capture: true });
 
     const finder = placeFinder({
       db, catName: 'sCat', idPrefix: 'sS',
@@ -379,6 +438,9 @@
       const tip = $('sTip').value.trim();
       const pick = finder.picked();
       if (name.length < 2) return showError('Fill in the name of the place.');
+      // The field takes a whole Google Maps link, so the name limit is checked here.
+      if (isMapsLink(name)) return showError('Wait a moment while the Google Maps link is read, or type the name of the place.');
+      if (name.length > 120) return showError('The name is too long. Keep it under 120 characters.');
       if (pick && pick.src === 'sf') return showError(`<strong>${esc(pick.name)}</strong> is already on Strong Foodie. <a href="${placeLink(pick.coll, pick.id)}">View it →</a>`);
       if (!category) return showError('Choose a category: Eat, Drink, Shop, Culture, Health or Stay.');
       if (town.length < 2) return showError('Fill in the city.');

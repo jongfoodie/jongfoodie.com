@@ -1078,7 +1078,7 @@
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=6";
-  import { setupAutofill, autofillExtras, clearAutofill, cityTag } from "./js/sf-autofill.js?v=1";
+  import { setupAutofill, autofillExtras, clearAutofill, cityTag } from "./js/sf-autofill.js?v=2";
 
 
   const firebaseConfig = {
@@ -1093,8 +1093,10 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const functionsInstance = getFunctions(app);
-  // Search field above each form: fills it in from the place's name or address (js/sf-autofill.js).
-  setupAutofill(db);
+  // Search field above each form: fills it in from the place's name, address or Google Maps
+  // link (js/sf-autofill.js). Short links from the phone are opened by the admin-only Cloud
+  // Function expandMapsLink.
+  setupAutofill(db, { expandLink: url => httpsCallable(functionsInstance, 'expandMapsLink')({ url }).then(r => r.data && r.data.url) });
   const auth = getAuth(app);
 
 

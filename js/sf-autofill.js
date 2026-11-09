@@ -1,4 +1,4 @@
-// Strong Foodie admin: fill in a review form from the place's name or address.
+// Strong Foodie admin: fill in a review form from the place's name, address or Google Maps link.
 //
 // On admin.html each of the six forms gets a search field above it. Type the name
 // of the place or its street address and pick a suggestion. The form then fills in
@@ -9,10 +9,16 @@
 // For Eat and Shop, other branches with the same name can be added as extra locations.
 // Everything stays editable: the admin checks and changes what they like.
 //
+// A Google Maps link (8 Nov 2026) works in the same field. Only the name and the pin
+// are read from the link; address, hours and phone come from OpenStreetMap, like for a
+// typed name, because Google's terms don't allow storing their place data. A short
+// link from the phone (maps.app.goo.gl) is opened by the admin-only Cloud Function
+// expandMapsLink. The texts in the admin are Dutch.
+//
 // Data: OpenStreetMap, through Photon (search, free, no key) and Nominatim
 // (opening hours and phone, one request per pick, never while typing).
 
-import { placeFinder, fromFeature, isPoiFeature, foldText, catInfo } from './sf-find.js?v=5';
+import { placeFinder, fromFeature, isPoiFeature, foldText, catInfo, strongFoodiePlaces } from './sf-find.js?v=5';
 import { townOf } from './sf-core.js?v=3';
 
 const FORMS = [
@@ -124,7 +130,7 @@ async function addressSearch(q) {
     if (a.lat == null) continue;
     const key = 'addr|' + foldText(a.line);
     if (out.some(o => o.key === key)) continue;
-    out.push({ ...a, src: 'addr', key, name: a.line.split(',')[0], type: 'Address', cat: null, address: [a.line, a.country].filter(Boolean).join(', ') });
+    out.push({ ...a, src: 'addr', key, name: a.line.split(',')[0], type: 'Adres', cat: null, address: [a.line, a.country].filter(Boolean).join(', ') });
     if (out.length >= 3) break;
   }
   return out;
@@ -167,9 +173,12 @@ const phoneOf = tags => String(tags.phone || tags['contact:phone'] || '').split(
 // ── The form ────────────────────────────────────────────────────────────
 
 function setVal(id, v) { const el = $(id); if (el && v != null) el.value = v; }
+// The Eat type was a list; since the admin update of 4 Nov it is free text with suggestions.
 function setSelect(id, text) {
   const el = $(id);
-  if (el && Array.from(el.options).some(o => (o.value || o.text) === text)) el.value = text;
+  if (!el || !text) return;
+  if (el.tagName !== 'SELECT') { el.value = text; return; }
+  if (Array.from(el.options).some(o => (o.value || o.text) === text)) el.value = text;
 }
 const rowsOf = form => Array.from($(form.locations).querySelectorAll('.location-row'));
 function fillRow(row, b, hours) {
@@ -196,39 +205,40 @@ function fillWhere(form, p) {
 function note(form, html) { const el = $(form.prefix + 'AfPicked'); el.innerHTML = html; el.hidden = !html; }
 function more(form, html) { const el = $(form.prefix + 'AfMore'); el.innerHTML = html; el.hidden = !html; }
 
-async function fillPlace(form, p) {
+// opt.name: the name to show (from a Google Maps link); opt.extra: HTML added to the note.
+async function fillPlace(form, p, opt = {}) {
   const st = state[form.prefix];
   const mine = ++st.seq;
   if (!p.line) p.line = lineOf(p);
-  setVal(form.name, p.name);
+  setVal(form.name, opt.name || p.name);
   fillWhere(form, p);
   if (form.type) { const t = foodType(p.osmKey, p.osmValue, ''); if (t) setSelect(form.type, t); }
-  const wrongSection = p.cat && p.cat !== form.cat
-    ? `<br>⚠️ OpenStreetMap lists this as ${esc(catInfo(p.cat).label)}${p.type ? ' (' + esc(p.type) + ')' : ''}. Check that you are in the right section.` : '';
-  note(form, `✓ Filled in: name, address and coordinates. Looking up opening hours and phone…${wrongSection}`);
+  const wrongSection = (p.cat && p.cat !== form.cat
+    ? `<br>⚠️ OpenStreetMap noemt dit ${esc(catInfo(p.cat).label)}${p.type ? ' (' + esc(p.type) + ')' : ''}. Kijk of je in de goede categorie zit.` : '') + (opt.extra || '');
+  note(form, `✓ Ingevuld: naam, adres en coördinaten. Ik zoek openingstijden en telefoon op…${wrongSection}`);
 
   const tags = (await osmDetails([p]))[osmKeyOf(p)] || {};
   if (mine !== st.seq) return;
-  const done = ['name', 'address', 'coordinates'];
+  const done = ['naam', 'adres', 'coördinaten'];
   const hours = niceHours(tags.opening_hours);
   if (hours) {
     const h = form.locations && rowsOf(form)[0].querySelector('.loc-hours');
-    if (h) { h.value = hours; done.push('opening hours'); }
+    if (h) { h.value = hours; done.push('openingstijden'); }
     else st.extras.hours = hours;          // the form has no hours field: saved with the review
   }
   if (form.type) {
     const t = foodType(p.osmKey, p.osmValue, tags.cuisine);
-    if (t) { setSelect(form.type, t); done.push('food type'); }
+    if (t) { setSelect(form.type, t); done.push('soort eten'); }
   }
   const phone = phoneOf(tags);
   if (phone) st.extras.phone = phone;
-  const saved = [st.extras.phone && 'phone ' + esc(st.extras.phone), st.extras.country && 'country ' + esc(st.extras.country),
-    !form.locations && st.extras.hours && 'opening hours ' + esc(st.extras.hours),
-    !form.locations && !form.lat && st.extras.lat != null && 'coordinates'].filter(Boolean);
-  note(form, `✓ Filled in: ${done.filter(x => form.locations || form.lat || x !== 'coordinates').join(', ')}.`
-    + (saved.length ? ` Also saved with the review: ${saved.join(', ')}.` : '')
-    + (hours ? '' : ' No opening hours found: add them yourself if you know them.')
-    + ' Check everything and change what you like.' + wrongSection);
+  const saved = [st.extras.phone && 'telefoon ' + esc(st.extras.phone), st.extras.country && 'land ' + esc(st.extras.country),
+    !form.locations && st.extras.hours && 'openingstijden ' + esc(st.extras.hours),
+    !form.locations && !form.lat && st.extras.lat != null && 'coördinaten'].filter(Boolean);
+  note(form, `✓ Ingevuld: ${done.filter(x => form.locations || form.lat || x !== 'coördinaten').join(', ')}.`
+    + (saved.length ? ` Wordt ook bij de review opgeslagen: ${saved.join(', ')}.` : '')
+    + (hours ? '' : ' Geen openingstijden gevonden: vul ze zelf in als je ze weet.')
+    + ' Kijk alles na en pas aan wat je wilt.' + wrongSection);
 
   if (form.locations) findBranches(form, p, mine);
 }
@@ -254,15 +264,15 @@ async function findBranches(form, p, mine) {
   if (!list.length) return;
   st.branches = list;
   const n = list.length;
-  more(form, `<p><strong>${n} more location${n === 1 ? '' : 's'} of ${esc(p.name)} found.</strong> Tick the ones to add as extra locations.</p>
+  more(form, `<p><strong>${n} andere ${n === 1 ? 'vestiging' : 'vestigingen'} van ${esc(p.name)} gevonden.</strong> Vink aan welke je als extra locatie wilt toevoegen.</p>
     ${list.map((b, i) => `<label><input type="checkbox" data-b="${i}"${b.countryCode === p.countryCode ? ' checked' : ''}>
       <span>${esc(b.line || b.town || b.address)}${b.country ? ', ' + esc(b.country) : ''}</span></label>`).join('')}
-    <button type="button" class="af-btn" data-add-branches>+ Add locations</button>`);
+    <button type="button" class="af-btn" data-add-branches>+ Locaties toevoegen</button>`);
   const box = $(form.prefix + 'AfMore');
   const btn = box.querySelector('[data-add-branches]');
   const count = () => {
     const k = box.querySelectorAll('input[data-b]:checked').length;
-    btn.textContent = k ? `+ Add ${k} location${k === 1 ? '' : 's'}` : 'Tick a location first';
+    btn.textContent = k ? `+ ${k} ${k === 1 ? 'locatie' : 'locaties'} toevoegen` : 'Vink eerst een locatie aan';
     btn.disabled = !k;
   };
   box.addEventListener('change', count);
@@ -273,7 +283,7 @@ async function findBranches(form, p, mine) {
 async function addBranches(form, chosen, mine) {
   const st = state[form.prefix];
   const btn = $(form.prefix + 'AfMore').querySelector('[data-add-branches]');
-  btn.disabled = true; btn.textContent = 'Adding…';
+  btn.disabled = true; btn.textContent = 'Bezig…';
   const det = await osmDetails(chosen);
   if (mine !== st.seq) return;
   for (const b of chosen) {
@@ -283,7 +293,7 @@ async function addBranches(form, chosen, mine) {
   }
   more(form, '');
   const el = $(form.prefix + 'AfPicked');
-  el.insertAdjacentHTML('beforeend', `<br>✓ ${chosen.length} more location${chosen.length === 1 ? '' : 's'} added.`);
+  el.insertAdjacentHTML('beforeend', `<br>✓ ${chosen.length} extra ${chosen.length === 1 ? 'locatie' : 'locaties'} toegevoegd.`);
 }
 
 async function onPick(form, pick) {
@@ -298,23 +308,191 @@ async function onPick(form, pick) {
   // A street address: fill in where it is, then offer the places at that address.
   pick.line = pick.line || lineOf(pick);
   fillWhere(form, pick);
-  note(form, '✓ Filled in: address and coordinates. Looking for places at this address…');
+  note(form, '✓ Ingevuld: adres en coördinaten. Ik zoek plekken op dit adres…');
   const mine = st.seq;
   let near = [];
   try { near = await nearby(pick.lat, pick.lng); } catch (e) { near = []; }
   if (mine !== st.seq) return;
   if (!near.length) {
-    note(form, '✓ Filled in: address and coordinates. No business found at this address: type the name yourself.');
+    note(form, '✓ Ingevuld: adres en coördinaten. Geen zaak gevonden op dit adres: typ de naam zelf.');
     return;
   }
-  note(form, '✓ Filled in: address and coordinates.');
-  more(form, `<p><strong>Places at this address.</strong> Pick one to fill in the rest.</p>
+  note(form, '✓ Ingevuld: adres en coördinaten.');
+  more(form, `<p><strong>Plekken op dit adres.</strong> Kies er een om de rest in te vullen.</p>
     <div class="af-chips">${near.map((p, i) => `<button type="button" class="af-chip" data-n="${i}">${catInfo(p.cat || form.cat).emoji} ${esc(p.name)}${p.type ? ` <small>${esc(p.type)}</small>` : ''}</button>`).join('')}</div>`);
   $(form.prefix + 'AfMore').querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => {
     more(form, '');
     $(form.prefix + 'AfFind').value = near[+b.dataset.n].name;
     fillPlace(form, near[+b.dataset.n]);
   }));
+}
+
+
+// ── Google Maps link ────────────────────────────────────────────────────
+
+const SHORT_LINK = /^https?:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|g\.co\/kgs)\//i;
+const LONG_LINK = /^https?:\/\/(((www|maps)\.)?google\.[a-z.]+\/maps|maps\.google\.[a-z.]+\/)/i;
+export const isShortMapsLink = t => SHORT_LINK.test(String(t || '').trim());
+export const isMapsLink = t => { const x = String(t || '').trim(); return SHORT_LINK.test(x) || LONG_LINK.test(x); };
+
+// Name and pin from a long Google Maps address. Null when it isn't one.
+//   /maps/place/Ros%C3%A8l+Amsterdam/@52.37,4.88,17z/data=…!3d52.3717!4d4.8892…
+//   /maps?q=52.37,4.88   /maps?q=Rosèl,+Spuistraat+214,+Amsterdam   /maps/search/?api=1&query=…
+export function parseMapsUrl(raw) {
+  let u;
+  try { u = new URL(String(raw || '').trim()); } catch (e) { return null; }
+  if (!LONG_LINK.test(u.href)) return null;
+  const dec = x => { try { return decodeURIComponent(String(x).replace(/\+/g, ' ')); } catch (e) { return String(x).replace(/\+/g, ' '); } };
+  const path = u.pathname;
+  let name = '', full = '', lat = null, lng = null;
+  const place = path.match(/\/maps\/place\/([^/]+)/);
+  if (place && !/^@/.test(place[1])) full = dec(place[1]);
+  const pin = (path + u.search + u.hash).match(/!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/);
+  const at = path.match(/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/);
+  if (pin) { lat = +pin[1]; lng = +pin[2]; } else if (at) { lat = +at[1]; lng = +at[2]; }
+  const q = u.searchParams.get('q') || u.searchParams.get('query') || '';
+  if (q) {
+    const ll = q.match(/^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/);
+    if (ll) { if (lat == null) { lat = +ll[1]; lng = +ll[2]; } } else if (!full) full = q.trim();
+  }
+  const search = path.match(/\/maps\/search\/([^/@]+)/);
+  if (!full && search) {
+    const t = dec(search[1]);
+    const ll = t.match(/^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/);
+    if (ll) { if (lat == null) { lat = +ll[1]; lng = +ll[2]; } } else full = t;
+  }
+  full = full.replace(/\s+/g, ' ').trim();
+  name = full.split(',')[0].trim();
+  if (lat != null && (Math.abs(lat) > 90 || Math.abs(lng) > 180)) { lat = null; lng = null; }
+  if (!name && lat == null) return null;
+  return { name, full: full || name, lat, lng };
+}
+
+// Do two names belong to the same place? "Rosèl Amsterdam" and "Rosèl" do.
+const COMMON = new Set(['the', 'and', 'de', 'het', 'een', 'van', 'restaurant', 'cafe', 'bar', 'hotel', 'eatery', 'kitchen', 'bistro', 'grill', 'shop', 'store', 'gym', 'club', 'house', 'amsterdam', 'los', 'angeles', 'aruba', 'rotterdam', 'istanbul', 'dubai', 'london', 'paris', 'new', 'york']);
+const wordsOf = t => foldText(t).split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !COMMON.has(w));
+export function sameName(a, b) {
+  const x = foldText(a).replace(/[^a-z0-9]/g, ''), y = foldText(b).replace(/[^a-z0-9]/g, '');
+  if (!x || !y) return false;
+  if (x.length >= 4 && y.length >= 4 && (x.includes(y) || y.includes(x))) return true;
+  const wy = new Set(wordsOf(b));
+  return wordsOf(a).some(w => wy.has(w));
+}
+
+// OpenStreetMap places near the pin: the one with the same name, and the others close by.
+async function nearPin(g) {
+  const here = { lat: g.lat, lng: g.lng };
+  let feats = [];
+  try {
+    const res = await fetch('https://photon.komoot.io/api/?' + new URLSearchParams({ q: g.name || g.full, lat: String(g.lat), lon: String(g.lng), limit: '15', lang: 'en' }));
+    if (res.ok) feats = ((await res.json()) || {}).features || [];
+  } catch (e) { feats = []; }
+  const named = feats.filter(isPoiFeature).map(toPlace).filter(p => p.lat != null && distM(here, p) <= 250 && sameName(p.name, g.name))
+    .sort((a, b) => distM(here, a) - distM(here, b));
+  if (named.length) return { match: named[0], near: [] };
+  let near = [];
+  try { near = await nearby(g.lat, g.lng); } catch (e) { near = []; }
+  const same = near.find(p => sameName(p.name, g.name));
+  return { match: same || null, near: same ? [] : near };
+}
+
+// The street address at the pin, when OpenStreetMap doesn't know the place itself.
+async function addressAt(lat, lng) {
+  try {
+    const res = await fetch('https://photon.komoot.io/reverse?' + new URLSearchParams({ lat: String(lat), lon: String(lng), limit: '1', lang: 'en' }));
+    if (!res.ok) return null;
+    const f = (((await res.json()) || {}).features || [])[0];
+    if (!f) return null;
+    const p = toPlace(f);
+    p.lat = lat; p.lng = lng;
+    return p.line ? p : null;
+  } catch (e) { return null; }
+}
+
+// For the member form on add.html (English): what a Google Maps link points to.
+// → { ok: false, reason: 'short' | 'unreadable' }, or { ok: true, g, match, near, where }:
+//   match: the place in OpenStreetMap (with Google's pin), near: places close to the pin
+//   when there is no match, where: the street address at the pin when there is no match.
+export async function resolveMapsLink(raw, opts = {}) {
+  let url = String(raw || '').trim();
+  if (isShortMapsLink(url)) {
+    if (!opts.expandLink) return { ok: false, reason: 'short' };
+    try { url = await opts.expandLink(url); } catch (e) { console.log('expandMapsLink:', e); return { ok: false, reason: 'short' }; }
+  }
+  const g = parseMapsUrl(url);
+  if (!g) return { ok: false, reason: 'unreadable' };
+  let match = null, near = [], where = null;
+  if (g.lat != null) ({ match, near } = await nearPin(g));
+  else {
+    let feats = [];
+    try { feats = await photon(g.full, 10); } catch (e) { feats = []; }
+    match = feats.filter(isPoiFeature).map(toPlace).find(p => sameName(p.name, g.name)) || null;
+  }
+  if (match && g.lat != null) { match.lat = g.lat; match.lng = g.lng; }
+  if (!match && g.lat != null) where = await addressAt(g.lat, g.lng);
+  // "360 Hampton Drive" in the US, "Spuistraat 214" in the Netherlands
+  for (const p of [match, where, ...near]) {
+    if (!p || !p.streetName) continue;
+    p.street = lineOf(p).split(', ')[0];
+    p.address = [p.street, [p.postcode, p.town].filter(Boolean).join(' '), p.country].filter(Boolean).join(', ');
+  }
+  return { ok: true, g, match, near, where };
+}
+
+const SHORT_HELP = 'Deze korte link kan ik nu niet openen. Open hem in je browser, kopieer het lange adres uit de adresbalk en plak dat hier.';
+
+async function fromLink(form, raw, opts) {
+  const P = form.prefix, st = state[P];
+  st.finder.reset();
+  st.seq++; st.extras = {}; st.branches = [];
+  const mine = st.seq;
+  more(form, '');
+  let url = String(raw || '').trim();
+  if (isShortMapsLink(url)) {
+    if (!opts.expandLink) { note(form, SHORT_HELP); return; }
+    note(form, '🔗 Korte Google Maps-link: ik open hem…');
+    try { url = await opts.expandLink(url); } catch (e) { console.log('expandMapsLink:', e); if (mine === st.seq) note(form, SHORT_HELP); return; }
+    if (mine !== st.seq) return;
+  }
+  const g = parseMapsUrl(url);
+  if (!g) { note(form, 'Deze link kan ik niet lezen. Open de plek in Google Maps, tik op Delen › Link kopiëren en plak die link hier.'); return; }
+  note(form, `🔗 Uit de link: ${esc(g.name || 'een plek op de kaart')}. Ik zoek de gegevens op…`);
+  const known = g.name ? await strongFoodiePlaces(opts.db).then(all => all.find(x => x.n === foldText(g.name) || sameName(x.name, g.name) && (!x.town || foldText(g.full).includes(foldText(x.town))))).catch(() => null) : null;
+  if (mine !== st.seq) return;
+  const already = known ? `<br>⚠️ ${esc(known.name)} staat al op Strong Foodie${known.where ? ' (' + esc(known.where) + ')' : ''}. Bewerk hem liever in de lijst hieronder dan hem dubbel toe te voegen.` : '';
+
+  let match = null, near = [];
+  if (g.lat != null) ({ match, near } = await nearPin(g));
+  else {
+    let feats = [];
+    try { feats = await photon(g.full, 10); } catch (e) { feats = []; }
+    match = feats.filter(isPoiFeature).map(toPlace).find(p => sameName(p.name, g.name)) || null;
+  }
+  if (mine !== st.seq) return;
+  const input = $(P + 'AfFind');
+  if (match) {
+    if (g.lat != null) { match.lat = g.lat; match.lng = g.lng; }   // Google's pin is the most precise
+    input.value = g.name || match.name;
+    fillPlace(form, match, { name: g.name || match.name, extra: already });
+    return;
+  }
+  // OpenStreetMap doesn't know it: the name, the pin and the street address at the pin.
+  if (g.name) { setVal(form.name, g.name); input.value = g.name; }
+  const where = g.lat != null ? (await addressAt(g.lat, g.lng)) || { lat: g.lat, lng: g.lng, line: '' } : null;
+  if (mine !== st.seq) return;
+  if (where) fillWhere(form, where);
+  const got = [g.name && 'naam', where && where.line && 'adres', where && 'coördinaten'].filter(Boolean);
+  note(form, (got.length ? `✓ Ingevuld: ${got.join(', ')}. ` : '') + 'Niet gevonden in OpenStreetMap: openingstijden en telefoon vul je zelf in.' + already);
+  if (near.length) {
+    more(form, `<p><strong>Plekken vlak bij de pin.</strong> Is het een van deze? Kies hem om de rest in te vullen.</p>
+      <div class="af-chips">${near.map((p, i) => `<button type="button" class="af-chip" data-n="${i}">${catInfo(p.cat || form.cat).emoji} ${esc(p.name)}${p.type ? ` <small>${esc(p.type)}</small>` : ''}</button>`).join('')}</div>`);
+    $(P + 'AfMore').querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => {
+      more(form, '');
+      const p = near[+b.dataset.n];
+      if (g.lat != null) { p.lat = g.lat; p.lng = g.lng; }
+      fillPlace(form, p, { name: g.name || p.name, extra: already });
+    }));
+  }
 }
 
 const CSS = `
@@ -345,7 +523,9 @@ const CSS = `
   .af-box [hidden] { display: none !important; }
 `;
 
-export function setupAutofill(db) {
+// opts.expandLink(url) → the long address of a short Google Maps link (admin.html passes
+// the Cloud Function expandMapsLink). Without it, short links ask for the long address.
+export function setupAutofill(db, opts = {}) {
   if (!document.getElementById('afStyle')) {
     const style = document.createElement('style');
     style.id = 'afStyle';
@@ -359,21 +539,36 @@ export function setupAutofill(db) {
     const anchor = nameEl.closest('.form-row') || nameEl.parentElement.parentElement;
     anchor.insertAdjacentHTML('beforebegin', `
       <div class="af-box" id="${P}Af">
-        <label class="af-label" for="${P}AfFind">🔎 Fill in from the name or address</label>
+        <label class="af-label" for="${P}AfFind">🔎 Invullen met de naam, het adres of een Google Maps-link</label>
         <input class="form-input" type="text" id="${P}AfFind" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${P}AfList"
-          placeholder="Name or address, e.g. Bakers &amp; Roasters Amsterdam, or Singel 83 Amsterdam">
+          placeholder="Naam, adres of Google Maps-link, bijv. Bakers &amp; Roasters Amsterdam">
         <ul class="sugg" id="${P}AfList" role="listbox" hidden></ul>
         <div class="af-note" id="${P}AfPicked" hidden></div>
         <div class="af-more" id="${P}AfMore" hidden></div>
       </div>`);
     state[P] = { seq: 0, extras: {}, branches: [] };
+    // A Google Maps link: read it instead of searching for the text. Added before the
+    // type-ahead and in the capture phase, so the type-ahead never sees the link.
+    const linkOpts = { db, expandLink: opts.expandLink };
+    let lastLink = '', linkTimer = null;
+    const run = v => { if (v === lastLink) return; lastLink = v; fromLink(form, v, linkOpts).catch(e => { console.log('Google Maps link:', e && e.stack || e); note(form, 'Er ging iets mis met deze link. Probeer het nog eens, of typ de naam.'); }); };
+    const onLink = e => {
+      const v = $(P + 'AfFind').value.trim();
+      if (!isMapsLink(v)) { lastLink = ''; clearTimeout(linkTimer); return; }
+      e.stopImmediatePropagation();
+      clearTimeout(linkTimer);
+      if (e.type === 'keydown') { if (e.key === 'Enter') { e.preventDefault(); lastLink = ''; run(v); } return; }
+      linkTimer = setTimeout(() => run(v), 400);   // a pasted link is whole at once; typed by hand, wait a moment
+    };
+    $(P + 'AfFind').addEventListener('input', onLink, { capture: true });
+    $(P + 'AfFind').addEventListener('keydown', onLink, { capture: true });
     state[P].finder = placeFinder({
       db, input: $(P + 'AfFind'), list: $(P + 'AfList'), picked: $(P + 'AfPicked'),
       catName: P + 'AfNoCategory', idPrefix: P + 'AfS',
-      emptyText: 'Nothing found. Try the name with the town, or the street and number.',
+      emptyText: 'Niets gevonden. Probeer de naam met de plaats, de straat met huisnummer, of plak een Google Maps-link.',
       moreResults: addressSearch,
       describe: s => s.src === 'sf'
-        ? `✓ ${esc(s.name)} is already on Strong Foodie. Edit it in the list further down instead of adding it again.`
+        ? `✓ ${esc(s.name)} staat al op Strong Foodie. Bewerk hem in de lijst hieronder in plaats van hem opnieuw toe te voegen.`
         : `📍 ${esc([s.type, s.address].filter(Boolean).join(' · ') || s.name)}`,
       onPick: s => onPick(form, s),
     });
