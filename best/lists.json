@@ -1132,6 +1132,21 @@
    ]
   },
   {
+   "slug": "wellness-los-angeles",
+   "url": "/best/wellness-los-angeles/",
+   "kind": "cat",
+   "cat": "health",
+   "tag": "",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Gyms & Wellness in Los Angeles",
+   "places": [
+    "healthspots/0HTVApH3MOE8Jwcv2nC5"
+   ]
+  },
+  {
    "slug": "gym-amsterdam",
    "url": "/best/gym-amsterdam/",
    "kind": "tag",
@@ -1159,6 +1174,21 @@
    "title": "Best Gyms in Aruba",
    "places": [
     "healthspots/BvdrQsC4wyabEstW21Hg"
+   ]
+  },
+  {
+   "slug": "gym-los-angeles",
+   "url": "/best/gym-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Gym",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Gyms in Los Angeles",
+   "places": [
+    "healthspots/0HTVApH3MOE8Jwcv2nC5"
    ]
   },
   {
@@ -2110,6 +2140,7 @@
    "country": "",
    "title": "Best Gyms & Wellness Worldwide",
    "places": [
+    "healthspots/0HTVApH3MOE8Jwcv2nC5",
     "healthspots/BvdrQsC4wyabEstW21Hg",
     "healthspots/NLyQLKEyTIimJAtYe8Qj"
    ]
