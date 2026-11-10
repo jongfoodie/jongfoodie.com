@@ -322,6 +322,8 @@
         $('sName').value = '';
         picked.innerHTML = r.reason === 'short'
           ? "This short link couldn't be opened. Open it in your browser, copy the long address from the address bar and paste that here. Or type the name."
+          : r.reason === 'list'
+          ? "This is a Google Maps list, not one place. Open one place from the list, tap Share › Copy link and paste that here."
           : "This link can't be read. In Google Maps, open the place, tap Share › Copy link and paste it here. Or type the name.";
         picked.hidden = false;
         return;

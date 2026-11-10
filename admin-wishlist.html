@@ -82,6 +82,9 @@
   .pill.ok { color: var(--green); background: var(--green-light); }
   .pill.saved { color: var(--ink-soft); background: #F1ECE4; }
   .item .row { margin-top: 0.2rem; }
+  .flagbox { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; padding: 0.8rem 1rem; margin-bottom: 0.9rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  .flag { display: flex; gap: 0.55rem; align-items: flex-start; cursor: pointer; font-size: 14.5px; line-height: 1.45; }
+  .flag input { width: 20px; height: 20px; accent-color: var(--green); margin-top: 1px; flex-shrink: 0; }
   .empty { background: var(--warm-white); border: 1px dashed var(--border); border-radius: 14px; padding: 1.5rem 1rem; text-align: center; color: var(--muted); line-height: 1.6; }
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 50; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -108,7 +111,8 @@
   // "Review schrijven" opent admin.html?wish=<id>: het juiste formulier, al ingevuld.
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { mountListImport } from "./js/sf-listimport.js?v=1";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { placeFinder, strongFoodiePlaces, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
   import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
@@ -180,11 +184,31 @@
         <p class="err" id="wError" hidden></p>
         <div class="row"><button class="btn btn-main" type="submit" id="wSave">📌 Op de lijst</button></div>
       </form>
+      <div class="flagbox">
+        <label class="flag"><input type="checkbox" id="flagImport" disabled> <span><b>Leden mogen een Google Maps-lijst importeren</b> (website, en in de app vanaf batch 86)</span></label>
+        <p class="item-meta">Uit: leden zien de knop niet. Wat ze al importeerden, blijft op hun wishlist staan. Jij kunt het hieronder altijd testen.</p>
+      </div>
+      <div id="importBox" style="margin-bottom:1.5rem;"></div>
       <div class="bar"><span class="count" id="count">Laden…</span><input type="search" id="q" placeholder="Zoek in je lijst"></div>
       <div class="chips" id="chips"></div>
       <div id="list"></div>`;
     setupAdd();
     document.getElementById('q').addEventListener('input', e => { search = foldText(e.target.value); draw(); });
+    mountListImport(document.getElementById('importBox'), { app, db, uid: user.uid, lang: 'nl', onDone: () => load() });
+    // The switch for members: site/flags.mapsListImport (read by account.html and the app).
+    const flag = document.getElementById('flagImport');
+    getDoc(doc(db, 'site', 'flags')).then(s => { flag.checked = s.exists() && s.data().mapsListImport === true; flag.disabled = false; }).catch(() => { flag.disabled = false; });
+    flag.addEventListener('change', async () => {
+      flag.disabled = true;
+      try {
+        await setDoc(doc(db, 'site', 'flags'), { mapsListImport: flag.checked, mapsListImportAt: serverTimestamp() }, { merge: true });
+        toast(flag.checked ? 'Aan: leden kunnen nu een Google Maps-lijst importeren' : 'Uit: leden zien de knop niet meer');
+      } catch (e) {
+        console.log('Schakelaar mislukt:', e);
+        flag.checked = !flag.checked;
+        toast('Opslaan lukte niet. Probeer het opnieuw.', true);
+      } finally { flag.disabled = false; }
+    });
   }
 
   // ── Toevoegen ───────────────────────────────────────────────────────────
@@ -205,6 +229,8 @@
         $('wFind').value = '';
         $('wPicked').textContent = r.reason === 'short'
           ? 'Deze korte link kan ik nu niet openen. Open hem in je browser, kopieer het lange adres uit de adresbalk en plak dat hier.'
+          : r.reason === 'list'
+          ? 'Dit is een Google Maps-lijst, geen plek. Open één plek uit de lijst, tik op Delen › Link kopiëren en plak die link hier.'
           : 'Deze link kan ik niet lezen. Open de plek in Google Maps, tik op Delen › Link kopiëren en plak die link hier.';
         return;
       }

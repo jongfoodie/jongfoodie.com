@@ -122,7 +122,7 @@
   .cat-opt input:focus-visible + span { outline: 2px solid var(--accent); }
   .row-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .sugg { list-style: none; margin-top: 0.35rem; border: 1px solid var(--border); border-radius: 12px; background: #fff; overflow: hidden; box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
-  .sugg[hidden], .picked[hidden], #wCatHint[hidden] { display: none; }
+  .sugg[hidden], .picked[hidden], #wCatHint[hidden], #bCatHint[hidden] { display: none; }
   .sugg li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--border); cursor: pointer; }
   .sugg li:first-child { border-top: none; }
   .sugg li.active, .sugg li:hover { background: var(--accent-pale); }
@@ -225,10 +225,13 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithCredential, reauthenticateWithPopup, EmailAuthProvider, GoogleAuthProvider, OAuthProvider, revokeAccessToken } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { placeFinder } from "./js/sf-find.js?v=4";
+  import { placeFinder } from "./js/sf-find.js?v=5";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=3";
-  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=6";
-  import { markBeen, loadBeen } from "./js/sf-been.js?v=1";
+  import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=7";
+  import { markBeen, loadBeen, addBeenPlace, loadBeenPlaces } from "./js/sf-been.js?v=2";
+  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+  import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=1";
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
   import { memberStats, badgeProgress, checkBadges, earned, BADGES } from "./js/sf-badges.js?v=3";
   import { rememberRef, inviterName, recordInvite, inviteLink, countInvites, proUntil, monthsToClaim, claimMonths, REWARD_CAP } from "./js/sf-invites.js?v=1";
@@ -556,6 +559,8 @@
         </div>
         <div id="wishList"><p class="small">Loading…</p></div>
         <button class="btn" id="wishAddOpen" type="button">＋ Add a place you want to visit</button>
+        <button class="btn" id="listImportOpen" type="button" hidden>🗺️ Import a Google Maps list</button>
+        <div id="listImport" hidden></div>
         <form id="wishForm" class="form wish-form" novalidate hidden>
           <div>
             <input class="field" id="wName" type="text" maxlength="120" placeholder="Name of the place, e.g. Ynyshir" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="wSugg" required>
@@ -578,8 +583,28 @@
 
       <section class="acct-block" id="been">
         <h2>Been there <span class="count" id="beenCount"></span></h2>
-        <p class="small" style="margin-bottom:0.75rem;">Places you have been to. Tick a place off with ✓ Been there on its page, or from your wishlist above. Only you see this list, here and in the app.</p>
+        <p class="small" style="margin-bottom:0.75rem;">Places you have been to. Tick a place off with ✓ Been there on its page or from your wishlist, or add any place here, also one that isn't on Strong Foodie. Only you see this list.</p>
         <div id="beenList"><p class="small">Loading…</p></div>
+        <button class="btn" id="beenAddOpen" type="button">＋ Add a place you've been</button>
+        <button class="btn" id="beenImportOpen" type="button" hidden>🗺️ Import a Google Maps list</button>
+        <div id="beenImport" hidden></div>
+        <form id="beenForm" class="form wish-form" novalidate hidden>
+          <div>
+            <input class="field" id="bName" type="text" maxlength="2000" placeholder="Name of the place, or paste a Google Maps link" autocomplete="off" autocapitalize="words" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false">
+            <ul class="sugg" id="bSugg" role="listbox" aria-label="Suggestions" hidden></ul>
+          </div>
+          <p class="picked" id="bPicked" hidden></p>
+          <div class="cat-pick" role="radiogroup" aria-label="Category">
+            ${WISH_CATS.map((c, i) => `<label class="cat-opt"><input type="radio" name="bCat" value="${c.key}"${i === 0 ? ' checked' : ''}><span>${c.emoji} ${c.label}</span></label>`).join('')}
+          </div>
+          <p class="small" id="bCatHint" hidden>We picked the category for you. Tap another one to change it.</p>
+          <input class="field" id="bCity" type="text" maxlength="160" placeholder="Address or city (optional)" autocomplete="off">
+          <p class="form-error" id="beenError" hidden></p>
+          <div class="row-btns">
+            <button class="btn btn-primary" type="submit">Add to Been there</button>
+            <button class="btn" type="button" id="beenCancel">Cancel</button>
+          </div>
+        </form>
       </section>
 
       <section class="acct-block" id="lists">
@@ -789,6 +814,15 @@
         : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
     });
     const closeWishForm = () => { wf.reset(); finder.reset(); wf.hidden = true; openBtn.hidden = false; document.getElementById('wishError').hidden = true; };
+    // A whole Google Maps list (js/sf-listimport.js), only while Strong Foodie has it switched on.
+    const liBtn = document.getElementById('listImportOpen'), liBox = document.getElementById('listImport');
+    listImportOn(db).then(on => { liBtn.hidden = !on; document.getElementById('beenImportOpen').hidden = !on; });
+    setupBeenAdd(user);
+    liBtn.addEventListener('click', () => {
+      liBtn.hidden = true; liBox.hidden = false;
+      mountListImport(liBox, { app, db, uid: user.uid, lang: 'en', onDone: () => loadWishlist(user) });
+      liBox.querySelector('input').focus();
+    });
     openBtn.addEventListener('click', () => { wf.hidden = false; openBtn.hidden = true; document.getElementById('wName').focus(); finder.warmUp(); });
     document.getElementById('wishCancel').addEventListener('click', closeWishForm);
     wf.addEventListener('submit', async e => {
@@ -1000,7 +1034,7 @@
         ${away.has(r.id) ? `<p class="small away">📍 ${awayText(away.get(r.id))}</p>` : ''}
         ${where ? `<p class="small">📍 ${esc([r.placeType, where].filter(Boolean).join(' · '))}</p>` : ''}
         ${r.note ? `<p>${esc(r.note)}</p>` : ''}
-        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <a href="add.html?wish=${encodeURIComponent(r.id)}">Add as spot</a> · ` : ''}${link ? `<button class="link-btn small-link" data-been="${esc(r.id)}">✓ Been there</button> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
+        <p class="small">${r.kind === 'idea' ? `<a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <a href="add.html?wish=${encodeURIComponent(r.id)}">Add as spot</a> · <button class="link-btn small-link" data-been-idea="${esc(r.id)}">✓ Been there</button> · ` : ''}${link ? `<button class="link-btn small-link" data-been="${esc(r.id)}">✓ Been there</button> · ` : ''}<button class="link-btn small-link" data-remove="${esc(r.id)}">Remove</button></p>
       </li>`;
     }).join('')}</ul>` : '<p class="small" style="margin-bottom:0.75rem;">Nothing on your wishlist yet.</p>';
     box.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', async () => {
@@ -1021,6 +1055,20 @@
     box.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', async () => {
       try { await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', b.dataset.remove)); toast('Removed from your wishlist'); loadWishlist(user); }
       catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
+    }));
+    // ✓ Been there for a place that isn't on Strong Foodie: onto the Been there list
+    // (beenPlaces, js/sf-been.js), off the wishlist.
+    box.querySelectorAll('[data-been-idea]').forEach(b => b.addEventListener('click', async () => {
+      const r = rows.find(x => x.id === b.dataset.beenIdea);
+      if (!r) return;
+      b.disabled = true;
+      try {
+        await addBeenPlace(db, user.uid, { name: r.name, category: r.category, city: r.city, address: r.address, country: r.country, placeType: r.placeType, lat: r.lat, lng: r.lng, note: r.note, source: 'wishlist' });
+        await deleteDoc(doc(db, 'profiles', user.uid, 'wishlistItems', r.id));
+        toast('Been there! Moved from your wishlist');
+      } catch (e) { console.error(e); toast('Could not save. Please try again.'); b.disabled = false; return; }
+      loadWishlist(user);
+      loadBeenList(user);
     }));
     // ✓ Been there: onto the Been there list, off the wishlist.
     box.querySelectorAll('[data-been]').forEach(b => b.addEventListener('click', async () => {
@@ -1092,22 +1140,124 @@
     catch (e) { console.log('Badges could not load:', e.code || e); box.innerHTML = '<p class="small">Your badges could not load right now.</p>'; }
   }
 
+  // ── Been there: add any place, also one that isn't on Strong Foodie (10 Nov 2026).
+  // A Strong Foodie place goes to beenThere as before; any other place to beenPlaces.
+  function setupBeenAdd(user) {
+    const $ = id => document.getElementById(id);
+    const form = $('beenForm'), open = $('beenAddOpen');
+    if (!form) return;
+    let pick = null;
+    // A Google Maps link in the name field (js/sf-autofill.js), before the type-ahead.
+    const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
+    let lastLink = '', timer = null, seq = 0;
+    async function fromLink(v) {
+      const mine = ++seq;
+      bFinder.reset();
+      $('bPicked').textContent = '🔗 Reading the Google Maps link…'; $('bPicked').hidden = false;
+      let r;
+      try { r = await resolveMapsLink(v, { expandLink }); } catch (e) { r = { ok: false, reason: 'unreadable' }; }
+      if (mine !== seq) return;
+      if (!r.ok) {
+        $('bName').value = '';
+        $('bPicked').textContent = r.reason === 'list' ? 'This is a Google Maps list, not one place. Use "Import a Google Maps list" for a whole list.'
+          : r.reason === 'short' ? "This short link couldn't be opened. Open it in your browser, copy the long address and paste that." : "This link can't be read. Paste the link of one place, or type the name.";
+        return;
+      }
+      const { g, match, where } = r, src = match || where || {};
+      const p = { src: 'osm', name: g.name || (match && match.name) || '', cat: match ? match.cat : null, type: match ? match.type : '', street: src.street || '',
+                  town: src.town || '', country: src.country || '', address: src.address || '', lat: g.lat != null ? g.lat : src.lat, lng: g.lng != null ? g.lng : src.lng };
+      $('bName').value = p.name;
+      $('bCity').value = p.address || p.town;
+      const radio = p.cat && form.querySelector(`input[name="bCat"][value="${p.cat}"]`);
+      if (radio) { radio.checked = true; $('bCatHint').hidden = false; }
+      bFinder.setPick(p); pick = p;
+    }
+    const onLink = e => {
+      const v = $('bName').value.trim();
+      if (!isMapsLink(v)) { lastLink = ''; clearTimeout(timer); return; }
+      e.stopImmediatePropagation();
+      clearTimeout(timer);
+      const run = () => { if (v === lastLink) return; lastLink = v; fromLink(v); };
+      if (e.type === 'keydown') { if (e.key === 'Enter') { e.preventDefault(); lastLink = ''; run(); } return; }
+      timer = setTimeout(run, 400);
+    };
+    $('bName').addEventListener('input', onLink, { capture: true });
+    $('bName').addEventListener('keydown', onLink, { capture: true });
+    const bFinder = placeFinder({
+      db, catName: 'bCat', idPrefix: 'bS',
+      input: $('bName'), list: $('bSugg'), picked: $('bPicked'), hint: $('bCatHint'), address: $('bCity'),
+      describe: p => p.src === 'sf'
+        ? `✓ ${esc(p.name)} is on Strong Foodie. It is ticked off with a link to its page.`
+        : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
+      onPick: p => { pick = p; },
+    });
+    const close = () => { form.reset(); bFinder.reset(); pick = null; form.hidden = true; open.hidden = false; $('beenError').hidden = true; };
+    open.addEventListener('click', () => { form.hidden = false; open.hidden = true; $('bName').focus(); bFinder.warmUp(); });
+    $('beenCancel').addEventListener('click', close);
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const err = t => { $('beenError').textContent = t; $('beenError').hidden = !t; };
+      const name = $('bName').value.trim(), address = $('bCity').value.trim();
+      const category = (form.querySelector('input[name="bCat"]:checked') || {}).value || 'eat';
+      if (isMapsLink(name)) return err('Wait a moment while the Google Maps link is read, or type the name.');
+      if (name.length < 2) return err('Fill in the name of the place.');
+      if (name.length > 120) return err('The name is too long. Keep it under 120 characters.');
+      const p = bFinder.picked() || pick;
+      const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
+      try {
+        if (p && p.src === 'sf') await markBeen(db, user.uid, { coll: p.coll, id: p.id, name: p.name, cat: p.cat, city: p.where || '' });
+        else {
+          const keepPin = p && p.src === 'osm' && typeof p.lat === 'number' && (address === (p.address || p.town) || !address);
+          await addBeenPlace(db, user.uid, { name, category, city: (p && p.town) || address, address: address || (p && p.address) || '', country: p && p.country, placeType: p && p.type,
+            lat: keepPin ? p.lat : undefined, lng: keepPin ? p.lng : undefined, source: 'web' });
+        }
+        toast('Added to Been there');
+        close();
+        loadBeenList(user);
+      } catch (e2) { console.error(e2); err('Could not save. Check your connection and try again.'); }
+      finally { btn.disabled = false; }
+    });
+    // A whole Google Maps list of places you have been (only while the import is switched on).
+    const ibtn = $('beenImportOpen'), ibox = $('beenImport');
+    ibtn.addEventListener('click', () => {
+      ibtn.hidden = true; ibox.hidden = false;
+      mountListImport(ibox, { app, db, uid: user.uid, lang: 'en', target: 'been', onDone: () => loadBeenList(user) });
+      ibox.querySelector('input').focus();
+    });
+  }
+
   // ── Been there (js/sf-been.js): newest first
   async function loadBeenList(user) {
     const box = document.getElementById('beenList');
     if (!box) return;
     let rows = [];
-    try { rows = await loadBeen(db, user.uid); }
+    try {
+      const [sf, other] = await Promise.all([loadBeen(db, user.uid), loadBeenPlaces(db, user.uid).catch(() => [])]);
+      // Places that aren't on Strong Foodie (beenPlaces) in the same list, newest first.
+      rows = sf.concat(other.map(o => ({ ...o, idea: true, placeName: o.name, placeCategory: o.category })))
+        .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
+    }
     catch (e) {
       console.log('Been there could not load:', e.code || e);
       box.innerHTML = '<p class="small">Your Been there list could not load right now.</p>';
       return;
     }
     document.getElementById('beenCount').textContent = rows.length ? `(${rows.length})` : '';
-    if (!rows.length) { box.innerHTML = '<p class="small">Nothing ticked off yet. Open a place you have been to and tap ✓ Been there.</p>'; return; }
+    if (!rows.length) { box.innerHTML = '<p class="small">Nothing ticked off yet. Open a place you have been to and tap ✓ Been there, or add one below.</p>'; return; }
     box.innerHTML = `<p class="been-stat">✓ Been to<b>${rows.length}</b>${rows.length === 1 ? 'place' : 'places'}</p>
       <ul class="acct-list">${rows.map(r => {
         const c = catInfo(r.placeCategory);
+        if (r.idea) {
+          const where = r.address || r.city || '';
+          const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(typeof r.lat === 'number' && typeof r.lng === 'number' ? `${r.lat},${r.lng}` : [r.name, where].filter(Boolean).join(', '))}`;
+          const when = fmtDate(toDate(r.createdAt));
+          return `<li>
+          <div class="row-top"><strong>${esc(r.name)}</strong><span class="small">${c.emoji} ${c.label}</span></div>
+          <span class="pill-new">Not on Strong Foodie</span>
+          <p class="small">${[where ? '📍 ' + esc([r.placeType, where].filter(Boolean).join(' · ')) : '', when ? 'Added ' + esc(when) : ''].filter(Boolean).join(' · ')}</p>
+          <p class="small"><a href="${maps}" target="_blank" rel="noopener">Find on Google Maps ↗</a> · <button class="link-btn small-link" data-unbeen-idea="${esc(r.id)}">Remove</button></p>
+        </li>`;
+        }
         const link = `plek.html?c=${encodeURIComponent(r.placeCollection)}&id=${encodeURIComponent(r.placeDocId)}`;
         const when = fmtDate(toDate(r.createdAt));
         return `<li>
@@ -1116,8 +1266,12 @@
           <p class="small"><button class="link-btn small-link" data-unbeen="${esc(r.id)}">Remove</button></p>
         </li>`;
       }).join('')}</ul>`;
+    box.querySelectorAll('[data-unbeen-idea]').forEach(b => b.addEventListener('click', async () => {
+      try { await deleteDoc(doc(db, 'profiles', user.uid, 'beenPlaces', b.dataset.unbeenIdea)); toast('Taken off your Been there list'); loadBeenList(user); }
+      catch (e) { console.error(e); toast('Could not remove. Please try again.'); }
+    }));
     box.querySelectorAll('[data-unbeen]').forEach(b => b.addEventListener('click', async () => {
-      const r = rows.find(x => x.id === b.dataset.unbeen);
+      const r = rows.find(x => !x.idea && x.id === b.dataset.unbeen);
       if (!r) return;
       try { await deleteDoc(doc(db, 'profiles', user.uid, 'beenThere', r.id)); toast('Taken off your Been there list'); loadBeenList(user); }
       catch (e) { console.error(e); toast('Could not remove. Please try again.'); }

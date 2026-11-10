@@ -318,16 +318,18 @@ function declineCookies(){
   const read = (label, q) => getDocs(q).then(s => s.docs.map(d => ({ id: d.id, ...d.data() }))).catch(e => { console.log(label + ' not read:', e.code || e); return []; });
 
   async function compute(uid) {
-    const [reviews, spots, highlights, been, wish, lists, followers, loaded] = await Promise.all([
+    const [reviews, spots, highlights, beenSf, beenOther, wish, lists, followers, loaded] = await Promise.all([
       read('reviews', query(collection(db, 'userReviews'), where('authorId', '==', uid))),
       read('spots', query(collection(db, 'userPlaces'), where('addedByUserId', '==', uid))),
       read('highlights', query(collection(db, 'highlights'), where('authorId', '==', uid))),
       read('been there', collection(db, 'profiles', uid, 'beenThere')),
+      read('been there, not on Strong Foodie', collection(db, 'profiles', uid, 'beenPlaces')),
       read('wishlist', collection(db, 'profiles', uid, 'wishlistItems')),
       read('lists', query(collection(db, 'memberLists'), where('authorId', '==', uid))),
       read('followers', query(collection(db, 'follows'), where('followingId', '==', uid))),
       loadPlaces(db).catch(() => ({ all: [] })),
     ]);
+    const been = beenSf.concat(beenOther.filter(b => b.name).map(b => ({ ...b, idea: true })));
     const byKey = new Map((loaded.all || []).map(p => [`${p.coll}/${p.id}`, p]));
     const R = reviews.filter(r => inYear(r.createdAt)), S = spots.filter(s => inYear(s.createdAt)), H = highlights.filter(h => inYear(h.createdAt));
     const B = been.filter(b => inYear(b.createdAt)), W = wish.filter(w => inYear(w.createdAt)), L = lists.filter(l => inYear(l.createdAt)), F = followers.filter(f => (f.status === undefined || f.status === null || f.status === 'accepted' || f.status === 'approved') && inYear(f.acceptedAt || f.createdAt));
@@ -337,7 +339,8 @@ function declineCookies(){
     const note = (key, cat, where) => { if (key && !places.has(key)) places.set(key, { cat, where }); };
     R.forEach(r => { const k = r.placeCollection && r.placeDocId ? `${r.placeCollection}/${r.placeDocId}` : 'review/' + r.id; const p = byKey.get(k); note(k, p ? p.cat : null, p ? p.destination || p.town : ''); });
     S.forEach(s => { const k = 'userPlaces/' + s.id; const p = byKey.get(k); note(k, p ? p.cat : (CATS[s.category] ? s.category : null), p ? p.destination || p.town : locate([s.address, s.city].filter(Boolean).join(', '), s.country).destination); });
-    B.forEach(b => { const k = b.placeKey || `${b.placeCollection}/${b.placeDocId}`; const p = byKey.get(k); note(k, p ? p.cat : (CATS[b.placeCategory] ? b.placeCategory : null), p ? p.destination || p.town : locate(b.city).destination); });
+    B.filter(b => b.idea).forEach(b => note('beenPlaces/' + b.id, CATS[b.category] ? b.category : null, locate([b.address, b.city].filter(Boolean).join(', '), b.country).destination));
+    B.filter(b => !b.idea).forEach(b => { const k = b.placeKey || `${b.placeCollection}/${b.placeDocId}`; const p = byKey.get(k); note(k, p ? p.cat : (CATS[b.placeCategory] ? b.placeCategory : null), p ? p.destination || p.town : locate(b.city).destination); });
     const cities = new Set([...places.values()].map(x => x.where).filter(Boolean));
     const catCount = {};
     [...places.values()].forEach(x => { if (x.cat) catCount[x.cat] = (catCount[x.cat] || 0) + 1; });

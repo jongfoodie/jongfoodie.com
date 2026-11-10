@@ -342,6 +342,8 @@ export function parseMapsUrl(raw) {
   let u;
   try { u = new URL(String(raw || '').trim()); } catch (e) { return null; }
   if (!LONG_LINK.test(u.href)) return null;
+  // A shared list (…/maps/placelists/list/… or …data=…!11m…!2s<list id>…): not one place.
+  if (/\/maps\/placelists\//.test(u.pathname) || /!11m\d+!2s/.test(u.pathname + u.search)) return { list: true, name: '', full: '', lat: null, lng: null };
   const dec = x => { try { return decodeURIComponent(String(x).replace(/\+/g, ' ')); } catch (e) { return String(x).replace(/\+/g, ' '); } };
   const path = u.pathname;
   let name = '', full = '', lat = null, lng = null;
@@ -420,6 +422,7 @@ export async function resolveMapsLink(raw, opts = {}) {
     try { url = await opts.expandLink(url); } catch (e) { console.log('expandMapsLink:', e); return { ok: false, reason: 'short' }; }
   }
   const g = parseMapsUrl(url);
+  if (g && g.list) return { ok: false, reason: 'list' };
   if (!g) return { ok: false, reason: 'unreadable' };
   let match = null, near = [], where = null;
   if (g.lat != null) ({ match, near } = await nearPin(g));
@@ -455,6 +458,7 @@ async function fromLink(form, raw, opts) {
     if (mine !== st.seq) return;
   }
   const g = parseMapsUrl(url);
+  if (g && g.list) { note(form, 'Dit is een Google Maps-lijst, geen plek. Een hele lijst invullen kan niet: open één plek uit de lijst, tik op Delen › Link kopiëren en plak die link hier.'); return; }
   if (!g) { note(form, 'Deze link kan ik niet lezen. Open de plek in Google Maps, tik op Delen › Link kopiëren en plak die link hier.'); return; }
   note(form, `🔗 Uit de link: ${esc(g.name || 'een plek op de kaart')}. Ik zoek de gegevens op…`);
   return fromPin(form, g, opts, mine);
