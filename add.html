@@ -90,7 +90,9 @@
   .cat-opt input:focus-visible + span { outline: 2px solid var(--accent); }
   .row-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .sugg { list-style: none; margin-top: 0.35rem; border: 1px solid var(--border); border-radius: 12px; background: #fff; overflow: hidden; box-shadow: 0 8px 24px rgba(26,18,8,0.08); }
-  .sugg[hidden], .picked[hidden], #wCatHint[hidden] { display: none; }
+  .sugg[hidden], .picked[hidden], #wCatHint[hidden], .list-offer[hidden] { display: none; }
+  .list-offer { margin-top: 0.6rem; }
+  .list-offer .row-btns { margin-top: 0.5rem; }
   .sugg li { display: flex; gap: 0.6rem; align-items: flex-start; padding: 10px 12px; border-top: 1px solid var(--border); cursor: pointer; }
   .sugg li:first-child { border-top: none; }
   .sugg li.active, .sugg li:hover { background: var(--accent-pale); }
@@ -212,7 +214,8 @@
   import { getFirestore, collection, doc, getDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
-  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=2";
+  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
+  import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=2";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
@@ -246,9 +249,11 @@
       <h1>Add a spot</h1>
       <p class="lead">Share a place you love with other foodies. It shows up on Strong Foodie and in the app straight away, with your name on it.</p>
       <div class="acct-card">
-        <p style="margin-bottom:1rem;line-height:1.6;">Log in to add a spot. It is the same account as in the Strong Foodie app, so if you have one there, you can use it here.</p>
+        <p style="margin-bottom:1rem;line-height:1.6;">Log in to add a spot.<span id="soList" hidden> You can also save a whole Google Maps list to your wishlist or Been there.</span> It is the same account as in the Strong Foodie app, so if you have one there, you can use it here.</p>
         <a class="btn btn-primary" href="${loginHref()}" style="display:inline-block;text-decoration:none;">Log in or sign up</a>
       </div>`;
+    // Only mention the list import while it is switched on (site/flags, readable for everyone).
+    listImportOn(db).then(on => { const el = document.getElementById('soList'); if (el) el.hidden = !on; });
   }
 
   function renderForm(user, profile, wish) {
@@ -262,6 +267,7 @@
           <ul class="sugg" id="sSugg" role="listbox" aria-label="Suggestions" hidden></ul>
         </div>
         <p class="picked" id="sPicked" hidden></p>
+        <div id="sListImport" class="list-offer" hidden></div>
         <p class="small gm-tip">From Google Maps: open the place, tap Share › Copy link, and paste it above.</p>
 
         <span class="field-label">Category</span>
@@ -311,8 +317,29 @@
     // the link. Short links from the phone are opened by the Cloud Function expandMapsLink.
     const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
     let lastLink = '', linkTimer = null, linkSeq = 0;
+    // A whole Google Maps list pasted here (10 Nov 2026): its places go to the member's own
+    // wishlist or Been there, never as public spots. Only while the import is switched on.
+    async function offerList(v, mine) {
+      const picked = $('sPicked'), box = $('sListImport');
+      const on = await listImportOn(db);
+      if (mine !== linkSeq) return;
+      if (!on) {
+        picked.innerHTML = "This is a Google Maps list, not one place. Open one place from the list, tap Share › Copy link and paste that here.";
+        return;
+      }
+      picked.innerHTML = 'This is a Google Maps list. A spot is one place, so save the places of this list to your own lists instead. Only you see them.';
+      box.innerHTML = `<div class="row-btns"><button class="btn btn-primary" type="button" data-to="wishlist">Save to my wishlist</button><button class="btn" type="button" data-to="been">Save to Been there</button></div>`;
+      box.hidden = false;
+      box.querySelectorAll('[data-to]').forEach(b => b.addEventListener('click', () => {
+        const to = b.dataset.to;
+        box.innerHTML = '';
+        mountListImport(box, { app, db, uid: user.uid, lang: 'en', target: to, url: v,
+          onDone: n => { if (n) toast(to === 'been' ? 'Saved to Been there' : 'Saved to your wishlist'); } });
+      }));
+    }
     async function fromMapsLink(v) {
       const mine = ++linkSeq, picked = $('sPicked');
+      $('sListImport').hidden = true; $('sListImport').innerHTML = '';
       finder.reset();
       picked.innerHTML = '🔗 Reading the Google Maps link…'; picked.hidden = false;
       let r;
@@ -320,6 +347,7 @@
       if (mine !== linkSeq) return;
       if (!r.ok) {
         $('sName').value = '';
+        if (r.reason === 'list') { picked.hidden = false; return offerList(r.url || v, mine); }
         picked.innerHTML = r.reason === 'short'
           ? "This short link couldn't be opened. Open it in your browser, copy the long address from the address bar and paste that here. Or type the name."
           : r.reason === 'list'

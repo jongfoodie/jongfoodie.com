@@ -422,7 +422,7 @@ export async function resolveMapsLink(raw, opts = {}) {
     try { url = await opts.expandLink(url); } catch (e) { console.log('expandMapsLink:', e); return { ok: false, reason: 'short' }; }
   }
   const g = parseMapsUrl(url);
-  if (g && g.list) return { ok: false, reason: 'list' };
+  if (g && g.list) return { ok: false, reason: 'list', url };
   if (!g) return { ok: false, reason: 'unreadable' };
   let match = null, near = [], where = null;
   if (g.lat != null) ({ match, near } = await nearPin(g));

@@ -112,7 +112,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { mountListImport } from "./js/sf-listimport.js?v=1";
+  import { mountListImport } from "./js/sf-listimport.js?v=2";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { placeFinder, strongFoodiePlaces, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
   import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
@@ -194,7 +194,7 @@
       <div id="list"></div>`;
     setupAdd();
     document.getElementById('q').addEventListener('input', e => { search = foldText(e.target.value); draw(); });
-    mountListImport(document.getElementById('importBox'), { app, db, uid: user.uid, lang: 'nl', onDone: () => load() });
+    mountListImport(document.getElementById('importBox'), { app, db, uid: user.uid, lang: 'nl', debug: true, onDone: () => load() });
     // The switch for members: site/flags.mapsListImport (read by account.html and the app).
     const flag = document.getElementById('flagImport');
     getDoc(doc(db, 'site', 'flags')).then(s => { flag.checked = s.exists() && s.data().mapsListImport === true; flag.disabled = false; }).catch(() => { flag.disabled = false; });
@@ -227,6 +227,13 @@
       if (mine !== seq) return;
       if (!r.ok) {
         $('wFind').value = '';
+        // A whole list: look it up in "Google Maps-lijst importeren" on this page.
+        const ib = document.getElementById('importBox'), inp = ib && ib.querySelector('.li-input');
+        if (r.reason === 'list' && inp) {
+          $('wPicked').textContent = 'Dit is een Google Maps-lijst. De plekken staan hieronder bij "Google Maps-lijst importeren".';
+          inp.value = r.url || v; ib.querySelector('[data-find]').click(); ib.scrollIntoView({ block: 'start', behavior: 'smooth' });
+          return;
+        }
         $('wPicked').textContent = r.reason === 'short'
           ? 'Deze korte link kan ik nu niet openen. Open hem in je browser, kopieer het lange adres uit de adresbalk en plak dat hier.'
           : r.reason === 'list'

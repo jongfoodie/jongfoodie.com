@@ -34,6 +34,7 @@ const TEXT = {
     nothing: 'No places found. Is the list shared? In Google Maps: open the list › ••• › Share.',
     limit: "That's 10 lists today. Try again tomorrow.",
     failed: "That didn't work. Check the link and your connection, and try again.",
+    shortFail: "This short link couldn't be opened. Open it in your browser, copy the long address from the address bar and paste that here.",
     nothingNew: 'Every place in this list is already on your wishlist.',
     beenAlready: 'Already on Been there', beenAdd: k => `Add ${k} ${k === 1 ? 'place' : 'places'} to Been there`,
     beenDone: k => `✓ ${k} ${k === 1 ? 'place' : 'places'} added to Been there.`, beenNothingNew: 'Every place in this list is already on Been there.',
@@ -55,6 +56,7 @@ const TEXT = {
     nothing: 'Geen plekken gevonden. Is de lijst gedeeld?',
     limit: 'Vandaag al 10 lijsten. Probeer het morgen weer.',
     failed: 'Dat lukte niet. Kijk de link en je verbinding na en probeer het opnieuw.',
+    shortFail: 'Deze korte link kon niet worden geopend. Open hem in je browser, kopieer het lange adres uit de adresbalk en plak dat hier.',
     nothingNew: 'Alle plekken uit deze lijst staan al op je lijst.',
     beenAlready: 'Al bij Been there', beenAdd: k => `Zet ${k} ${k === 1 ? 'plek' : 'plekken'} bij Been there`,
     beenDone: k => `✓ ${k} ${k === 1 ? 'plek' : 'plekken'} bij Been there gezet.`, beenNothingNew: 'Alle plekken uit deze lijst staan al bij Been there.',
@@ -128,6 +130,8 @@ export function mountListImport(el, opts) {
   let rows = [];
 
   $('[data-find]').addEventListener('click', find);
+  // Started with a link (Add a spot): fill it in and look it up straight away.
+  if (opts.url) { $('.li-input').value = opts.url; setTimeout(find, 0); }
   $('.li-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); find(); } });
 
   async function find() {
@@ -140,7 +144,9 @@ export function mountListImport(el, opts) {
     catch (e) {
       btn.disabled = false;
       const code = String(e && e.code || '').replace('functions/', '');
-      return msg(esc(code === 'failed-precondition' ? T.off : code === 'invalid-argument' ? T.notList : code === 'not-found' ? T.nothing : code === 'resource-exhausted' ? T.limit : T.failed), true);
+      // Admins see the steps the link took, so a change at Google can be fixed.
+      const why = opts.debug && e ? `<pre class="li-debug">${esc(JSON.stringify({ code, message: e.message, details: e.details }, null, 1).slice(0, 2500))}</pre>` : '';
+      return msg(esc(code === 'failed-precondition' ? T.off : code === 'invalid-argument' ? T.notList : code === 'unavailable' ? T.shortFail : code === 'not-found' ? T.nothing : code === 'resource-exhausted' ? T.limit : T.failed) + why, true);
     }
     const places = Array.isArray(res.places) ? res.places : [];
     if (!places.length) {

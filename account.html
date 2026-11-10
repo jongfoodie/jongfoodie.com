@@ -231,7 +231,7 @@
   import { markBeen, loadBeen, addBeenPlace, loadBeenPlaces } from "./js/sf-been.js?v=2";
   import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
-  import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=1";
+  import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=2";
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
   import { memberStats, badgeProgress, checkBadges, earned, BADGES } from "./js/sf-badges.js?v=3";
   import { rememberRef, inviterName, recordInvite, inviteLink, countInvites, proUntil, monthsToClaim, claimMonths, REWARD_CAP } from "./js/sf-invites.js?v=1";
@@ -1159,6 +1159,13 @@
       if (mine !== seq) return;
       if (!r.ok) {
         $('bName').value = '';
+        // A whole list while the import is on: open "Import a Google Maps list" with this link.
+        if (r.reason === 'list' && !$('beenImportOpen').hidden) {
+          close(); $('beenImportOpen').hidden = true;
+          const ib = $('beenImport'); ib.hidden = false; ib.innerHTML = '';
+          mountListImport(ib, { app, db, uid: user.uid, lang: 'en', target: 'been', url: r.url || v, onDone: () => loadBeenList(user) });
+          return;
+        }
         $('bPicked').textContent = r.reason === 'list' ? 'This is a Google Maps list, not one place. Use "Import a Google Maps list" for a whole list.'
           : r.reason === 'short' ? "This short link couldn't be opened. Open it in your browser, copy the long address and paste that." : "This link can't be read. Paste the link of one place, or type the name.";
         return;
