@@ -214,7 +214,7 @@
   import { getFirestore, collection, doc, getDoc, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { placeFinder, strongFoodiePlaces, geocode, foldText, CAT_LIST, catInfo } from "./js/sf-find.js?v=5";
-  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
+  import { isMapsLink, resolveMapsLink, findOnStrongFoodie } from "./js/sf-autofill.js?v=3";
   import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=2";
 
   const firebaseConfig = {
@@ -317,6 +317,10 @@
     // the link. Short links from the phone are opened by the Cloud Function expandMapsLink.
     const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
     let lastLink = '', linkTimer = null, linkSeq = 0;
+    // The pasted Google Maps link, kept with the spot (mapsUrl, and gmapsId when the link has
+    // Google's code). When the link can't be read, it is kept too and the member just types
+    // the name (feedback on Reddit, 13 Nov 2026).
+    let linkInfo = null;
     // A whole Google Maps list pasted here (10 Nov 2026): its places go to the member's own
     // wishlist or Been there, never as public spots. Only while the import is switched on.
     async function offerList(v, mine) {
@@ -341,6 +345,7 @@
       const mine = ++linkSeq, picked = $('sPicked');
       $('sListImport').hidden = true; $('sListImport').innerHTML = '';
       finder.reset();
+      linkInfo = null;
       picked.innerHTML = '🔗 Reading the Google Maps link…'; picked.hidden = false;
       let r;
       try { r = await resolveMapsLink(v, { expandLink }); } catch (err) { console.log('Google Maps link:', err); r = { ok: false, reason: 'unreadable' }; }
@@ -348,12 +353,11 @@
       if (!r.ok) {
         $('sName').value = '';
         if (r.reason === 'list') { picked.hidden = false; return offerList(r.url || v, mine); }
-        picked.innerHTML = r.reason === 'short'
-          ? "This short link couldn't be opened. Open it in your browser, copy the long address from the address bar and paste that here. Or type the name."
-          : r.reason === 'list'
-          ? "This is a Google Maps list, not one place. Open one place from the list, tap Share › Copy link and paste that here."
-          : "This link can't be read. In Google Maps, open the place, tap Share › Copy link and paste it here. Or type the name.";
+        // Keep the link and let the member type the name: no need to start over.
+        linkInfo = { url: v.slice(0, 500), gid: '', failed: true };
+        picked.innerHTML = "We couldn't read this link right now. Type the name of the place here and fill in the rest. We'll keep the link with your spot.";
         picked.hidden = false;
+        $('sName').focus();
         return;
       }
       const { g, match, where } = r, src = match || where;
@@ -361,9 +365,14 @@
       const town = (src && src.town) || '';
       const all = await strongFoodiePlaces(db);
       if (mine !== linkSeq) return;
-      const dup = name && all.find(p => p.n === foldText(name) && (!town || !p.town || foldText(p.town) === foldText(town) || foldText(p.where).includes(foldText(town))));
+      linkInfo = { url: v.slice(0, 500), gid: g.gid || '', name };
+      const dup = findOnStrongFoodie(all, { name, gid: g.gid, lat: g.lat, lng: g.lng, town });
       $('sName').value = name;
-      if (dup) { finder.setPick(dup); lastPick = dup; return; }
+      if (dup) {
+        finder.setPick(dup); lastPick = dup;
+        if (dup.closed) { picked.innerHTML += `<br>⚠️ Strong Foodie lists this place as ${dup.closedStatus === 'temporary' ? 'temporarily' : 'permanently'} closed.`; picked.hidden = false; }
+        return;
+      }
       if (src) {
         const p = { src: 'osm', name, cat: match ? match.cat : null, type: match ? match.type : '', street: src.street || '', town: src.town || '',
                     country: src.country || '', countryCode: src.countryCode || '', address: src.address || '',
@@ -483,7 +492,9 @@
       try {
         // Already on Strong Foodie under the same name in the same city?
         const all = await strongFoodiePlaces(db);
-        const dup = all.find(p => p.n === foldText(name) && (!p.town || foldText(p.town) === foldText(town) || foldText(p.where).includes(foldText(town))));
+        const link = linkInfo && (linkInfo.failed || !linkInfo.name || foldText(linkInfo.name) === foldText(name)) ? linkInfo : null;
+        const dup = findOnStrongFoodie(all, { name, town, gid: link && link.gid,
+          lat: pick && pick.src === 'osm' ? pick.lat : null, lng: pick && pick.src === 'osm' ? pick.lng : null });
         if (dup) { btn.disabled = false; btn.textContent = 'Add spot'; return showError(`<strong>${esc(dup.name)}</strong> is already on Strong Foodie. <a href="${placeLink(dup.coll, dup.id)}">View it →</a>`); }
 
         // Map pin: from the picked suggestion, or looked up from the address
@@ -517,6 +528,7 @@
           if (pick.type) data.placeType = pick.type;
           if (pick.countryCode) data.countryCode = pick.countryCode;
         }
+        if (link) { data.mapsUrl = link.url; if (link.gid) data.gmapsId = link.gid; }
         const ref = await addDoc(collection(db, 'userPlaces'), data);
 
         // From the wishlist: the idea becomes a saved place

@@ -119,6 +119,9 @@ export function normalise(coll, id, r, member) {
     photos,
     lat: num(r.lat), lng: num(r.lng),
     closed: !!(r.closedStatus && r.closedStatus !== 'open'),
+    closedStatus: r.closedStatus && r.closedStatus !== 'open' ? String(r.closedStatus) : '',
+    // The Google Maps code of the place, when it was added with a Google Maps link (13 Nov 2026).
+    gmapsId: typeof r.gmapsId === 'string' ? r.gmapsId : '',
     // Old reviews still say "Jong Foodie", the brand's former name.
     author: member ? (r.addedByName || 'a member') : (r.author && r.author !== 'Jong Foodie' ? r.author : 'Strong Foodie'),
     authorId: member ? (r.addedByUserId || '') : '',

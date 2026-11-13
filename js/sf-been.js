@@ -51,6 +51,9 @@ export async function addBeenPlace(db, uid, p) {
   if (p.country) data.country = String(p.country).slice(0, 60);
   if (p.placeType) data.placeType = String(p.placeType).slice(0, 60);
   if (typeof p.lat === 'number' && typeof p.lng === 'number') { data.lat = p.lat; data.lng = p.lng; }
+  // The Google Maps link it came from, and Google's code for the place (13 Nov 2026).
+  if (p.mapsUrl) data.mapsUrl = String(p.mapsUrl).slice(0, 500);
+  if (p.gmapsId) data.gmapsId = String(p.gmapsId).slice(0, 80);
   return addDoc(collection(db, 'profiles', uid, 'beenPlaces'), data);
 }
 export async function loadBeenPlaces(db, uid) {

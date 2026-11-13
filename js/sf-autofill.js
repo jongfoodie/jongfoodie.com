@@ -367,7 +367,32 @@ export function parseMapsUrl(raw) {
   name = full.split(',')[0].trim();
   if (lat != null && (Math.abs(lat) > 90 || Math.abs(lng) > 180)) { lat = null; lng = null; }
   if (!name && lat == null) return null;
-  return { name, full: full || name, lat, lng };
+  // Google's own code for the place: "!1s0x47c609…:0xb3a1…" in the link, or ?ftid= / ?cid=.
+  // It stays the same when the name is spelled differently, so it is the best way to spot a
+  // place that is already on Strong Foodie. A place ID may be stored (Google's terms).
+  const fid = (path + u.search).match(/!1s(0x[0-9a-f]+:0x[0-9a-f]+)/i);
+  const ftid = u.searchParams.get('ftid') || '', cid = u.searchParams.get('cid') || '';
+  const gid = fid ? fid[1].toLowerCase() : /^0x[0-9a-f]+:0x[0-9a-f]+$/i.test(ftid) ? ftid.toLowerCase() : /^\d{5,25}$/.test(cid) ? 'cid:' + cid : '';
+  return { name, full: full || name, lat, lng, gid };
+}
+
+// Is this place already on Strong Foodie? all = strongFoodiePlaces(db).
+// 1. the same Google code; 2. the same name within 200 m of the pin (chains on another street
+// stay apart); 3. the same name in the same city, for places without a pin.
+const squash = t => foldText(t).replace(/[^a-z0-9]/g, '');
+export function findOnStrongFoodie(all, q) {
+  if (!Array.isArray(all) || !q) return null;
+  if (q.gid) { const x = all.find(p => p.gmapsId && p.gmapsId === q.gid); if (x) return x; }
+  const n = squash(q.name);
+  if (!n) return null;
+  const close = (a, b) => a.length >= 4 && b.length >= 4 ? (a.includes(b) || b.includes(a)) : a === b;
+  if (typeof q.lat === 'number' && typeof q.lng === 'number') {
+    const x = all.filter(p => typeof p.lat === 'number' && typeof p.lng === 'number' && distM(q, p) <= 200 && close(squash(p.name), n))
+      .sort((a, b) => distM(q, a) - distM(q, b))[0];
+    if (x) return x;
+  }
+  const town = foldText(q.town || '');
+  return all.find(p => squash(p.name) === n && (!town || !p.town || foldText(p.town) === town || foldText(p.where || '').includes(town))) || null;
 }
 
 // Do two names belong to the same place? "Rosèl Amsterdam" and "Rosèl" do.

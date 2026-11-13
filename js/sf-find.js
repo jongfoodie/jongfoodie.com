@@ -99,7 +99,8 @@ export async function geocode(text) {
 let sfPromise = null;
 export function strongFoodiePlaces(db) {
   if (!sfPromise) sfPromise = loadPlaces(db)
-    .then(r => r.all.map(p => ({ src: 'sf', name: p.name, n: foldText(p.name), cat: p.cat, coll: p.coll, id: p.id, where: p.where || '', town: p.town || '', country: p.country || '' })))
+    .then(r => r.all.map(p => ({ src: 'sf', name: p.name, n: foldText(p.name), cat: p.cat, coll: p.coll, id: p.id, where: p.where || '', town: p.town || '', country: p.country || '',
+      lat: p.lat, lng: p.lng, closed: !!p.closed, closedStatus: p.closedStatus || '', gmapsId: p.gmapsId || '' })))
     .catch(e => { console.log('Strong Foodie places could not load:', e); return []; });
   return sfPromise;
 }

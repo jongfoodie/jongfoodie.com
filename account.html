@@ -228,8 +228,9 @@
   import { placeFinder } from "./js/sf-find.js?v=5";
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=3";
   import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=7";
-  import { markBeen, loadBeen, addBeenPlace, loadBeenPlaces } from "./js/sf-been.js?v=2";
-  import { isMapsLink, resolveMapsLink } from "./js/sf-autofill.js?v=3";
+  import { markBeen, loadBeen, addBeenPlace, loadBeenPlaces } from "./js/sf-been.js?v=3";
+  import { isMapsLink, resolveMapsLink, findOnStrongFoodie } from "./js/sf-autofill.js?v=3";
+  import { strongFoodiePlaces } from "./js/sf-find.js?v=5";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
   import { listImportOn, mountListImport } from "./js/sf-listimport.js?v=2";
   import { myLists, memberListLink } from "./js/sf-memberlists.js?v=1";
@@ -1149,10 +1150,11 @@
     let pick = null;
     // A Google Maps link in the name field (js/sf-autofill.js), before the type-ahead.
     const expandLink = url => httpsCallable(getFunctions(app, 'us-central1'), 'expandMapsLink')({ url }).then(r => r.data && r.data.url);
-    let lastLink = '', timer = null, seq = 0;
+    let lastLink = '', timer = null, seq = 0, linkInfo = null;
     async function fromLink(v) {
       const mine = ++seq;
       bFinder.reset();
+      linkInfo = null;
       $('bPicked').textContent = '🔗 Reading the Google Maps link…'; $('bPicked').hidden = false;
       let r;
       try { r = await resolveMapsLink(v, { expandLink }); } catch (e) { r = { ok: false, reason: 'unreadable' }; }
@@ -1166,13 +1168,21 @@
           mountListImport(ib, { app, db, uid: user.uid, lang: 'en', target: 'been', url: r.url || v, onDone: () => loadBeenList(user) });
           return;
         }
-        $('bPicked').textContent = r.reason === 'list' ? 'This is a Google Maps list, not one place. Use "Import a Google Maps list" for a whole list.'
-          : r.reason === 'short' ? "This short link couldn't be opened. Open it in your browser, copy the long address and paste that." : "This link can't be read. Paste the link of one place, or type the name.";
+        if (r.reason === 'list') { $('bPicked').textContent = 'This is a Google Maps list, not one place. Use "Import a Google Maps list" for a whole list.'; return; }
+        // Keep the link and let the member type the name.
+        linkInfo = { url: v.slice(0, 500), gid: '', failed: true };
+        $('bPicked').textContent = "We couldn't read this link right now. Type the name of the place here. We'll keep the link with it.";
+        $('bName').focus();
         return;
       }
       const { g, match, where } = r, src = match || where || {};
       const p = { src: 'osm', name: g.name || (match && match.name) || '', cat: match ? match.cat : null, type: match ? match.type : '', street: src.street || '',
                   town: src.town || '', country: src.country || '', address: src.address || '', lat: g.lat != null ? g.lat : src.lat, lng: g.lng != null ? g.lng : src.lng };
+      linkInfo = { url: v.slice(0, 500), gid: g.gid || '', name: p.name };
+      // Already on Strong Foodie? Then it is ticked off with a link to its page.
+      const sf = findOnStrongFoodie(await strongFoodiePlaces(db), { name: p.name, gid: g.gid, lat: p.lat, lng: p.lng, town: p.town });
+      if (mine !== seq) return;
+      if (sf) { $('bName').value = sf.name; bFinder.setPick(sf); pick = sf; return; }
       $('bName').value = p.name;
       $('bCity').value = p.address || p.town;
       const radio = p.cat && form.querySelector(`input[name="bCat"][value="${p.cat}"]`);
@@ -1198,7 +1208,7 @@
         : `📍 ${esc([p.type, p.address].filter(Boolean).join(' · ') || p.name)}`,
       onPick: p => { pick = p; },
     });
-    const close = () => { form.reset(); bFinder.reset(); pick = null; form.hidden = true; open.hidden = false; $('beenError').hidden = true; };
+    const close = () => { form.reset(); bFinder.reset(); pick = null; linkInfo = null; form.hidden = true; open.hidden = false; $('beenError').hidden = true; };
     open.addEventListener('click', () => { form.hidden = false; open.hidden = true; $('bName').focus(); bFinder.warmUp(); });
     $('beenCancel').addEventListener('click', close);
     form.addEventListener('submit', async e => {
@@ -1215,8 +1225,9 @@
         if (p && p.src === 'sf') await markBeen(db, user.uid, { coll: p.coll, id: p.id, name: p.name, cat: p.cat, city: p.where || '' });
         else {
           const keepPin = p && p.src === 'osm' && typeof p.lat === 'number' && (address === (p.address || p.town) || !address);
+          const link = linkInfo && (linkInfo.failed || !linkInfo.name || linkInfo.name === name) ? linkInfo : null;
           await addBeenPlace(db, user.uid, { name, category, city: (p && p.town) || address, address: address || (p && p.address) || '', country: p && p.country, placeType: p && p.type,
-            lat: keepPin ? p.lat : undefined, lng: keepPin ? p.lng : undefined, source: 'web' });
+            lat: keepPin ? p.lat : undefined, lng: keepPin ? p.lng : undefined, source: 'web', mapsUrl: link && link.url, gmapsId: link && link.gid });
         }
         toast('Added to Been there');
         close();

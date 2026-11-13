@@ -188,13 +188,41 @@
         <label class="flag"><input type="checkbox" id="flagImport" disabled> <span><b>Leden mogen een Google Maps-lijst importeren</b> (website, en in de app vanaf batch 86)</span></label>
         <p class="item-meta">Uit: leden zien de knop niet. Wat ze al importeerden, blijft op hun wishlist staan. Jij kunt het hieronder altijd testen.</p>
       </div>
-      <div id="importBox" style="margin-bottom:1.5rem;"></div>
+      <div id="importBox" style="margin-bottom:1rem;"></div>
+      <details class="flagbox" id="failBox" style="margin-bottom:1.5rem;">
+        <summary style="cursor:pointer;"><b>Mislukte Google Maps-links</b> <span class="item-meta">(laatste 14 dagen, van iedereen, zonder account)</span></summary>
+        <div id="failList" class="item-meta" style="margin-top:0.5rem;">Klik om te laden…</div>
+      </details>
       <div class="bar"><span class="count" id="count">Laden…</span><input type="search" id="q" placeholder="Zoek in je lijst"></div>
       <div class="chips" id="chips"></div>
       <div id="list"></div>`;
     setupAdd();
     document.getElementById('q').addEventListener('input', e => { search = foldText(e.target.value); draw(); });
     mountListImport(document.getElementById('importBox'), { app, db, uid: user.uid, lang: 'nl', debug: true, onDone: () => load() });
+    // Links that could not be read, grouped by the last address they reached (functions:
+    // mapsLinkFailures). The biggest group is the first thing to fix.
+    const failBox = document.getElementById('failBox');
+    failBox.addEventListener('toggle', async () => {
+      if (!failBox.open || failBox.dataset.done) return;
+      failBox.dataset.done = '1';
+      const out = document.getElementById('failList');
+      out.textContent = 'Laden…';
+      try {
+        const r = (await httpsCallable(getFunctions(app, 'us-central1'), 'mapsLinkFailures')({})).data || {};
+        if (!r.total) { out.textContent = 'Geen mislukte links in de laatste 14 dagen.'; return; }
+        const when = ms => ms ? new Date(ms).toLocaleString('nl-NL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+        out.innerHTML = `<p>${r.total} mislukt, in ${r.groups.length} ${r.groups.length === 1 ? 'groep' : 'groepen'}. Bovenaan: wat het vaakst misgaat.</p>` + r.groups.map(g => `
+          <div style="border-top:1px solid var(--border);padding:0.5rem 0;">
+            <b>${esc(g.count)}×</b> ${esc(g.pattern)} <span>· ${g.kind === 'list' ? 'lijst' : 'plek'} · laatst ${esc(when(g.lastAt))}</span><br>
+            <span>${esc(g.message)}</span><br>
+            <span style="word-break:break-all;">Voorbeeld: ${esc(g.link)}</span>
+            <details><summary style="cursor:pointer;">Stappen</summary><pre style="white-space:pre-wrap;word-break:break-all;font-size:11px;">${esc(g.trail)}</pre></details>
+          </div>`).join('');
+      } catch (e) {
+        failBox.dataset.done = '';
+        out.textContent = 'Kon niet laden. Staat de function mapsLinkFailures al live? (' + (e.code || e.message || e) + ')';
+      }
+    });
     // The switch for members: site/flags.mapsListImport (read by account.html and the app).
     const flag = document.getElementById('flagImport');
     getDoc(doc(db, 'site', 'flags')).then(s => { flag.checked = s.exists() && s.data().mapsListImport === true; flag.disabled = false; }).catch(() => { flag.disabled = false; });

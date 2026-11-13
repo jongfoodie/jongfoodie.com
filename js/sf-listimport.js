@@ -15,7 +15,7 @@ import { collection, getDocs, addDoc, doc, getDoc, serverTimestamp } from "https
 import { foldText, catInfo, CAT_LIST } from './sf-find.js?v=5';
 import { loadPlaces } from './sf-places.js?v=7';
 import { sameName } from './sf-autofill.js?v=3';
-import { markBeen, addBeenPlace } from './sf-been.js?v=2';
+import { markBeen, addBeenPlace } from './sf-been.js?v=3';
 
 const TEXT = {
   en: {
