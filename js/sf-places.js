@@ -136,7 +136,7 @@ export function miniCard(p) {
       ${p.photos[0] ? `<img data-photo="${esc(p.photos[0])}" alt="" loading="lazy" hidden>` : ''}
     </div>
     <div class="mini-body">
-      <p class="mini-meta"><span class="pill pill-cat">${cat.label}</span>${p.member ? '<span class="pill pill-member">Member</span>' : ''}${p.closed ? '<span class="pill pill-closed">Closed</span>' : ''}${esc(p.where)}</p>
+      <p class="mini-meta"><span class="pill pill-cat">${cat.label}</span>${p.member ? '<span class="pill pill-member">Member</span>' : '<span class="pill" title="Visited and reviewed by Strong Foodie" style="background:#1A1208;color:#fff;">✓ Strong Foodie</span>'}${p.closed ? '<span class="pill pill-closed">Closed</span>' : ''}${esc(p.where)}</p>
       <h3 class="mini-title">${esc(p.name)}</h3>
       ${text ? `<p class="mini-text">${esc(text.slice(0, 90))}${text.length > 90 ? '…' : ''}</p>` : ''}
       <div class="mini-footer">${foot}<span class="mini-read">View place →</span></div>

@@ -505,7 +505,7 @@ function declineCookies(){
         <span class="s-txt">
           <span class="s-name">${esc(p.name)}</span>
           <span class="s-meta">${esc(meta)}</span>
-          ${p.member ? '<span class="s-tag">Added by a member</span>' : ''}
+          ${p.member ? '<span class="s-tag">Added by a member</span>' : '<span class="s-tag" style="background:#1A1208;color:#fff;">✓ Reviewed by Strong Foodie</span>'}
         </span>
       </a>
       <button type="button" class="s-btn${saved ? ' saved' : ''}" data-save="${esc(key)}" aria-pressed="${saved}" aria-label="${saved ? 'Saved' : 'Save'}: ${esc(p.name)}">${saved ? ICON_CHECK + 'Saved' : ICON_SAVE + 'Save'}</button>

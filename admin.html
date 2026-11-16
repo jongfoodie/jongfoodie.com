@@ -1276,6 +1276,31 @@
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
+  // ── VIDEO OF THE VISIT (15 Nov 2026) ──────────────────────────────────
+  // One field "Video van je bezoek" under the review text of every category. It saves as
+  // reviewVideo; the place page shows a play button (only TikTok, Instagram or YouTube).
+  const VIDEO_OK = /^https:\/\/((www|m|vm|vt)\.)?(tiktok\.com|instagram\.com|youtube\.com|youtu\.be)\//i;
+  Object.values(EDIT_CONFIG).forEach(cfg => {
+    const p = cfg.prefix, review = document.getElementById(p + 'Review');
+    if (!review || document.getElementById(p + 'Video')) return;
+    const box = document.createElement('div');
+    box.className = 'form-group';
+    box.innerHTML = `<label class="form-label" for="${p}Video">Video van je bezoek (mag leeg)</label>
+      <input class="form-input" type="url" id="${p}Video" maxlength="400" placeholder="Link naar je TikTok, Instagram-reel of YouTube-video" style="margin-top:6px;">
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">Op de plekpagina komt een knop "Play the video". De video laadt pas als een bezoeker erop tikt.</p>`;
+    const group = review.closest('.form-group') || review.parentElement;
+    group.insertAdjacentElement('afterend', box);
+    cfg.fields[p + 'Video'] = 'reviewVideo';
+  });
+  function videoOf(prefix) {
+    const el = document.getElementById(prefix + 'Video');
+    if (!el) return null;
+    const v = el.value.trim();
+    if (!v) return '';
+    if (!VIDEO_OK.test(v)) throw new Error('De videolink moet beginnen met https:// en naar TikTok, Instagram of YouTube gaan.');
+    return v.slice(0, 400);
+  }
+
   window.editItem = async function(coll, id) {
     const cfg = EDIT_CONFIG[coll];
     if (!cfg) { showToast('Onbekende categorie: ' + coll); return; }
@@ -1403,6 +1428,8 @@
     // Phone, country (and for hotels the coordinates) from the search field go along;
     // what is in the form itself always wins.
     const data = { ...autofillExtras(prefix), ...formData };
+    const video = videoOf(prefix);
+    if (video !== null) data.reviewVideo = video;
     const editing = window.editingId[prefix];
     if (editing && editing.coll === coll) {
       await updateDoc(doc(db, coll, editing.id), data);
@@ -1417,6 +1444,8 @@
     } else {
       await addDoc(collection(db, coll), { ...data, createdAt: serverTimestamp() });
       clearAutofill(prefix);
+      const vEl = document.getElementById(prefix + 'Video');
+      if (vEl) vEl.value = '';
       return { updated: false };
     }
   }

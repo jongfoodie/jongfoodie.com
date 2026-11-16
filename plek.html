@@ -434,8 +434,51 @@
       partnerName: r.partnerName || '',
       author: member ? (r.addedByName || 'a member') : (r.author || 'Strong Foodie'),
       addedByUserId: r.addedByUserId || '',
+      // Merdan's own video of the visit (TikTok, Instagram or YouTube), set in the admin.
+      video: !member && typeof r.reviewVideo === 'string' ? r.reviewVideo.trim().slice(0, 400) : '',
       created: toDate(r.createdAt),
     };
+  }
+
+  // Tap play: only then the video player of TikTok, Instagram or YouTube loads.
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.video-load');
+    if (!b || !b.dataset.embed) return;
+    const tall = b.dataset.tall === '1';
+    const box = document.createElement('div');
+    box.style.cssText = `position:relative;width:100%;max-width:${tall ? '340px' : '560px'};aspect-ratio:${tall ? '9 / 16' : '16 / 9'};border-radius:14px;overflow:hidden;background:#000;`;
+    const f = document.createElement('iframe');
+    f.src = b.dataset.embed;
+    f.title = 'Video of the visit';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    f.loading = 'lazy';
+    f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+    box.appendChild(f);
+    b.replaceWith(box);
+  });
+
+  // A TikTok, Instagram or YouTube link → where it plays. Other links: none.
+  function videoInfo(raw) {
+    let u;
+    try { u = new URL(String(raw).trim()); } catch (e) { return null; }
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
+    const h = u.hostname.replace(/^(www|m|vm|vt)\./, '').toLowerCase(), path = u.pathname;
+    let m;
+    if (h === 'tiktok.com') {
+      m = path.match(/\/video\/(\d{8,25})/);
+      return { site: 'TikTok', url: u.href, tall: true, embed: m ? 'https://www.tiktok.com/embed/v2/' + m[1] : '' };
+    }
+    if (h === 'instagram.com') {
+      m = path.match(/^\/(reel|reels|p|tv)\/([A-Za-z0-9_-]{5,40})/);
+      return { site: 'Instagram', url: u.href, tall: true, embed: m ? `https://www.instagram.com/${m[1] === 'reels' ? 'reel' : m[1]}/${m[2]}/embed` : '' };
+    }
+    if (h === 'youtube.com' || h === 'youtu.be') {
+      const id = h === 'youtu.be' ? path.slice(1).split('/')[0] : (u.searchParams.get('v') || (path.match(/^\/(shorts|embed|live)\/([A-Za-z0-9_-]{6,20})/) || [])[2]);
+      const ok = id && /^[A-Za-z0-9_-]{6,20}$/.test(id);
+      return { site: 'YouTube', url: u.href, tall: /^\/shorts\//.test(path), embed: ok ? 'https://www.youtube-nocookie.com/embed/' + id : '' };
+    }
+    return null;
   }
 
   // In the catalogue the "city" field often holds a whole address
@@ -543,8 +586,20 @@
     const sfScore = !p.member && p.rating
       ? `<div class="score"><div class="score-num">${fmt1(p.rating)}</div><div><div class="score-stars">${stars(p.rating)}</div><div class="score-label">Strong Foodie score</div></div></div>` : '';
 
+    // Merdan's video: nothing loads from TikTok, Instagram or YouTube until the visitor taps
+    // play (their cookies), with a plain link as the other way (15 Nov 2026).
+    function videoBlock(p) {
+      if (!p.video) return '';
+      const v = videoInfo(p.video);
+      if (!v) return '';
+      return `<section class="block video-block"><h2>Watch the visit</h2>
+        ${v.embed ? `<button type="button" class="video-load" data-embed="${esc(v.embed)}" data-tall="${v.tall ? '1' : ''}" style="display:flex;align-items:center;gap:10px;width:100%;max-width:${v.tall ? '340px' : '560px'};padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:#1A1208;color:#fff;font:600 15px 'DM Sans',sans-serif;cursor:pointer;">
+          <span style="font-size:22px;">▶</span><span>Play the video<br><span style="font-weight:400;font-size:12px;opacity:0.7;">Loads ${esc(v.site)}</span></span></button>` : ''}
+        <p class="muted" style="margin-top:0.6rem;"><a href="${esc(v.url)}" target="_blank" rel="noopener">${v.embed ? 'Or open it on' : 'Watch it on'} ${esc(v.site)} ↗</a></p>
+      </section>`;
+    }
     const reviewBlock = p.member
-      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>` : `<section class="block"><p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not reviewed by Strong Foodie.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>`)
+      ? (p.tip || p.review ? `<section class="block"><h2>Tip from ${esc(p.author)}</h2>${p.tip ? `<p class="lead">${esc(p.tip)}</p>` : ''}${p.review ? `<p>${esc(p.review)}</p>` : ''}<p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not visited by Strong Foodie yet.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>` : `<section class="block"><p class="muted">Added by ${p.addedByUserId ? `<a href="member.html?u=${encodeURIComponent(p.addedByUserId)}">${esc(p.author)}</a>` : esc(p.author)}, a Strong Foodie member. Not visited by Strong Foodie yet.<span id="spotReportWrap"> · ${reportButton('Report this place')}</span></p></section>`)
       : (p.review ? `<section class="block"><h2>The review</h2><p class="review-text">${esc(p.review)}</p><p class="muted">By ${(p.author === 'Jong Foodie' || p.author === 'Strong Foodie') ? '<a href="member.html?u=strongfoodie">Strong Foodie</a>' : esc(p.author)}</p>${isOldVisit(p.date) ? '<p class="old-review">Older review. Things may have changed.</p>' : ''}</section>` : '');
 
     const tags = p.tags.length ? `<div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
@@ -585,6 +640,7 @@
       </article>
 
       ${reviewBlock}
+      ${videoBlock(p)}
       <section class="block" id="dishesBlock" hidden><h2>What to order</h2><div class="dishes" id="dishList"></div></section>
       <section class="block" id="placeHighlights" hidden></section>
       ${tags ? `<section class="block">${tags}</section>` : ''}

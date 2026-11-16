@@ -462,7 +462,7 @@ window.LEGACY_SPOTS = [
   // People you follow (approved follows only) and, for everyone else, other members.
   const KINDS = {
     you:    { label: 'You',               color: '#D4521A' },
-    sf:     { label: 'Strong Foodie',     color: '#3E9B63' },
+    sf:     { label: 'Reviewed by Strong Foodie', color: '#3E9B63' },
     follow: { label: 'People you follow', color: '#C8901A' },
     member: { label: 'Other members',     color: '#8A7A66' },
   };
@@ -490,7 +490,7 @@ window.LEGACY_SPOTS = [
       ? `<img ${p.photo.startsWith('fsimg://') ? `data-photo="${esc(p.photo)}" hidden` : smallImg(p.photo)} alt="${esc(p.name)}" style="width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">`
       : '';
     const k = kindOf(p);
-    const by = k === 'sf' ? `<span class="pop-by pop-by-sf">Strong Foodie review</span>`
+    const by = k === 'sf' ? `<span class="pop-by pop-by-sf">✓ Reviewed by Strong Foodie</span>`
       : k === 'you' ? `<span class="pop-by">Your place</span>`
       : `<span class="pop-by">Added by ${esc(p.addedBy || 'a member')}${k === 'follow' ? ' · you follow' : ''}</span>`;
     const route = (p.lat != null && p.lng != null)
