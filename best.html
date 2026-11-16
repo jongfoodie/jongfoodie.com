@@ -355,6 +355,10 @@
     </a>`;
   }
 
+  // A generated page (tools/build-pages.mjs) already holds the content in its HTML.
+  // If the live data does not load or misses this item (as can happen when Google
+  // renders the page), keep that HTML, its title and its canonical address (16 Nov 2026).
+  const PRERENDERED = !!window.SF_PARAMS;
   // ── All lists ────────────────────────────────────────────────────────
   function renderHub(lists, missing) {
     setMeta('Best of: the top places per city | Strong Foodie',
@@ -466,10 +470,10 @@
     const slug = String(params.get('l') || '').toLowerCase();
     const l = slug && lists.find(x => x.slug === slug);
     if (l) { renderList(l, lists, destinations(all)); countView(db, 'list', l.slug); }
-    else renderHub(lists, !!slug);
+    else if (!PRERENDERED) renderHub(lists, !!slug);
   } catch (e) {
     console.log('Best-of error:', e);
-    root.innerHTML = '<div class="empty"><h1>Could not load this page</h1><p>Please refresh, or browse the <a href="stad.html">destinations</a>.</p></div>';
+    if (!PRERENDERED) root.innerHTML = '<div class="empty"><h1>Could not load this page</h1><p>Please refresh, or browse the <a href="stad.html">destinations</a>.</p></div>';
   }
 </script>
 
