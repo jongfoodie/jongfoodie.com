@@ -383,6 +383,8 @@
     const favs = d.places.filter(p => !p.member && !p.closed && p.rating && p.photos.length).sort(byQuality).slice(0, 3);
     const initialCat = params.get('cat');
     if (initialCat && CATS[initialCat] && counts.some(([k]) => k === initialCat)) state.cat = initialCat;
+    // Only the places Merdan visited himself (15 Nov 2026), like "Dave reviewed" in One Bite.
+    if (members && params.get('by') === 'strongfoodie') state.mine = true;
 
     root.innerHTML = `
       <div class="crumbs"><a href="index.html">Home</a> › <a href="stad.html">Destinations</a> › ${esc(d.name)}</div>
@@ -452,6 +454,7 @@
           </select>
           <button class="chip map-toggle" id="mapToggle" type="button">🗺️ Map</button>
         </div>
+        ${members ? `<div class="tool-row"><button class="chip" id="mineChip" type="button" aria-pressed="false" title="Only places Strong Foodie visited and reviewed">✓ Reviewed by Strong Foodie<span>${reviewed}</span></button></div>` : ''}
         ${counts.length > 1 ? `<div class="tool-row" id="catChips">
           <button class="chip" data-cat="all">All<span>${d.count}</span></button>
           ${counts.map(([k, n]) => `<button class="chip" data-cat="${k}">${CATS[k].emoji} ${CATS[k].label}<span>${n}</span></button>`).join('')}
@@ -504,6 +507,8 @@
     });
     root.querySelectorAll('[data-cat]').forEach(b => b.addEventListener('click', () => { state.cat = b.dataset.cat; state.shown = PAGE; update(); }));
     root.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => { state.area = b.dataset.area; state.shown = PAGE; update(); }));
+    const mineChip = document.getElementById('mineChip');
+    if (mineChip) mineChip.addEventListener('click', () => { state.mine = !state.mine; state.shown = PAGE; update(); });
     document.getElementById('moreBtn').addEventListener('click', () => { state.shown += PAGE; update(false); });
     document.getElementById('mapToggle').addEventListener('click', () => {
       const el = document.getElementById('map');
@@ -525,6 +530,7 @@
     const terms = fold(state.q).split(/\s+/).filter(Boolean);
     let list = D.places.filter(p =>
       (state.cat === 'all' || p.cat === state.cat) &&
+      (!state.mine || !p.member) &&
       (state.area === 'all' || p.area === state.area) &&
       terms.every(t => p._name.includes(t) || p._kind.includes(t) || p._place.includes(t) || (t.length >= 4 && p._text.includes(t))));
     const sorters = {
@@ -557,6 +563,8 @@
   function update(redrawMap = true) {
     root.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b.dataset.cat === state.cat));
     root.querySelectorAll('[data-area]').forEach(b => b.classList.toggle('active', b.dataset.area === state.area));
+    const mine = document.getElementById('mineChip');
+    if (mine) { mine.classList.toggle('active', !!state.mine); mine.setAttribute('aria-pressed', state.mine ? 'true' : 'false'); }
     const list = filtered();
     const grid = document.getElementById('grid');
     grid.innerHTML = list.length
@@ -570,6 +578,7 @@
     // Keep the filter in the address, so a filtered page can be shared.
     const url = new URL(location.href);
     if (state.cat === 'all') url.searchParams.delete('cat'); else url.searchParams.set('cat', state.cat);
+    if (state.mine) url.searchParams.set('by', 'strongfoodie'); else url.searchParams.delete('by');
     history.replaceState(null, '', url);
     if (redrawMap) drawMarkers(list);
   }
