@@ -490,6 +490,10 @@
     return '';
   }
 
+  // A generated page (tools/build-pages.mjs) already holds the content in its HTML.
+  // If the live data does not load or misses this item (as can happen when Google
+  // renders the page), keep that HTML, its title and its canonical address (16 Nov 2026).
+  const PRERENDERED = !!window.SF_PARAMS;
   function notFound(msg) {
     document.title = 'Place not found | Strong Foodie';
     document.getElementById('placeRoot').innerHTML = `
@@ -1536,8 +1540,8 @@
         }
       }
     }
-    catch (e) { console.error(e); return notFound('This place could not load right now'); }
-    if (!snap || !snap.exists()) return notFound();
+    catch (e) { console.error(e); return PRERENDERED ? undefined : notFound('This place could not load right now'); }
+    if (!snap || !snap.exists()) return PRERENDERED ? undefined : notFound();
 
     const r = snap.data();
     // Merged into another place by Strong Foodie (admin-duplicates.html): go to that one.
