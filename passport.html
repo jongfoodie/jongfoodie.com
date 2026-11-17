@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your Foodie passport: a stamp for every city where you have been, ready to share.">
+<meta name="robots" content="noindex, follow">
+<title>Your Foodie passport | Strong Foodie</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Strong Foodie">
+<meta property="og:title" content="My Foodie passport on Strong Foodie">
+<meta property="og:description" content="A stamp for every city where I have eaten, on Strong Foodie.">
+<meta property="og:url" content="https://strongfoodie.com/passport.html">
+<meta property="og:image" content="https://strongfoodie.com/images/og-strongfoodie.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1208; --ink-soft: #3D2F1A;
+    --muted: #8A7A66; --border: rgba(26,18,8,0.1); --accent: #D4521A;
+    --accent-pale: #FBF3EF; --gold: #C8901A; --tag-bg: #F0EBE3;
+    --green: #2D5A3D; --green-light: #E8F2EC;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.7; }
+  nav { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 60px; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  .page-hero { background: var(--ink); color: #fff; padding: 3rem 2rem; text-align: center; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 0.5rem; }
+  .page-hero p { color: rgba(255,255,255,0.6); font-size: 15px; }
+
+  .wrapper { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .msg { text-align: center; color: var(--ink-soft); padding: 2.5rem 1rem; }
+  .msg h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .msg a { color: var(--accent); }
+
+
+  .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .lab { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1rem 0 0.4rem; }
+  .field { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; font: 15px 'DM Sans', sans-serif; background: #fff; color: var(--ink); }
+  .field:focus { outline: none; border-color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border); background: #fff; border-radius: 20px; padding: 7px 14px; font: 500 13px 'DM Sans', sans-serif; color: var(--ink); cursor: pointer; text-decoration: none; white-space: nowrap; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.on { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
+  .chip:disabled { opacity: 0.55; cursor: default; }
+  .chip.danger { color: #A32323; border-color: rgba(163,35,35,0.35); }
+  .btn-main { display: inline-block; margin-top: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 24px; padding: 12px 24px; font: 600 15px 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; }
+  .btn-main:disabled { opacity: 0.5; cursor: default; }
+  .share-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .share-row .field { flex: 1 1 220px; min-width: 0; }
+  .count { font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrapper { max-width: 820px; }
+  .pp-line { text-align: center; font-weight: 700; color: var(--ink-soft); margin-bottom: 1.1rem; font-variant-numeric: tabular-nums; }
+  .pp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin-bottom: 1.6rem; }
+  .pp-stat { background: var(--warm-white); border: 1px solid var(--border); border-radius: 16px; padding: 0.85rem 0.6rem; text-align: center; min-width: 0; }
+  .pp-num { font-family: 'Playfair Display', serif; font-size: 2.1rem; font-weight: 700; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .pp-lab { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+  .pp-stamps { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1.4rem 1rem; padding: 0.5rem 0.4rem 0.25rem; align-items: center; }
+  .stamp { --c: var(--accent); position: relative; border: 3px solid var(--c); outline: 1.5px solid var(--c); outline-offset: -9px; border-radius: 14px; padding: 1.05rem 0.8rem 0.95rem; text-align: center; color: var(--c); background: rgba(255,253,249,0.6); transform: rotate(var(--r, -2deg)); min-width: 0; }
+  .stamp.round { border-radius: 50%; aspect-ratio: 1 / 1; display: flex; flex-direction: column; justify-content: center; padding: 0.8rem; }
+  .stamp-dest { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; text-transform: uppercase; letter-spacing: 0.02em; }
+  .stamp-country { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-top: 0.2rem; opacity: 0.85; overflow-wrap: anywhere; }
+  .stamp-date { font-size: 13px; font-weight: 700; margin-top: 0.45rem; border-top: 1.5px dashed var(--c); padding-top: 0.35rem; }
+  .stamp-count { font-size: 12.5px; font-weight: 500; opacity: 0.9; }
+  .pp-share { margin-top: 2rem; }
+  .pp-formats { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .pp-share canvas { display: block; width: 100%; height: auto; border-radius: 16px; box-shadow: 0 12px 32px rgba(26,18,8,0.18); margin-bottom: 0.9rem; }
+  .pp-share canvas.story { max-width: 300px; aspect-ratio: 9 / 16; }
+  .pp-share canvas.wide { max-width: 560px; aspect-ratio: 16 / 9; }
+  .pp-share .btn-main { margin-top: 0; }
+  .pp-empty .btn-main { margin-top: 1rem; }
+  @media (max-width: 640px) {
+    .pp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pp-stamps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem 0.75rem; }
+    .stamp-dest { font-size: 1.05rem; }
+  }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 14px; opacity: 0; transition: all 0.25s; z-index: 10001; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .wrapper { padding: 1.5rem 16px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    a.mini-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+    a.mini-card .mini-img { height: auto; min-height: 132px; font-size: 32px; }
+    a.mini-card .mini-body { padding: 0.75rem 0.85rem; min-width: 0; }
+    a.mini-card .mini-meta { margin-bottom: 0.3rem; }
+    a.mini-card .mini-title { font-size: 15px; margin-bottom: 0.25rem; }
+    a.mini-card .mini-text { font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    a.mini-card .mini-footer { margin-top: 0.5rem; padding-top: 0.5rem; }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+
+  .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 6px; font-size: 22px; color: var(--ink); }
+  @media (max-width: 600px) { .nav-links { display: none !important; } .hamburger { display: flex !important; } }
+  .mobile-nav { display: none; position: fixed; top: 60px; left: 0; right: 0; background: var(--warm-white); border-bottom: 1px solid var(--border); z-index: 9999; flex-direction: column; padding: 1rem 1.5rem; gap: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { text-decoration: none; color: var(--ink); font-size: 15px; font-weight: 500; padding: 0.85rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover { color: var(--accent); }
+
+</style>
+<script>
+  // Mailchimp popup (Sitewide Email Capture). Only loaded after the visitor accepts cookies.
+  function loadMailchimp() {} // the old Mailchimp popup is off: the newsletter is on Substack
+</script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#D4521A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Strong Foodie">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<!-- Google Analytics, only loaded after cookie consent, see consent script near </body> -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function loadAnalytics() {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PEEXFGGPNH';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-PEEXFGGPNH');
+  }
+</script>
+<style id="sf-menu">
+  /* sf-menu: the same menu on every page (Eat, Drink, Stay, More, Best of, Map). */
+  .nav-links .nav-more { position: relative; }
+  .nav-links .nav-more summary { list-style: none; cursor: pointer; color: var(--ink-soft, #3D2F1A); font-size: 13px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; line-height: 1.15; display: flex; align-items: center; gap: 4px; user-select: none; }
+  .nav-links .nav-more summary::-webkit-details-marker { display: none; }
+  .nav-links .nav-more summary::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); margin-left: 3px; }
+  .nav-links .nav-more details[open] summary::after { transform: rotate(-135deg) translateY(-1px); }
+  .nav-links .nav-more summary:hover, .nav-links .nav-more summary.active, .nav-links a.active { color: var(--accent, #D4521A); }
+  .nav-links .nav-more-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); min-width: 200px; background: #FFFDF9; border: 1px solid rgba(26,18,8,0.12); border-radius: 14px; box-shadow: 0 14px 40px rgba(26,18,8,0.14); padding: 6px; display: flex; flex-direction: column; z-index: 1200; }
+  .nav-links .nav-more-menu a { text-transform: none; letter-spacing: 0; font-size: 14px; color: #1A1208; padding: 9px 12px; border-radius: 9px; white-space: nowrap; }
+  .nav-links .nav-more-menu a:hover, .nav-links .nav-more-menu a.active { background: #FBF3EF; color: var(--accent, #D4521A); }
+  @media (max-width: 1050px) { .nav-links { gap: 1.2rem !important; } }
+  .mobile-nav { max-height: calc(100vh - 60px); max-height: calc(100dvh - 60px); overflow-y: auto; }
+  .mobile-nav .mnav-h { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A7A66; font-weight: 600; margin: 1rem 0 0.15rem; }
+  .mobile-nav a.active { color: var(--accent, #D4521A); }
+  .mobile-nav .mnav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0.5rem 0 0.25rem; }
+  .mobile-nav .mnav-grid a { flex-direction: column; justify-content: center; gap: 2px; text-align: center; font-size: 13px; padding: 0.7rem 0.25rem; border: 1px solid rgba(26,18,8,0.12); border-radius: 12px; background: #fff; }
+  .mobile-nav .mnav-grid a:last-child { border-bottom: 1px solid rgba(26,18,8,0.12); }
+  .mobile-nav .mnav-grid a span { font-size: 20px; line-height: 1.2; }
+  .mobile-nav .mnav-grid a.active { border-color: var(--accent, #D4521A); background: #FBF3EF; }
+</style>
+<link rel="stylesheet" href="/css/sf-touch.css?v=1">
+<!-- iPhone in Safari: a bar at the top to open or get the app (Smart App Banner). -->
+<meta name="apple-itunes-app" content="app-id=6799647380, app-argument=https://strongfoodie.com/passport.html">
+</head>
+<body>
+<div class="mobile-nav" id="mobileNav">
+  <p class="mnav-h">Discover</p>
+  <a href="index.html">🏠 Home</a>
+  <a href="best.html">🏆 Best of</a>
+  <a href="stad.html">🌍 Destinations</a>
+  <a href="map.html">🗺️ Map</a>
+  <a href="guides.html">📖 Guides</a>
+  <a href="meetups.html">🗓️ Meetups</a>
+  <p class="mnav-h">Categories</p>
+  <div class="mnav-grid"><a href="reviews.html"><span>🍽️</span>Eat</a><a href="drink.html"><span>🍸</span>Drink</a><a href="hotel.html"><span>🏨</span>Stay</a><a href="shop.html"><span>🛍️</span>Shop</a><a href="culture.html"><span>🎭</span>Culture</a><a href="health.html"><span>💪</span>Health</a></div>
+  <p class="mnav-h">Community</p>
+  <a href="community.html">👥 Community</a>
+  <a href="battle.html">⚔️ Battle</a>
+  <a href="videos.html">🎬 Videos</a>
+  <p class="mnav-h">Strong Foodie</p>
+  <a href="for-restaurants.html">🍴 For restaurants</a>
+  <a href="about.html">👤 About</a>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <svg width="36" height="36" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <circle cx="50" cy="50" r="48" fill="#FAF7F2" stroke="#1A1208" stroke-width="4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#D4521A" stroke-width="2"/>
+      <text x="50" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#1A1208">Strong</text>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-weight="700" fill="#D4521A">Foodie</text>
+    </svg>
+    <span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#1A1208;">Strong <span style="color:#D4521A;">Foodie</span></span>
+  </a>
+  <ul class="nav-links">
+    <li class="nav-more"><details><summary>Explore</summary><div class="nav-more-menu" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(7,auto);grid-auto-flow:column;column-gap:4px;min-width:340px;left:0;transform:none;"><p style="margin:6px 12px 2px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A7A66;font-weight:600;">Places</p><a href="reviews.html">🍽️ Eat</a><a href="drink.html">🍸 Drink</a><a href="hotel.html">🏨 Stay</a><a href="shop.html">🛍️ Shop</a><a href="culture.html">🎭 Culture</a><a href="health.html">💪 Health</a><p style="margin:6px 12px 2px;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A7A66;font-weight:600;">Discover</p><a href="stad.html">🌍 Destinations</a><a href="guides.html">📖 Guides</a><a href="meetups.html">🗓️ Meetups</a><a href="battle.html">⚔️ Battle</a><a href="videos.html">🎬 Videos</a><a href="community.html">👥 Community</a></div></details></li>
+    <li><a href="best.html">Best of</a></li>
+    <li><a href="map.html">Map</a></li>
+    <li><a href="for-restaurants.html">For restaurants</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+</nav>
+
+
+<div class="page-hero">
+  <h1>🛂 Your Foodie passport</h1>
+  <p>A stamp for every city where you have been. Only you see it.</p>
+</div>
+
+<main class="wrapper" id="root"><p class="msg">Loading…</p></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<footer style="background:#1A1208;color:#fff;padding:3rem 2rem 2rem;margin-top:4rem;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:2.5rem;">
+      <div>
+        <p style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:0.5rem;">Strong <span style="color:#D4521A;">Foodie</span></p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;">Real eats, honest reviews. Merdan Koc discovers the best restaurants from Amsterdam to the world.</p>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Pages</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Home</a>
+          <a href="reviews.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Reviews</a>
+          <a href="guides.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Guides</a>
+          <a href="videos.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Videos</a>
+          <a href="hotel.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">Stay</a>
+          <a href="for-restaurants.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">For restaurants</a>
+          <a href="about.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">About me</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:0.75rem;font-weight:500;">Follow me</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="https://www.instagram.com/strongfoodie_/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">📸 Instagram</a>
+          <a href="https://www.youtube.com/@Strongfoodie" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">▶ YouTube</a>
+<a href="https://www.tiktok.com/@strongfoodie" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">🎵 TikTok</a>
+<a href="https://strongfoodie.substack.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">✉️ Newsletter</a>
+          <a href="https://www.linkedin.com/in/merdan-koc-8117a1211/" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">💼 LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+      <p style="font-size:12px;color:rgba(255,255,255,0.35);">© 2026 Merdan Koc, Strong Foodie</p>
+      <a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;">Privacy & Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1A1208;color:#fff;padding:1rem 1.5rem;z-index:10000;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:2px solid #D4521A;">
+  <p style="font-size:13px;color:rgba(255,255,255,0.85);max-width:600px;margin:0;">🍪 We use cookies for analytics and newsletters. Choose whether you want to allow this, see our <a href="privacy.html" style="color:#D4521A;">cookie policy</a> for details.</p>
+  <div style="display:flex;gap:0.75rem;flex-shrink:0;">
+    <button onclick="declineCookies()" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Decline</button>
+    <button onclick="acceptCookies()" style="background:#D4521A;color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;">Accept</button>
+  </div>
+</div>
+<button id="cookieSettingsLink" onclick="document.getElementById('cookieBanner').style.display='flex';" style="display:block;width:100%;background:#1A1208;border:none;color:rgba(255,255,255,0.45);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0 0 18px;text-align:center;">Cookie settings</button>
+<script>
+(function(){
+  var c = localStorage.getItem('jf_cookie_consent');
+  if (!c) {
+    document.getElementById('cookieBanner').style.display = 'flex';
+  } else if (c === 'accepted') {
+    loadAnalytics();
+    loadMailchimp();
+  }
+})();
+function acceptCookies(){
+  localStorage.setItem('jf_cookie_consent','accepted');
+  document.getElementById('cookieBanner').style.display='none';
+  loadAnalytics();
+  loadMailchimp();
+}
+function declineCookies(){
+  localStorage.setItem('jf_cookie_consent','declined');
+  document.getElementById('cookieBanner').style.display='none';
+}
+</script>
+<script>
+  function sfStars(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'<span class="sf-half" style="position:relative;display:inline-block">☆<span style="position:absolute;left:0;top:0;width:50%;overflow:hidden">★</span></span>':'')+'☆'.repeat(5-f-h);}
+  function sfStarsText(n){const r=Math.round((Number(n)||0)*2)/2,f=Math.floor(r),h=r-f?1:0;return '★'.repeat(f)+(h?'½':'')+'☆'.repeat(5-f-h);}
+  window.sfStars = sfStars; window.sfStarsText = sfStarsText;
+</script>
+<script type="module">
+  // The Foodie passport (17 Nov 2026): a stamp for every destination where the signed-in
+  // member has been, and a share image (story 1080 × 1920 or landscape 1920 × 1080).
+  // Only the member sees it: everything is read from their own documents (js/sf-passport.js).
+  // The app has the same passport (Rork batch 85).
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { esc, fold } from "./js/sf-places.js?v=7";
+  import { loadPassport, monthYear, plural, passportLine } from "./js/sf-passport.js?v=1";
+
+  const app = initializeApp({
+    apiKey: "AIzaSyB_9UbXbYdY-TkYPLURESIkKAFLfYfwD3U",
+    authDomain: "jongfoodie.firebaseapp.com",
+    projectId: "jongfoodie",
+    storageBucket: "jongfoodie.firebasestorage.app",
+    messagingSenderId: "1006154240382",
+    appId: "1:1006154240382:web:45dc5562f8205364aa232f"
+  });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const root = document.getElementById('root');
+
+  // Every stamp keeps its own colour, turn and shape: taken from its name, so it looks
+  // the same each visit.
+  const INKS = ['#D4521A', '#1A5C2E', '#1A3A5C', '#6B2A5C', '#A32323', '#8A6A0A'];
+  const hash = s => { let h = 7; for (const ch of fold(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+  const look = s => { const h = hash(s.destination); return { ink: INKS[h % INKS.length], turn: ((h >> 3) % 9) - 4, round: (h >> 7) % 3 === 0 }; };
+
+  function stampHtml(s) {
+    const l = look(s);
+    return `<div class="stamp${l.round ? ' round' : ''}" style="--c:${l.ink};--r:${l.turn}deg">
+      <p class="stamp-dest">${esc(s.destination)}</p>
+      ${s.country && fold(s.country) !== fold(s.destination) ? `<p class="stamp-country">${esc(s.country)}</p>` : ''}
+      ${s.first ? `<p class="stamp-date">${esc(monthYear(s.first))}</p>` : '<p class="stamp-date">Visited</p>'}
+      <p class="stamp-count">${esc(plural(s.count, 'place', 'places'))}</p>
+    </div>`;
+  }
+
+  let current = 'story';
+  function draw(x, name) {
+    if (!x.stamps.length) {
+      root.innerHTML = `<div class="msg pp-empty"><h2>No stamps yet</h2><p>Mark a place as Been there to get your first stamp.</p><a class="btn-main" href="reviews.html">Explore places</a></div>`;
+      return;
+    }
+    const stats = [['Cities', x.cities], ['Countries', x.countries], ['Continents', x.continents], ['Places', x.places]];
+    root.innerHTML = `
+      <p class="pp-line" id="ppLine">${esc(passportLine(x))}</p>
+      <section class="pp-stats">${stats.map(([l, v]) => `<div class="pp-stat"><p class="pp-num">${v}</p><p class="pp-lab">${l}</p></div>`).join('')}</section>
+      <section class="pp-stamps" id="ppStamps" aria-label="Your stamps, newest first">${x.stamps.map(stampHtml).join('')}</section>
+      <section class="pp-share">
+        <p class="lab">Share your passport</p>
+        <div class="pp-formats" role="group" aria-label="Image format">
+          <button class="chip on" type="button" data-format="story" aria-pressed="true">Story 9:16</button>
+          <button class="chip" type="button" data-format="wide" aria-pressed="false">Landscape 16:9</button>
+        </div>
+        <canvas id="ppStory" class="story" width="1080" height="1920" aria-label="Your passport as a story image"></canvas>
+        <canvas id="ppWide" class="wide" width="1920" height="1080" aria-label="Your passport as a landscape image" hidden></canvas>
+        <div class="share-row"><button class="btn-main" type="button" id="ppShare">Share</button><a class="chip" id="ppSave" download="strong-foodie-passport.png" href="#">Save image</a></div>
+        <p class="small" id="ppSize">For Instagram and TikTok stories: 1080 × 1920.</p>
+      </section>`;
+    const files = {};
+    const ready = Promise.all([
+      paint(document.getElementById('ppStory'), x, name, 'story'),
+      paint(document.getElementById('ppWide'), x, name, 'wide'),
+    ]).then(cs => Promise.all(cs.map((canvas, i) => new Promise(res => canvas.toBlob(blob => {
+      const f = i ? 'wide' : 'story';
+      if (blob) files[f] = { url: URL.createObjectURL(blob), file: new File([blob], `strong-foodie-passport-${f}.png`, { type: 'image/png' }) };
+      res();
+    }, 'image/png')))));
+    const share = document.getElementById('ppShare'), save = document.getElementById('ppSave');
+    const show = f => {
+      current = f;
+      document.querySelectorAll('[data-format]').forEach(b => { const on = b.dataset.format === f; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      document.getElementById('ppStory').hidden = f !== 'story';
+      document.getElementById('ppWide').hidden = f !== 'wide';
+      document.getElementById('ppSize').textContent = f === 'story' ? 'For Instagram and TikTok stories: 1080 × 1920.' : 'For a post, WhatsApp or X: 1920 × 1080.';
+      const it = files[f];
+      if (it) { save.href = it.url; save.download = it.file.name; }
+      share.hidden = !(it && navigator.canShare && navigator.canShare({ files: [it.file] }));
+    };
+    document.querySelectorAll('[data-format]').forEach(b => b.addEventListener('click', () => show(b.dataset.format)));
+    share.hidden = true;
+    share.addEventListener('click', () => {
+      const it = files[current];
+      if (it) navigator.share({ files: [it.file], title: 'My Foodie passport on Strong Foodie' }).catch(() => {});
+    });
+    ready.then(() => show(current));
+  }
+
+  // ── The share image ────────────────────────────────────────────────────────
+  async function paint(canvas, x, name, format) {
+    try { await document.fonts.ready; await Promise.all([document.fonts.load('700 120px "Playfair Display"'), document.fonts.load('500 40px "DM Sans"'), document.fonts.load('700 40px "DM Sans"')]); } catch (e) {}
+    const c = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height, wide = format === 'wide';
+    // Passport paper.
+    c.fillStyle = '#F6F0E6'; c.fillRect(0, 0, W, H);
+    c.strokeStyle = 'rgba(26,18,8,0.05)'; c.lineWidth = 2;
+    for (let y = 40; y < H; y += 46) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+    c.fillStyle = '#1A1208';
+    if (wide) c.fillRect(0, 0, 680, H); else c.fillRect(0, 0, W, 520);
+    // Title block.
+    const L = wide ? 80 : 90;
+    c.fillStyle = '#D4521A'; c.font = '700 38px "DM Sans", sans-serif'; c.fillText('STRONG FOODIE', L, wide ? 150 : 140);
+    c.fillStyle = '#FAF7F2'; c.font = `700 ${wide ? 104 : 118}px "Playfair Display", Georgia, serif`;
+    c.fillText('Foodie', L, wide ? 290 : 280); c.fillText('passport', L, wide ? 400 : 395);
+    c.fillStyle = 'rgba(250,247,242,0.72)'; c.font = '500 44px "DM Sans", sans-serif';
+    c.fillText(fit(c, name ? name : 'My stamps', wide ? 520 : 900), L, wide ? 480 : 470);
+    // Numbers.
+    const nums = [[x.cities, x.cities === 1 ? 'city' : 'cities'], [x.countries, x.countries === 1 ? 'country' : 'countries'], [x.places, x.places === 1 ? 'place' : 'places']];
+    if (wide) {
+      nums.forEach(([v, l], i) => {
+        const y = 610 + i * 130;
+        c.fillStyle = '#FAF7F2'; c.font = '700 96px "Playfair Display", Georgia, serif'; c.fillText(String(v), L, y);
+        const vw = c.measureText(String(v)).width;
+        c.fillStyle = 'rgba(250,247,242,0.72)'; c.font = '500 44px "DM Sans", sans-serif'; c.fillText(l, L + vw + 22, y);
+      });
+    } else {
+      c.fillStyle = '#1A1208'; c.font = '700 54px "DM Sans", sans-serif';
+      c.fillText(fit(c, nums.map(([v, l]) => `${v} ${l}`).join(' · '), W - 180), L, 640);
+    }
+    // Stamps, newest first.
+    const cols = wide ? 3 : 2, rows = wide ? 2 : 3;
+    const area = wide ? { x: 740, y: 70, w: 1120, h: 860 } : { x: 70, y: 700, w: 940, h: 980 };
+    const cw = area.w / cols, ch = area.h / rows;
+    const shown = x.stamps.slice(0, cols * rows);
+    shown.forEach((s, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      drawStamp(c, s, area.x + cw * col + cw / 2, area.y + ch * row + ch / 2, cw - 44, Math.min(ch - 54, 300));
+    });
+    const more = x.stamps.length - shown.length;
+    c.fillStyle = '#1A1208'; c.font = '700 40px "DM Sans", sans-serif';
+    if (more > 0) c.fillText(`+ ${plural(more, 'more stamp', 'more stamps')}`, wide ? 760 : L, wide ? 1010 : 1745);
+    // Footer.
+    c.fillStyle = '#D4521A'; c.fillRect(L, wide ? H - 140 : H - 130, 110, 8);
+    c.fillStyle = wide ? '#FAF7F2' : '#1A1208'; c.font = '500 44px "DM Sans", sans-serif'; c.fillText('strongfoodie.com', L, wide ? H - 70 : H - 62);
+    return canvas;
+  }
+
+  function drawStamp(c, s, cx, cy, w, h) {
+    const l = look(s);
+    c.save();
+    c.translate(cx, cy); c.rotate(l.turn * Math.PI / 180);
+    c.strokeStyle = l.ink; c.fillStyle = l.ink;
+    if (l.round) {
+      const r = Math.min(w, h) / 2;
+      c.lineWidth = 7; c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.stroke();
+      c.lineWidth = 3; c.beginPath(); c.arc(0, 0, r - 16, 0, Math.PI * 2); c.stroke();
+      w = r * 1.45; h = r * 2;
+    } else {
+      c.lineWidth = 7; roundRect(c, -w / 2, -h / 2, w, h, 22); c.stroke();
+      c.lineWidth = 3; roundRect(c, -w / 2 + 14, -h / 2 + 14, w - 28, h - 28, 14); c.stroke();
+    }
+    c.textAlign = 'center';
+    // Lines placed by the stamp's height, so they always stay inside the border.
+    const y = f => -h / 2 + h * f;
+    let size = 60;
+    c.font = `700 ${size}px "Playfair Display", Georgia, serif`;
+    const dest = s.destination.toUpperCase();
+    while (size > 30 && c.measureText(dest).width > w - 50) { size -= 2; c.font = `700 ${size}px "Playfair Display", Georgia, serif`; }
+    c.fillText(fit(c, dest, w - 50), 0, y(0.4));
+    c.font = '700 26px "DM Sans", sans-serif';
+    if (s.country && fold(s.country) !== fold(s.destination)) c.fillText(fit(c, s.country.toUpperCase(), w - 60), 0, y(0.54));
+    c.setLineDash([10, 8]); c.lineWidth = 2.5; c.beginPath(); c.moveTo(-w / 2 + 50, y(0.63)); c.lineTo(w / 2 - 50, y(0.63)); c.stroke(); c.setLineDash([]);
+    c.font = '700 32px "DM Sans", sans-serif'; c.fillText(s.first ? monthYear(s.first) : 'Visited', 0, y(0.77));
+    c.font = '500 26px "DM Sans", sans-serif'; c.fillText(plural(s.count, 'place', 'places'), 0, y(0.88));
+    c.restore();
+  }
+  function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function fit(c, text, max) { let t = String(text); while (t.length > 3 && c.measureText(t).width > max) t = t.slice(0, -2); return t === String(text) ? t : t.trim() + '…'; }
+
+  onAuthStateChanged(auth, async u => {
+    if (!u) {
+      root.innerHTML = `<div class="msg"><h2>See your passport</h2><p>A stamp for every city where you have been, ready to share. <a href="account.html?next=${encodeURIComponent('passport.html')}">Log in</a> to see yours.</p></div>`;
+      return;
+    }
+    root.innerHTML = '<p class="msg">Collecting your stamps…</p>';
+    let name = '';
+    try { const s = await getDoc(doc(db, 'profiles', u.uid)); name = (s.exists() && String(s.data().displayName || '').trim()) || ''; } catch (e) {}
+    draw(await loadPassport(db, u.uid), name ? `${name.slice(0, 22)}'s stamps` : '');
+  });
+</script>
+
+<script type="module" src="js/sf-account-nav.js?v=4"></script>
+</body>
+</html>

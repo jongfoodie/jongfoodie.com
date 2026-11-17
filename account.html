@@ -113,6 +113,11 @@
   .share-box[hidden] { display: none; }
   .share-box .field { flex: 1 1 220px; min-width: 0; font-size: 13px; color: var(--ink-soft); }
   .been-stat { font-size: 15px; color: var(--ink); margin-bottom: 0.6rem; }
+  .passport-card { display: flex; align-items: center; gap: 0.8rem; background: var(--ink, #1A1208); color: #fff; border-radius: 14px; padding: 0.8rem 1rem; text-decoration: none; margin-bottom: 0.9rem; }
+  .passport-card:hover { opacity: 0.92; }
+  .passport-card .pc-icon { font-size: 26px; }
+  .passport-card .pc-text { flex: 1; display: flex; flex-direction: column; line-height: 1.35; min-width: 0; }
+  .passport-card .pc-text span { font-size: 13px; color: rgba(255,255,255,0.72); }
   .been-stat b { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--green); margin: 0 2px; }
   .wish-form[hidden], #wishAddOpen[hidden] { display: none; }
   .cat-pick { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -229,6 +234,7 @@
   import { socialHtml, wireSocial } from "./js/sf-social.js?v=3";
   import { deleteReview, deleteAllContent, confirmTap } from "./js/sf-delete.js?v=7";
   import { markBeen, loadBeen, addBeenPlace, loadBeenPlaces } from "./js/sf-been.js?v=3";
+  import { loadPassport, plural } from "./js/sf-passport.js?v=1";
   import { isMapsLink, resolveMapsLink, findOnStrongFoodie } from "./js/sf-autofill.js?v=3";
   import { strongFoodiePlaces } from "./js/sf-find.js?v=5";
   import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
@@ -585,6 +591,7 @@
       <section class="acct-block" id="been">
         <h2>Been there <span class="count" id="beenCount"></span></h2>
         <p class="small" style="margin-bottom:0.75rem;">Places you have been to. Tick a place off with ✓ Been there on its page or from your wishlist, or add any place here, also one that isn't on Strong Foodie. Only you see this list.</p>
+        <a class="passport-card" id="passportCard" href="passport.html"><span class="pc-icon" aria-hidden="true">🛂</span><span class="pc-text"><b>Passport</b><span id="passportLine">Your stamps</span></span><span aria-hidden="true">›</span></a>
         <div id="beenList"><p class="small">Loading…</p></div>
         <button class="btn" id="beenAddOpen" type="button">＋ Add a place you've been</button>
         <button class="btn" id="beenImportOpen" type="button" hidden>🗺️ Import a Google Maps list</button>
@@ -628,6 +635,7 @@
           <a class="btn" href="where-to-eat.html" style="text-decoration:none;">🗳️ Where are we eating?</a>
           <a class="btn" href="meetups.html" style="text-decoration:none;">🤝 My meetups</a>
           <a class="btn" href="recap.html" style="text-decoration:none;">📅 Your ${new Date().getFullYear()} on Strong Foodie</a>
+          <a class="btn" href="passport.html" style="text-decoration:none;">🛂 Your Foodie passport</a>
         </div>
       </section>
 
@@ -1245,9 +1253,19 @@
   }
 
   // ── Been there (js/sf-been.js): newest first
+  // The passport card above Been there: "{n} cities · {m} countries" (passport.html).
+  async function refreshPassport(user) {
+    const line = document.getElementById('passportLine');
+    if (!line) return;
+    try {
+      const x = await loadPassport(db, user.uid);
+      line.textContent = x.cities ? `${plural(x.cities, 'city', 'cities')} · ${plural(x.countries, 'country', 'countries')}` : 'Your first stamp is one Been there away';
+    } catch (e) { console.log('Passport not counted:', e.code || e); }
+  }
   async function loadBeenList(user) {
     const box = document.getElementById('beenList');
     if (!box) return;
+    refreshPassport(user);
     let rows = [];
     try {
       const [sf, other] = await Promise.all([loadBeen(db, user.uid), loadBeenPlaces(db, user.uid).catch(() => [])]);
