@@ -341,6 +341,38 @@
    ]
   },
   {
+   "slug": "wellness-amsterdam",
+   "url": "/best/wellness-amsterdam/",
+   "kind": "cat",
+   "cat": "health",
+   "tag": "",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Gyms & Wellness in Amsterdam",
+   "places": [
+    "healthspots/qyO8bZqrxGTQeCZTVpNm",
+    "healthspots/NLyQLKEyTIimJAtYe8Qj"
+   ]
+  },
+  {
+   "slug": "gym-amsterdam",
+   "url": "/best/gym-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Gym",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Gyms in Amsterdam",
+   "places": [
+    "healthspots/qyO8bZqrxGTQeCZTVpNm",
+    "healthspots/NLyQLKEyTIimJAtYe8Qj"
+   ]
+  },
+  {
    "slug": "hotels-las-vegas",
    "url": "/best/hotels-las-vegas/",
    "kind": "cat",
@@ -817,6 +849,21 @@
    ]
   },
   {
+   "slug": "chill-amsterdam",
+   "url": "/best/chill-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Chill",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Chill in Amsterdam",
+   "places": [
+    "healthspots/qyO8bZqrxGTQeCZTVpNm"
+   ]
+  },
+  {
    "slug": "clothing-store-amsterdam",
    "url": "/best/clothing-store-amsterdam/",
    "kind": "tag",
@@ -1102,21 +1149,6 @@
    ]
   },
   {
-   "slug": "wellness-amsterdam",
-   "url": "/best/wellness-amsterdam/",
-   "kind": "cat",
-   "cat": "health",
-   "tag": "",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Gyms & Wellness in Amsterdam",
-   "places": [
-    "healthspots/NLyQLKEyTIimJAtYe8Qj"
-   ]
-  },
-  {
    "slug": "wellness-aruba",
    "url": "/best/wellness-aruba/",
    "kind": "cat",
@@ -1144,21 +1176,6 @@
    "title": "Best Gyms & Wellness in Los Angeles",
    "places": [
     "healthspots/0HTVApH3MOE8Jwcv2nC5"
-   ]
-  },
-  {
-   "slug": "gym-amsterdam",
-   "url": "/best/gym-amsterdam/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Gym",
-   "dishKind": "",
-   "dest": "Amsterdam",
-   "destSlug": "amsterdam",
-   "country": "Netherlands",
-   "title": "Best Gyms in Amsterdam",
-   "places": [
-    "healthspots/NLyQLKEyTIimJAtYe8Qj"
    ]
   },
   {
@@ -2142,6 +2159,7 @@
    "places": [
     "healthspots/0HTVApH3MOE8Jwcv2nC5",
     "healthspots/BvdrQsC4wyabEstW21Hg",
+    "healthspots/qyO8bZqrxGTQeCZTVpNm",
     "healthspots/NLyQLKEyTIimJAtYe8Qj"
    ]
   },
