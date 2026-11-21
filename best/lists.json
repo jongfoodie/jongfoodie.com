@@ -389,6 +389,22 @@
    ]
   },
   {
+   "slug": "hotels-los-angeles",
+   "url": "/best/hotels-los-angeles/",
+   "kind": "cat",
+   "cat": "stay",
+   "tag": "",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Hotels in Los Angeles",
+   "places": [
+    "hotelreviews/HXa7KaWjZt5sK8eCi97B",
+    "hotelreviews/XHBgHGbtRyY4eHjRqW7z"
+   ]
+  },
+  {
    "slug": "italian-aruba",
    "url": "/best/italian-aruba/",
    "kind": "tag",
@@ -864,6 +880,21 @@
    ]
   },
   {
+   "slug": "city-los-angeles",
+   "url": "/best/city-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "City",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best City in Los Angeles",
+   "places": [
+    "hotelreviews/XHBgHGbtRyY4eHjRqW7z"
+   ]
+  },
+  {
    "slug": "clothing-store-amsterdam",
    "url": "/best/clothing-store-amsterdam/",
    "kind": "tag",
@@ -1209,6 +1240,21 @@
    ]
   },
   {
+   "slug": "hotel-los-angeles",
+   "url": "/best/hotel-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Hotel",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Hotel in Los Angeles",
+   "places": [
+    "hotelreviews/XHBgHGbtRyY4eHjRqW7z"
+   ]
+  },
+  {
    "slug": "hotels-amsterdam",
    "url": "/best/hotels-amsterdam/",
    "kind": "cat",
@@ -1251,21 +1297,6 @@
    "title": "Best Hotels in Dubai",
    "places": [
     "hotelreviews/Wv8JwvQT7KyesvEXJnVE"
-   ]
-  },
-  {
-   "slug": "hotels-los-angeles",
-   "url": "/best/hotels-los-angeles/",
-   "kind": "cat",
-   "cat": "stay",
-   "tag": "",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Hotels in Los Angeles",
-   "places": [
-    "hotelreviews/HXa7KaWjZt5sK8eCi97B"
    ]
   },
   {
@@ -2123,6 +2154,7 @@
     "hotelreviews/lKF4AcgPenl7jFruaVvG",
     "hotelreviews/Wv8JwvQT7KyesvEXJnVE",
     "hotelreviews/VBrmEbGA5F1dKTsXR01K",
+    "hotelreviews/XHBgHGbtRyY4eHjRqW7z",
     "hotelreviews/FsBmcsEv3gR9DXC8Hhl9",
     "hotelreviews/2q9ZpEGot16jnstKrOPm"
    ]
