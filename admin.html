@@ -1079,6 +1079,7 @@
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { BRAND_UID, isUnlocked, markUnlocked, lockAdmin, passwordUnlock, unlockError, watchAdminLock, safeNext } from "./js/sf-admin.js?v=6";
   import { setupAutofill, autofillExtras, clearAutofill, cityTag, fillFromWish } from "./js/sf-autofill.js?v=3";
+  import { GO_FOR, cleanGoFor } from "./js/sf-gofor.js?v=2";
 
 
   const firebaseConfig = {
@@ -1292,6 +1293,33 @@
     group.insertAdjacentElement('afterend', box);
     cfg.fields[p + 'Video'] = 'reviewVideo';
   });
+  // ── GO FOR (23 Nov 2026) ──────────────────────────────────────────────
+  // Chips under the video field: what the place is good for. Saves as goFor (keys from
+  // js/sf-gofor.js); the place page shows "Go for: …" under the score.
+  Object.values(EDIT_CONFIG).forEach(cfg => {
+    const p = cfg.prefix, after = document.getElementById(p + 'Video');
+    if (!after || document.getElementById(p + 'GoFor')) return;
+    const box = document.createElement('div');
+    box.className = 'form-group';
+    box.innerHTML = `<p class="form-label">Go for (mag leeg, meerdere kan)</p>
+      <div id="${p}GoFor" class="gofor-chips" role="group" aria-label="Go for" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+        ${GO_FOR.map(([k, l]) => `<label style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border, #ddd);border-radius:999px;font-size:13px;cursor:pointer;"><input type="checkbox" value="${k}"> ${l}</label>`).join('')}
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">Komt als "Go for: …" onder de score op de plekpagina, en later in de app.</p>`;
+    (after.closest('.form-group') || after.parentElement).insertAdjacentElement('afterend', box);
+    cfg.fields[p + 'GoFor'] = 'goFor_chips';
+  });
+  function goForOf(prefix) {
+    const box = document.getElementById(prefix + 'GoFor');
+    if (!box) return null;
+    return cleanGoFor([...box.querySelectorAll('input:checked')].map(i => i.value));
+  }
+  function setGoFor(prefix, list) {
+    const box = document.getElementById(prefix + 'GoFor');
+    if (!box) return;
+    const on = new Set(cleanGoFor(list));
+    box.querySelectorAll('input').forEach(i => { i.checked = on.has(i.value); });
+  }
   function videoOf(prefix) {
     const el = document.getElementById(prefix + 'Video');
     if (!el) return null;
@@ -1314,7 +1342,9 @@
       Object.entries(cfg.fields).forEach(([fieldId, dataKey]) => {
         const el = document.getElementById(fieldId);
         if (!el) return;
-        if (dataKey === 'tags_join') {
+        if (dataKey === 'goFor_chips') {
+          setGoFor(cfg.prefix, r.goFor);
+        } else if (dataKey === 'tags_join') {
           el.value = (r.tags || []).join(', ');
         } else if (dataKey === 'partnerName_raw') {
           el.value = r.partnerName || '';
@@ -1430,6 +1460,8 @@
     const data = { ...autofillExtras(prefix), ...formData };
     const video = videoOf(prefix);
     if (video !== null) data.reviewVideo = video;
+    const goFor = goForOf(prefix);
+    if (goFor !== null) data.goFor = goFor;
     const editing = window.editingId[prefix];
     if (editing && editing.coll === coll) {
       await updateDoc(doc(db, coll, editing.id), data);
@@ -1446,6 +1478,7 @@
       clearAutofill(prefix);
       const vEl = document.getElementById(prefix + 'Video');
       if (vEl) vEl.value = '';
+      setGoFor(prefix, []);
       return { updated: false };
     }
   }

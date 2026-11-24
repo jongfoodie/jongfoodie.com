@@ -69,6 +69,14 @@ export async function deleteAllContent(db, uid, step = () => {}) {
   await each('reviews', query(collection(db, 'userReviews'), where('authorId', '==', uid)), d => deleteReview(db, { id: d.id, ...d.data() }));
   await each('spots', query(collection(db, 'userPlaces'), where('addedByUserId', '==', uid)), d => deleteSpot(db, { id: d.id, ...d.data() }));
   await each('wishlist', collection(db, 'profiles', uid, 'wishlistItems'), d => deleteDoc(d.ref));
+  // A "Go for" vote exists only for a place on Been there, so remove those first
+  // (goForVotes/{coll}_{id}_{uid}; the Cloud Function then updates the counts).
+  await each('go for', collection(db, 'profiles', uid, 'beenThere'), d => {
+    const x = d.data() || {}, [coll, id] = String(x.placeKey || '').split('/');
+    if (!coll || !id) return Promise.resolve();
+    const safe = v => String(v).replace(/[^A-Za-z0-9-]/g, '');
+    return deleteDoc(doc(db, 'goForVotes', `${safe(coll)}_${safe(id)}_${safe(uid)}`)).catch(() => {});
+  });
   await each('been there', collection(db, 'profiles', uid, 'beenThere'), d => deleteDoc(d.ref));
   await each('been there', collection(db, 'profiles', uid, 'beenPlaces'), d => deleteDoc(d.ref));
   await each('settings', collection(db, 'profiles', uid, 'settings'), d => deleteDoc(d.ref));
