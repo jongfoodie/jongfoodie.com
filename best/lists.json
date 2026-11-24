@@ -29,6 +29,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/1kpYd35n0Z59KjvxwhCO",
     "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/j1oE7MPVa90t4nL1ogfs",
@@ -1420,6 +1421,21 @@
    ]
   },
   {
+   "slug": "mexican-amsterdam",
+   "url": "/best/mexican-amsterdam/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Mexican",
+   "dishKind": "",
+   "dest": "Amsterdam",
+   "destSlug": "amsterdam",
+   "country": "Netherlands",
+   "title": "Best Mexican Food in Amsterdam",
+   "places": [
+    "reviews/1kpYd35n0Z59KjvxwhCO"
+   ]
+  },
+  {
    "slug": "mexican-aruba",
    "url": "/best/mexican-aruba/",
    "kind": "tag",
@@ -2102,6 +2118,7 @@
     "reviews/6JxwfllusmCZLjt2WsqN",
     "reviews/3USc2cZdzhwysxMKSZwJ",
     "reviews/1qc2f42wltb7XJjRqDdT",
+    "reviews/1kpYd35n0Z59KjvxwhCO",
     "reviews/Hf9gwbI6jGUcwmGz4xxB",
     "reviews/9i1MoYhNTLsp9GGIhYqo",
     "reviews/tOdWHBI8vo2yySrV3vfL",
