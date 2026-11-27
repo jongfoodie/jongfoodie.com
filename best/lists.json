@@ -144,23 +144,6 @@
    ]
   },
   {
-   "slug": "cafe-los-angeles",
-   "url": "/best/cafe-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Cafe",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Cafés in Los Angeles",
-   "places": [
-    "reviews/n1JGGaAOlKwe0eC7YBvi",
-    "reviews/0B3wtVT0GtUHyUydKbNz",
-    "reviews/RMhpQyIG0vrVL7yr6L5y"
-   ]
-  },
-  {
    "slug": "italian-amsterdam",
    "url": "/best/italian-amsterdam/",
    "kind": "tag",
@@ -294,6 +277,22 @@
    ]
   },
   {
+   "slug": "cafe-los-angeles",
+   "url": "/best/cafe-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Cafe",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Cafés in Los Angeles",
+   "places": [
+    "reviews/0B3wtVT0GtUHyUydKbNz",
+    "reviews/RMhpQyIG0vrVL7yr6L5y"
+   ]
+  },
+  {
    "slug": "coffee-amsterdam",
    "url": "/best/coffee-amsterdam/",
    "kind": "tag",
@@ -419,22 +418,6 @@
    "places": [
     "reviews/8OZrZVTWjYxCidYDCtto",
     "reviews/7kF3cJcL7Y5Hg0shmhL1"
-   ]
-  },
-  {
-   "slug": "italian-los-angeles",
-   "url": "/best/italian-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Italian",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best Italian Food in Los Angeles",
-   "places": [
-    "reviews/n1JGGaAOlKwe0eC7YBvi",
-    "reviews/wKLfK0YaqXAiZrkrSjxi"
    ]
   },
   {
@@ -1316,6 +1299,21 @@
    ]
   },
   {
+   "slug": "italian-los-angeles",
+   "url": "/best/italian-los-angeles/",
+   "kind": "tag",
+   "cat": "",
+   "tag": "Italian",
+   "dishKind": "",
+   "dest": "Los Angeles",
+   "destSlug": "los-angeles",
+   "country": "United States",
+   "title": "Best Italian Food in Los Angeles",
+   "places": [
+    "reviews/wKLfK0YaqXAiZrkrSjxi"
+   ]
+  },
+  {
    "slug": "japanese-amsterdam",
    "url": "/best/japanese-amsterdam/",
    "kind": "tag",
@@ -1508,21 +1506,6 @@
    "title": "Best of Abbot Kinney, Los Angeles",
    "places": [
     "reviews/RMhpQyIG0vrVL7yr6L5y"
-   ]
-  },
-  {
-   "slug": "melrose-los-angeles",
-   "url": "/best/melrose-los-angeles/",
-   "kind": "tag",
-   "cat": "",
-   "tag": "Melrose",
-   "dishKind": "",
-   "dest": "Los Angeles",
-   "destSlug": "los-angeles",
-   "country": "United States",
-   "title": "Best of Melrose, Los Angeles",
-   "places": [
-    "reviews/n1JGGaAOlKwe0eC7YBvi"
    ]
   },
   {
@@ -2094,7 +2077,6 @@
    "places": [
     "reviews/8OZrZVTWjYxCidYDCtto",
     "reviews/V6smAGuczzTNS1VAM7Nw",
-    "reviews/n1JGGaAOlKwe0eC7YBvi",
     "reviews/x9QF2yqsWHnNFYT8xaro",
     "reviews/W9QELDdyqBTWb0vOTBY8",
     "reviews/0B3wtVT0GtUHyUydKbNz",
