@@ -1,14 +1,20 @@
 // "Go for" (23 Nov 2026): what a Strong Foodie place is good for, chosen in the admin.
 // Saved on the place as goFor: an array of the keys below, in this order. The app reads
 // the same keys (Rork batch 86). Keep the keys fixed; labels may change.
+// 28 Nov 2026: added coffee, brunch, quick, groups, occasion; order follows the day.
 export const GO_FOR = [
+  ['coffee', 'Coffee'],
+  ['brunch', 'Brunch'],
+  ['lunch', 'Lunch'],
+  ['quick', 'Quick bite'],
+  ['solo', 'Solo'],
+  ['business', 'Business'],
+  ['family', 'Family'],
   ['date', 'Date night'],
   ['friends', 'Dinner with friends'],
+  ['groups', 'Big groups'],
+  ['occasion', 'Special occasion'],
   ['drinks', 'Drinks'],
-  ['lunch', 'Lunch'],
-  ['solo', 'Solo'],
-  ['family', 'Family'],
-  ['business', 'Business'],
   ['late', 'Late night'],
 ];
 const LABEL = new Map(GO_FOR);
